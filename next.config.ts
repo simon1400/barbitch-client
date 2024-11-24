@@ -33,6 +33,7 @@ const nextConfig: NextConfig = {
   env: {
     IG_ACCESS_TOKEN: process.env.IG_ACCESS_TOKEN,
     APP_API: process.env.APP_API,
+    SERVER_IP: process.env.SERVER_IP,
   },
   images: {
     remotePatterns: [
