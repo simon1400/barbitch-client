@@ -39,6 +39,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [
       { hostname: 'scontent-prg1-1.cdninstagram.com' },
       { hostname: 'scontent.cdninstagram.com' },
+      { hostname: 'strapi.barbitch.cz' },
       { hostname: 'localhost' },
     ],
   },
