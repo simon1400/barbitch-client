@@ -10,7 +10,8 @@ module.exports = {
   deploy: {
     production: {
       user: 'dimi',
-      host: [process.env.SERVER_IP],
+      // eslint-disable-next-line sonarjs/no-hardcoded-ip
+      host: ['89.221.216.23'],
       ref: 'origin/main',
       repo: 'git@github.com:simon1400/tulsio-client-v2.git',
       path: '/home/dimi/app/barbitch/client',
