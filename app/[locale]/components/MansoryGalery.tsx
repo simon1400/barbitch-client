@@ -45,11 +45,15 @@ const images = [
   },
 ]
 
+interface IImageUrls {
+  url: string
+}
+
 export const MasonryGalery = () => {
-  const [masonryItems, setMasonryItems] = useState([])
+  const [masonryItems, setMasonryItems] = useState<[IImageUrls[]]>()
 
   useOnMountUnsafe(() => {
-    const splitArrImg: any = []
+    const splitArrImg: [IImageUrls[]] = [[{ url: '' }]]
     const length = images.length / 3
     for (let i = 0; i < length; i++) {
       splitArrImg[i] = images.splice(0, 3)
@@ -57,7 +61,7 @@ export const MasonryGalery = () => {
     setMasonryItems(splitArrImg)
   })
 
-  if (!masonryItems.length) {
+  if (!masonryItems?.length) {
     return null
   }
 

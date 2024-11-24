@@ -1,3 +1,3 @@
-const EventMap = ({ position }) => <></>
+const EventMap = () => <></>
 
 export default EventMap

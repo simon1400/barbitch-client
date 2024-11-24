@@ -25,13 +25,13 @@ export const Footer = ({ contact }: { contact: IDataContact }) => {
             </Link>
           </div>
           <div className={'w-full text-center text-nowrap mb-5 lg:mb-0'}>
-            {parse(contact.openHours)}
+            {parse(contact.openHours || '')}
           </div>
           <div className={'lg:text-right text-nowrap'}>
-            {parse(contact.address)}
+            {parse(contact.address || '')}
             <Link
               className={'block text-primary underline'}
-              href={contact.linkToMap}
+              href={contact.linkToMap || '/'}
               target={'_blank'}
             >
               {'google maps'}
