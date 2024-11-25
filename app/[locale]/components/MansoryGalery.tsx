@@ -67,7 +67,7 @@ export const MasonryGalery = () => {
 
   return (
     <section>
-      <InfiniteLooper speed={40} direction={'right'}>
+      <InfiniteLooper speed={40}>
         <div className={'grid grid-cols-2 md:grid-cols-4 gap-4 mx-2'}>
           {masonryItems.map((item, idxParent) => (
             // eslint-disable-next-line react/no-array-index-key, sonarjs/no-array-index-key

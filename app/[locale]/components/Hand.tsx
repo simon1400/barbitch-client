@@ -131,7 +131,7 @@ export const Hand = () => {
         <g id={'ŘASY'} onClick={() => router.push('/rasy')}>
           <text
             transform={'translate(932.01 811.64)'}
-            className={'text-accent text-xl cursor-pointer'}
+            className={'fill-accent text-xl cursor-pointer hover:fill-primary duration-200'}
           >
             <tspan x={'0'} y={'0'}>
               {'ŘASY'}
@@ -141,14 +141,14 @@ export const Hand = () => {
         <g id={'OBOČÍ'} onClick={() => router.push('/oboci')}>
           <text
             transform={'translate(228.15 722.64)'}
-            className={'text-accent text-xl cursor-pointer'}
+            className={'fill-accent text-xl cursor-pointer hover:fill-primary duration-200'}
           >
             <tspan x={'0'} y={'0'}>
               {'OBOČÍ'}
             </tspan>
           </text>
         </g>
-        <g id={'PEDIKÚRA'} onClick={() => router.push('/pedikura')}>
+        {/* <g id={'PEDIKÚRA'} onClick={() => router.push('/pedikura')}>
           <text
             transform={'translate(931.98 633.64)'}
             className={'text-accent text-xl cursor-pointer'}
@@ -157,11 +157,11 @@ export const Hand = () => {
               {'PEDIKÚRA'}
             </tspan>
           </text>
-        </g>
+        </g> */}
         <g id={'MANIKÚRA'} onClick={() => router.push('/manikura')}>
           <text
             transform={'translate(237.53 367.64)'}
-            className={'text-accent text-xl cursor-pointer'}
+            className={'fill-accent text-xl cursor-pointer hover:fill-primary duration-200'}
           >
             <tspan x={'-220'} y={'0'}>
               {'MANIKÚRA'}

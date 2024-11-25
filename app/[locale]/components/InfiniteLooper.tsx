@@ -4,11 +4,9 @@ import { useCallback, useEffect, useRef, useState } from 'react'
 
 export const InfiniteLooper = ({
   speed,
-  direction,
   children,
 }: {
   speed: number
-  direction: 'right' | 'left'
   children: React.ReactNode
 }) => {
   const [looperInstances, setLooperInstances] = useState(1)

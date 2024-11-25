@@ -2,7 +2,7 @@
 
 import type { IDataNav, INavItem } from 'fetch/nav'
 
-import Link from 'next/link'
+import { Link } from 'i18n/routing'
 
 import Button from './Button'
 import Lang from './Lang'
@@ -25,7 +25,9 @@ export const Menu = ({ open, nav }: { open: boolean; nav: IDataNav }) => {
                     nav.leftNav.map((item: INavItem) => (
                       <li key={`leftMenu_${item.title}`}>
                         <Link
-                          className={'text-white text-sm1 lg:text-lg uppercase'}
+                          className={
+                            'text-white text-sm1 lg:text-lg uppercase hover:text-primary duration-200'
+                          }
                           href={item.link}
                         >
                           {item.title}
@@ -42,7 +44,9 @@ export const Menu = ({ open, nav }: { open: boolean; nav: IDataNav }) => {
                     nav.rightNav.map((item: INavItem) => (
                       <li className={'mt-0.5 lg:mt-2.5'} key={`rightMenu_${item.title}`}>
                         <Link
-                          className={'text-white text-sm lg:text-md uppercase'}
+                          className={
+                            'text-white text-sm lg:text-md uppercase hover:text-primary duration-200'
+                          }
                           href={item.link}
                         >
                           {item.title}

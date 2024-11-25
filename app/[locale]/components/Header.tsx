@@ -6,7 +6,7 @@ import { Squash as Hamburger } from 'hamburger-react'
 import { useEffect, useState } from 'react'
 import { useMediaQuery } from 'react-responsive'
 
-import { Link } from '../../../i18n/routing'
+import { Link, usePathname } from '../../../i18n/routing'
 
 import Button from './Button'
 import Lang from './Lang'
@@ -15,6 +15,7 @@ import LogoIcon from '/public/assets/logo.svg'
 
 export const Header = ({ dataNav, linkReserve }: { dataNav: IDataNav; linkReserve: string }) => {
   const [menu, setMenu] = useState<boolean>(false)
+  const pathname = usePathname()
   const isDesktopMedia = useMediaQuery({
     query: '(min-width: 1024px)',
   })
@@ -31,6 +32,10 @@ export const Header = ({ dataNav, linkReserve }: { dataNav: IDataNav; linkReserv
       document.body.classList.remove('overflow-y-hidden')
     }
   }, [menu])
+
+  useEffect(() => {
+    setMenu(false)
+  }, [pathname])
 
   return (
     <>
@@ -55,6 +60,7 @@ export const Header = ({ dataNav, linkReserve }: { dataNav: IDataNav; linkReserv
               <Hamburger
                 color={menu ? '#fff' : '#161615'}
                 onToggle={() => setMenu(!menu)}
+                toggled={menu}
                 size={isDesktop ? 48 : 38}
                 duration={0.3}
                 distance={'sm'}
