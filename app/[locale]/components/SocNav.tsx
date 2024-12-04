@@ -13,7 +13,11 @@ export const SocNav = ({ items }: { items?: ISocItem[] }) => {
         {items &&
           items.map((item: ISocItem) => (
             <li key={item.type}>
-              <Link href={item.link} target={'_blank'}>
+              <Link
+                href={item.link}
+                className={'duration-200 fill-primary hover:fill-accent'}
+                target={'_blank'}
+              >
                 {item.type === 'instagram' && <Instagram className={'w-8 lg:w-16'} />}
                 {item.type === 'tiktok' && <Tiktok className={'w-8 lg:w-16'} />}
                 {item.type === 'facebook' && <Facebook className={'w-8 lg:w-16'} />}

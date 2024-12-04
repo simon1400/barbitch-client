@@ -28,7 +28,7 @@ const config: Config = {
         xs1: [
           '14px',
           {
-            lineHeight: '19px',
+            lineHeight: '24px',
             fontWeight: '500',
           },
         ],
@@ -44,6 +44,13 @@ const config: Config = {
           {
             lineHeight: '23px',
             fontWeight: '800',
+          },
+        ],
+        sm11: [
+          '20px',
+          {
+            lineHeight: '20px',
+            fontWeight: '300',
           },
         ],
         sm1: [
@@ -71,6 +78,13 @@ const config: Config = {
           '35px',
           {
             lineHeight: '33px',
+            fontWeight: '800',
+          },
+        ],
+        md2: [
+          '44px',
+          {
+            lineHeight: '37px',
             fontWeight: '800',
           },
         ],
@@ -124,6 +138,7 @@ const config: Config = {
         2: '8px',
         2.5: '10px',
         3: '12px',
+        3.5: '13.5px',
         4: '16px',
         4.5: '18px',
         5: '20px',
