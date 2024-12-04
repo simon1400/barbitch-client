@@ -179,6 +179,8 @@ const stylesSnazzy = [
   },
 ]
 
+const GOOGLE_API = process.env.GOOGLE_API || ''
+
 const CustomMap = () => {
   const [markerLocation] = useState({
     lat: 49.191469,
@@ -186,7 +188,7 @@ const CustomMap = () => {
   })
 
   return (
-    <APIProvider apiKey={'AIzaSyBINt2g70CC81OwkopB4LWz9KO0ksISkMA'}>
+    <APIProvider apiKey={GOOGLE_API}>
       <Map
         style={{ width: '100vw', height: '50vh' }}
         defaultCenter={markerLocation}
