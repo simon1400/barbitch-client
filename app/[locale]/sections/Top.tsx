@@ -65,7 +65,7 @@ export const Top = ({ title, small = false }: { title: string; small?: boolean }
           {title.split(' ').map((parentWord, parentIdx) => (
             <h1
               key={parentWord}
-              className={'text-md1 lg:text-top pb-4'}
+              className={'text-md1 lg:text-top pb-4 uppercase'}
               aria-label={title}
               role={'heading'}
             >
