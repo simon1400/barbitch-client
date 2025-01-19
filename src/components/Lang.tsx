@@ -1,14 +1,16 @@
 'use client'
 
-import Link from "next/link"
+import { Link, routing } from 'i18n/routing'
+import { useLocale } from 'next-intl'
 
 const Lang = ({ menu }: { menu: boolean }) => {
+  const locale = useLocale()
   return (
     <nav>
       <ul className={`flex gap-3 justify-end mb-12 lg:mb-0 lg:justify-start`}>
-        {['cs', 'ru'].map((item: string) => {
+        {routing.locales.map((item: string) => {
           let color = 'text-white hover:text-primary'
-          if ('cs' === item) {
+          if (locale === item) {
             color = menu ? 'text-primary' : 'text-accent'
           }
           return (

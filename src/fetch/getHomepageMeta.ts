@@ -1,6 +1,5 @@
-import qs from 'qs'
-
 import { Axios } from 'lib/api'
+import qs from 'qs'
 
 interface IHomeMeta {
   metaData: IDataMeta

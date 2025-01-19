@@ -3,15 +3,15 @@
 import type { IDataNav } from 'fetch/nav'
 
 import { Squash as Hamburger } from 'hamburger-react'
+import { LogoIcon } from 'icons/Logo'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 import { useMediaQuery } from 'react-responsive'
 
 import Button from './Button'
 import Lang from './Lang'
 import { Menu } from './Menu'
-import { usePathname } from 'next/navigation'
-import Link from 'next/link'
-import { LogoIcon } from 'icons/Logo'
 
 export const Header = ({ dataNav, linkReserve }: { dataNav: IDataNav; linkReserve: string }) => {
   const [menu, setMenu] = useState<boolean>(false)

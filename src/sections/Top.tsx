@@ -1,12 +1,10 @@
 'use client'
+import Button from 'components/Button'
 import { motion, useAnimation } from 'motion/react'
 import { useEffect } from 'react'
 import { useInView } from 'react-intersection-observer'
 
-import Button from '../components/Button'
-
 export const Top = ({ title, small = false }: { title: string; small?: boolean }) => {
-
   const ctrls = useAnimation()
 
   const { ref, inView } = useInView({

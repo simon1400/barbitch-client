@@ -1,9 +1,7 @@
 'use client'
-import parse from 'html-react-parser'
-
 import Button from 'components/Button'
+import parse from 'html-react-parser'
 import { BigLogoIcon } from 'icons/BigLogo'
-
 
 export const About = ({ text }: { text: string }) => {
   return (

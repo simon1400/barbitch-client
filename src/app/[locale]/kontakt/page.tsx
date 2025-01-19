@@ -1,5 +1,4 @@
-
-import { Top } from '../../../sections/Top'
+import { Top } from 'sections/Top'
 
 const Contact = async () => {
   return (

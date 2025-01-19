@@ -36,7 +36,7 @@ export default function getConfig(...additionalConfigs) {
   return antfu(
     {
       react: true,
-        stylistic: false,
+      stylistic: false,
       formatters: { prettierOptions: getPrettierDefaults() },
     },
     ...getPrettierConfig(),

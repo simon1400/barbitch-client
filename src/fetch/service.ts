@@ -17,7 +17,6 @@ export interface IDataFullService {
   }[]
 }
 
-
 const queryServiceHomepage = qs.stringify(
   {
     fields: ['title', 'slug'],
@@ -28,10 +27,11 @@ const queryServiceHomepage = qs.stringify(
 )
 
 export const getServiceHomepage = async () => {
-  const dataService: IDataHomepageService[] = await Axios.get(`/api/services?${queryServiceHomepage}`)
+  const dataService: IDataHomepageService[] = await Axios.get(
+    `/api/services?${queryServiceHomepage}`,
+  )
   return dataService
 }
-
 
 export const getFullService = async (slug: string) => {
   const query = qs.stringify(

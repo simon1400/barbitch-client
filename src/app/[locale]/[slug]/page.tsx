@@ -1,27 +1,29 @@
-import { getFullService, getFullServiceMeta } from 'fetch/service'
+import type { Metadata } from 'next'
 
-import parse from 'html-react-parser'
 import Button from 'components/Button'
 import { MasonryGalery } from 'components/MansoryGalery'
-import { Top } from '../../../sections/Top'
-import { Metadata } from 'next'
+import { getFullService, getFullServiceMeta } from 'fetch/service'
+import parse from 'html-react-parser'
 
-type Props = {
+import { Top } from '../../../sections/Top'
+
+interface Props {
   params: Promise<{ slug: string }>
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const slug = (await params).slug
 
-    const slug = (await params).slug
- 
   const meta = await getFullServiceMeta(slug)
- 
+
   return {
     title: meta.metaData.title || meta.title,
     description: meta.metaData.description,
-    openGraph: meta.metaData.image ? ({
-      images: [meta.metaData.image.url],
-    }) : null,
+    openGraph: meta.metaData.image
+      ? {
+          images: [meta.metaData.image.url],
+        }
+      : null,
   }
 }
 

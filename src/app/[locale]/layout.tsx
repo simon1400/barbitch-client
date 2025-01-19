@@ -3,18 +3,17 @@ import type { IDataContact } from 'fetch/contact'
 import type { IDataNav } from 'fetch/nav'
 import type { Metadata } from 'next'
 
+import { Footer } from 'components/Footer'
+import { Header } from 'components/Header'
 import { getBanner } from 'fetch/banner'
 import { getContact } from 'fetch/contact'
 import { getNav } from 'fetch/nav'
-
-import { Footer } from 'components/Footer'
-import { Header } from 'components/Header'
+import { routing } from 'i18n/routing'
+import { NextIntlClientProvider } from 'next-intl'
+import { getMessages } from 'next-intl/server'
+import { notFound } from 'next/navigation'
 import { Banner } from 'sections/Banner'
 import './globals.css'
-import { notFound } from 'next/navigation'
-import { routing } from 'i18n/routing'
-import { getMessages } from 'next-intl/server'
-import { NextIntlClientProvider } from 'next-intl'
 
 export const metadata: Metadata = {
   title: 'Bar.bitch',
@@ -23,20 +22,21 @@ export const metadata: Metadata = {
 
 export default async function RootLayout({
   children,
-  params: {locale}
+  params,
 }: Readonly<{
-  children: React.ReactNode;
-  params: {locale: string};
+  children: React.ReactNode
+  params: Promise<{ locale: string }>
 }>) {
+  const { locale } = await params
 
-  // Ensure that the incoming `locale` is valid
-  if (!routing.locales.includes(locale as 'cs' | 'ru')) {
-    notFound();
+  // // Ensure that the incoming `locale` is valid
+  if (!routing.locales.includes(locale as any)) {
+    notFound()
   }
- 
+
   // Providing all messages to the client
   // side is the easiest way to get started
-  const messages = await getMessages();
+  const messages = await getMessages()
 
   const dataContact: IDataContact = await getContact()
   const dataBanner: IDataBanner = await getBanner()
@@ -55,12 +55,12 @@ export default async function RootLayout({
         <link rel={'manifest'} href={'/favicon/site.webmanifest'} />
       </head>
       <body className={`bg-base antialiased`}>
-      <NextIntlClientProvider messages={messages}>
+        <NextIntlClientProvider messages={messages}>
           <Header dataNav={dataNav} linkReserve={dataContact.linkToReserve} />
           {children}
           <Banner data={dataBanner} />
           <Footer contact={dataContact} />
-          </NextIntlClientProvider>
+        </NextIntlClientProvider>
       </body>
     </html>
   )

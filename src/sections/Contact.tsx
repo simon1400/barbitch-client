@@ -1,11 +1,10 @@
 import type { IDataContact } from 'fetch/contact'
 
+import { SocNav } from 'components/SocNav'
 import parse from 'html-react-parser'
-import Link from 'next/link'
-
-import { SocNav } from '../components/SocNav'
-import { usePathname } from 'next/navigation'
 import { SmallHandIcon } from 'icons/SmallHand'
+import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 
 const Contact = ({ contact }: { contact: IDataContact }) => {
   const pathname = usePathname()

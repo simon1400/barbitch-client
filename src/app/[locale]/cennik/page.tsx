@@ -1,7 +1,7 @@
+import type { Metadata } from 'next'
+
 // import parse from 'html-react-parser'
 import { getPriceList } from 'fetch/pricelist'
-import { Metadata } from 'next'
-
 import { Top } from 'sections/Top'
 
 export const metadata: Metadata = {

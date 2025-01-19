@@ -1,10 +1,10 @@
 'use client'
 import type { IDataHomepageService } from 'fetch/service'
 
-import { Hand } from '../components/Hand'
-import Link from 'next/link'
-import { SmallHandIcon } from 'icons/SmallHand'
+import { Hand } from 'components/Hand'
 import { ArrowRightIcon } from 'icons/ArrowIcon'
+import { SmallHandIcon } from 'icons/SmallHand'
+import Link from 'next/link'
 
 export const HandSec = ({ service }: { service: IDataHomepageService[] }) => {
   return (

@@ -1,11 +1,10 @@
 'use client'
 import type { IDataBanner } from 'fetch/banner'
 
-
 import { motion } from 'motion/react'
+import { usePathname } from 'next/navigation'
 
 import Button from '../components/Button'
-import { usePathname } from 'next/navigation'
 
 const duration = 40
 

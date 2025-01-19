@@ -19,7 +19,9 @@ export const Instagram = ({ data }: { data: IInstagramItem[] }) => {
           <Link
             href={item.link}
             target={'_blank'}
-            className={'block relative w-full pt-[100%] overflow-hidden scale-100 hover:scale-95 duration-200'}
+            className={
+              'block relative w-full pt-[100%] overflow-hidden scale-100 hover:scale-95 duration-200'
+            }
             key={item.previewUrl}
           >
             <span className={'absolute top-2 right-2 z-20 w-6 fill-white'}>

@@ -1,9 +1,9 @@
 'use client'
 import type { IDataWorks } from 'fetch/works'
 
+import { getWorks } from 'fetch/works'
 import { formatDate } from 'helpers/parseDate'
 import { useOnMountUnsafe } from 'helpers/useOnMountUnsaf'
-import { getWorks } from 'fetch/works'
 import { useEffect, useState } from 'react'
 
 import { Top } from '../../../sections/Top'
@@ -23,7 +23,6 @@ const mL = [
   'Декабрь',
 ]
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 const logins: any = {
   'Liliia Radchenko': '5pzR773z',
   'Azaliya Baltiyeva': '34ndbQ1a',

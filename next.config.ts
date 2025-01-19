@@ -1,9 +1,10 @@
 import type { NextConfig } from 'next'
-import createNextIntlPlugin from 'next-intl/plugin';
+
+import createNextIntlPlugin from 'next-intl/plugin'
 
 /** @type {import('next').NextConfig} */
 
-const withNextIntl = createNextIntlPlugin();
+const withNextIntl = createNextIntlPlugin()
 
 const nextConfig: NextConfig = {
   webpack(config) {
@@ -34,6 +35,7 @@ const nextConfig: NextConfig = {
   env: {
     IG_ACCESS_TOKEN: process.env.IG_ACCESS_TOKEN,
     APP_API: process.env.APP_API,
+    APP_DOMAIN: process.env.APP_DOMAIN,
     SERVER_IP: process.env.SERVER_IP,
     GOOGLE_API: process.env.GOOGLE_API,
   },
