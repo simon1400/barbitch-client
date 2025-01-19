@@ -12,7 +12,7 @@ export interface IDataFullService {
   description: string
   additionalDescription: string
   galery: {
-    url: string
+    hash: string
     name: string
   }[]
 }

@@ -27,7 +27,7 @@ export const Banner = ({ data }: { data: IDataBanner }) => {
         <motion.div
           animate={{ x: '-50%' }}
           transition={{ duration, ease: 'linear', repeat: Infinity }}
-          style={{ backgroundImage: `url(${APP_API + data.animateLine1.url})` }}
+          style={{ backgroundImage: `url(${data.animateLine1.url})` }}
           className={`w-[200%] h-full bg-contain`}
         />
       </div>
@@ -35,7 +35,7 @@ export const Banner = ({ data }: { data: IDataBanner }) => {
         <motion.div
           animate={{ x: '-50%' }}
           transition={{ duration, ease: 'linear', repeat: Infinity }}
-          style={{ backgroundImage: `url(${APP_API + data.animateLine2.url})` }}
+          style={{ backgroundImage: `url(${data.animateLine2.url})` }}
           className={`w-[200%] h-full bg-contain`}
         />
       </div>
@@ -44,7 +44,7 @@ export const Banner = ({ data }: { data: IDataBanner }) => {
           initial={{ x: '-50%' }}
           animate={{ x: '0' }}
           transition={{ duration, ease: 'linear', repeat: Infinity }}
-          style={{ backgroundImage: `url(${APP_API + data.animateLine3.url})` }}
+          style={{ backgroundImage: `url(${data.animateLine3.url})` }}
           className={`w-[200%] h-full bg-center bg-contain`}
         />
       </div>

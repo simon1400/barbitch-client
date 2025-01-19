@@ -1,12 +1,11 @@
 'use client'
 
 import { motion } from 'motion/react'
+import { CldImage } from 'next-cloudinary'
 import { useMediaQuery } from 'react-responsive'
 import Masonry from 'react-responsive-masonry'
 
-const APP_API = process.env.APP_API
-
-export const MasonryGalery = ({ images }: { images: { name: string; url: string }[] }) => {
+export const MasonryGalery = ({ images }: { images: { name: string; hash: string }[] }) => {
   const mobile = useMediaQuery({
     query: '(max-width: 960px)',
   })
@@ -27,9 +26,14 @@ export const MasonryGalery = ({ images }: { images: { name: string; url: string 
       >
         {[...Array.from({ length: 3 })].map((_, ind) => (
           <Masonry key={ind} gutter={mobile ? '10px' : '20px'} columnsCount={mobile ? 2 : 4}>
-            {images.map((item) => (
+            {images.map((item, idx) => (
               <div key={item.name} className={'relative'}>
-                <img src={APP_API + item.url} alt={'asd'} />
+                <CldImage
+                  src={item.hash}
+                  width={300}
+                  height={400}
+                  alt={`Manikura_${idx}_${ind} ${item.name}`}
+                />
               </div>
             ))}
           </Masonry>
