@@ -36,12 +36,12 @@ const nextConfig: NextConfig = {
     IG_ACCESS_TOKEN: process.env.IG_ACCESS_TOKEN,
     APP_API: process.env.APP_API,
     APP_DOMAIN: process.env.APP_DOMAIN,
-    SERVER_IP: process.env.SERVER_IP,
     GOOGLE_API: process.env.GOOGLE_API,
   },
   images: {
     remotePatterns: [
       { hostname: 'scontent-prg1-1.cdninstagram.com' },
+      { hostname: 'res.cloudinary.com' },
       { hostname: 'scontent.cdninstagram.com' },
       { hostname: 'strapi.barbitch.cz' },
       { hostname: 'localhost' },
