@@ -2,7 +2,7 @@
 import { useOnMountUnsafe } from 'helpers/useOnMountUnsaf'
 import { InstaBaseIcon } from 'icons/InstaBase'
 import { ReelsIcon } from 'icons/Reels'
-import Image from 'next/image'
+// import Image from 'next/image'
 import { useState } from 'react'
 
 export const Instagram = ({ data }: { data: IInstagramItem[] }) => {
@@ -29,7 +29,7 @@ export const Instagram = ({ data }: { data: IInstagramItem[] }) => {
             <span className={'absolute top-2 right-2 z-20 w-6 fill-white'}>
               {item.type === 'VIDEO' ? <ReelsIcon /> : <InstaBaseIcon />}
             </span>
-            <Image
+            <img
               className={'object-cover absolute w-full h-full top-0 left-0'}
               src={item.previewUrl}
               width={400}
