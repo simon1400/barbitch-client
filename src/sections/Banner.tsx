@@ -8,8 +8,6 @@ import Button from '../components/Button'
 
 const duration = 40
 
-const APP_API = process.env.APP_API
-
 export const Banner = ({ data }: { data: IDataBanner }) => {
   const pathname = usePathname()
 

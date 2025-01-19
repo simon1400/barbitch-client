@@ -8,8 +8,6 @@ interface IDataLink {
   link: string
 }
 
-
-
 interface IDataMeta {
   title: string
   description: string
@@ -21,4 +19,11 @@ interface IDataMeta {
 interface IDataMetaWrap {
   title: string
   metaData: IDataMeta
+}
+
+interface IInstagramItem {
+  type: 'CAROUSEL_ALBUM' | 'IMAGE' | 'VIDEO'
+  previewUrl: string
+  link: string
+  caption: string
 }
