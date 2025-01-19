@@ -1,7 +1,7 @@
 import type { IDataHomepageService } from 'fetch/service'
 import type { Metadata } from 'next'
 
-import { getHomeMeta } from 'fetch/getHomepageMeta'
+import { getHomeMeta } from 'fetch/getMeta'
 import { fetchIg } from 'fetch/instagram'
 import { getServiceHomepage } from 'fetch/service'
 import { Axios } from 'lib/api'

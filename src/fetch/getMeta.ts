@@ -1,10 +1,6 @@
 import { Axios } from 'lib/api'
 import qs from 'qs'
 
-interface IHomeMeta {
-  metaData: IDataMeta
-}
-
 const query = qs.stringify(
   {
     populate: ['metaData'],
@@ -15,7 +11,13 @@ const query = qs.stringify(
 )
 
 export const getHomeMeta = async () => {
-  const data: IHomeMeta = await Axios.get(`/api/homepage?${query}`)
+  const data: IDataMetaWrap = await Axios.get(`/api/homepage?${query}`)
+
+  return data
+}
+
+export const getPricelistMeta = async () => {
+  const data: IDataMetaWrap = await Axios.get(`/api/pricelist-page?${query}`)
 
   return data
 }

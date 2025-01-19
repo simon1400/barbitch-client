@@ -2,7 +2,6 @@
 import { useOnMountUnsafe } from 'helpers/useOnMountUnsaf'
 import { InstaBaseIcon } from 'icons/InstaBase'
 import { ReelsIcon } from 'icons/Reels'
-// import Image from 'next/image'
 import { useState } from 'react'
 
 export const Instagram = ({ data }: { data: IInstagramItem[] }) => {

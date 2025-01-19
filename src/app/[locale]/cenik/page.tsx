@@ -1,21 +1,41 @@
 import type { Metadata } from 'next'
 
+import { getPricelistMeta } from 'fetch/getMeta'
 // import parse from 'html-react-parser'
-import { getPriceList } from 'fetch/pricelist'
+import { getPriceList, getPricelistPage } from 'fetch/pricelist'
+import parse from 'html-react-parser'
 import { Top } from 'sections/Top'
+export async function generateMetadata(): Promise<Metadata> {
+  const data = await getPricelistMeta()
 
-export const metadata: Metadata = {
-  title: 'Bar.bitch - ceník',
-  description: 'Bar.bitch - ceník',
+  return {
+    title: data.metaData.title,
+    description: data.metaData.description,
+    openGraph: data.metaData.image
+      ? {
+          images: [data.metaData.image.url],
+        }
+      : null,
+  }
 }
 
 const PriceList = async () => {
   const data = await getPriceList()
+  const dataPage = await getPricelistPage()
 
   return (
     <main>
-      <Top title={'Ceník'} small />
+      <Top title={dataPage.title} small />
       <section className={'pt-20 pb-16'}>
+        <div className={'container mx-auto w-full max-w-[900px] px-4'}>
+          {dataPage.contentText && (
+            <div className={'w-full mb-20'}>
+              <div className={'text-xs1 lg:text-base'}>
+                {parse(dataPage.contentText, { trim: true })}
+              </div>
+            </div>
+          )}
+        </div>
         <div className={'container mx-auto w-full max-w-[900px] px-4'}>
           {data.map((tableCategory) => (
             <div key={tableCategory.title} className={'pb-15'}>
@@ -31,8 +51,11 @@ const PriceList = async () => {
                   count = 2
                 }
                 return (
-                  <table key={table.title} className={'w-full table-auto border-collapse mb-5'}>
-                    {!tableIdx && (
+                  <table
+                    key={table.title}
+                    className={'w-full max-w-full table-auto border-collapse mb-5'}
+                  >
+                    {!tableIdx && !!tableCategory.title?.length && (
                       <caption className={'caption-top text-md2 text-left mb-5'}>
                         {tableCategory.title}
                       </caption>
@@ -53,17 +76,21 @@ const PriceList = async () => {
                       {table.item.map((item) => (
                         <tr
                           key={item.title}
-                          className={
-                            'text-right text-sm11 border-b-[1.5px] whitespace-nowrap border-[#1616154D]'
-                          }
+                          className={'text-right text-sm11 border-b-[1.5px] border-[#1616154D]'}
                         >
                           <td className={'text-left py-3.5 w-full pr-3.5'}>{item.title}</td>
-                          <td className={'font-bold p-3.5'}>{item.juniorPrice}</td>
+                          <td className={'font-bold whitespace-nowrap p-3.5'}>
+                            {item.juniorPrice}
+                          </td>
                           {(count === 1 || count === 2) && (
-                            <td className={'font-bold p-3.5'}>{item.masterPrice}</td>
+                            <td className={'font-bold p-3.5 whitespace-nowrap'}>
+                              {item.masterPrice}
+                            </td>
                           )}
                           {count === 2 && (
-                            <td className={'font-bold pl-3.5'}>{item.topMasterPrice}</td>
+                            <td className={'font-bold pl-3.5 whitespace-nowrap'}>
+                              {item.topMasterPrice}
+                            </td>
                           )}
                         </tr>
                       ))}
