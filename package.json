@@ -9,6 +9,7 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@next/third-parties": "^15.1.5",
     "@vis.gl/react-google-maps": "^1.4.2",
     "axios": "^1.7.8",
     "hamburger-react": "^2.5.1",

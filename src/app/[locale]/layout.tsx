@@ -3,6 +3,7 @@ import type { IDataContact } from 'fetch/contact'
 import type { IDataNav } from 'fetch/nav'
 import type { Metadata } from 'next'
 
+import { GoogleAnalytics } from '@next/third-parties/google'
 import { Footer } from 'components/Footer'
 import { Header } from 'components/Header'
 import { getBanner } from 'fetch/banner'
@@ -13,6 +14,7 @@ import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { Banner } from 'sections/Banner'
+
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -54,6 +56,9 @@ export default async function RootLayout({
         <link rel={'apple-touch-icon'} sizes={'180x180'} href={'/favicon/apple-touch-icon.png'} />
         <link rel={'manifest'} href={'/favicon/site.webmanifest'} />
       </head>
+      {/* <!-- Google tag (gtag.js) --> */}
+
+      <GoogleAnalytics gaId={'G-6BLR9FQVT3'} />
       <body className={`bg-base antialiased`}>
         <NextIntlClientProvider messages={messages}>
           <Header dataNav={dataNav} linkReserve={dataContact.linkToReserve} />
