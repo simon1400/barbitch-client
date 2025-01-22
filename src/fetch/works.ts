@@ -13,7 +13,9 @@ export interface IDataWorks {
   }[]
 }
 
-export const getWorks = async (name: string, month: number | string) => {
+export const getWorks = async (name: string, month: number) => {
+  const firstDayOfMonth = new Date(2025, month, 0, 0, 0, 0, 0)
+  const lastDayOfMonth = new Date(2025, month + 1, 0, 23, 59, 59, 999)
   const query = qs.stringify(
     {
       filters: {
@@ -27,7 +29,7 @@ export const getWorks = async (name: string, month: number | string) => {
           sort: ['date:desc'],
           filters: {
             date: {
-              $contains: `-${month}-`,
+              $between: [firstDayOfMonth.toISOString(), lastDayOfMonth.toISOString()],
             },
           },
           fields: ['date', 'clientName', 'staffSalaries', 'tip'],

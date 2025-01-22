@@ -15,3 +15,19 @@
 body {
   font-family: 'tt-travels-next';
 }
+
+.form-input {
+  height: 2.5rem;
+  padding: 0 1.25rem;
+  border: 1px solid var(--accent);
+  width: 100%;
+  margin-bottom: 1.25rem;
+}
+
+.button-primary {
+  background-color: var(--primary);
+  color: white;
+  font-weight: bold;
+  text-transform: uppercase;
+  padding: 0.625rem 1.25rem;
+}

@@ -49,10 +49,11 @@ export default function getConfig(...additionalConfigs) {
       },
       rules: {
         'unicorn/number-literal-case': ['off'],
-        'react/prefer-destructuring-assignment': ['off'],
+        'react/prefer-destructuring-assignment': ['warn'],
         'import/consistent-type-specifier-style': ['warn', 'prefer-top-level'],
         'node/prefer-global/process': ['off'],
-        'unicorn/no-array-for-each': ['error'],
+        'unicorn/no-array-for-each': ['off'],
+        'sonarjs/no-nested-conditional': ['off'],
         'object-shorthand': ['warn', 'always', { avoidQuotes: false }],
         'sonarjs/no-duplicate-string': ['off'], // too many positives with tailwind classes
         'style/jsx-curly-brace-presence': [
