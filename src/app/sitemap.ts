@@ -8,23 +8,27 @@ const sitemapStatic = [
   },
   {
     url: '/manikura',
-    priority: 1,
+    priority: 0.9,
   },
   {
     url: '/rasy',
-    priority: 1,
+    priority: 0.9,
   },
   {
     url: '/oboci',
-    priority: 1,
+    priority: 0.9,
   },
   {
     url: '/kontakt',
-    priority: 1,
+    priority: 0.8,
+  },
+  {
+    url: '/bitchcard-2025',
+    priority: 0.8,
   },
   {
     url: '/cenik',
-    priority: 1,
+    priority: 0.8,
   },
 ]
 

@@ -15,7 +15,7 @@ import { getMessages } from 'next-intl/server'
 import { notFound } from 'next/navigation'
 import { Banner } from 'sections/Banner'
 
-import './globals.css'
+import './globals.scss'
 
 export const metadata: Metadata = {
   title: 'Bar.bitch',
