@@ -7,12 +7,8 @@ import parse from 'html-react-parser'
 
 import { Top } from '../../../sections/Top'
 
-interface Props {
-  params: { slug: string }
-}
-
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
-  const { slug } = await params
+export async function generateMetadata({ params }: any): Promise<Metadata> {
+  const { slug } = params
   const meta = await getFullServiceMeta(slug)
 
   return {
@@ -36,29 +32,25 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   }
 }
 
-/** Обёртка для секций */
 const Section = ({ children, className }: { children: React.ReactNode; className?: string }) => (
   <section className={`pt-10 pb-16 ${className || ''}`}>
     <div className={'container mx-auto w-full max-w-[1400px] px-4'}>{children}</div>
   </section>
 )
 
-const Service = async ({ params }: Props) => {
-  const { slug } = await params
+const Service = async ({ params }: any) => {
+  const { slug } = params
   const data = await getFullService(slug)
 
   return (
     <main>
       <Top title={data.title} small />
-
       <Section>
         <div className={'text-xs1 lg:text-base'}>
           {parse(data.description || '', { trim: true })}
         </div>
       </Section>
-
       {data.galery?.length > 0 && <MasonryGalery images={data.galery} />}
-
       <Section>
         <div className={'text-xs1 lg:text-base'}>
           {parse(data.additionalDescription || '', { trim: true })}

@@ -1,9 +1,4 @@
-'use client'
-
-import { useRouter } from 'next/navigation'
-
 export const Hand = () => {
-  const router = useRouter()
   return (
     <svg xmlns={'http://www.w3.org/2000/svg'} viewBox={'0 0 1496 920'}>
       <g id={'hand'}>
@@ -128,7 +123,7 @@ export const Hand = () => {
         <path id={'Path_27'} d={'M704.44,408.29c-.08-.12-.04-.05,0,0'} fill={'#161615'} />
       </g>
       <g id={'text'}>
-        <g id={'ŘASY'} onClick={() => router.push('/rasy')}>
+        <g id={'ŘASY'} onClick={() => (window.location.href = '/rasy')}>
           <text
             transform={'translate(932.01 811.64)'}
             className={'fill-accent text-xl cursor-pointer hover:fill-primary duration-200'}
@@ -138,7 +133,7 @@ export const Hand = () => {
             </tspan>
           </text>
         </g>
-        <g id={'OBOČÍ'} onClick={() => router.push('/oboci')}>
+        <g id={'OBOČÍ'} onClick={() => (window.location.href = '/oboci')}>
           <text
             transform={'translate(228.15 722.64)'}
             className={'fill-accent text-xl cursor-pointer hover:fill-primary duration-200'}
@@ -158,7 +153,7 @@ export const Hand = () => {
             </tspan>
           </text>
         </g> */}
-        <g id={'MANIKÚRA'} onClick={() => router.push('/manikura')}>
+        <g id={'MANIKÚRA'} onClick={() => (window.location.href = '/manikura')}>
           <text
             transform={'translate(237.53 367.64)'}
             className={'fill-accent text-xl cursor-pointer hover:fill-primary duration-200'}
