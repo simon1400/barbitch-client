@@ -10,9 +10,8 @@ $accent: #161615;
   --accent: #161615;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-  }
+html{
+  overflow-x: hidden;
 }
 
 body {
@@ -44,7 +43,7 @@ body {
   }
   > p {
     font-size: 26px;
-    line-height: 45px;
+    line-height: 35px;
     font-weight: 500;
     margin-bottom: 20px;
   }
@@ -52,10 +51,15 @@ body {
     padding-left: 50px;
     > li {
       padding-left: 20px; /* Отступ от текста для списка */
-      margin-bottom: 30px;
+      margin-bottom: 40px;
       font-size: 36px;
       font-weight: bold;
-      // color: $primary;
+      .p1 {
+        font-size: 26px;
+        line-height: 35px;
+        font-weight: 500;
+        margin-bottom: 20px;
+      }
       > ul {
         list-style: disc; /* Вложенный список с круглыми маркерами */
         padding-left: 20px; /* Увеличенный отступ для вложенных пунктов */
@@ -63,7 +67,7 @@ body {
         > li {
           color: $accent!important;
           font-size: 26px;
-          line-height: 45px;
+          line-height: 35px;
           font-weight: 500;
           margin-bottom: 20px; /* Отступ между пунктами */
         }

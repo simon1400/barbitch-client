@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+
 import { getBitchCard, getBitchCardMeta } from 'fetch/bitchCard'
 import parse from 'html-react-parser'
 import { Top } from 'sections/Top'

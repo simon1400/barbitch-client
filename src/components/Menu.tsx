@@ -44,7 +44,8 @@ const Link = ({ heading, href, size, reverse = false }: LinkProps) => {
       onMouseMove={handleMouseMove}
       initial={'initial'}
       whileHover={'whileHover'}
-      className={'uppercase group relative transition-colors '}
+      className={'uppercase group relative transition-colors'}
+      aria-label={heading}
     >
       <div>
         <motion.span
@@ -77,19 +78,26 @@ const Link = ({ heading, href, size, reverse = false }: LinkProps) => {
     </motion.a>
   )
 }
+
 export const Menu = ({ open, nav }: { open: boolean; nav: IDataNav }) => {
   return (
     <menu
-      className={`fixed top-0 left-0  w-full bg-accent z-20 overflow-hidden flex items-end transition-opacity duration-300 ${open ? 'opacity-1 h-screen' : 'opacity-0 h-0'}`}
+      className={`fixed top-0 left-0 w-full bg-accent z-20 overflow-hidden flex items-end transition-opacity duration-300 ${
+        open ? 'opacity-1 h-screen' : 'opacity-0 h-0'
+      }`}
+      role={'menu'}
+      aria-hidden={!open}
     >
       <div className={'container mx-auto max-w-[1400px] px-4'}>
         <div className={'text-right lg:text-left'}>
+          {/* Языковое меню */}
           <div className={'lg:hidden'}>
             <Lang menu={open} />
           </div>
           <div className={'lg:flex items-center justify-between w-full pb-20'}>
+            {/* Левая навигация */}
             <div>
-              <nav className={'mb-2.5 lg:mb-0'}>
+              <nav className={'mb-2.5 lg:mb-0'} aria-label={'Основная навигация'}>
                 <ul>
                   {nav.leftNav?.length &&
                     nav.leftNav.map((item: INavItem) => (
@@ -100,8 +108,9 @@ export const Menu = ({ open, nav }: { open: boolean; nav: IDataNav }) => {
                 </ul>
               </nav>
             </div>
+            {/* Правая навигация */}
             <div>
-              <nav>
+              <nav aria-label={'Дополнительная навигация'}>
                 <ul className={'text-right'}>
                   {nav.rightNav?.length &&
                     nav.rightNav.map((item: INavItem) => (
@@ -117,6 +126,7 @@ export const Menu = ({ open, nav }: { open: boolean; nav: IDataNav }) => {
                 </ul>
               </nav>
             </div>
+            {/* Кнопка */}
             <Button
               inverse={open}
               className={'mt-5 lg:hidden'}

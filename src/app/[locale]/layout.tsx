@@ -66,7 +66,7 @@ export default async function RootLayout({
       {/* <!-- Google tag (gtag.js) --> */}
 
       <GoogleAnalytics gaId={'G-6BLR9FQVT3'} />
-      <body className={`bg-base antialiased`}>
+      <body className={`bg-base antialiased overflow-x-hidden`}>
         <NextIntlClientProvider messages={messages}>
           <Header dataNav={dataNav} linkReserve={dataContact.linkToReserve} />
           {children}

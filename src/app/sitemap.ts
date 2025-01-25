@@ -41,7 +41,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     | 'monthly'
     | 'yearly'
     | 'never'
-    | undefined = 'weekly'
+    | undefined = 'daily'
   const sitemapData: MetadataRoute.Sitemap = [
     ...sitemapStatic.map((item) => ({
       url: `${domain}${item.url}`,

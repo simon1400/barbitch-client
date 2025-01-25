@@ -8,7 +8,7 @@ import parse from 'html-react-parser'
 import { Top } from '../../../sections/Top'
 
 interface Props {
-  params: Promise<{ slug: string }>
+  params: { slug: string }
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -17,13 +17,28 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
   return {
     title: meta.metaData.title || meta.title,
-    description: meta.metaData.description,
-    openGraph: meta.metaData.image ? { images: [meta.metaData.image.url] } : null,
+    description: meta.metaData.description || '',
+    openGraph: meta.metaData.image
+      ? {
+          title: meta.metaData.title || meta.title,
+          description: meta.metaData.description || '',
+          images: [meta.metaData.image.url],
+          url: `https://barbitch.cz/${slug}`,
+          type: 'article',
+        }
+      : null,
+    twitter: {
+      card: 'summary_large_image',
+      title: meta.metaData.title || meta.title,
+      description: meta.metaData.description || '',
+      images: meta.metaData.image ? [meta.metaData.image.url] : undefined,
+    },
   }
 }
 
-const Section = ({ children }: { children: React.ReactNode }) => (
-  <section className={'pt-10 pb-16'}>
+/** Обёртка для секций */
+const Section = ({ children, className }: { children: React.ReactNode; className?: string }) => (
+  <section className={`pt-10 pb-16 ${className || ''}`}>
     <div className={'container mx-auto w-full max-w-[1400px] px-4'}>{children}</div>
   </section>
 )
@@ -35,12 +50,19 @@ const Service = async ({ params }: Props) => {
   return (
     <main>
       <Top title={data.title} small />
+
       <Section>
-        <div className={'text-xs1 lg:text-base'}>{parse(data.description, { trim: true })}</div>
+        <div className={'text-xs1 lg:text-base'}>
+          {parse(data.description || '', { trim: true })}
+        </div>
       </Section>
-      <MasonryGalery images={data.galery} />
+
+      {data.galery?.length > 0 && <MasonryGalery images={data.galery} />}
+
       <Section>
-        <div className={'text-xs1 lg:text-base'}>{parse(data.additionalDescription)}</div>
+        <div className={'text-xs1 lg:text-base'}>
+          {parse(data.additionalDescription || '', { trim: true })}
+        </div>
         <Button
           className={'mt-5'}
           text={'Rezervovat termin'}
