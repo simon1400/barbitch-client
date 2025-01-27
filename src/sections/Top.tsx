@@ -1,5 +1,6 @@
 'use client'
 import Button from 'components/Button'
+import { sendPixel } from 'fetch/pixel'
 import { motion, useAnimation } from 'motion/react'
 import { useEffect } from 'react'
 import { useInView } from 'react-intersection-observer'
@@ -38,6 +39,32 @@ export const Top = ({ title, small = false }: { title: string; small?: boolean }
   const wordAnimation = {
     hidden: {},
     visible: {},
+  }
+
+  const buttonClick = async (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
+    e.preventDefault()
+    sendPixel({
+      data: [
+        {
+          event_name: 'Purchase',
+          event_time: 1738012550,
+          action_source: 'website',
+          user_data: {
+            em: [null],
+            ph: [null],
+          },
+          custom_data: {
+            currency: 'USD',
+            value: '142.52',
+          },
+          original_event_data: {
+            event_name: 'Purchase',
+            event_time: 1738012550,
+          },
+        },
+      ],
+    })
+    window.open(e.currentTarget.href, '_blank')
   }
 
   return (
@@ -96,7 +123,12 @@ export const Top = ({ title, small = false }: { title: string; small?: boolean }
             initial={{ opacity: 0, y: -20 }}
             animate={{ opacity: 1, y: 0, transition: { delay: 2, duration: 0.5 } }}
           >
-            <Button text={'Rezervovat termin'} blank href={'https://noona.app/cs/barbitch'} />
+            <Button
+              text={'Rezervovat termin'}
+              blank
+              href={'https://noona.app/cs/barbitch'}
+              onClick={buttonClick}
+            />
           </motion.div>
         </div>
       </div>

@@ -37,6 +37,8 @@ const nextConfig: NextConfig = {
     APP_API: process.env.APP_API,
     APP_DOMAIN: process.env.APP_DOMAIN,
     GOOGLE_API: process.env.GOOGLE_API,
+    PIXEL_ID: process.env.PIXEL_ID,
+    PIXEL_ACCESS_TOKEN: process.env.PIXEL_ACCESS_TOKEN,
   },
   images: {
     remotePatterns: [
