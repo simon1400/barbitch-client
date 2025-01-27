@@ -47,7 +47,7 @@ export const Top = ({ title, small = false }: { title: string; small?: boolean }
       data: [
         {
           event_name: 'Purchase',
-          event_time: 1738012550,
+          event_time: 1706347200,
           action_source: 'website',
           user_data: {
             em: [null],
@@ -59,7 +59,7 @@ export const Top = ({ title, small = false }: { title: string; small?: boolean }
           },
           original_event_data: {
             event_name: 'Purchase',
-            event_time: 1738012550,
+            event_time: 1706347200,
           },
         },
       ],
