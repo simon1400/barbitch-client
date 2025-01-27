@@ -43,11 +43,12 @@ export const Top = ({ title, small = false }: { title: string; small?: boolean }
 
   const buttonClick = async (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     e.preventDefault()
+    const seconds = Math.floor(Date.now() / 1000)
     sendPixel({
       data: [
         {
           event_name: 'Purchase',
-          event_time: 1706347200,
+          event_time: seconds,
           action_source: 'website',
           user_data: {
             em: [null],
@@ -59,7 +60,7 @@ export const Top = ({ title, small = false }: { title: string; small?: boolean }
           },
           original_event_data: {
             event_name: 'Purchase',
-            event_time: 1706347200,
+            event_time: seconds,
           },
         },
       ],
