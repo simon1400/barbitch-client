@@ -1,6 +1,6 @@
 'use client'
 import Button from 'components/Button'
-import { sendPixel } from 'fetch/pixel'
+// import { sendPixel } from 'fetch/pixel'
 import { motion, useAnimation } from 'motion/react'
 import { useEffect } from 'react'
 import { useInView } from 'react-intersection-observer'
@@ -43,28 +43,28 @@ export const Top = ({ title, small = false }: { title: string; small?: boolean }
 
   const buttonClick = async (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     e.preventDefault()
-    const seconds = Math.floor(Date.now() / 1000)
-    sendPixel({
-      data: [
-        {
-          event_name: 'Purchase',
-          event_time: seconds,
-          action_source: 'website',
-          user_data: {
-            em: [null],
-            ph: [null],
-          },
-          custom_data: {
-            currency: 'USD',
-            value: '142.52',
-          },
-          original_event_data: {
-            event_name: 'Purchase',
-            event_time: seconds,
-          },
-        },
-      ],
-    })
+    // const seconds = Math.floor(Date.now() / 1000)
+    // sendPixel({
+    //   data: [
+    //     {
+    //       event_name: 'Purchase',
+    //       event_time: seconds,
+    //       action_source: 'website',
+    //       user_data: {
+    //         em: [null],
+    //         ph: [null],
+    //       },
+    //       custom_data: {
+    //         currency: 'USD',
+    //         value: '142.52',
+    //       },
+    //       original_event_data: {
+    //         event_name: 'Purchase',
+    //         event_time: seconds,
+    //       },
+    //     },
+    //   ],
+    // })
     window.open(e.currentTarget.href, '_blank')
   }
 
