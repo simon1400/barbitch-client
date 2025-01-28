@@ -13,8 +13,8 @@ import { routing } from 'i18n/routing'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
 import { notFound } from 'next/navigation'
+import Script from 'next/script'
 import { Banner } from 'sections/Banner'
-
 import './globals.scss'
 
 export const metadata: Metadata = {
@@ -55,13 +55,24 @@ export default async function RootLayout({
         <link rel={'shortcut icon'} href={'/favicon/favicon.ico'} />
         <link rel={'apple-touch-icon'} sizes={'180x180'} href={'/favicon/apple-touch-icon.png'} />
         <link rel={'manifest'} href={'/favicon/site.webmanifest'} />
-        <script
+        <Script
           id={'Cookiebot'}
           src={'https://consent.cookiebot.com/uc.js'}
           data-cbid={'deb97386-d7fd-4ad2-a3e4-a97f10e3bf11'}
           data-blockingmode={'auto'}
           type={'text/javascript'}
         />
+        <Script id={'hotjar'}>
+          {`(function (c, s, q, u, a, r, e) {
+              c.hj=c.hj||function(){(c.hj.q=c.hj.q||[]).push(arguments)};
+              c._hjSettings = { hjid: a };
+              r = s.getElementsByTagName('head')[0];
+              e = s.createElement('script');
+              e.async = true;
+              e.src = q + c._hjSettings.hjid + u;
+              r.appendChild(e);
+          })(window, document, 'https://static.hj.contentsquare.net/c/csq-', '.js', 5284129);`}
+        </Script>
       </head>
       {/* <!-- Google tag (gtag.js) --> */}
 
