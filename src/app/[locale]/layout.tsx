@@ -82,7 +82,7 @@ export default async function RootLayout({
             t.src=v;s=b.getElementsByTagName(e)[0];
             s.parentNode.insertBefore(t,s)}(window, document,'script',
             'https://connect.facebook.net/en_US/fbevents.js');
-            fbq('init', '1301568837652755');
+            fbq('init', '530946079324140');
             fbq('track', 'PageView');`}
         </Script>
       </head>
@@ -95,7 +95,7 @@ export default async function RootLayout({
             height={'1'}
             width={'1'}
             style={{ display: 'none' }}
-            src={'https://www.facebook.com/tr?id=1301568837652755&ev=PageView&noscript=1'}
+            src={'https://www.facebook.com/tr?id=530946079324140&ev=PageView&noscript=1'}
           />
         </noscript>
         <NextIntlClientProvider messages={messages}>
