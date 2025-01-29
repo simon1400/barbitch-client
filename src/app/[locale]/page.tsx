@@ -48,15 +48,13 @@ const Home = async () => {
     ])
 
     return (
-      <>
+      <main>
         <SchemaJsonHomepage />
-        <main>
-          <Top title={data.title} />
-          <HandSec service={dataService} />
-          <Instagram data={dataIg} />
-          <About text={data.aboutUs} />
-        </main>
-      </>
+        <Top title={data.title} />
+        <HandSec service={dataService} />
+        <Instagram data={dataIg} />
+        <About text={data.aboutUs} />
+      </main>
     )
   } catch (error) {
     console.error('Ошибка при получении данных:', error)

@@ -1,6 +1,3 @@
-import Head from 'next/head'
-import Script from 'next/script'
-
 const namePrice = 'Ceník manikúry'
 const linkOffers = 'https://barbitch.cz/manikura'
 const lowPrice = '400'
@@ -89,8 +86,9 @@ const schema = {
 
 export const SchemaJsonManikura = () => {
   return (
-    <Head>
-      <Script type={'application/ld+json'}>{`${schema}`}</Script>
-    </Head>
+    <script
+      type={'application/ld+json'}
+      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+    />
   )
 }
