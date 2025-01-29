@@ -31,14 +31,19 @@ const schema = {
     '@type': 'BeautySalon',
     name: 'Barbitch Beauty Studio',
     url: 'https://barbitch.cz',
-  },
-  areaServed: {
-    '@type': 'Place',
     address: {
       '@type': 'PostalAddress',
       streetAddress: 'Křenová 294/16',
       addressLocality: 'Brno',
       postalCode: '602 00',
+      addressCountry: 'CZ',
+    },
+  },
+  areaServed: {
+    '@type': 'Place',
+    address: {
+      '@type': 'PostalAddress',
+      addressLocality: 'Brno',
       addressCountry: 'CZ',
     },
   },
