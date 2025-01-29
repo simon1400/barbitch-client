@@ -4,6 +4,9 @@ import Button from 'components/Button'
 import { MasonryGalery } from 'components/MansoryGalery'
 import { getFullService, getFullServiceMeta } from 'fetch/service'
 import parse from 'html-react-parser'
+import { SchemaJsonManikura } from 'schemasOrg/manikura'
+import { SchemaJsonOboci } from 'schemasOrg/oboci'
+import { SchemaJsonRasy } from 'schemasOrg/rasy'
 
 import { Top } from '../../../sections/Top'
 
@@ -43,25 +46,30 @@ const Service = async ({ params }: any) => {
   const data = await getFullService(slug)
 
   return (
-    <main>
-      <Top title={data.title} small />
-      <Section>
-        <div className={'text-xs1 lg:text-base'}>
-          {parse(data.description || '', { trim: true })}
-        </div>
-      </Section>
-      {data.galery?.length > 0 && <MasonryGalery images={data.galery} />}
-      <Section>
-        <div className={'text-xs1 lg:text-base'}>
-          {parse(data.additionalDescription || '', { trim: true })}
-        </div>
-        <Button
-          className={'mt-5'}
-          text={'Rezervovat termin'}
-          href={'https://noona.app/cs/barbitch'}
-        />
-      </Section>
-    </main>
+    <>
+      {slug === 'oboci' && <SchemaJsonOboci />}
+      {slug === 'rasy' && <SchemaJsonRasy />}
+      {slug === 'manikura' && <SchemaJsonManikura />}
+      <main>
+        <Top title={data.title} small />
+        <Section>
+          <div className={'text-xs1 lg:text-base'}>
+            {parse(data.description || '', { trim: true })}
+          </div>
+        </Section>
+        {data.galery?.length > 0 && <MasonryGalery images={data.galery} />}
+        <Section>
+          <div className={'text-xs1 lg:text-base'}>
+            {parse(data.additionalDescription || '', { trim: true })}
+          </div>
+          <Button
+            className={'mt-5'}
+            text={'Rezervovat termin'}
+            href={'https://noona.app/cs/barbitch'}
+          />
+        </Section>
+      </main>
+    </>
   )
 }
 

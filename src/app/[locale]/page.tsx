@@ -4,13 +4,13 @@ import { getHomeMeta } from 'fetch/getMeta'
 import { getHomepage } from 'fetch/homepage'
 import { fetchIg } from 'fetch/instagram'
 import { getServiceHomepage } from 'fetch/service'
+import { SchemaJsonHomepage } from 'schemasOrg/homepage'
 
 import { About } from '../../sections/About'
 import { HandSec } from '../../sections/HandSec'
 import { Instagram } from '../../sections/Instagram'
 import { Top } from '../../sections/Top'
 
-/** Генерация метаданных для SEO */
 export async function generateMetadata(): Promise<Metadata> {
   const homepageMeta = await getHomeMeta()
 
@@ -41,7 +41,6 @@ export async function generateMetadata(): Promise<Metadata> {
 
 const Home = async () => {
   try {
-    // Одновременное получение данных
     const [dataIg, dataService, data] = await Promise.all([
       fetchIg(),
       getServiceHomepage(),
@@ -49,19 +48,15 @@ const Home = async () => {
     ])
 
     return (
-      <main>
-        {/* Секция Top */}
-        <Top title={data.title} />
-
-        {/* Секция HandSec */}
-        <HandSec service={dataService} />
-
-        {/* Секция Instagram */}
-        <Instagram data={dataIg} />
-
-        {/* Секция About */}
-        <About text={data.aboutUs} />
-      </main>
+      <>
+        <SchemaJsonHomepage />
+        <main>
+          <Top title={data.title} />
+          <HandSec service={dataService} />
+          <Instagram data={dataIg} />
+          <About text={data.aboutUs} />
+        </main>
+      </>
     )
   } catch (error) {
     console.error('Ошибка при получении данных:', error)
