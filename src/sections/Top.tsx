@@ -43,28 +43,6 @@ export const Top = ({ title, small = false }: { title: string; small?: boolean }
 
   const buttonClick = async (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     e.preventDefault()
-    // const seconds = Math.floor(Date.now() / 1000)
-    // sendPixel({
-    //   data: [
-    //     {
-    //       event_name: 'Purchase',
-    //       event_time: seconds,
-    //       action_source: 'website',
-    //       user_data: {
-    //         em: [null],
-    //         ph: [null],
-    //       },
-    //       custom_data: {
-    //         currency: 'USD',
-    //         value: '142.52',
-    //       },
-    //       original_event_data: {
-    //         event_name: 'Purchase',
-    //         event_time: seconds,
-    //       },
-    //     },
-    //   ],
-    // })
     window.open(e.currentTarget.href, '_blank')
   }
 
@@ -86,7 +64,7 @@ export const Top = ({ title, small = false }: { title: string; small?: boolean }
       } mix-blend-multiply flex items-end relative z-10`}
     >
       <div className={'container mx-auto w-full max-w-[1400px] px-4'}>
-        <div className={'pb-10 lg:pb-15'}>
+        <div className={'pb-15'}>
           <h1
             id={'top-title'}
             className={'text-md1 lg:text-top pb-4 uppercase'}
