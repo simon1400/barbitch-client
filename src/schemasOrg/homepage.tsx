@@ -27,10 +27,7 @@ const schema = {
       closes: '19:00',
     },
   ],
-  sameAs: [
-    'https://www.instagram.com/barbitch.cz',
-    'https://www.facebook.com/profile.php?id=61568504049152',
-  ],
+  sameAs: ['https://www.instagram.com/barbitch.cz', 'https://www.facebook.com/barbtchcz'],
 }
 
 export const SchemaJsonHomepage = () => {

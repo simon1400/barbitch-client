@@ -47,29 +47,52 @@ const PriceList = async () => {
                         {categoryTitle}
                       </caption>
                     )}
-                    <thead>
-                      <tr className={'border-b-[1.5px] whitespace-nowrap border-[#1616154D]'}>
-                        <th className={'text-left text-sm1 py-3.5 pr-3.5 w-full'}>{tableTitle}</th>
-                        <th className={'text-sm11 p-3.5'}>{count > 0 ? 'JUNIOR' : ''}</th>
-                        {count >= 1 && <th className={'text-sm11 p-3.5'}>{'MASTER'}</th>}
-                        {count === 2 && (
-                          <th className={'text-sm11 py-3.5 pl-3.5'}>{'TOP MASTER'}</th>
-                        )}
-                      </tr>
-                    </thead>
+                    {(!!tableTitle?.length || count > 0) && (
+                      <thead>
+                        <tr className={'border-b-[1.5px] border-[#1616154D]'}>
+                          <th
+                            className={
+                              'text-left text-sm11 font-bold md:text-sm1 py-2 md:py-3.5 pr-2 md:pr-3.5 w-full'
+                            }
+                            colSpan={2}
+                          >
+                            {tableTitle}
+                          </th>
+                          <th className={`text-sm1 md:text-sm11${count > 0 ? 'p-2 md:p-3.5' : ''}`}>
+                            {count > 0 ? 'JUNIOR' : ''}
+                          </th>
+                          {count >= 1 && (
+                            <th className={'text-sm1 md:text-sm11 p-2 md:p-3.5'}>{'MASTER'}</th>
+                          )}
+                          {count === 2 && (
+                            <th className={'text-sm1 md:text-sm11 py-2 md:py-3.5 pl-2 md:pl-3.5'}>
+                              {'TOP MASTER'}
+                            </th>
+                          )}
+                        </tr>
+                      </thead>
+                    )}
                     <tbody>
                       {item.map(({ title, juniorPrice, masterPrice, topMasterPrice }) => (
                         <tr
                           key={title}
-                          className={'text-right text-sm11 border-b-[1.5px] border-[#1616154D]'}
+                          className={
+                            'text-right text-sm font-normal md:text-sm11 border-b-[1.5px] border-[#1616154D]'
+                          }
                         >
-                          <td className={'text-left py-3.5 w-full pr-3.5'}>{title}</td>
-                          <td className={'font-bold whitespace-nowrap p-3.5'}>{juniorPrice}</td>
+                          <td className={'text-left py-2 md:py-3.5 pr-2 md:pr-3.5 w-full'}>
+                            {title}
+                          </td>
+                          <td className={'font-bold whitespace-nowrap p-2 md:p-3.5'}>
+                            {juniorPrice}
+                          </td>
                           {count >= 1 && (
-                            <td className={'font-bold p-3.5 whitespace-nowrap'}>{masterPrice}</td>
+                            <td className={'font-bold p-2 md:p-3.5 whitespace-nowrap'}>
+                              {masterPrice}
+                            </td>
                           )}
                           {count === 2 && (
-                            <td className={'font-bold pl-3.5 whitespace-nowrap'}>
+                            <td className={'font-bold pl-2 md:pl-3.5 whitespace-nowrap'}>
                               {topMasterPrice}
                             </td>
                           )}

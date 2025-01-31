@@ -22,9 +22,9 @@ export const HandSec = ({ service }: { service: IDataHomepageService[] }) => {
           <nav>
             <ul>
               {service.map((item: IDataHomepageService) => (
-                <li key={item.title} className={'mb-4'}>
+                <li key={item.shortTitle} className={'mb-4'}>
                   <Link href={`/${item.slug}`} className={'flex text-md1 uppercase gap-3'}>
-                    <span>{item.title}</span>
+                    <span>{item.shortTitle}</span>
                     <ArrowRightIcon />
                   </Link>
                 </li>

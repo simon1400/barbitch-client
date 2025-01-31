@@ -3,7 +3,7 @@ import qs from 'qs'
 import { Axios } from '../lib/api'
 
 export interface IDataHomepageService {
-  title: string
+  shortTitle: string
   slug: string
 }
 
@@ -19,7 +19,7 @@ export interface IDataFullService {
 
 const queryServiceHomepage = qs.stringify(
   {
-    fields: ['title', 'slug'],
+    fields: ['shortTitle', 'slug'],
   },
   {
     encodeValuesOnly: true, // prettify URL
