@@ -21,6 +21,7 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
       ? {
           title: meta.metaData.title || meta.title,
           description: meta.metaData.description || '',
+          siteName: 'Bar.bitch – Luxusní manikúra, obočí a řasy',
           images: [meta.metaData.image.url],
           url: `https://barbitch.cz/${slug}`,
           type: 'article',

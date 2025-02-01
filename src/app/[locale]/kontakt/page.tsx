@@ -11,9 +11,20 @@ export async function generateMetadata(): Promise<Metadata> {
     description: data.metaData.description,
     openGraph: data.metaData.image
       ? {
+          title: data.metaData.title || 'Kontakt',
+          description: data.metaData.description || '',
+          siteName: 'Bar.bitch – Luxusní manikúra, obočí a řasy',
           images: [data.metaData.image.url],
+          url: `https://barbitch.cz/kontakt`,
+          type: 'article',
         }
       : null,
+    twitter: {
+      card: 'summary_large_image',
+      title: data.metaData.title || 'Kontakt',
+      description: data.metaData.description || '',
+      images: data.metaData.image ? [data.metaData.image.url] : undefined,
+    },
   }
 }
 

@@ -24,6 +24,7 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: homepageMeta.metaData.image
       ? {
           title: homepageMeta.metaData.title,
+          siteName: 'Bar.bitch – Luxusní manikúra, obočí a řasy',
           description: homepageMeta.metaData.description,
           images: [homepageMeta.metaData.image.url],
           url: 'https://barbitch.cz',

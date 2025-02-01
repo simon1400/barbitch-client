@@ -10,7 +10,22 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: metaData?.title || title,
     description: metaData?.description,
-    openGraph: metaData?.image ? { images: [metaData.image.url] } : null,
+    openGraph: metaData.image
+      ? {
+          title: metaData.title || title,
+          description: metaData.description || '',
+          siteName: 'Bar.bitch – Luxusní manikúra, obočí a řasy',
+          images: [metaData.image.url],
+          url: `https://barbitch.cz/bitchcard-2025`,
+          type: 'article',
+        }
+      : null,
+    twitter: {
+      card: 'summary_large_image',
+      title: metaData.title || title,
+      description: metaData.description || '',
+      images: metaData.image ? [metaData.image.url] : undefined,
+    },
   }
 }
 
