@@ -3,7 +3,7 @@ import type { IDataContact } from 'fetch/contact'
 import type { IDataNav } from 'fetch/nav'
 import type { Metadata } from 'next'
 
-import { GoogleAnalytics } from '@next/third-parties/google'
+import { GoogleAnalytics, GoogleTagManager } from '@next/third-parties/google'
 import { Footer } from 'components/Footer'
 import { Header } from 'components/Header'
 import { getBanner } from 'fetch/banner'
@@ -87,7 +87,7 @@ export default async function RootLayout({
         </Script>
       </head>
       {/* <!-- Google tag (gtag.js) --> */}
-
+      <GoogleTagManager gtmId={'GTM-5SP5MPTB'} />
       <GoogleAnalytics gaId={'G-6BLR9FQVT3'} />
       <body className={`bg-base antialiased overflow-x-hidden`}>
         <noscript>
