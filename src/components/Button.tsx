@@ -9,6 +9,7 @@ interface ButtonProps {
   small?: boolean
   blank?: boolean
   className?: string
+  id?: string
   onClick?: (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => void
 }
 
@@ -19,6 +20,7 @@ const Button = ({
   small = false,
   blank = false,
   className = '',
+  id = '',
   onClick,
 }: ButtonProps) => {
   const baseClasses = 'inline-block border-0 text-white uppercase text-nowrap duration-200'
@@ -32,6 +34,7 @@ const Button = ({
       href={href}
       target={blank ? '_blank' : '_self'}
       className={combinedClasses}
+      id={id}
       onClick={onClick}
     >
       {text}

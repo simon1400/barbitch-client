@@ -64,6 +64,7 @@ const Service = async ({ params }: any) => {
         </div>
         <Button
           className={'mt-5'}
+          id={'book-button'}
           text={'Rezervovat termin'}
           href={'https://noona.app/cs/barbitch'}
         />

@@ -130,6 +130,7 @@ export const Menu = ({ open, nav }: { open: boolean; nav: IDataNav }) => {
             <Button
               inverse={open}
               className={'mt-5 lg:hidden'}
+              id={'book-button'}
               text={'Rezervovat termin'}
               href={'https://noona.app/cs/barbitch'}
             />

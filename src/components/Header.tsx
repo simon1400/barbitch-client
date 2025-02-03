@@ -53,6 +53,7 @@ export const Header = ({ dataNav, linkReserve }: { dataNav: IDataNav; linkReserv
                 inverse={menu}
                 className={'hidden lg:block'}
                 text={'Rezervovat termin'}
+                id={'book-button'}
                 small
                 blank
                 href={linkReserve}

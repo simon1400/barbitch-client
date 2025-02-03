@@ -105,6 +105,7 @@ export const Top = ({ title, small = false }: { title: string; small?: boolean }
             <Button
               text={'Rezervovat termin'}
               blank
+              id={'book-button'}
               href={'https://noona.app/cs/barbitch'}
               onClick={buttonClick}
             />
