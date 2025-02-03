@@ -5,7 +5,7 @@ import { getHomepage } from 'fetch/homepage'
 import { fetchIg } from 'fetch/instagram'
 import { getServiceHomepage } from 'fetch/service'
 import { SchemaJsonHomepage } from 'schemasOrg/homepage'
-import Team from 'sections/Team'
+// import Team from 'sections/Team'
 
 import { About } from '../../sections/About'
 import { HandSec } from '../../sections/HandSec'
@@ -54,7 +54,7 @@ const Home = async () => {
         <SchemaJsonHomepage />
         <Top title={data.title} />
         <HandSec service={dataService} />
-        <Team />
+        {/* <Team /> */}
         <Instagram data={dataIg} />
         <About text={data.aboutUs} />
       </main>
