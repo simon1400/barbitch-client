@@ -18,12 +18,12 @@ export const Instagram = ({ data }: { data: IInstagramItem[] }) => {
       <div className={'grid grid-cols-3 lg:grid-cols-6 grid-rows-2 lg:grid-rows-1 gap-1'}>
         {images.map((item) => (
           <a
-            href={item.link}
+            href={item.permalink}
             target={'_blank'}
             className={
               'block relative w-full pt-[100%] overflow-hidden scale-100 hover:scale-95 duration-200'
             }
-            key={item.link}
+            key={item.permalink}
           >
             <span className={'absolute top-2 right-2 z-20 w-6 fill-white'}>
               {item.type === 'VIDEO' ? <ReelsIcon /> : <InstaBaseIcon />}
@@ -33,7 +33,6 @@ export const Instagram = ({ data }: { data: IInstagramItem[] }) => {
               src={item.previewUrl}
               width={400}
               height={400}
-              alt={item.caption}
             />
           </a>
         ))}

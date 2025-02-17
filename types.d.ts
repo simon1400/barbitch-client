@@ -24,6 +24,5 @@ interface IDataMetaWrap {
 interface IInstagramItem {
   type: 'CAROUSEL_ALBUM' | 'IMAGE' | 'VIDEO'
   previewUrl: string
-  link: string
-  caption: string
+  permalink: string
 }
