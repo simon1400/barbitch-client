@@ -31,9 +31,9 @@ const Contact = ({ contact }: { contact: IDataContact }) => {
             className={
               'block text-primary underline duration-300 underline-offset-2 hover:underline-offset-4'
             }
-            href={`mailto:${contact.email}`}
+            href={`mailto:${encodeURI(contact.email)}`}
           >
-            {contact.email}
+            {'Napište nám!'}
           </Link>
         </div>
         <div className={'w-full text-center text-nowrap mb-5 lg:mb-0'}>

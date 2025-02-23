@@ -16,9 +16,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const homepageMeta = await getHomeMeta()
 
   return {
-    title:
-      homepageMeta.metaData.title ||
-      'Bar.bitch – Luxusní manikúra, obočí a řasy | Trendy beauty studio Brno',
+    title: homepageMeta.metaData.title || 'Barbitch – Manikúra, řasy a obočí v Brně',
     description:
       homepageMeta.metaData.description ||
       'Objevte moderní beauty studio Bar.bitch v Brně. Profesionální manikúra, trendy obočí a dokonalé řasy. Individuální přístup a relaxace s kvalitními materiály. Rezervujte si termín ještě dnes!',

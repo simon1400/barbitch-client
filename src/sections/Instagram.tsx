@@ -20,6 +20,7 @@ export const Instagram = ({ data }: { data: IInstagramItem[] }) => {
           <a
             href={item.permalink}
             target={'_blank'}
+            rel={'noopener'}
             className={
               'block relative w-full pt-[100%] overflow-hidden scale-100 hover:scale-95 duration-200'
             }

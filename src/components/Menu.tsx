@@ -81,7 +81,7 @@ const Link = ({ heading, href, size, reverse = false }: LinkProps) => {
 
 export const Menu = ({ open, nav }: { open: boolean; nav: IDataNav }) => {
   return (
-    <menu
+    <div
       className={`fixed top-0 left-0 w-full bg-accent z-20 overflow-hidden flex items-end transition-opacity duration-300 ${
         open ? 'opacity-1 h-screen' : 'opacity-0 h-0'
       }`}
@@ -137,6 +137,6 @@ export const Menu = ({ open, nav }: { open: boolean; nav: IDataNav }) => {
           </div>
         </div>
       </div>
-    </menu>
+    </div>
   )
 }
