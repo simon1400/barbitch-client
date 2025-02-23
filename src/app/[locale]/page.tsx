@@ -22,21 +22,41 @@ export async function generateMetadata(): Promise<Metadata> {
     description:
       homepageMeta.metaData.description ||
       'Objevte moderní beauty studio Bar.bitch v Brně. Profesionální manikúra, trendy obočí a dokonalé řasy. Individuální přístup a relaxace s kvalitními materiály. Rezervujte si termín ještě dnes!',
-    openGraph: homepageMeta.metaData.image
-      ? {
-          title: homepageMeta.metaData.title,
-          siteName: 'Bar.bitch – Luxusní manikúra, obočí a řasy',
-          description: homepageMeta.metaData.description,
-          images: [homepageMeta.metaData.image.url],
-          url: 'https://barbitch.cz',
-          type: 'website',
-        }
-      : null,
+    openGraph: {
+      title: homepageMeta.metaData.title,
+      siteName: 'Barbitch',
+      locale: 'cs',
+      description: homepageMeta.metaData.description,
+      images: [
+        homepageMeta.metaData.image
+          ? homepageMeta.metaData.image.url
+          : 'https://barbitch.cz/assets/bigBaner.jpg',
+      ],
+      url: 'https://barbitch.cz',
+      type: 'website',
+    },
     twitter: {
       card: 'summary_large_image',
       title: homepageMeta.metaData.title,
       description: homepageMeta.metaData.description,
-      images: homepageMeta.metaData.image ? [homepageMeta.metaData.image.url] : undefined,
+      images: [
+        homepageMeta.metaData.image
+          ? homepageMeta.metaData.image.url
+          : 'https://barbitch.cz/assets/bigBaner.jpg',
+      ],
+    },
+    keywords: [
+      'barbitch',
+      'bar.bitch',
+      'bar bitch',
+      'Brno',
+      'Kosmetický salon',
+      'Manikúra',
+      'Prodlužování řas',
+      'Úprava obočí',
+    ],
+    alternates: {
+      canonical: 'https://barbitch.cz',
     },
   }
 }

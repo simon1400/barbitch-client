@@ -17,21 +17,35 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
   return {
     title: meta.metaData.title || meta.title,
     description: meta.metaData.description || '',
-    openGraph: meta.metaData.image
-      ? {
-          title: meta.metaData.title || meta.title,
-          description: meta.metaData.description || '',
-          siteName: 'Bar.bitch – Luxusní manikúra, obočí a řasy',
-          images: [meta.metaData.image.url],
-          url: `https://barbitch.cz/${slug}`,
-          type: 'article',
-        }
-      : null,
+    openGraph: {
+      title: meta.metaData.title || meta.title,
+      description: meta.metaData.description || '',
+      siteName: 'Barbitch',
+      images: [
+        meta.metaData.image ? meta.metaData.image.url : 'https://barbitch.cz/assets/bigBaner.jpg',
+      ],
+      url: `https://barbitch.cz/${slug}`,
+      type: 'article',
+    },
     twitter: {
       card: 'summary_large_image',
       title: meta.metaData.title || meta.title,
       description: meta.metaData.description || '',
-      images: meta.metaData.image ? [meta.metaData.image.url] : undefined,
+      images: [
+        meta.metaData.image ? meta.metaData.image.url : 'https://barbitch.cz/assets/bigBaner.jpg',
+      ],
+    },
+    keywords: [
+      'barbitch',
+      'bar.bitch',
+      'bar bitch',
+      'Brno',
+      'Manikúra',
+      'Prodlužování řas',
+      'Úprava obočí',
+    ],
+    alternates: {
+      canonical: `https://barbitch.cz/${slug}`,
     },
   }
 }

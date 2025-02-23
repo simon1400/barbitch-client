@@ -45,7 +45,7 @@ const schema = {
   name,
   provider: {
     '@type': 'BeautySalon',
-    name: 'Barbitch Beauty Studio',
+    name: 'Barbitch',
     url: 'https://barbitch.cz',
     address: {
       '@type': 'PostalAddress',

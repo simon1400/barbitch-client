@@ -1,7 +1,7 @@
 const schema = {
   '@context': 'https://schema.org',
   '@type': 'BeautySalon',
-  name: 'Barbitch Beauty Studio',
+  name: 'Barbitch',
   image: 'https://barbitch.cz/logo.jpg',
   '@id': 'https://barbitch.cz',
   url: 'https://barbitch.cz',

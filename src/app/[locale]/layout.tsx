@@ -70,7 +70,6 @@ export default async function RootLayout({
       </head>
       {/* <!-- Google tag (gtag.js) --> */}
       <GoogleTagManager gtmId={'GTM-5SP5MPTB'} />
-      {/* <GoogleAnalytics gaId={'G-6BLR9FQVT3'} /> */}
       <body className={`bg-base antialiased overflow-x-hidden`}>
         <noscript>
           <img

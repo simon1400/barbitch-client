@@ -11,21 +11,31 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: metaData.title,
     description: metaData.description,
-    openGraph: metaData.image
-      ? {
-          title: metaData.title || 'Ceník',
-          description: metaData.description || '',
-          siteName: 'Bar.bitch – Luxusní manikúra, obočí a řasy',
-          images: [metaData.image.url],
-          url: `https://barbitch.cz/cenik`,
-          type: 'article',
-        }
-      : null,
+    openGraph: {
+      title: metaData.title || 'Ceník',
+      description: metaData.description || '',
+      siteName: 'Barbitch',
+      images: [metaData.image ? metaData.image.url : 'https://barbitch.cz/assets/bigBaner.jpg'],
+      url: `https://barbitch.cz/cenik`,
+      type: 'article',
+    },
     twitter: {
       card: 'summary_large_image',
       title: metaData.title || 'Ceník',
       description: metaData.description || '',
-      images: metaData.image ? [metaData.image.url] : undefined,
+      images: [metaData.image ? metaData.image.url : 'https://barbitch.cz/assets/bigBaner.jpg'],
+    },
+    keywords: [
+      'barbitch',
+      'bar.bitch',
+      'Cenik',
+      'Brno',
+      'Manikúra',
+      'Prodlužování řas',
+      'Úprava obočí',
+    ],
+    alternates: {
+      canonical: `https://barbitch.cz/cenik`,
     },
   }
 }
