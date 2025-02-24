@@ -2,15 +2,12 @@ import type { Metadata } from 'next'
 
 import { getHomeMeta } from 'fetch/getMeta'
 import { getHomepage } from 'fetch/homepage'
-import { fetchIg } from 'fetch/instagram'
 import { getServiceHomepage } from 'fetch/service'
 import { SchemaJsonHomepage } from 'schemasOrg/homepage'
-// import Team from 'sections/Team'
-
-import { About } from '../../sections/About'
-import { HandSec } from '../../sections/HandSec'
-import { Instagram } from '../../sections/Instagram'
-import { Top } from '../../sections/Top'
+import { About } from 'sections/About'
+import { Galery } from 'sections/Galery'
+import { HandSec } from 'sections/HandSec'
+import { Top } from 'sections/Top'
 
 export async function generateMetadata(): Promise<Metadata> {
   const homepageMeta = await getHomeMeta()
@@ -61,11 +58,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 const Home = async () => {
   try {
-    const [dataIg, dataService, data] = await Promise.all([
-      fetchIg(),
-      getServiceHomepage(),
-      getHomepage(),
-    ])
+    const [dataService, data] = await Promise.all([getServiceHomepage(), getHomepage()])
 
     return (
       <main>
@@ -73,7 +66,7 @@ const Home = async () => {
         <Top title={data.title} />
         <HandSec service={dataService} />
         {/* <Team /> */}
-        <Instagram data={dataIg || []} />
+        <Galery data={data.galery} />
         <About text={data.aboutUs} />
       </main>
     )

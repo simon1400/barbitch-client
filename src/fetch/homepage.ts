@@ -5,11 +5,17 @@ import { Axios } from '../lib/api'
 interface IDataHomepage {
   title: string
   aboutUs: string
+  galery: IGalery[]
 }
 
 const query = qs.stringify(
   {
     fields: ['title', 'aboutUs'],
+    populate: {
+      galery: {
+        fields: ['url', 'alternativeText'],
+      },
+    },
   },
   {
     encodeValuesOnly: true, // prettify URL

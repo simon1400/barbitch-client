@@ -26,3 +26,8 @@ interface IInstagramItem {
   previewUrl: string
   permalink: string
 }
+
+interface IGalery {
+  url: string
+  alternativeText?: string
+}
