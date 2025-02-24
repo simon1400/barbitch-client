@@ -18,19 +18,18 @@ export const MasonryGalery = ({ images }: MasonryGalleryProps) => {
   const [isMobile, setIsMobile] = useState(false) // Дефолтное состояние
 
   useEffect(() => {
-    // Проверяем ширину экрана на клиенте
     const handleResize = () => {
       setIsMobile(window.matchMedia('(max-width: 960px)').matches)
     }
 
-    handleResize() // Устанавливаем начальное значение
-    window.addEventListener('resize', handleResize) // Слушаем изменение размера экрана
+    handleResize()
+    window.addEventListener('resize', handleResize)
 
-    return () => window.removeEventListener('resize', handleResize) // Удаляем обработчик
+    return () => window.removeEventListener('resize', handleResize)
   }, [])
 
-  const gap = isMobile ? '10px' : '20px' // Отступы между изображениями
-  const columns = isMobile ? 2 : 4 // Количество колонок
+  const gap = isMobile ? '10px' : '20px'
+  const columns = isMobile ? 2 : 4
 
   return (
     <section className={'overflow-x-hidden'} aria-labelledby={'masonry-gallery'}>

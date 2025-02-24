@@ -20,7 +20,7 @@ export const Galery = ({ data }: { data: IGalery[] }) => {
             className={
               'relative w-full pt-[100%] overflow-hidden scale-100 hover:scale-95 duration-200'
             }
-            key={i}
+            key={item.alternativeText || `Some_key_${i}`}
             onClick={() => setIndex(i)}
           >
             <Image
