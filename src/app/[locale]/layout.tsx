@@ -4,6 +4,7 @@ import type { IDataNav } from 'fetch/nav'
 import type { Metadata } from 'next'
 
 import { GoogleTagManager } from '@next/third-parties/google'
+import { Analytics } from '@vercel/analytics/react'
 import { Footer } from 'components/Footer'
 import { Header } from 'components/Header'
 import { getBanner } from 'fetch/banner'
@@ -85,6 +86,7 @@ export default async function RootLayout({
           <Banner data={dataBanner} />
           <Footer contact={dataContact} />
         </NextIntlClientProvider>
+        <Analytics />
       </body>
     </html>
   )
