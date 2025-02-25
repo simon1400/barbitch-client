@@ -53,13 +53,15 @@ export const NextJsImage = ({ slide, offset, rect }: NextJsImageProps) => {
   return (
     <div style={{ position: 'relative', width, height }}>
       <Image
-        fill
-        alt={slide.alt || ''}
         src={slide.src}
-        loading={'eager'}
-        draggable={false}
+        alt={slide.alt || ''}
+        width={width}
+        height={height}
         style={styles}
-        sizes={`${Math.ceil((width / window.innerWidth) * 100)}vw`}
+        sizes={'(max-width: 768px) 90vw, (max-width: 1200px) 50vw, 30vw'} // Улучшает адаптивность
+        priority={offset === 0} // Только активный слайд грузим с приоритетом
+        decoding={'async'} // Улучшает рендеринг
+        draggable={false}
         onClick={offset === 0 ? () => click?.({ index: currentIndex }) : undefined}
       />
     </div>

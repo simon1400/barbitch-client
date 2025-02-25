@@ -11,10 +11,20 @@ const config: Config = {
     './src/sections/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
   ],
+  typography: {
+    DEFAULT: {
+      css: {
+        fontDisplay: 'swap',
+      },
+    },
+  },
   theme: {
     extend: {
       screens: {
         xs: '430px',
+      },
+      fontFamily: {
+        sans: ['tt-travels-next', 'Arial', 'sans-serif'], // Укажите ваш шрифт
       },
       colors: mainPalette,
       fontSize: {
