@@ -49,9 +49,20 @@ export default async function RootLayout({
   return (
     <html lang={locale}>
       <head>
-        {/* Предзагрузка CSS Typekit */}
-        <link rel={'preload'} href={'https://use.typekit.net/iuz5bzw.css'} as={'style'} />
-        <link rel={'stylesheet'} href={'https://use.typekit.net/iuz5bzw.css'} />
+        <link rel={'preconnect'} href={'https://use.typekit.net'} crossOrigin={'anonymous'} />
+        <link
+          rel={'preload'}
+          href={
+            'https://use.typekit.net/iuz5bzw.css?text=ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzČčŘřŠšŤťŽž'
+          }
+          as={'style'}
+        />
+        <link
+          rel={'stylesheet'}
+          href={
+            'https://use.typekit.net/iuz5bzw.css?text=ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzČčŘřŠšŤťŽž'
+          }
+        />
         <meta name={'viewport'} content={'width=device-width, initial-scale=1.0'} />
         <meta name={'theme-color'} content={'#e71e6e'} />
         <link rel={'icon'} type={'image/png'} href={'/favicon/favicon-96x96.png'} sizes={'96x96'} />
