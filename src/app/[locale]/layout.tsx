@@ -51,6 +51,7 @@ export default async function RootLayout({
   return (
     <html lang={locale} className={comicSans.className}>
       <head>
+        <link rel={'preconnect'} href={'https://connect.facebook.net'} crossOrigin={'anonymous'} />
         <meta name={'viewport'} content={'width=device-width, initial-scale=1.0'} />
         <meta name={'theme-color'} content={'#e71e6e'} />
         <link rel={'icon'} type={'image/png'} href={'/favicon/favicon-96x96.png'} sizes={'96x96'} />
