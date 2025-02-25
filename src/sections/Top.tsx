@@ -63,7 +63,9 @@ export const Top = ({ title, small = false }: { title: string; small?: boolean }
         small ? 'h-[545px]' : 'h-screen'
       } mix-blend-multiply flex items-end relative z-10`}
     >
-      <div className={'container mx-auto w-full max-w-[1400px] px-4'}>
+      <div
+        className={`container mx-auto w-full max-w-[1400px] px-4 ${small ? '' : 'min-h-[500px]'}`}
+      >
         <div className={'pb-23 md:pb-15'}>
           <h1
             id={'top-title'}
