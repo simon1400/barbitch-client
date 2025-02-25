@@ -3,7 +3,7 @@
 import parse from 'html-react-parser'
 import { BigLogoIcon } from 'icons/BigLogo'
 
-export const About = ({ text }: { text: string }) => {
+const About = ({ text }: { text: string }) => {
   return (
     <section className={'pt-18 lg:pt-33 pb-23 lg:pb-33'}>
       <div className={'container mx-auto w-full max-w-[1400px] px-4'}>
@@ -23,3 +23,5 @@ export const About = ({ text }: { text: string }) => {
     </section>
   )
 }
+
+export default About

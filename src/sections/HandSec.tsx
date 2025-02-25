@@ -6,7 +6,7 @@ import { ArrowRightIcon } from 'icons/ArrowIcon'
 import { SmallHandIcon } from 'icons/SmallHand'
 import Link from 'next/link'
 
-export const HandSec = ({ service }: { service: IDataHomepageService[] }) => {
+const HandSec = ({ service }: { service: IDataHomepageService[] }) => {
   return (
     <>
       <section className={'hidden lg:block py-11.5'}>
@@ -36,3 +36,5 @@ export const HandSec = ({ service }: { service: IDataHomepageService[] }) => {
     </>
   )
 }
+
+export default HandSec

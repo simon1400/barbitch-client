@@ -2,7 +2,7 @@ import qs from 'qs'
 
 import { Axios } from '../lib/api'
 
-interface IDataHomepage {
+export interface IDataHomepage {
   title: string
   aboutUs: string
   galery: IGalery[]

@@ -10,7 +10,7 @@ import 'yet-another-react-lightbox/styles.css'
 // Динамическая загрузка Lightbox (уменьшает FCP)
 const Lightbox = dynamic(() => import('yet-another-react-lightbox'), { ssr: false })
 
-export const Galery = ({ data }: { data: IGalery[] }) => {
+const Galery = ({ data }: { data: IGalery[] }) => {
   const [index, setIndex] = useState(-1)
 
   return (
@@ -35,8 +35,7 @@ export const Galery = ({ data }: { data: IGalery[] }) => {
                 width={400}
                 height={400}
                 sizes={'(max-width: 1024px) 33vw, 16vw'}
-                loading={i < 6 ? 'eager' : 'lazy'} // Первые 6 картинок загружаем сразу
-                priority={i < 6} // Улучшаем LCP
+                {...(i < 6 ? { priority: true } : { loading: 'lazy' })} // Исправлено
               />
             </div>
           </div>
@@ -56,3 +55,5 @@ export const Galery = ({ data }: { data: IGalery[] }) => {
     </section>
   )
 }
+
+export default Galery
