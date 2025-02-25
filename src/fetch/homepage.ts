@@ -13,7 +13,7 @@ const query = qs.stringify(
     fields: ['title', 'aboutUs'],
     populate: {
       galery: {
-        fields: ['url', 'alternativeText'],
+        fields: ['hash', 'url', 'alternativeText'],
       },
     },
   },

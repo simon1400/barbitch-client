@@ -1,5 +1,6 @@
 'use client'
-import Image from 'next/image'
+// import Image from 'next/image'
+import { CldImage } from 'next-cloudinary'
 import { useState } from 'react'
 import Lightbox from 'yet-another-react-lightbox'
 
@@ -23,12 +24,13 @@ export const Galery = ({ data }: { data: IGalery[] }) => {
             key={item.alternativeText || `Some_key_${i}`}
             onClick={() => setIndex(i)}
           >
-            <Image
+            <CldImage
+              src={item.hash}
               className={'object-cover absolute w-full h-full top-0 left-0'}
-              src={item.url}
               width={400}
               height={400}
-              alt={item.alternativeText || 'Image'}
+              alt={item.alternativeText || `Some_key_${i}`}
+              loading={'lazy'} // Lazy loading для производительности
             />
           </div>
         ))}
