@@ -77,7 +77,7 @@ export const Top = ({ title, small = false }: { title: string; small?: boolean }
               <motion.span
                 ref={ref}
                 key={parentWord}
-                className={'inline-block mr-[0.25rem] whitespace-nowrap mr-5'}
+                className={'inline-block mr-[3rem] whitespace-nowrap'}
                 aria-hidden={'true'}
                 initial={'hidden'}
                 animate={ctrls}

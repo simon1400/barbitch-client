@@ -23,9 +23,6 @@ const config: Config = {
       screens: {
         xs: '430px',
       },
-      fontFamily: {
-        sans: ['tt-travels-next', 'Arial', 'sans-serif'], // Укажите ваш шрифт
-      },
       colors: mainPalette,
       fontSize: {
         xss: [

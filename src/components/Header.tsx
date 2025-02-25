@@ -59,10 +59,10 @@ export const Header = ({ dataNav, linkReserve }: { dataNav: IDataNav; linkReserv
                 href={linkReserve}
               />
 
-              {/* Языковое переключение */}
+              {/* Языковое переключение
               <div className={'hidden lg:block'}>
                 <Lang menu={menu} />
-              </div>
+              </div> */}
 
               {/* Кнопка-гамбургер */}
               <Hamburger

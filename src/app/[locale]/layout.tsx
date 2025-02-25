@@ -14,6 +14,7 @@ import { getNav } from 'fetch/nav'
 import { routing } from 'i18n/routing'
 import { NextIntlClientProvider } from 'next-intl'
 import { getMessages } from 'next-intl/server'
+import { Montserrat } from 'next/font/google'
 import { notFound } from 'next/navigation'
 import Script from 'next/script'
 import { Banner } from 'sections/Banner'
@@ -24,6 +25,11 @@ export const metadata: Metadata = {
   description: 'Beauty salon in Brno',
 }
 
+const comicSans = Montserrat({
+  subsets: ['latin'],
+  weight: ['400', '700'],
+})
+
 export default async function RootLayout({
   children,
   params,
@@ -33,13 +39,9 @@ export default async function RootLayout({
 }>) {
   const { locale } = await params
 
-  // // Ensure that the incoming `locale` is valid
   if (!routing.locales.includes(locale as any)) {
     notFound()
   }
-
-  // Providing all messages to the client
-  // side is the easiest way to get started
   const messages = await getMessages()
 
   const dataContact: IDataContact = await getContact()
@@ -47,22 +49,8 @@ export default async function RootLayout({
   const dataNav: IDataNav = await getNav()
 
   return (
-    <html lang={locale}>
+    <html lang={locale} className={comicSans.className}>
       <head>
-        <link rel={'preconnect'} href={'https://use.typekit.net'} crossOrigin={'anonymous'} />
-        <link
-          rel={'preload'}
-          href={
-            'https://use.typekit.net/iuz5bzw.css?text=ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzČčŘřŠšŤťŽž'
-          }
-          as={'style'}
-        />
-        <link
-          rel={'stylesheet'}
-          href={
-            'https://use.typekit.net/iuz5bzw.css?text=ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyzČčŘřŠšŤťŽž'
-          }
-        />
         <meta name={'viewport'} content={'width=device-width, initial-scale=1.0'} />
         <meta name={'theme-color'} content={'#e71e6e'} />
         <link rel={'icon'} type={'image/png'} href={'/favicon/favicon-96x96.png'} sizes={'96x96'} />
