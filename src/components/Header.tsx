@@ -9,7 +9,7 @@ import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
 import Button from './Button'
-import Lang from './Lang'
+// import Lang from './Lang'
 import { Menu } from './Menu'
 
 export const Header = ({ dataNav, linkReserve }: { dataNav: IDataNav; linkReserve: string }) => {
