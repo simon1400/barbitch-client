@@ -4,19 +4,20 @@ import type { IDataNav } from 'fetch/nav'
 
 import { Squash as Hamburger } from 'hamburger-react'
 import { LogoIcon } from 'icons/Logo'
+// import Lang from './Lang'
+import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
 import Button from './Button'
-// import Lang from './Lang'
-import { Menu } from './Menu'
+
+const Menu = dynamic(() => import('./Menu'), { ssr: false })
 
 export const Header = ({ dataNav, linkReserve }: { dataNav: IDataNav; linkReserve: string }) => {
   const [menu, setMenu] = useState<boolean>(false)
   const pathname = usePathname()
 
-  // Блокируем прокрутку, если меню открыто
   useEffect(() => {
     if (menu) {
       document.body.classList.add('overflow-y-hidden')
@@ -25,7 +26,6 @@ export const Header = ({ dataNav, linkReserve }: { dataNav: IDataNav; linkReserv
     }
   }, [menu])
 
-  // Закрываем меню при смене пути
   useEffect(() => {
     setMenu(false)
   }, [pathname])

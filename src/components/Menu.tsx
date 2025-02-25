@@ -79,7 +79,7 @@ const Link = ({ heading, href, size, reverse = false }: LinkProps) => {
   )
 }
 
-export const Menu = ({ open, nav }: { open: boolean; nav: IDataNav }) => {
+const Menu = ({ open, nav }: { open: boolean; nav: IDataNav }) => {
   return (
     <div
       className={`fixed top-0 left-0 w-full bg-accent z-20 overflow-hidden flex items-end transition-opacity duration-300 ${
@@ -140,3 +140,5 @@ export const Menu = ({ open, nav }: { open: boolean; nav: IDataNav }) => {
     </div>
   )
 }
+
+export default Menu

@@ -43,7 +43,7 @@ export const Top = ({ title, small = false }: { title: string; small?: boolean }
       }}
       animate={backgroundAnimation}
       className={`${
-        small ? 'h-[545px]' : 'h-screen min-h-[800px]'
+        small ? 'h-[545px]' : 'h-screen md:min-h-[800px]'
       } mix-blend-multiply flex items-end relative z-10`}
     >
       <div
