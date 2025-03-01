@@ -12,7 +12,7 @@ const Contact = ({ contact }: { contact: IDataContact }) => {
   return (
     <section className={'container mx-auto w-full max-w-[1400px] px-4 pb-23 lg:pb-27'}>
       {pathname !== '/kontakt' && (
-        <h2 className={'text-md lg:text-xxl text-center mb-5 lg:mb-11.5'}>{'KONTAKT'}</h2>
+        <h2 className={'text-md lg:text-big text-center mb-5 lg:mb-11.5'}>{'KONTAKT'}</h2>
       )}
       <div className={'flex justify-center mb-5 lg:mb-16'}>
         <SocNav items={contact.socItems} />

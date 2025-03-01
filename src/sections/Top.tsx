@@ -1,15 +1,15 @@
 'use client'
 
 import Button from 'components/Button'
-import { useOnMountUnsafe } from 'helpers/useOnMountUnsaf'
 import { motion, useAnimation } from 'motion/react'
+import { useEffect } from 'react'
 
 export const Top = ({ title, small = false }: { title: string; small?: boolean }) => {
   const ctrls = useAnimation()
   const backgroundAnimation = useAnimation()
   const buttonAnimation = useAnimation()
 
-  useOnMountUnsafe(() => {
+  const handleAnimation = () => {
     if (window.innerWidth >= 768) {
       ctrls.start('visible')
       backgroundAnimation.start({
@@ -25,6 +25,10 @@ export const Top = ({ title, small = false }: { title: string; small?: boolean }
       })
       buttonAnimation.set({ opacity: 1, y: 0, transition: { delay: 1.5, duration: 0.5 } })
     }
+  }
+
+  useEffect(() => {
+    handleAnimation()
   })
 
   const characterAnimation = {

@@ -8,6 +8,7 @@ import dynamic from 'next/dynamic'
 const Galery = dynamic(() => import('sections/Galery'), { ssr: false })
 const About = dynamic(() => import('sections/About'), { ssr: false })
 const HandSec = dynamic(() => import('sections/HandSec'), { ssr: false })
+const Reviews = dynamic(() => import('sections/Reviews'), { ssr: false })
 
 const DynamicSections = ({
   data,
@@ -21,6 +22,7 @@ const DynamicSections = ({
       <HandSec service={dataService} />
       <Galery data={data.galery} />
       <About text={data.aboutUs} />
+      <Reviews />
     </>
   )
 }

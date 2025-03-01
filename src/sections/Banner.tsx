@@ -49,7 +49,7 @@ export const Banner = ({ data }: { data: IDataBanner }) => {
 
       <div className={'container mx-auto w-full max-w-[800px] px-4 z-50'}>
         {!!data.title?.length && (
-          <h2 className={'text-md1 lg:text-xxl pb-4 text-center'}>{data.title}</h2>
+          <h2 className={'text-md1 lg:text-big pb-4 text-center'}>{data.title}</h2>
         )}
         {data?.cta && (
           <div className={'flex justify-center'}>

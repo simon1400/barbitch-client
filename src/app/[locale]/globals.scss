@@ -1,3 +1,7 @@
+@use 'swiper/css';
+@use 'swiper/css/navigation';
+@use 'swiper/css/pagination';
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -10,8 +14,13 @@ $accent: #161615;
   --accent: #161615;
 }
 
-html{
+html {
   overflow-x: hidden;
+  font-family: 'Montserrat, Montserrat Fallback';
+}
+
+body {
+  // font-family: "Montserrat, Montserrat Fallback";
 }
 
 .form-input {
@@ -61,7 +70,7 @@ html{
         padding-left: 20px; /* Увеличенный отступ для вложенных пунктов */
         padding-top: 20px;
         > li {
-          color: $accent!important;
+          color: $accent !important;
           font-size: 26px;
           line-height: 35px;
           font-weight: 500;
@@ -80,7 +89,7 @@ html{
       font-weight: bold;
       margin-bottom: 30px;
     }
-  
+
     > p {
       font-size: 16px;
       line-height: 30px;
@@ -102,16 +111,17 @@ html{
         > ul {
           padding-left: 10px;
           padding-top: 0px;
-          li{
+          li {
             margin-bottom: 0;
           }
-          .p1, .p3, .p2 {
+          .p1,
+          .p3,
+          .p2 {
             font-weight: normal;
             font-size: 16px;
             line-height: 25px;
             margin-bottom: 10px;
           }
-          
         }
       }
     }

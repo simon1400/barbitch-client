@@ -2,7 +2,7 @@ import qs from 'qs'
 
 import { Axios } from '../lib/api'
 
-export interface IDataBitchCard{
+export interface IDataBitchCard {
   title: string
   slug: string
   contentText: string
@@ -16,7 +16,7 @@ export const getBitchCard = async () => {
           $eq: 'bitchcard-2025',
         },
       },
-      fields: ['title', 'contentText']
+      fields: ['title', 'contentText'],
     },
     {
       encodeValuesOnly: true, // prettify URL

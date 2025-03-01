@@ -53,11 +53,92 @@ const config: Config = {
             fontWeight: '800',
           },
         ],
+        baseSm: [
+          '16px',
+          {
+            lineHeight: '30px',
+            fontWeight: '500',
+          },
+        ],
+
+        // response start
+        resXxs: [
+          '10px',
+          {
+            lineHeight: '13px',
+            fontWeight: '800',
+          },
+        ],
+        resXs: [
+          '12px',
+          {
+            lineHeight: '15px',
+            fontWeight: '800',
+          },
+        ],
+        resSm: [
+          '13px',
+          {
+            lineHeight: '24px',
+            fontWeight: '800',
+          },
+        ],
+        resMd: [
+          '15px',
+          {
+            lineHeight: '16px',
+            fontWeight: '800',
+          },
+        ],
+        resMd1: [
+          '16px',
+          {
+            lineHeight: '17px',
+            fontWeight: '800',
+          },
+        ],
+        resLg: [
+          '20px',
+          {
+            lineHeight: '20px',
+            fontWeight: '800',
+          },
+        ],
+        resBig: [
+          '30px',
+          {
+            lineHeight: '31px',
+            fontWeight: '800',
+          },
+        ],
+        resTop: [
+          '35px',
+          {
+            lineHeight: '36px',
+            fontWeight: '800',
+          },
+        ],
+
+        // response end
         sm11: [
           '20px',
           {
             lineHeight: '20px',
             fontWeight: '300',
+          },
+        ],
+        baseText: [
+          '20px',
+          {
+            lineHeight: '39px',
+            fontWeight: '500',
+          },
+        ],
+        h5: [
+          '23px',
+          {
+            lineHeight: '24px',
+            fontWeight: '800',
           },
         ],
         sm1: [
@@ -82,9 +163,9 @@ const config: Config = {
           },
         ],
         md1: [
-          '35px',
+          '34px',
           {
-            lineHeight: '33px',
+            lineHeight: '35px',
             fontWeight: '800',
           },
         ],
@@ -110,23 +191,23 @@ const config: Config = {
           },
         ],
         xxl: [
-          '73px',
+          '55px',
           {
-            lineHeight: '70px',
+            lineHeight: '56px',
             fontWeight: '800',
           },
         ],
         big: [
           '91px',
           {
-            lineHeight: '77px',
+            lineHeight: '93px',
             fontWeight: '800',
           },
         ],
         top: [
           '127px',
           {
-            lineHeight: '121px',
+            lineHeight: '115px',
             fontWeight: '800',
           },
         ],

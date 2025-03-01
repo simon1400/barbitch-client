@@ -39,16 +39,11 @@ const nextConfig: NextConfig = {
     GOOGLE_API: process.env.GOOGLE_API,
     PIXEL_ID: process.env.PIXEL_ID,
     PIXEL_ACCESS_TOKEN: process.env.PIXEL_ACCESS_TOKEN,
-    GOOGLE_SHEETS_PRIVATE_KEY_ID: process.env.GOOGLE_SHEETS_PRIVATE_KEY_ID,
-    GOOGLE_SHEETS_PRIVATE_KEY: process.env.GOOGLE_SHEETS_PRIVATE_KEY,
-    GOOGLE_SHEETS_CLIENT_EMAIL: process.env.GOOGLE_SHEETS_CLIENT_EMAIL,
-    GOOGLE_SHEETS_CLIENT_ID: process.env.GOOGLE_SHEETS_CLIENT_ID,
-    GOOGLE_SHEETS_PROJECT_ID: process.env.GOOGLE_SHEETS_PROJECT_ID,
-    GOOGLE_SHEETS_SPREADSHEET_ID: process.env.GOOGLE_SHEETS_SPREADSHEET_ID,
+    FEATURABLE_WIDGET_ID: process.env.FEATURABLE_WIDGET_ID,
   },
   images: {
     remotePatterns: [
-      { hostname: 'scontent-prg1-1.cdninstagram.com' },
+      { hostname: 'lh3.googleusercontent.com' },
       { hostname: 'res.cloudinary.com' },
       { hostname: 'scontent.cdninstagram.com' },
       { hostname: 'strapi.barbitch.cz' },

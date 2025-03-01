@@ -25,7 +25,7 @@ export const metadata: Metadata = {
   description: 'Beauty salon in Brno',
 }
 
-const comicSans = Montserrat({
+const montserat = Montserrat({
   subsets: ['latin'],
   weight: ['400', '700'],
 })
@@ -49,7 +49,7 @@ export default async function RootLayout({
   const dataNav: IDataNav = await getNav()
 
   return (
-    <html lang={locale} className={comicSans.className}>
+    <html lang={locale}>
       <head>
         <link rel={'preconnect'} href={'https://connect.facebook.net'} crossOrigin={'anonymous'} />
         <meta name={'viewport'} content={'width=device-width, initial-scale=1.0'} />
@@ -74,7 +74,7 @@ export default async function RootLayout({
       </head>
       {/* <!-- Google tag (gtag.js) --> */}
       <GoogleTagManager gtmId={'GTM-5SP5MPTB'} />
-      <body className={`bg-base antialiased overflow-x-hidden`}>
+      <body className={`bg-base antialiased overflow-x-hidden ${montserat.className}`}>
         <noscript>
           <img
             height={'1'}
