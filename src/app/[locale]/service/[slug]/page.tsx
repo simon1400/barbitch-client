@@ -2,12 +2,13 @@ import type { Metadata } from 'next'
 
 import Button from 'components/Button'
 import { MasonryGalery } from 'components/MansoryGalery'
-import { getFullService, getFullServiceMeta } from 'fetch/service'
+import { getFullService } from 'fetch/service'
 import parse from 'html-react-parser'
 import { SchemaJsonManikura } from 'schemasOrg/manikura'
 import { SchemaJsonOboci } from 'schemasOrg/oboci'
 import { SchemaJsonRasy } from 'schemasOrg/rasy'
 import { Top } from 'sections/Top/Top'
+import { getFullServiceMeta } from 'fetch/getMeta'
 
 export async function generateMetadata({ params }: any): Promise<Metadata> {
   const { slug } = params

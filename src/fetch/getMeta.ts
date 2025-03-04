@@ -27,8 +27,50 @@ export const getBlogPageMeta = async () => {
   return data
 }
 
+
+
 export const getContactMeta = async () => {
   const data: IDataMetaWrap = await Axios.get(`/api/contact?${query}`)
 
   return data
+}
+
+export const getPostMeta = async (slug: string) => {
+  const queryIn = qs.stringify(
+    {
+      filters: {
+        slug: {
+          $eq: slug,
+        },
+      },
+      fields: ['title'],
+      populate: ['metaData'],
+    },
+    {
+      encodeValuesOnly: true, // prettify URL
+    },
+  )
+  const data: IDataMetaWrap = await Axios.get(`/api/blog-page?${queryIn}`)
+
+  return data
+}
+
+export const getFullServiceMeta = async (slug: string) => {
+  const queryIn = qs.stringify(
+    {
+      filters: {
+        slug: {
+          $eq: slug,
+        },
+      },
+      fields: ['title'],
+      populate: ['metaData'],
+    },
+    {
+      encodeValuesOnly: true, // prettify URL
+    },
+  )
+
+  const data: IDataMetaWrap[] = await Axios.get(`/api/services?${queryIn}`)
+  return data[0]
 }

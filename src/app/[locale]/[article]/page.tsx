@@ -1,12 +1,12 @@
 import type { Metadata } from 'next'
-
 import { getArticle, getArticleMeta } from 'fetch/article'
 import parse from 'html-react-parser'
 import { Top } from 'sections/Top/Top'
 
+// Функция generateMetadata с правильным типом params
 export async function generateMetadata({ params }: any): Promise<Metadata> {
-  const { slug } = params
-  const { title, metaData } = await getArticleMeta(slug)
+  const { article } = params
+  const { title, metaData } = await getArticleMeta(article)
 
   return {
     title: metaData?.title || title,
@@ -16,7 +16,7 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
       description: metaData.description || '',
       siteName: 'Barbitch',
       images: [metaData.image ? metaData.image.url : 'https://barbitch.cz/assets/bigBaner.jpg'],
-      url: `https://barbitch.cz/bitchcard-2025`,
+      url: `https://barbitch.cz/${article}`,
       type: 'article',
     },
     twitter: {
@@ -25,15 +25,16 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
       description: metaData.description || '',
       images: [metaData.image ? metaData.image.url : 'https://barbitch.cz/assets/bigBaner.jpg'],
     },
-    keywords: ['barbitch', 'bar.bitch', 'bar bitch', 'Brno', 'Bitchcard'],
+    keywords: ['barbitch', 'bar.bitch', 'bar bitch', 'Brno', title],
     alternates: {
-      canonical: `https://barbitch.cz/bitchcard-2025`,
+      canonical: `https://barbitch.cz/${article}`,
     },
   }
 }
 
-const BitchCard = async ({ params }: { params: { article: string } }) => {
-  const data = await getArticle(params.article as string)
+const Article = async ({ params }: any) => {
+  const { article } = params
+  const data = await getArticle(article)
 
   return (
     <main>
@@ -49,4 +50,4 @@ const BitchCard = async ({ params }: { params: { article: string } }) => {
   )
 }
 
-export default BitchCard
+export default Article

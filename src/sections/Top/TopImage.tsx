@@ -7,7 +7,7 @@ import { useEffect } from 'react'
 
 import { TopContent } from './TopContent'
 
-export const TopImage = ({ title }: { title: string }) => {
+export const TopImage = ({ title, image }: { title: string; image: IGalery }) => {
   const ctrls = useAnimation()
   const backgroundAnimation = useAnimation()
   const buttonAnimation = useAnimation()
@@ -27,9 +27,9 @@ export const TopImage = ({ title }: { title: string }) => {
       <div className={'mix-blend-multiply absolute h-full w-full -z-10 bg-cover bg-center'}>
         <Image
           className={'object-cover object-center opacity-70'}
-          src={'/assets/blog-post.png'}
+          src={image.url || '/assets/bigBaner.jpg'}
           fill
-          alt={'imasd'}
+          alt={image.alternativeText || ''}
         />
       </div>
 

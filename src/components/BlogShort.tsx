@@ -3,6 +3,7 @@ import type { IDataPostShort } from 'fetch/blog'
 
 import Image from 'next/image'
 import Link from 'next/link'
+import parse from 'html-react-parser'
 
 export const BlogBigShort = ({ data }: { data: IDataPostShort }) => {
   return (
@@ -29,11 +30,7 @@ export const BlogBigShort = ({ data }: { data: IDataPostShort }) => {
           </span>
         </h2>
         <div className={'text-baseSm md:text-baseText'}>
-          <p>
-            {
-              'Ať už se chystáte na hektický pracovní den nebo na klidný víkendový odpočinek, CBD vám může být ideálním společníkem pro zahájení dne...'
-            }
-          </p>
+          {parse(data?.contentText || '', { trim: true })}
         </div>
       </div>
     </Link>

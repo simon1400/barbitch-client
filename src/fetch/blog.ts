@@ -4,7 +4,8 @@ import { Axios } from '../lib/api'
 
 export interface IDataPost {
   title: string
-  contentText: string
+  
+  image: IGalery
   dynamicContent: any[]
 }
 
@@ -12,6 +13,7 @@ export interface IDataPostShort {
   title: string
   slug: string
   image: IGalery
+  contentText?: string
 }
 
 interface IDataBlogPage {
@@ -62,7 +64,7 @@ export const getPost = async (slug: string) => {
 export const getAllPost = async () => {
   const query = qs.stringify(
     {
-      fields: ['title', 'slug'],
+      fields: ['title', 'slug', 'contentText'],
       populate: {
         image: {
           fields: ['hash', 'url', 'alternativeText'],
