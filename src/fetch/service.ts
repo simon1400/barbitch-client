@@ -54,22 +54,4 @@ export const getFullService = async (slug: string) => {
   return dataContact[0]
 }
 
-export const getFullServiceMeta = async (slug: string) => {
-  const query = qs.stringify(
-    {
-      filters: {
-        slug: {
-          $eq: slug,
-        },
-      },
-      fields: ['title'],
-      populate: ['metaData'],
-    },
-    {
-      encodeValuesOnly: true, // prettify URL
-    },
-  )
 
-  const data: IDataMetaWrap[] = await Axios.get(`/api/services?${query}`)
-  return data[0]
-}

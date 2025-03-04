@@ -1,9 +1,9 @@
 // import { ArrowRightIcon } from 'icons/ArrowIcon'
 import type { IDataPostShort } from 'fetch/blog'
 
+import parse from 'html-react-parser'
 import Image from 'next/image'
 import Link from 'next/link'
-import parse from 'html-react-parser'
 
 export const BlogBigShort = ({ data }: { data: IDataPostShort }) => {
   return (
