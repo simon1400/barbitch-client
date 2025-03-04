@@ -27,8 +27,6 @@ export const getBlogPageMeta = async () => {
   return data
 }
 
-
-
 export const getContactMeta = async () => {
   const data: IDataMetaWrap = await Axios.get(`/api/contact?${query}`)
 
@@ -50,9 +48,9 @@ export const getPostMeta = async (slug: string) => {
       encodeValuesOnly: true, // prettify URL
     },
   )
-  const data: IDataMetaWrap = await Axios.get(`/api/blog-page?${queryIn}`)
+  const data: IDataMetaWrap[] = await Axios.get(`/api/blogs?${queryIn}`)
 
-  return data
+  return data[0]
 }
 
 export const getFullServiceMeta = async (slug: string) => {

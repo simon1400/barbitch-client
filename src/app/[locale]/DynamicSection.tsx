@@ -25,7 +25,7 @@ const DynamicSections = ({
     <>
       <HandSec service={dataService} />
       <Galery data={data.galery} />
-      <Posts data={posts} />
+      {!!posts.length && <Posts data={posts} />}
       <About text={data.aboutUs} />
       <Reviews />
     </>
