@@ -7,8 +7,7 @@ import parse from 'html-react-parser'
 import { SchemaJsonManikura } from 'schemasOrg/manikura'
 import { SchemaJsonOboci } from 'schemasOrg/oboci'
 import { SchemaJsonRasy } from 'schemasOrg/rasy'
-
-import { Top } from '../../../sections/Top'
+import { Top } from 'sections/Top/Top'
 
 export async function generateMetadata({ params }: any): Promise<Metadata> {
   const { slug } = params
@@ -79,8 +78,8 @@ const Service = async ({ params }: any) => {
         <Button
           className={'mt-5'}
           id={'book-button'}
-          text={'Rezervovat termin'}
-          href={'https://noona.app/cs/barbitch'}
+          text={'Rezervovat termín'}
+          href={'https://noona.app/cs/barbitch/book'}
         />
       </Section>
     </main>

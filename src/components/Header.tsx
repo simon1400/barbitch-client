@@ -7,7 +7,7 @@ import { LogoIcon } from 'icons/Logo'
 // import Lang from './Lang'
 import dynamic from 'next/dynamic'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { useParams, usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
 import Button from './Button'
@@ -17,6 +17,7 @@ const Menu = dynamic(() => import('./Menu'), { ssr: false })
 export const Header = ({ dataNav, linkReserve }: { dataNav: IDataNav; linkReserve: string }) => {
   const [menu, setMenu] = useState<boolean>(false)
   const pathname = usePathname()
+  const params = useParams()
 
   useEffect(() => {
     if (menu) {
@@ -35,14 +36,15 @@ export const Header = ({ dataNav, linkReserve }: { dataNav: IDataNav; linkReserv
       <header className={'absolute w-full z-50'} role={'banner'} aria-label={'Основное меню'}>
         <div className={'container mx-auto max-w-[1400px] px-4'}>
           <div className={'flex justify-between py-3 lg:py-8 items-center'}>
-            {/* Логотип */}
             <div>
               <Link
                 href={'/'}
                 className={'block max-w-[205px] lg:max-w-[290px]'}
                 aria-label={'Перейти на главную страницу'}
               >
-                <LogoIcon className={`w-full ${menu ? 'fill-primary' : 'fill-accent'}`} />
+                <LogoIcon
+                  className={`w-full ${menu ? 'fill-primary' : params?.post ? 'fill-white' : 'fill-accent'}`}
+                />
               </Link>
             </div>
 
@@ -52,8 +54,9 @@ export const Header = ({ dataNav, linkReserve }: { dataNav: IDataNav; linkReserv
               <Button
                 inverse={menu}
                 className={'hidden lg:block'}
-                text={'Rezervovat termin'}
+                text={'Rezervovat termín'}
                 id={'book-button'}
+                white={!!params?.post}
                 small
                 blank
                 href={linkReserve}
@@ -66,7 +69,7 @@ export const Header = ({ dataNav, linkReserve }: { dataNav: IDataNav; linkReserv
 
               {/* Кнопка-гамбургер */}
               <Hamburger
-                color={menu ? '#fff' : '#161615'}
+                color={menu || params?.post ? '#fff' : '#161615'}
                 onToggle={() => setMenu(!menu)}
                 toggled={menu}
                 size={48}

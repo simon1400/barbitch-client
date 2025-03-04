@@ -14,7 +14,7 @@ const Galery = ({ data }: { data: IGalery[] }) => {
   const [index, setIndex] = useState(-1)
 
   return (
-    <section>
+    <section className={'pb-23 lg:pb-20'}>
       <h2 className={'text-lg lg:text-big uppercase mt-10 lg:mt-20 text-center -mb-1'}>
         {'Follow'}
       </h2>

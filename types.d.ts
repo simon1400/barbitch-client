@@ -31,4 +31,5 @@ interface IGalery {
   hash: string
   url: string
   alternativeText?: string
+  documentId?: string
 }

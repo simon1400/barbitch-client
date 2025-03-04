@@ -21,6 +21,11 @@ export const getPricelistMeta = async () => {
 
   return data
 }
+export const getBlogPageMeta = async () => {
+  const data: IDataMetaWrap = await Axios.get(`/api/blog-page?${query}`)
+
+  return data
+}
 
 export const getContactMeta = async () => {
   const data: IDataMetaWrap = await Axios.get(`/api/contact?${query}`)

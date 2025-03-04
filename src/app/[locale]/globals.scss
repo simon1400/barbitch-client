@@ -19,20 +19,21 @@ html {
   font-family: 'Montserrat, Montserrat Fallback';
 }
 
-body {
-  // font-family: "Montserrat, Montserrat Fallback";
+body{
+  color: $accent;
 }
+
 
 .form-input {
   height: 2.5rem;
   padding: 0 1.25rem;
-  border: 1px solid var(--accent);
+  border: 1px solid $accent;
   width: 100%;
   margin-bottom: 1.25rem;
 }
 
 .button-primary {
-  background-color: var(--primary);
+  background-color: $primary;
   color: white;
   font-weight: bold;
   text-transform: uppercase;
@@ -41,40 +42,53 @@ body {
 
 .content {
   h2 {
-    font-size: 60px;
-    line-height: 75px;
-    font-weight: bold;
-    margin-bottom: 50px;
+    @apply text-md1 mb-11;
+    &.banner-head{
+      @apply text-xxl mb-12;
+    }
   }
-  > p {
-    font-size: 26px;
-    line-height: 35px;
-    font-weight: 500;
-    margin-bottom: 20px;
+  h3 {
+    @apply text-h5 mb-11;
+  }
+  
+  p {
+    @apply text-baseText mb-5;
   }
   ol {
-    padding-left: 50px;
+    padding-left: 30px;
+    
+    @apply mb-11;
     > li {
-      padding-left: 20px; /* Отступ от текста для списка */
-      margin-bottom: 40px;
-      font-size: 36px;
-      font-weight: bold;
-      .p1 {
-        font-size: 26px;
-        line-height: 35px;
-        font-weight: 500;
-        margin-bottom: 20px;
+      padding-bottom: 20px;
+      &::marker{
+        @apply text-baseText font-bold;
+        color: $primary;
+      }
+      >p{
+        margin-bottom: 0;
+        &:first-of-type{
+          @apply text-baseText font-bold;
+        }
       }
       > ul {
-        list-style: disc; /* Вложенный список с круглыми маркерами */
-        padding-left: 20px; /* Увеличенный отступ для вложенных пунктов */
-        padding-top: 20px;
+        list-style: none;
+        padding-top: 6px;
         > li {
           color: $accent !important;
-          font-size: 26px;
-          line-height: 35px;
-          font-weight: 500;
-          margin-bottom: 20px; /* Отступ между пунктами */
+          position: relative;
+          &:before{
+            content: '';
+            display: block;
+            position: absolute;
+            width: 14px;
+            height: 1.5px;
+            background-color: rgba($primary, .5);
+            left: -25px;
+            top: 18px;
+          }
+          p{
+            margin-bottom: 0;
+          }
         }
       }
     }
@@ -84,43 +98,26 @@ body {
 @media (max-width: 900px) {
   .content {
     h2 {
-      font-size: 25px;
-      line-height: 35px;
-      font-weight: bold;
-      margin-bottom: 30px;
+      &.banner-head{
+        @apply text-resTop mb-6;
+      }
     }
-
-    > p {
-      font-size: 16px;
-      line-height: 30px;
-      font-weight: 500;
-      margin-bottom: 15px;
+    p {
+      @apply text-baseSm mb-5;
     }
     ol {
       padding-left: 20px;
+      @apply mb-5;
       > li {
-        padding-left: 15px;
-        margin-bottom: 20px;
-        font-size: 16px;
-        > .p1 {
-          font-weight: normal;
-          font-size: 16px;
-          line-height: 25px;
-          margin-bottom: 10px;
-        }
         > ul {
-          padding-left: 10px;
-          padding-top: 0px;
-          li {
-            margin-bottom: 0;
+          padding-top: 5px;
+          li{
+            position: relative;
+          &:before{
+            width: 14px;
+            left: -22px;
+            top: 15px;
           }
-          .p1,
-          .p3,
-          .p2 {
-            font-weight: normal;
-            font-size: 16px;
-            line-height: 25px;
-            margin-bottom: 10px;
           }
         }
       }

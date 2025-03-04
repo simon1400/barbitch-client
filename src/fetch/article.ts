@@ -5,34 +5,34 @@ import { Axios } from '../lib/api'
 export interface IDataBitchCard {
   title: string
   slug: string
-  contentText: string
+  content: string
 }
 
-export const getBitchCard = async () => {
+export const getArticle = async (slug: string) => {
   const query = qs.stringify(
     {
       filters: {
         slug: {
-          $eq: 'bitchcard-2025',
+          $eq: slug,
         },
       },
-      fields: ['title', 'contentText'],
+      fields: ['title', 'content'],
     },
     {
       encodeValuesOnly: true, // prettify URL
     },
   )
 
-  const dataContact: IDataBitchCard[] = await Axios.get(`/api/blogs?${query}`)
+  const dataContact: IDataBitchCard[] = await Axios.get(`/api/articles?${query}`)
   return dataContact[0]
 }
 
-export const getBitchCardMeta = async () => {
+export const getArticleMeta = async (slug: string) => {
   const query = qs.stringify(
     {
       filters: {
         slug: {
-          $eq: 'bitchcard-2025',
+          $eq: slug,
         },
       },
       fields: ['title'],
@@ -43,6 +43,6 @@ export const getBitchCardMeta = async () => {
     },
   )
 
-  const data: IDataMetaWrap[] = await Axios.get(`/api/blogs?${query}`)
+  const data: IDataMetaWrap[] = await Axios.get(`/api/articles?${query}`)
   return data[0]
 }

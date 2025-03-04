@@ -1,10 +1,11 @@
 import type { Metadata } from 'next'
 
+import { getRandomPost } from 'fetch/blog'
 import { getHomeMeta } from 'fetch/getMeta'
 import { getHomepage } from 'fetch/homepage'
 import { getServiceHomepage } from 'fetch/service'
 import { SchemaJsonHomepage } from 'schemasOrg/homepage'
-import { Top } from 'sections/Top'
+import { Top } from 'sections/Top/Top'
 
 import DynamicSections from './DynamicSection'
 
@@ -57,13 +58,17 @@ export async function generateMetadata(): Promise<Metadata> {
 
 const Home = async () => {
   try {
-    const [dataService, data] = await Promise.all([getServiceHomepage(), getHomepage()])
+    const [dataService, data, posts] = await Promise.all([
+      getServiceHomepage(),
+      getHomepage(),
+      getRandomPost(),
+    ])
 
     return (
       <main>
         <SchemaJsonHomepage />
         <Top title={data.title} />
-        <DynamicSections data={data} dataService={dataService} />
+        <DynamicSections data={data} dataService={dataService} posts={posts} />
       </main>
     )
   } catch (error) {

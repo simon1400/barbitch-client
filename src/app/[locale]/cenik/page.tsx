@@ -3,7 +3,7 @@ import type { Metadata } from 'next'
 import { getPricelistMeta } from 'fetch/getMeta'
 import { getPriceList, getPricelistPage } from 'fetch/pricelist'
 import parse from 'html-react-parser'
-import { Top } from 'sections/Top'
+import { Top } from 'sections/Top/Top'
 
 export async function generateMetadata(): Promise<Metadata> {
   const { metaData } = await getPricelistMeta()

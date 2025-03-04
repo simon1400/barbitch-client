@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 
 import { getContactMeta } from 'fetch/getMeta'
-import { Top } from 'sections/Top'
+import { Top } from 'sections/Top/Top'
 
 export async function generateMetadata(): Promise<Metadata> {
   const data = await getContactMeta()

@@ -1,11 +1,12 @@
 import type { Metadata } from 'next'
 
-import { getBitchCard, getBitchCardMeta } from 'fetch/bitchCard'
+import { getArticle, getArticleMeta } from 'fetch/article'
 import parse from 'html-react-parser'
-import { Top } from 'sections/Top'
+import { Top } from 'sections/Top/Top'
 
-export async function generateMetadata(): Promise<Metadata> {
-  const { title, metaData } = await getBitchCardMeta()
+export async function generateMetadata({ params }: any): Promise<Metadata> {
+  const { slug } = params
+  const { title, metaData } = await getArticleMeta(slug)
 
   return {
     title: metaData?.title || title,
@@ -31,16 +32,16 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
-const BitchCard = async () => {
-  const data = await getBitchCard()
+const BitchCard = async ({ params }: { params: { article: string } }) => {
+  const data = await getArticle(params.article as string)
 
   return (
     <main>
       <Top title={data.title} small />
-      <section className={'pt-20 pb-16'}>
+      <section className={'pb-16'}>
         <div className={'container mx-auto w-full max-w-[900px] px-4'}>
           <div className={'w-full mb-20 text-xs1 lg:text-base content'}>
-            {parse(data.contentText, { trim: true })}
+            {parse(data.content, { trim: true })}
           </div>
         </div>
       </section>

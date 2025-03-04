@@ -5,7 +5,7 @@ import { getWorks } from 'fetch/works'
 import { useOnMountUnsafe } from 'helpers/useOnMountUnsaf'
 import React, { useCallback, useEffect, useState } from 'react'
 
-import { Top } from '../../../sections/Top'
+import { Top } from '../../../sections/Top/Top'
 
 import { Auth } from './Auth'
 import { logins, monthLabels } from './data'

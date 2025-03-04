@@ -1,13 +1,19 @@
 'use client'
-
 import { motion } from 'motion/react'
 import { CldImage } from 'next-cloudinary'
-import { useEffect, useState } from 'react'
-import Masonry from 'react-responsive-masonry'
+import dynamic from 'next/dynamic'
+import { useState } from 'react'
+import { NextJsImage } from 'sections/Galery/ImageGalery'
+import { MasonryGrid } from 'sections/MasonryGrid'
+
+import 'yet-another-react-lightbox/styles.css'
+
+const Lightbox = dynamic(() => import('yet-another-react-lightbox'), { ssr: false })
 
 interface Image {
   name: string
   hash: string
+  url: string
 }
 
 interface MasonryGalleryProps {
@@ -15,25 +21,9 @@ interface MasonryGalleryProps {
 }
 
 export const MasonryGalery = ({ images }: MasonryGalleryProps) => {
-  const [isMobile, setIsMobile] = useState(false) // Дефолтное состояние
-
-  useEffect(() => {
-    const handleResize = () => {
-      setIsMobile(window.matchMedia('(max-width: 960px)').matches)
-    }
-
-    handleResize()
-    window.addEventListener('resize', handleResize)
-
-    return () => window.removeEventListener('resize', handleResize)
-  }, [])
-
-  const gap = isMobile ? '10px' : '20px'
-  const columns = isMobile ? 2 : 4
-
+  const [index, setIndex] = useState(-1)
   return (
     <section className={'overflow-x-hidden'} aria-labelledby={'masonry-gallery'}>
-      {/* Скрытый заголовок для доступности */}
       <h2 id={'masonry-gallery'} className={'sr-only'}>
         {'Masonry Gallery'}
       </h2>
@@ -47,13 +37,16 @@ export const MasonryGalery = ({ images }: MasonryGalleryProps) => {
             repeat: Infinity,
           },
         }}
-        className={`flex gap-${isMobile ? '3' : '5'} w-[300%] relative`}
+        className={`flex gap-'3' : '5'} w-[300%] relative`}
       >
-        {/* Повторяющаяся галерея */}
         {[...Array.from({ length: 3 })].map((_, index) => (
-          <Masonry key={index} gutter={gap} columnsCount={columns}>
+          <MasonryGrid key={index} className={'mx-3'}>
             {images.map((image, idx) => (
-              <div key={`${image.hash}-${idx}`} className={'relative'}>
+              <div
+                key={`${image.hash}-${index}`}
+                className={'relative cursor-pointer'}
+                onClick={() => setIndex(idx)}
+              >
                 <CldImage
                   src={image.hash}
                   width={300}
@@ -63,9 +56,19 @@ export const MasonryGalery = ({ images }: MasonryGalleryProps) => {
                 />
               </div>
             ))}
-          </Masonry>
+          </MasonryGrid>
         ))}
       </motion.div>
+      {/* Lightbox загружается только при клике */}
+      {index >= 0 && (
+        <Lightbox
+          index={index}
+          open={index >= 0}
+          close={() => setIndex(-1)}
+          slides={images.map((item) => ({ src: item.url }))}
+          render={{ slide: NextJsImage }}
+        />
+      )}
     </section>
   )
 }
