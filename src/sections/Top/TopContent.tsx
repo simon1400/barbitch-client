@@ -13,9 +13,11 @@ export const TopContent = ({ title, ctrls }: { title: string; ctrls: AnimationCo
 
   return (
     <h1 id={'top-title'} className={'text-md2 lg:text-top pb-4 uppercase'}>
+      <span className={'sr-only'}>{title}</span>
       {title.split(' ').map((parentWord, parentIdx) => (
         <motion.span
           key={parentWord}
+          aria-hidden
           className={
             'inline-block pt-2 md:-mb-3 mr-[.8rem] md:mr-[2rem] whitespace-nowrap overflow-y-hidden'
           }

@@ -23,10 +23,10 @@ export const BlogBigShort = ({ data }: { data: IDataPostShort }) => {
           'max-w-[954px] w-full -bottom-40 bg-accent text-white absolute py-12 px-10 md:py-16.5 md:px-20'
         }
       >
-        <h2 className={'text-resBig md:text-xxl mb-7 inline-flex items-center'}>
-          <span className={'inline-flex duration-300 group-hover:text-primary'}>
-            {data.title}
-            {/* <ArrowRightIcon className={'text-primary'} /> */}
+        <h2 className={'text-resBig md:text-xxl mb-7'}>
+          <span className={'duration-300 group-hover:text-primary'}>
+            {data.title.replaceAll(';sp;', ' ')}
+            <b className={'text-primary duration-300 ml-3 group-hover:ml-5'}>{'→'}</b>
           </span>
         </h2>
         <div className={'text-baseSm md:text-baseText'}>
@@ -52,10 +52,10 @@ export const BlogShort = ({ data }: { data: IDataPostShort }) => {
         />
       </div>
       <div className={'max-w-[954px] w-full bg-accent text-white md:py-10 md:px-12 p-6'}>
-        <h3 className={'text-h5 inline-flex items-center'}>
-          <span className={'inline-flex duration-300 group-hover:text-primary'}>
-            {data.title}
-            {/* <ArrowRightIcon className={'text-primary'} /> */}
+        <h3 className={'text-h5'}>
+          <span className={'duration-300 group-hover:text-primary'}>
+            {data.title.replaceAll(';sp;', ' ')}
+            <b className={'text-primary duration-300 ml-3 group-hover:ml-5'}>{'→'}</b>
           </span>
         </h3>
       </div>

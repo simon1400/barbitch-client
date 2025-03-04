@@ -26,7 +26,7 @@ export const Banner = ({
           {data.image && (
             <div className={'top-0 left-0 absolute overflow-hidden w-full h-full -z-10 opacity-90'}>
               <Image
-                className={'object-cover object-center w-full h-full'}
+                className={'object-cover object-center w-full h-full grayscale'}
                 src={data.image.url}
                 fill
                 alt={data.image.alternativeText || ''}

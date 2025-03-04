@@ -5,14 +5,12 @@ import type { IDataNav } from 'fetch/nav'
 import { Squash as Hamburger } from 'hamburger-react'
 import { LogoIcon } from 'icons/Logo'
 // import Lang from './Lang'
-import dynamic from 'next/dynamic'
 import Link from 'next/link'
 import { useParams, usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
 import Button from './Button'
-
-const Menu = dynamic(() => import('./Menu'), { ssr: false })
+import Menu from './Menu'
 
 export const Header = ({ dataNav, linkReserve }: { dataNav: IDataNav; linkReserve: string }) => {
   const [menu, setMenu] = useState<boolean>(false)
@@ -20,10 +18,13 @@ export const Header = ({ dataNav, linkReserve }: { dataNav: IDataNav; linkReserv
   const params = useParams()
 
   useEffect(() => {
+    const root = document.getElementsByTagName('html')[0]
     if (menu) {
       document.body.classList.add('overflow-y-hidden')
+      root.classList.add('overflow-y-hidden')
     } else {
       document.body.classList.remove('overflow-y-hidden')
+      root.classList.remove('overflow-y-hidden')
     }
   }, [menu])
 

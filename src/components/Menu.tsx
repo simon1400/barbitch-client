@@ -1,12 +1,10 @@
-'use client'
-
 import type { IDataNav, INavItem } from 'fetch/nav'
 
 import { motion, useMotionValue } from 'motion/react'
 import { useRef } from 'react'
 
 import Button from './Button'
-import Lang from './Lang'
+// import Lang from './Lang'
 
 interface LinkProps {
   heading: string
@@ -91,9 +89,9 @@ const Menu = ({ open, nav }: { open: boolean; nav: IDataNav }) => {
       <div className={'container mx-auto max-w-[1400px] px-4'}>
         <div className={'text-right lg:text-left'}>
           {/* Языковое меню */}
-          <div className={'lg:hidden'}>
+          {/* <div className={'lg:hidden'}>
             <Lang menu={open} />
-          </div>
+          </div> */}
           <div className={'lg:flex items-center justify-between w-full pb-20'}>
             {/* Левая навигация */}
             <div>
@@ -114,9 +112,9 @@ const Menu = ({ open, nav }: { open: boolean; nav: IDataNav }) => {
                 <ul className={'text-right'}>
                   {nav.rightNav?.length &&
                     nav.rightNav.map((item: INavItem) => (
-                      <li className={'mt-0.5 lg:mt-2.5 text-right'} key={`rightMenu_${item.title}`}>
+                      <li className={'mt-2 lg:mt-2.5 text-right'} key={`rightMenu_${item.title}`}>
                         <Link
-                          size={'text-sm lg:text-md text-right'}
+                          size={'text-resLg lg:text-md text-right'}
                           href={item.link}
                           heading={item.title}
                           reverse

@@ -21,15 +21,7 @@ const DynamicSections = ({
   dataService: IDataHomepageService[]
   posts: IDataPostShort[]
 }) => {
-  return (
-    <>
-      <HandSec service={dataService} />
-      <Galery data={data.galery} />
-      {!!posts.length && <Posts data={posts} />}
-      <About text={data.aboutUs} />
-      <Reviews />
-    </>
-  )
+  return <></>
 }
 
 export default DynamicSections

@@ -7,28 +7,44 @@ const sitemapStatic = [
     priority: 1,
   },
   {
-    url: '/manikura',
-    priority: 0.9,
-  },
-  {
-    url: '/rasy',
-    priority: 0.9,
-  },
-  {
-    url: '/oboci',
+    url: '/blog',
     priority: 0.9,
   },
   {
     url: '/kontakt',
-    priority: 0.8,
+    priority: 0.9,
   },
   {
     url: '/bitchcard-2025',
-    priority: 0.8,
+    priority: 0.9,
   },
   {
     url: '/cenik',
+    priority: 0.9,
+  },
+  {
+    url: '/service/manikura',
     priority: 0.8,
+  },
+  {
+    url: '/service/rasy',
+    priority: 0.8,
+  },
+  {
+    url: '/service/oboci',
+    priority: 0.8,
+  },
+  {
+    url: '/blog/nasivani-ras-typy-efekty-a-pece-po-procedure',
+    priority: 0.7,
+  },
+  {
+    url: '/blog/luxusni-manikura-v-brne-trendy-roku-2025',
+    priority: 0.7,
+  },
+  {
+    url: '/blog/co-je-laminace-oboci',
+    priority: 0.7,
   },
 ]
 
@@ -41,7 +57,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     | 'monthly'
     | 'yearly'
     | 'never'
-    | undefined = 'daily'
+    | undefined = 'weekly'
   const sitemapData: MetadataRoute.Sitemap = [
     ...sitemapStatic.map((item) => ({
       url: `${domain}${item.url}`,
@@ -49,12 +65,12 @@ export default function sitemap(): MetadataRoute.Sitemap {
       changeFrequency: frequency,
       priority: item.priority,
     })),
-    ...sitemapStatic.map((item) => ({
-      url: `${domain}/ru${item.url}`,
-      lastModified: new Date(),
-      changeFrequency: frequency,
-      priority: item.priority,
-    })),
+    // ...sitemapStatic.map((item) => ({
+    //   url: `${domain}/ru${item.url}`,
+    //   lastModified: new Date(),
+    //   changeFrequency: frequency,
+    //   priority: item.priority,
+    // })),
   ]
   return sitemapData
 }

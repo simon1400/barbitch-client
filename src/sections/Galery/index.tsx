@@ -16,7 +16,7 @@ const Galery = ({ data }: { data: IGalery[] }) => {
   return (
     <section className={'pb-23 lg:pb-20'}>
       <h2 className={'text-lg lg:text-big uppercase mt-10 lg:mt-20 text-center -mb-1'}>
-        {'Follow'}
+        {'Naše práce'}
       </h2>
 
       <div className={'grid grid-cols-3 lg:grid-cols-6 grid-rows-2 lg:grid-rows-1 gap-1'}>

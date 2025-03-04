@@ -5,9 +5,12 @@ import { getHomeMeta } from 'fetch/getMeta'
 import { getHomepage } from 'fetch/homepage'
 import { getServiceHomepage } from 'fetch/service'
 import { SchemaJsonHomepage } from 'schemasOrg/homepage'
+import About from 'sections/About'
+import Galery from 'sections/Galery'
+import HandSec from 'sections/HandSec'
+import Posts from 'sections/Posts'
+import Reviews from 'sections/Reviews'
 import { Top } from 'sections/Top/Top'
-
-import DynamicSections from './DynamicSection'
 
 export async function generateMetadata(): Promise<Metadata> {
   const homepageMeta = await getHomeMeta()
@@ -68,7 +71,11 @@ const Home = async () => {
       <main>
         <SchemaJsonHomepage />
         <Top title={data.title} />
-        <DynamicSections data={data} dataService={dataService} posts={posts} />
+        <HandSec service={dataService} />
+        <Galery data={data.galery} />
+        {!!posts.length && <Posts data={posts} />}
+        <About text={data.aboutUs} />
+        <Reviews />
       </main>
     )
   } catch (error) {

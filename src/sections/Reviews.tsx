@@ -1,3 +1,4 @@
+'use client'
 import Button from 'components/Button'
 import Review, { Stars } from 'components/Review'
 import Image from 'next/image'

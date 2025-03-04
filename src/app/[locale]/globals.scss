@@ -55,9 +55,9 @@ body{
     @apply text-baseText mb-5;
   }
   ol {
-    padding-left: 30px;
-    
-    @apply mb-11;
+    padding-left: 25px;
+    list-style-type: decimal;
+    @apply text-baseText mb-5;
     > li {
       padding-bottom: 20px;
       &::marker{
@@ -70,26 +70,31 @@ body{
           @apply text-baseText font-bold;
         }
       }
-      > ul {
-        list-style: none;
-        padding-top: 6px;
-        > li {
-          color: $accent !important;
-          position: relative;
-          &:before{
-            content: '';
-            display: block;
-            position: absolute;
-            width: 14px;
-            height: 1.5px;
-            background-color: rgba($primary, .5);
-            left: -25px;
-            top: 18px;
-          }
-          p{
-            margin-bottom: 0;
-          }
-        }
+      ul {
+        padding-left: 0px;
+      }
+    }
+  }
+  ul {
+    list-style: none;
+    padding-top: 6px;
+    padding-left: 30px;
+    @apply text-baseText mb-5;
+    > li {
+      color: $accent !important;
+      position: relative;
+      &:before{
+        content: '';
+        display: block;
+        position: absolute;
+        width: 14px;
+        height: 1.5px;
+        background-color: rgba($primary, .5);
+        left: -25px;
+        top: 18px;
+      }
+      p{
+        margin-bottom: 0;
       }
     }
   }
@@ -102,23 +107,29 @@ body{
         @apply text-resTop mb-6;
       }
     }
+    h3 {
+      @apply text-h5 mb-5;
+    }
     p {
       @apply text-baseSm mb-5;
     }
     ol {
       padding-left: 20px;
-      @apply mb-5;
-      > li {
-        > ul {
-          padding-top: 5px;
-          li{
-            position: relative;
-          &:before{
-            width: 14px;
-            left: -22px;
-            top: 15px;
-          }
-          }
+      @apply text-baseSm mb-5;
+      ul {
+        padding-left: 20px;
+      }
+    }
+    ul {
+      padding-top: 5px;
+      padding-left: 20px;
+      @apply text-baseSm mb-5;
+      li{
+        position: relative;
+        &:before{
+          width: 14px;
+          left: -22px;
+          top: 15px;
         }
       }
     }
