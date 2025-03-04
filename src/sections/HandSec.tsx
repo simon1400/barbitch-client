@@ -23,7 +23,7 @@ const HandSec = ({ service }: { service: IDataHomepageService[] }) => {
             <ul>
               {service.map((item: IDataHomepageService) => (
                 <li key={item.shortTitle} className={'mb-4'}>
-                  <Link href={`/${item.slug}`} className={'flex text-md1 uppercase gap-3'}>
+                  <Link href={`/service/${item.slug}`} className={'flex text-md1 uppercase gap-3'}>
                     <span>{item.shortTitle}</span>
                     <ArrowRightIcon />
                   </Link>
