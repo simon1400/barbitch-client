@@ -11,6 +11,7 @@ export interface IDataPriceList {
       juniorPrice: string
       masterPrice?: string
       topMasterPrice?: string
+      linkRezervation?: string
     }[]
   }[]
 }

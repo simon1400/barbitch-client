@@ -3,6 +3,8 @@ import type { Metadata } from 'next'
 import { getPricelistMeta } from 'fetch/getMeta'
 import { getPriceList, getPricelistPage } from 'fetch/pricelist'
 import parse from 'html-react-parser'
+import { CalendarIcon } from 'icons/Calendar'
+import Link from 'next/link'
 import { Top } from 'sections/Top/Top'
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -98,31 +100,51 @@ const PriceList = async () => {
                       </thead>
                     )}
                     <tbody>
-                      {item.map(({ title, juniorPrice, masterPrice, topMasterPrice }) => (
-                        <tr
-                          key={title}
-                          className={
-                            'text-right text-sm font-normal md:text-sm11 border-b-[1.5px] border-[#1616154D]'
-                          }
-                        >
-                          <td className={'text-left py-2 md:py-3.5 pr-2 md:pr-3.5 w-full'}>
-                            {title}
-                          </td>
-                          <td className={'font-bold whitespace-nowrap p-2 md:p-3.5'}>
-                            {juniorPrice}
-                          </td>
-                          {count >= 1 && (
-                            <td className={'font-bold p-2 md:p-3.5 whitespace-nowrap'}>
-                              {masterPrice}
+                      {item.map(
+                        ({ title, juniorPrice, masterPrice, topMasterPrice, linkRezervation }) => (
+                          <tr
+                            key={title}
+                            className={
+                              'text-right text-sm font-normal md:text-sm11 border-b-[1.5px] border-[#1616154D]'
+                            }
+                          >
+                            <td className={'text-left py-2 md:py-3.5 pr-2 md:pr-3.5 w-full'}>
+                              {title}
                             </td>
-                          )}
-                          {count === 2 && (
-                            <td className={'font-bold pl-2 md:pl-3.5 whitespace-nowrap'}>
-                              {topMasterPrice}
+                            <td
+                              className={
+                                'font-bold whitespace-nowrap p-2 md:p-3.5 inline-flex items-center'
+                              }
+                            >
+                              {!!linkRezervation && (
+                                <Link
+                                  href={linkRezervation}
+                                  target={'_blank'}
+                                  className={
+                                    'text-[10px] font-bold text-primary mr-7 hover:underline'
+                                  }
+                                >
+                                  <span className={'hidden md:inline'}>{'Rezervace'}</span>
+                                  <span className={'md:hidden inline-block w-5 h-5'}>
+                                    <CalendarIcon />
+                                  </span>
+                                </Link>
+                              )}
+                              <span>{juniorPrice}</span>
                             </td>
-                          )}
-                        </tr>
-                      ))}
+                            {count >= 1 && (
+                              <td className={'font-bold p-2 md:p-3.5 whitespace-nowrap'}>
+                                {masterPrice}
+                              </td>
+                            )}
+                            {count === 2 && (
+                              <td className={'font-bold pl-2 md:pl-3.5 whitespace-nowrap'}>
+                                {topMasterPrice}
+                              </td>
+                            )}
+                          </tr>
+                        ),
+                      )}
                     </tbody>
                   </table>
                 )
