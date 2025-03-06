@@ -1,12 +1,18 @@
 import type { Metadata } from 'next'
+
 import { getArticle, getArticleMeta } from 'fetch/article'
 import parse from 'html-react-parser'
+import { notFound } from 'next/navigation'
 import { Top } from 'sections/Top/Top'
 
 // Функция generateMetadata с правильным типом params
 export async function generateMetadata({ params }: any): Promise<Metadata> {
   const { article } = params
   const { title, metaData } = await getArticleMeta(article)
+
+  if (!metaData) {
+    return notFound()
+  }
 
   return {
     title: metaData?.title || title,
@@ -35,6 +41,10 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
 const Article = async ({ params }: any) => {
   const { article } = params
   const data = await getArticle(article)
+
+  if (!data) {
+    return notFound()
+  }
 
   return (
     <main>
