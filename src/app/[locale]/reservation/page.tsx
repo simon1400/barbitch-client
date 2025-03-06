@@ -8,7 +8,7 @@ const Reservation = () => {
   return (
     <main>
       <Top title={'Rezervace'} small />
-      <section>
+      {/* <section>
         <iframe
           src={
             'https://noona.app/cs//barbitch/book?iframe=true&darkModeDisabled=true&showCancelButton=true'
@@ -18,7 +18,7 @@ const Reservation = () => {
           height={'1000px'}
           style={{ height: '80vh', backgroundColor: 'transparent' }}
         />
-      </section>
+      </section> */}
     </main>
   )
 }
