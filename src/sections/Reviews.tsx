@@ -66,8 +66,6 @@ const Reviews = () => {
                   spaceBetween: 30,
                 },
               }}
-              onSlideChange={() => console.log('slide change')}
-              onSwiper={(swiper) => console.log(swiper)}
             >
               {reviews.map((item, idx) => {
                 if (length / 2 === idx) {

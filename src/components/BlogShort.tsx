@@ -55,7 +55,7 @@ export const BlogShort = ({ data }: { data: IDataPostShort }) => {
         <h3 className={'text-h5'}>
           <span className={'duration-300 group-hover:text-primary'}>
             {data.title.replaceAll(';sp;', ' ')}
-            <b className={'text-primary duration-300 ml-3 group-hover:ml-5'}>{'→'}</b>
+            <b className={'text-primary duration-300 ml-3 group-hover:ml-5'}>{' →'}</b>
           </span>
         </h3>
       </div>
