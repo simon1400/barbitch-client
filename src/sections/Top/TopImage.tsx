@@ -27,9 +27,9 @@ export const TopImage = ({ title, image }: { title: string; image: IGalery }) =>
       <div className={'mix-blend-multiply absolute h-full w-full -z-10 bg-cover bg-center'}>
         <Image
           className={'object-cover object-center opacity-70 grayscale'}
-          src={image.url || '/assets/bigBaner.jpg'}
+          src={image?.url || '/assets/bigBaner.jpg'}
           fill
-          alt={image.alternativeText || ''}
+          alt={image?.alternativeText || ''}
         />
       </div>
 
