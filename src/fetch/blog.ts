@@ -4,7 +4,7 @@ import { Axios } from '../lib/api'
 
 export interface IDataPost {
   title: string
-  
+
   image: IGalery
   dynamicContent: any[]
 }
@@ -89,6 +89,10 @@ export const getRandomPost = async () => {
           fields: ['hash', 'url', 'alternativeText'],
         },
       },
+      pagination: {
+        start: 0,
+        limit: 3,
+      },
     },
     {
       encodeValuesOnly: true, // prettify URL
@@ -96,7 +100,6 @@ export const getRandomPost = async () => {
   )
 
   const data: IDataPostShort[] = await Axios.get(`/api/blogs?${query}`)
-  console.log(data)
   return data
 }
 

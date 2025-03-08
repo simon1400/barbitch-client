@@ -14,7 +14,7 @@ const Posts = ({ data, blog = false }: { data: IDataPostShort[]; blog?: boolean 
         {blog ? 'STARŠÍ PŘÍSPĚVKY' : 'B.B.BLOG'}
       </h2>
       <div>
-        <MasonryGrid>
+        <MasonryGrid sm={1}>
           {data.map((item: IDataPostShort) => (
             <BlogShort key={item.title} data={item} />
           ))}

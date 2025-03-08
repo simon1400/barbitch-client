@@ -23,13 +23,13 @@ export const BlogBigShort = ({ data }: { data: IDataPostShort }) => {
           'max-w-[954px] w-full -bottom-40 bg-accent text-white absolute py-12 px-10 md:py-16.5 md:px-20'
         }
       >
-        <h2 className={'text-resBig md:text-xxl mb-7'}>
+        <h2 className={'text-resBig md:text-xxl md:mb-7'}>
           <span className={'duration-300 group-hover:text-primary'}>
             {data.title.replaceAll(';sp;', ' ')}
             <b className={'text-primary duration-300 ml-3 group-hover:ml-5'}>{'→'}</b>
           </span>
         </h2>
-        <div className={'text-baseSm md:text-baseText'}>
+        <div className={'hidden md:visible text-baseSm md:text-baseText'}>
           {parse(data?.contentText || '', { trim: true })}
         </div>
       </div>

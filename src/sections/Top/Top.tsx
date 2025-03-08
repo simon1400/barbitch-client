@@ -30,7 +30,7 @@ export const Top = ({ title, small = false }: { title: string; small?: boolean }
       <div
         className={`container mx-auto w-full max-w-[1400px] px-4 ${small ? '' : 'md:min-h-[500px]'}`}
       >
-        <div className={'pb-23 md:pb-15 max-w-[650px]'}>
+        <div className={`${small ? 'pb-10' : 'pb-23'} md:pb-15 max-w-[650px]`}>
           <TopContent title={title} ctrls={ctrls} />
 
           <motion.div initial={{ opacity: 0, y: -20 }} animate={buttonAnimation}>
