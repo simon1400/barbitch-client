@@ -130,7 +130,7 @@ const Menu = ({ open, nav }: { open: boolean; nav: IDataNav }) => {
               className={'mt-5 lg:hidden'}
               id={'book-button'}
               text={'Rezervovat termín'}
-              href={'https://noona.app/cs/barbitch/book'}
+              href={'/reservation'}
             />
           </div>
         </div>

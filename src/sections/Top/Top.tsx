@@ -34,12 +34,7 @@ export const Top = ({ title, small = false }: { title: string; small?: boolean }
           <TopContent title={title} ctrls={ctrls} />
 
           <motion.div initial={{ opacity: 0, y: -20 }} animate={buttonAnimation}>
-            <Button
-              text={'Rezervovat termín'}
-              blank
-              id={'book-button'}
-              href={'https://noona.app/cs/barbitch/book'}
-            />
+            <Button text={'Rezervovat termín'} id={'book-button'} href={'/reservation'} />
           </motion.div>
         </div>
       </div>

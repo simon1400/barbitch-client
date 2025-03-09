@@ -80,7 +80,7 @@ const Service = async ({ params }: any) => {
           className={'mt-5'}
           id={'book-button'}
           text={'Rezervovat termín'}
-          href={'https://noona.app/cs/barbitch/book'}
+          href={'/reservation'}
         />
       </Section>
     </main>

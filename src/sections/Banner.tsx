@@ -11,7 +11,7 @@ const duration = 40
 export const Banner = ({ data }: { data: IDataBanner }) => {
   const pathname = usePathname()
 
-  if (pathname === '/kontakt') {
+  if (pathname === '/kontakt' || pathname === '/reservation') {
     return null
   }
 

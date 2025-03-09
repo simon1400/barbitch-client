@@ -32,6 +32,10 @@ export const Header = ({ dataNav, linkReserve }: { dataNav: IDataNav; linkReserv
     setMenu(false)
   }, [pathname])
 
+  if (pathname === '/reservation') {
+    return null
+  }
+
   return (
     <>
       <header className={'absolute w-full z-50'} role={'banner'} aria-label={'Основное меню'}>
