@@ -79,8 +79,9 @@ const Service = async ({ params }: any) => {
         <Button
           className={'mt-5'}
           id={'book-button'}
+          blank
           text={'Rezervovat termín'}
-          href={'/reservation'}
+          href={'https://noona.app/cs/barbitch/book'}
         />
       </Section>
     </main>
