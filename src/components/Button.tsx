@@ -1,7 +1,3 @@
-'use client'
-
-import Link from 'next/link'
-
 interface ButtonProps {
   text: string
   href: string
@@ -37,7 +33,7 @@ const Button = ({
   const combinedClasses = `${baseClasses} ${sizeClasses} ${colorClasses} ${className}`
 
   return (
-    <Link
+    <a
       type={'button'}
       href={href}
       target={blank ? '_blank' : '_self'}
@@ -46,7 +42,7 @@ const Button = ({
       onClick={onClick}
     >
       {text}
-    </Link>
+    </a>
   )
 }
 

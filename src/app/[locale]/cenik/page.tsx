@@ -4,7 +4,6 @@ import { getPricelistMeta } from 'fetch/getMeta'
 import { getPriceList, getPricelistPage } from 'fetch/pricelist'
 import parse from 'html-react-parser'
 import { CalendarIcon } from 'icons/Calendar'
-import Link from 'next/link'
 import { Top } from 'sections/Top/Top'
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -117,9 +116,10 @@ const PriceList = async () => {
                               }
                             >
                               {!!linkRezervation && (
-                                <Link
+                                <a
                                   href={linkRezervation}
                                   target={'_blank'}
+                                  id={'book-button'}
                                   className={
                                     'text-[10px] font-bold text-primary mr-7 hover:underline'
                                   }
@@ -128,7 +128,7 @@ const PriceList = async () => {
                                   <span className={'md:hidden inline-block w-5 h-5'}>
                                     <CalendarIcon />
                                   </span>
-                                </Link>
+                                </a>
                               )}
                               <span>{juniorPrice}</span>
                             </td>
