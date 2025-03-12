@@ -46,6 +46,10 @@ const sitemapStatic = [
     url: '/blog/co-je-laminace-oboci',
     priority: 0.7,
   },
+  {
+    url: '/blog/jak-spravne-pecovat-o-nehty-v-domacim-prostredi',
+    priority: 0.7,
+  },
 ]
 
 export default function sitemap(): MetadataRoute.Sitemap {
