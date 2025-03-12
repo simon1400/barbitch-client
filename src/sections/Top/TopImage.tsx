@@ -34,7 +34,7 @@ export const TopImage = ({ title, image }: { title: string; image: IGalery }) =>
       </div>
 
       <div className={`container mx-auto w-full max-w-[1400px] px-4`}>
-        <div className={'pb-23 md:pb-15 max-w-[650px]'}>
+        <div className={'pb-23 md:pb-15'}>
           <TopContent title={title} ctrls={ctrls} />
         </div>
       </div>

@@ -62,19 +62,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     | 'yearly'
     | 'never'
     | undefined = 'weekly'
-  const sitemapData: MetadataRoute.Sitemap = [
-    ...sitemapStatic.map((item) => ({
-      url: `${domain}${item.url}`,
-      lastModified: new Date(),
-      changeFrequency: frequency,
-      priority: item.priority,
-    })),
-    // ...sitemapStatic.map((item) => ({
-    //   url: `${domain}/ru${item.url}`,
-    //   lastModified: new Date(),
-    //   changeFrequency: frequency,
-    //   priority: item.priority,
-    // })),
-  ]
+
+  const sitemapData: MetadataRoute.Sitemap = sitemapStatic.map((item) => ({
+    url: `${domain}${item.url}`,
+    lastModified: new Date(),
+    changeFrequency: frequency,
+    priority: item.priority,
+  }))
+
   return sitemapData
 }
