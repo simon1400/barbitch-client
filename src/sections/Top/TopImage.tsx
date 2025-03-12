@@ -1,21 +1,6 @@
-'use client'
-
-import { handleAnimation } from 'helpers/topAnimation'
-import { useAnimation } from 'motion/react'
 import Image from 'next/image'
-import { useEffect } from 'react'
-
-import { TopContent } from './TopContent'
 
 export const TopImage = ({ title, image }: { title: string; image: IGalery }) => {
-  const ctrls = useAnimation()
-  const backgroundAnimation = useAnimation()
-  const buttonAnimation = useAnimation()
-
-  useEffect(() => {
-    handleAnimation(ctrls, backgroundAnimation, buttonAnimation)
-  })
-
   return (
     <div
       aria-labelledby={'top-title'}
@@ -34,8 +19,10 @@ export const TopImage = ({ title, image }: { title: string; image: IGalery }) =>
       </div>
 
       <div className={`container mx-auto w-full max-w-[1400px] px-4`}>
-        <div className={'pb-23 md:pb-15'}>
-          <TopContent title={title} ctrls={ctrls} />
+        <div className={'pb-15'}>
+          <h1 id={'top-title'} className={'text-md2 lg:text-top pb-4 uppercase'}>
+            {title}
+          </h1>
         </div>
       </div>
     </div>

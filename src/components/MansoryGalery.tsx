@@ -22,7 +22,7 @@ interface MasonryGalleryProps {
 export const MasonryGalery = ({ images }: MasonryGalleryProps) => {
   const [index, setIndex] = useState(-1)
   return (
-    <section className={'overflow-x-hidden'} aria-labelledby={'masonry-gallery'}>
+    <section className={'overflow-x-hidden mb-15'} aria-labelledby={'masonry-gallery'}>
       <h2 id={'masonry-gallery'} className={'sr-only'}>
         {'Masonry Gallery'}
       </h2>

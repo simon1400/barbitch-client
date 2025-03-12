@@ -1,19 +1,24 @@
 'use client'
 
 import Button from 'components/Button'
-import { handleAnimation } from 'helpers/topAnimation'
 import { motion, useAnimation } from 'motion/react'
 import { useEffect } from 'react'
 
-import { TopContent } from './TopContent'
-
 export const Top = ({ title, small = false }: { title: string; small?: boolean }) => {
-  const ctrls = useAnimation()
   const backgroundAnimation = useAnimation()
-  const buttonAnimation = useAnimation()
 
   useEffect(() => {
-    handleAnimation(ctrls, backgroundAnimation, buttonAnimation)
+    if (window.innerWidth >= 768) {
+      backgroundAnimation.start({
+        backgroundImage: `linear-gradient(0deg, rgba(231,30,110,1) 0%, rgba(255,0,101,0.5) 100%)`,
+        transition: { duration: 1.5, ease: [0.2, 0.65, 0.3, 0.9] },
+      })
+    } else {
+      backgroundAnimation.set({
+        backgroundImage: `linear-gradient(0deg, rgba(231,30,110,1) 0%, rgba(255,0,101,0.5) 100%)`,
+        transition: { duration: 1.5, ease: [0.2, 0.65, 0.3, 0.9] },
+      })
+    }
   })
 
   return (
@@ -31,16 +36,18 @@ export const Top = ({ title, small = false }: { title: string; small?: boolean }
         className={`container mx-auto w-full max-w-[1400px] px-4 ${small ? '' : 'md:min-h-[500px]'}`}
       >
         <div className={`${small ? 'pb-10' : 'pb-23'} md:pb-15 max-w-[650px]`}>
-          <TopContent title={title} ctrls={ctrls} />
+          <h1 id={'top-title'} className={'text-md2 lg:text-top pb-4 uppercase'}>
+            {title}
+          </h1>
 
-          <motion.div initial={{ opacity: 0, y: -20 }} animate={buttonAnimation}>
+          <div>
             <Button
               text={'Rezervovat termín'}
               id={'book-button'}
               blank
               href={'https://noona.app/cs/barbitch/book'}
             />
-          </motion.div>
+          </div>
         </div>
       </div>
     </motion.section>

@@ -47,7 +47,7 @@ const PriceList = async () => {
   return (
     <main>
       <Top title={dataPage.title} small />
-      <section className={'pt-20 pb-16'}>
+      <section className={'pb-16'}>
         <div className={'container mx-auto w-full max-w-[900px] px-4'}>
           {dataPage.contentText && (
             <div className={'w-full mb-20 text-xs1 lg:text-base'}>

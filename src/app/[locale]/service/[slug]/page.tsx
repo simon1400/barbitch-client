@@ -51,7 +51,7 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
 }
 
 const Section = ({ children, className }: { children: React.ReactNode; className?: string }) => (
-  <section className={`pt-10 pb-16 ${className || ''}`}>
+  <section className={`pb-16 ${className || ''}`}>
     <div className={'container mx-auto w-full max-w-[1400px] px-4'}>{children}</div>
   </section>
 )

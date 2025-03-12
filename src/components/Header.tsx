@@ -5,7 +5,6 @@ import type { IDataNav } from 'fetch/nav'
 import { Squash as Hamburger } from 'hamburger-react'
 import { LogoIcon } from 'icons/Logo'
 // import Lang from './Lang'
-import Link from 'next/link'
 import { useParams, usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
@@ -42,7 +41,7 @@ export const Header = ({ dataNav, linkReserve }: { dataNav: IDataNav; linkReserv
         <div className={'container mx-auto max-w-[1400px] px-4'}>
           <div className={'flex justify-between py-3 lg:py-8 items-center'}>
             <div>
-              <Link
+              <a
                 href={'/'}
                 className={'block max-w-[205px] lg:max-w-[290px]'}
                 aria-label={'Перейти на главную страницу'}
@@ -50,7 +49,7 @@ export const Header = ({ dataNav, linkReserve }: { dataNav: IDataNav; linkReserv
                 <LogoIcon
                   className={`w-full ${menu ? 'fill-primary' : params?.post ? 'fill-white' : 'fill-accent'}`}
                 />
-              </Link>
+              </a>
             </div>
 
             {/* Навигация справа */}

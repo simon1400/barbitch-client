@@ -89,6 +89,7 @@ export const getRandomPost = async () => {
           fields: ['hash', 'url', 'alternativeText'],
         },
       },
+      sort: ['createdAt:desc'],
       pagination: {
         start: 0,
         limit: 3,
