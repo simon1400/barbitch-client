@@ -33,7 +33,6 @@ export const getSlotService = async (eventId: string, employeesId: string) => {
   let employes = []
   if (employeesId === 'any') {
     employes = await getPersonalService(eventId)
-    console.log(employes)
   }
 
   const today = new Date()
