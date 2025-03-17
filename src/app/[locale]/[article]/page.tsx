@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 
+import { Container } from 'components/Container'
 import { getArticle, getArticleMeta } from 'fetch/article'
 import parse from 'html-react-parser'
 import { notFound } from 'next/navigation'
@@ -50,11 +51,11 @@ const Article = async ({ params }: any) => {
     <main>
       <Top title={data.title} small />
       <section className={'pb-16'}>
-        <div className={'container mx-auto w-full max-w-[900px] px-4'}>
+        <Container size={'lg'}>
           <div className={'w-full mb-20 text-xs1 lg:text-base content'}>
             {parse(data.content, { trim: true })}
           </div>
-        </div>
+        </Container>
       </section>
     </main>
   )

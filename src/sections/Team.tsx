@@ -1,9 +1,10 @@
+import { Container } from 'components/Container'
 import Image from 'next/image'
 
 const Team = () => {
   return (
     <section className={'bg-accent text-white py-20'}>
-      <div className={'container mx-auto w-full max-w-[1200px] px-4'}>
+      <Container size={'xl'}>
         <h2 className={'text-big mb-15'}>{'Nas tym'}</h2>
         <div className={'grid grid-cols-3 gap-15'}>
           <div className={'col-span-2'}>
@@ -72,7 +73,7 @@ const Team = () => {
             </div>
           </div>
         </div>
-      </div>
+      </Container>
     </section>
   )
 }

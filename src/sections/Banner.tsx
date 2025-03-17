@@ -1,6 +1,7 @@
 'use client'
 import type { IDataBanner } from 'fetch/banner'
 
+import { Container } from 'components/Container'
 import { motion } from 'motion/react'
 import { usePathname } from 'next/navigation'
 
@@ -11,7 +12,7 @@ const duration = 40
 export const Banner = ({ data }: { data: IDataBanner }) => {
   const pathname = usePathname()
 
-  if (pathname === '/kontakt' || pathname === '/reservation') {
+  if (pathname === '/kontakt' || pathname.includes('/book')) {
     return null
   }
 
@@ -47,7 +48,7 @@ export const Banner = ({ data }: { data: IDataBanner }) => {
         />
       </div>
 
-      <div className={'container mx-auto w-full max-w-[800px] px-4 z-50'}>
+      <Container size={'md'} className={'z-50'}>
         {!!data.title?.length && (
           <h2 className={'text-md1 lg:text-big pb-4 text-center'}>{data.title}</h2>
         )}
@@ -56,7 +57,7 @@ export const Banner = ({ data }: { data: IDataBanner }) => {
             <Button text={data.cta.title} id={'book-button'} blank href={data.cta.link} />
           </div>
         )}
-      </div>
+      </Container>
     </section>
   )
 }

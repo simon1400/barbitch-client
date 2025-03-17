@@ -1,4 +1,5 @@
 import Button from 'components/Button'
+import { Container } from 'components/Container'
 import parse from 'html-react-parser'
 
 export const Text = ({
@@ -8,7 +9,7 @@ export const Text = ({
 }) => {
   return (
     <section>
-      <div className={'container mx-auto w-full max-w-[840px] px-4'}>
+      <Container size={'md'}>
         <div>
           {data.title && <h2>{data.title}</h2>}
           <div>{parse(data.contentText, { trim: true })}</div>
@@ -18,7 +19,7 @@ export const Text = ({
             </div>
           )}
         </div>
-      </div>
+      </Container>
     </section>
   )
 }

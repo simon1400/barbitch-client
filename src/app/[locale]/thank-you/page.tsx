@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 
 import Button from 'components/Button'
+import { Container } from 'components/Container'
 import { HeartIcon } from 'icons/Heart'
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -44,12 +45,12 @@ export default function ThankYou() {
       <div className={'m-auto text-center relative'}>
         <div
           className={
-            'absolute top-[50%] left-[50%] -translate-y-1/2 -translate-x-1/2 w-[660px] h-[578px]'
+            'absolute top-[50%] left-[50%] -translate-y-1/2 -translate-x-1/2 w-[660px] h-[578px] -z-10'
           }
         >
           <HeartIcon />
         </div>
-        <div className={'container mx-auto w-full max-w-[900px] px-4'}>
+        <Container size={'lg'}>
           <div className={'mb-17'}>
             <h1 className={'mb-10 text-resLg md:text-xxl'}>{'Vaše rezervace je potvrzena.'}</h1>
             <p className={'text-white text-baseSm md:text-baseText'}>
@@ -62,7 +63,7 @@ export default function ThankYou() {
           <div>
             <Button text={'zpět na úvod'} href={'/'} />
           </div>
-        </div>
+        </Container>
       </div>
     </section>
   )

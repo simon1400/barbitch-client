@@ -1,6 +1,7 @@
 'use client'
 import type { IDataWorks } from 'fetch/works'
 
+import { Container } from 'components/Container'
 import { getWorks } from 'fetch/works'
 import { useOnMountUnsafe } from 'helpers/useOnMountUnsaf'
 import React, { useCallback, useEffect, useState } from 'react'
@@ -79,7 +80,7 @@ const Result = () => {
             setUsername={setUsername}
           />
         ) : (
-          <div className={'container mx-auto px-5 max-w-[800px]'}>
+          <Container size={'md'}>
             <div className={'flex justify-between flex-col md:flex-row items-center mb-5'}>
               <h2 className={'text-md1 mb-5 w-full text-center md:mb-0 md:text-left'}>
                 {data?.name}
@@ -106,7 +107,7 @@ const Result = () => {
             >
               {data?.offersDone && <Table data={data.offersDone} />}
             </div>
-          </div>
+          </Container>
         )}
       </section>
     </main>

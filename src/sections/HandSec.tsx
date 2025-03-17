@@ -1,6 +1,7 @@
 'use client'
 import type { IDataHomepageService } from 'fetch/service'
 
+import { Container } from 'components/Container'
 import { Hand } from 'components/Hand'
 import { ArrowRightIcon } from 'icons/ArrowIcon'
 import { SmallHandIcon } from 'icons/SmallHand'
@@ -10,12 +11,12 @@ const HandSec = ({ service }: { service: IDataHomepageService[] }) => {
   return (
     <>
       <section className={'hidden lg:block py-11.5'}>
-        <div className={'container mx-auto w-full max-w-[1400px] px-4'}>
+        <Container size={'xl'}>
           <Hand />
-        </div>
+        </Container>
       </section>
       <section className={'lg:hidden py-16'}>
-        <div className={'container mx-auto w-full max-w-[1400px] px-4'}>
+        <Container size={'xl'}>
           <div className={'pr-16 pl-8 mb-8'}>
             <SmallHandIcon />
           </div>
@@ -31,7 +32,7 @@ const HandSec = ({ service }: { service: IDataHomepageService[] }) => {
               ))}
             </ul>
           </nav>
-        </div>
+        </Container>
       </section>
     </>
   )

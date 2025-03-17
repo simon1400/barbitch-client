@@ -1,4 +1,5 @@
 import Button from 'components/Button'
+import { Container } from 'components/Container'
 import Image from 'next/image'
 
 export const Banner = ({
@@ -15,7 +16,7 @@ export const Banner = ({
 }) => {
   return (
     <section className={'pb-10 md:pb-17'}>
-      <div className={'container mx-auto w-full max-w-[840px] px-4'}>
+      <Container size={'md'}>
         <div
           style={{
             backgroundImage:
@@ -36,7 +37,7 @@ export const Banner = ({
           <h2 className={`banner-head`}>{data.title}</h2>
           <Button text={data.cta.title} blank href={data.cta.link} />
         </div>
-      </div>
+      </Container>
     </section>
   )
 }
