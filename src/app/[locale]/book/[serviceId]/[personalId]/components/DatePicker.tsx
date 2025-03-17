@@ -12,12 +12,10 @@ export const BookDatePicker = ({
   data,
   selectDate,
   selected,
-  setSelectMonth,
 }: {
   data: Date[]
   selected: Date
   selectDate: (value: Date) => void
-  setSelectMonth: (month: string) => void // Используем функцию вместо Dispatch
 }) => {
   return (
     <div className={'text-center'}>
@@ -30,10 +28,6 @@ export const BookDatePicker = ({
         excludeDates={data}
         showDisabledMonthNavigation
         inline
-        onMonthChange={(date) => {
-          setSelectMonth(format(date, 'MM'))
-          console.log(date)
-        }}
       />
       <div>{format(selected, 'EEEE d. MMMM', { locale: cs })}</div>
     </div>

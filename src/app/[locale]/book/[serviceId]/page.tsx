@@ -13,7 +13,10 @@ const BookPersonalPage = async ({ params }: any) => {
     <div className={'bg-[#252523] rounded-special-small px-3 pb-0'}>
       <ul>
         <li>
-          <Link className={'flex items-center justify-between py-5 px-1 gap-4'} href={''}>
+          <Link
+            className={'flex items-center justify-between py-5 px-1 gap-4'}
+            href={`/book/${serviceId}/any`}
+          >
             <span className={'flex'}>
               <span
                 className={

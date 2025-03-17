@@ -10,6 +10,8 @@ import {
 } from 'date-fns'
 import { Noona } from 'lib/api'
 
+import { getPersonalService } from './personalService'
+
 export interface ISlotService {
   date: string
   slots: {
@@ -27,7 +29,13 @@ export const filterFutureDates = (data: ISlotService[]) => {
   })
 }
 
-export const getSlotService = async (eventId: string, employeesId: string, selectMonth: string) => {
+export const getSlotService = async (eventId: string, employeesId: string) => {
+  let employes = []
+  if (employeesId === 'any') {
+    employes = await getPersonalService(eventId)
+    console.log(employes)
+  }
+
   const today = new Date()
 
   // Получаем актуальный месяц в формате 'MM'
@@ -52,7 +60,9 @@ export const getSlotService = async (eventId: string, employeesId: string, selec
     start_date,
     end_date,
     event_type_ids: eventId,
-    employee_id: employeesId,
+    employee_ids: employes?.length
+      ? employes.map((item: { id: string }) => item.id)
+      : [employeesId],
     type: 'available',
     select: ['date', 'slots.employeeIds', 'slots.time'],
   }

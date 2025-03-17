@@ -6,11 +6,11 @@ export const TimePicker = ({
   slots,
   handleSelect,
 }: {
-  slots: { time: string }[]
-  handleSelect: (time: string) => void
+  slots: { employeeIds: string[]; time: string }[]
+  handleSelect: (employeeIds: string, time: string) => void
 }) => {
-  const [morning, setMorning] = useState<{ time: string }[]>([])
-  const [afternoon, setAfternoon] = useState<{ time: string }[]>([])
+  const [morning, setMorning] = useState<{ time: string; employeeIds: string[] }[]>([])
+  const [afternoon, setAfternoon] = useState<{ time: string; employeeIds: string[] }[]>([])
 
   useEffect(() => {
     const filteredBefore12 = slots.filter((item) => {
@@ -32,7 +32,7 @@ export const TimePicker = ({
         {morning.map((item) => (
           <span
             key={item.time}
-            onClick={() => handleSelect(item.time)}
+            onClick={() => handleSelect(item.employeeIds[0], item.time)}
             className={
               'h-[38px] block mb- w-full bg-[#161615] rounded-special-small text-white text-[14px]/[38px] cursor-pointer hover:bg-primary duration-200'
             }
@@ -46,7 +46,7 @@ export const TimePicker = ({
         {afternoon.map((item) => (
           <span
             key={item.time}
-            onClick={() => handleSelect(item.time)}
+            onClick={() => handleSelect(item.employeeIds[0], item.time)}
             className={
               'h-[38px] block mb- w-full bg-[#161615] rounded-special-small text-white text-[14px]/[38px] cursor-pointer hover:bg-primary duration-200'
             }

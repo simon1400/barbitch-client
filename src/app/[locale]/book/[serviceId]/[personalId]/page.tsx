@@ -25,7 +25,6 @@ const BookCalendarPage: NextPage = () => {
   )
   const [slots, setSlots] = useState<{ employeeIds: string[]; time: string }[]>([])
   const [selected, setSelected] = useState<Date | null>(new Date())
-  const [selectMonth, setSelectMonth] = useState<string>(format(new Date(), 'MM'))
   const [loading, setLoading] = useState<boolean>(true)
 
   const handleFilterSlots = (
@@ -41,7 +40,7 @@ const BookCalendarPage: NextPage = () => {
     if (!serviceId || !personalId) return
     setLoading(true)
     try {
-      const res = await getSlotService(serviceId, personalId, selectMonth)
+      const res = await getSlotService(serviceId, personalId)
       setData(res)
     } catch (error) {
       console.error('Ошибка загрузки слотов:', error)
@@ -65,11 +64,7 @@ const BookCalendarPage: NextPage = () => {
     setSelected(value)
   }
 
-  const updateSelectMonth = (month: string) => {
-    setSelectMonth(month)
-  }
-
-  const handleSelect = async (time: string) => {
+  const handleSelect = async (employeeId: string, time: string) => {
     try {
       if (!time || !selected) throw new Error('Неверные входные данные')
 
@@ -91,7 +86,7 @@ const BookCalendarPage: NextPage = () => {
         event_types: [serviceId],
         number_of_guests: 1,
         starts_at: result,
-        employee: personalId,
+        employee: employeeId,
       })
       router.push(`/book/reservation/${slotRezervation.id}`)
     } catch (error) {
@@ -109,7 +104,6 @@ const BookCalendarPage: NextPage = () => {
             data={data?.executeDate || []}
             selected={selected as Date}
             selectDate={selectDate}
-            setSelectMonth={updateSelectMonth}
           />
           {slots.length ? <TimePicker slots={slots} handleSelect={handleSelect} /> : <EmptyAlert />}
         </>
