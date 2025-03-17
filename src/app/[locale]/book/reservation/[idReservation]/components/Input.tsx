@@ -1,4 +1,4 @@
-import type { IUserData } from './UserData'
+import type { IUserData } from '../page'
 
 export const Input = ({
   label,
