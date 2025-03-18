@@ -78,7 +78,7 @@ export const getSlotService = async (eventId: string, employeesId: string) => {
   const filteredData = filterFutureDates(response.data)
 
   const executeDate = filteredData
-    .filter((item) => item.slots.length > 0)
+    .filter((item) => !item.slots.length)
     .map((item) => parseISO(item.date))
 
   return {
