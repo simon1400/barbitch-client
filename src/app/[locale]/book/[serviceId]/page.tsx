@@ -19,8 +19,8 @@ const ProfileImage = ({ src, className }: { src: string; className?: string }) =
   </span>
 )
 
-const BookPersonalPage = async ({ params }: { params: { serviceId: string } }) => {
-  const { serviceId } = await params
+const BookPersonalPage = async ({ params }: any) => {
+  const { serviceId } = params
   const data: IPersonalService[] = (await getPersonalService(serviceId)) ?? []
 
   return (
