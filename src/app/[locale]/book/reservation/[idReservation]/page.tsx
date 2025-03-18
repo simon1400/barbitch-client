@@ -22,7 +22,7 @@ export interface IUserData {
 }
 
 const BookServicePage = () => {
-  const [data, setData] = useState<any>(null)
+  const [data, setData] = useState<null | any>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
 
@@ -47,28 +47,38 @@ const BookServicePage = () => {
         const reservationData = await getSlotReservation(idReservation)
         setData(reservationData)
       } catch (err) {
-        console.error('Ошибка при загрузке данных:', err) // Логируем ошибку
+        console.error('Ошибка при загрузке данных:', err)
         setError('Ошибка загрузки данных')
       } finally {
         setLoading(false)
       }
     }
 
-    if (idReservation) {
-      fetchData()
-    }
+    if (idReservation) fetchData()
   }, [idReservation])
+
+  const phoneData = useMemo(() => {
+    const defaultCountryCode = '+420'
+    return {
+      phone_country_code: userData.phone.startsWith('+')
+        ? userData.phone.slice(0, 4)
+        : defaultCountryCode,
+      phone_number: userData.phone.replace(/^\+\d{3}/, ''),
+    }
+  }, [userData.phone])
 
   const handleBook = async (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     e.preventDefault()
+    setError(null)
+
     try {
       const dataSend: IEventReqData = {
         time_slot_reservation: idReservation,
         customer_name: userData.name,
         number_of_guests: 1,
         email: userData.email,
-        phone_country_code: userData.phone.startsWith('+') ? userData.phone.slice(0, 4) : '+420',
-        phone_number: userData.phone.replace(/^\+\d{3}/, ''),
+        phone_country_code: phoneData.phone_country_code,
+        phone_number: phoneData.phone_number,
         comment: userData.comment,
       }
 
@@ -76,24 +86,35 @@ const BookServicePage = () => {
       router.push('/thank-you')
     } catch (err) {
       console.error('Ошибка бронирования:', err)
+      setError('Ошибка при бронировании. Попробуйте снова.')
     }
   }
 
   const formattedData = useMemo(() => {
     if (!data) return null
-    const eventType = data.event_types[0]
+    const eventType = data.event_types?.[0]
 
     return {
       date: format(data.starts_at, 'd.M.yyyy HH:mm'),
       duration: `${eventType.minutes} min`,
-      employee: data.employee.profile.name,
+      employee: data.employee?.profile.name ?? 'Неизвестно',
       service: eventType.title,
-      price: `${eventType.payments.total_payment} Kč`,
+      price: `${eventType.payments?.total_payment ?? 'N/A'} Kč`,
     }
   }, [data])
 
-  if (loading) return <p className={'text-white'}>{'Загрузка...'}</p>
-  if (error) return <p className={'text-red-500'}>{error}</p>
+  if (loading)
+    return (
+      <p className={'text-white'} aria-live={'polite'}>
+        {'Загрузка...'}
+      </p>
+    )
+  if (error)
+    return (
+      <p className={'text-red-500'} aria-live={'assertive'}>
+        {error}
+      </p>
+    )
   if (!formattedData) return null
 
   return (

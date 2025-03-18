@@ -30,58 +30,59 @@ export const filterFutureDates = (data: ISlotService[]) => {
 }
 
 export const getSlotService = async (eventId: string, employeesId: string) => {
-  let employes = []
-  if (employeesId === 'any') {
-    employes = await getPersonalService(eventId)
-  }
-
   const today = new Date()
 
-  // Получаем актуальный месяц в формате 'MM'
   const currentMonth = today.getMonth() + 1
   const currentYear = today.getFullYear()
 
-  // Определяем `start_date`: вчерашний день текущего месяца или 1-е число месяца
   const yesterday = subDays(today, 1)
   const startMonth =
     yesterday.getMonth() + 1 === currentMonth
       ? yesterday
       : new Date(currentYear, currentMonth - 1, 1)
-  const start_date = `${format(startMonth, 'yyyy-MM-dd')}`
+  const start_date = format(startMonth, 'yyyy-MM-dd')
 
-  // Определяем `end_date`: последний день месяца через 2 месяца
   const endMonth = addMonths(today, 2)
   const end_date = format(endOfMonth(endMonth), 'yyyy-MM-dd')
 
-  const queryString = new URLSearchParams()
-
-  const queryParams = {
+  const queryParams: Record<string, any> = {
     start_date,
     end_date,
     event_type_ids: eventId,
-    employee_ids: employes?.length
-      ? employes.map((item: { id: string }) => item.id)
-      : [employeesId],
     type: 'available',
     select: ['date', 'slots.employeeIds', 'slots.time'],
   }
 
+  if (employeesId === 'any') {
+    const employees = await getPersonalService(eventId)
+    queryParams.employee_ids = employees.map((item: { id: string }) => item.id)
+  } else {
+    queryParams.employee_id = employeesId
+  }
+
+  const queryString = new URLSearchParams()
   Object.entries(queryParams).forEach(([key, value]) => {
     if (Array.isArray(value)) {
-      value.forEach((val) => queryString.append(key, val))
+      value.forEach((val) => queryString.append(key, val.toString()))
     } else {
       queryString.append(key, value.toString())
     }
   })
 
-  const data = await Noona.get(`/companies/8qcJwRg6dbNh6Gqvm/time_slots?${queryString.toString()}`)
+  const response = await Noona.get(
+    `/companies/8qcJwRg6dbNh6Gqvm/time_slots?${queryString.toString()}`,
+  )
 
-  const filteredDates = filterFutureDates(data.data)
-    .filter((item) => item.slots.length === 0)
+  if (!response.data) return { executeDate: [], filteredData: [] }
+
+  const filteredData = filterFutureDates(response.data)
+
+  const executeDate = filteredData
+    .filter((item) => item.slots.length > 0)
     .map((item) => parseISO(item.date))
 
   return {
-    executeDate: filteredDates,
-    filteredData: filterFutureDates(data.data),
+    executeDate,
+    filteredData,
   }
 }
