@@ -21,10 +21,21 @@ export interface IUserData {
   comment: string
 }
 
+export interface IErrorUserData {
+  name: boolean
+  phone: boolean
+  email: boolean
+}
+
 const BookServicePage = () => {
   const [data, setData] = useState<null | any>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [errorData, setErrorData] = useState<IErrorUserData>({
+    name: false,
+    phone: false,
+    email: false,
+  })
 
   const router = useRouter()
   const { idReservation } = useParams() as { idReservation: string }
@@ -39,6 +50,7 @@ const BookServicePage = () => {
 
   const handleChange = useCallback((name: string, value: string | boolean) => {
     setUserData((prev) => ({ ...prev, [name]: value }))
+    setErrorData((prev) => ({ ...prev, [name]: false }))
   }, [])
 
   useEffect(() => {
@@ -70,6 +82,17 @@ const BookServicePage = () => {
   const handleBook = async (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     e.preventDefault()
     setError(null)
+
+    const errors: Partial<typeof errorData> = {}
+
+    if (!userData.name.length) errors.name = true
+    if (userData.phone.length < 9) errors.phone = true
+    if (!userData.email.includes('@')) errors.email = true
+
+    if (Object.keys(errors).length) {
+      setErrorData((prev) => ({ ...prev, ...errors }))
+      return
+    }
 
     try {
       const dataSend: IEventReqData = {
@@ -143,7 +166,7 @@ const BookServicePage = () => {
         </ul>
       </div>
 
-      <UserData userData={userData} handleChange={handleChange} />
+      <UserData userData={userData} handleChange={handleChange} errorData={errorData} />
 
       <div className={'bg-[#252523] rounded-special-small px-5 py-3.5 mb-5'}>
         <div className={'max-w-[270px] mx-auto'}>
