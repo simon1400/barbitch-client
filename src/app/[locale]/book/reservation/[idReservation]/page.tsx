@@ -4,13 +4,7 @@ import { getSlotReservation } from '../../fetch/slotReservation'
 
 import BookForm from './BookForm'
 
-interface Props {
-  params: {
-    idReservation: string
-  }
-}
-
-export default async function BookServicePage({ params }: Props) {
+export default async function BookServicePage({ params }: any) {
   const { idReservation } = await params
   const data = await getSlotReservation(idReservation)
 
