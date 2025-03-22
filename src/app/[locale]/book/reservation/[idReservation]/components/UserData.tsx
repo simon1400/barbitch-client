@@ -1,5 +1,6 @@
 'use client'
-import type { IErrorUserData, IUserData } from '../page'
+
+import type { IErrorUserData, IUserData } from '../BookForm'
 
 import { Switch } from '@/components/ui/switch'
 
@@ -17,7 +18,7 @@ export const UserData = ({
   return (
     <div className={'bg-[#252523] rounded-special-small px-5 pt-3.5 pb-2 mb-5'}>
       <h2 className={'text-sm text-white mb-5 text-center'}>{'Vaše informace'}</h2>
-      <div className={'max-w-[270px] mx-auto'}>
+      <form className={'block max-w-[270px] mx-auto'}>
         <Input
           label={'Jméno'}
           data={userData}
@@ -51,12 +52,12 @@ export const UserData = ({
           <textarea
             value={userData.comment}
             className={
-              'bg-[#161615] mb-5 border block w-full border-[#4A4A4A] rounded-special-small text-book text-white h-[90px] resize-none p-3.5'
+              'bg-[#161615] mb-5 border block w-full border-[#4A4A4A] rounded-special-small text-book text-white h-[90px] resize-none p-3.5 focus:border-[#929292] outline-none'
             }
             onChange={(e) => handleChange('comment', e.target.value)}
           />
         )}
-      </div>
+      </form>
     </div>
   )
 }

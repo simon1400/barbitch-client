@@ -1,144 +1,28 @@
-'use client'
-
-import type { IEventReqData } from '../../fetch/createEvent'
-
-import Button from 'components/Button'
-import { Container } from 'components/Container'
 import { format } from 'date-fns'
-import { useParams, useRouter } from 'next/navigation'
-import { useCallback, useEffect, useMemo, useState } from 'react'
 
-import { createEvent } from '../../fetch/createEvent'
 import { getSlotReservation } from '../../fetch/slotReservation'
 
-import { UserData } from './components/UserData'
+import BookForm from './BookForm'
 
-export interface IUserData {
-  name: string
-  phone: string
-  email: string
-  checkComent: boolean
-  comment: string
-}
-
-export interface IErrorUserData {
-  name: boolean
-  phone: boolean
-  email: boolean
-}
-
-const BookServicePage = () => {
-  const [data, setData] = useState<null | any>(null)
-  const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
-  const [errorData, setErrorData] = useState<IErrorUserData>({
-    name: false,
-    phone: false,
-    email: false,
-  })
-
-  const router = useRouter()
-  const { idReservation } = useParams() as { idReservation: string }
-
-  const [userData, setUserData] = useState<IUserData>({
-    name: '',
-    phone: '',
-    email: '',
-    checkComent: false,
-    comment: '',
-  })
-
-  const handleChange = useCallback((name: string, value: string | boolean) => {
-    setUserData((prev) => ({ ...prev, [name]: value }))
-    setErrorData((prev) => ({ ...prev, [name]: false }))
-  }, [])
-
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const reservationData = await getSlotReservation(idReservation)
-        setData(reservationData)
-      } catch (err) {
-        console.error('Ошибка при загрузке данных:', err)
-        setError('Ошибка загрузки данных')
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    if (idReservation) fetchData()
-  }, [idReservation])
-
-  const phoneData = useMemo(() => {
-    const defaultCountryCode = '+420'
-    return {
-      phone_country_code: userData.phone.startsWith('+')
-        ? userData.phone.slice(0, 4)
-        : defaultCountryCode,
-      phone_number: userData.phone.replace(/^\+\d{3}/, ''),
-    }
-  }, [userData.phone])
-
-  const handleBook = async (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-    e.preventDefault()
-    setError(null)
-
-    const errors: Partial<typeof errorData> = {}
-
-    if (!userData.name.length) errors.name = true
-    if (userData.phone.length < 9) errors.phone = true
-    if (!userData.email.includes('@')) errors.email = true
-
-    if (Object.keys(errors).length) {
-      setErrorData((prev) => ({ ...prev, ...errors }))
-      return
-    }
-
-    try {
-      const dataSend: IEventReqData = {
-        time_slot_reservation: idReservation,
-        customer_name: userData.name,
-        number_of_guests: 1,
-        email: userData.email,
-        phone_country_code: phoneData.phone_country_code,
-        phone_number: phoneData.phone_number,
-        comment: userData.comment,
-      }
-
-      await createEvent(dataSend)
-      router.push('/thank-you')
-    } catch (err) {
-      console.error('Ошибка бронирования:', err)
-      setError('Ошибка при бронировании. Попробуйте снова.')
-    }
+interface Props {
+  params: {
+    idReservation: string
   }
+}
 
-  const formattedData = useMemo(() => {
-    if (!data) return null
-    const eventType = data.event_types?.[0]
+export default async function BookServicePage({ params }: Props) {
+  const { idReservation } = await params
+  const data = await getSlotReservation(idReservation)
 
-    return {
-      date: format(data.starts_at, 'd.M.yyyy HH:mm'),
-      duration: `${eventType.minutes} min`,
-      employee: data.employee?.profile.name ?? 'Неизвестно',
-      service: eventType.title,
-      price: `${eventType.payments?.total_payment ?? 'N/A'} Kč`,
-    }
-  }, [data])
+  const eventType = data.event_types?.[0]
 
-  if (loading)
-    return (
-      <p className={'text-white'} aria-live={'polite'}>
-        {'Загрузка...'}
-      </p>
-    )
-  if (error)
-    return (
-      <p className={'text-red-500'} aria-live={'assertive'}>
-        {error}
-      </p>
-    )
-  if (!formattedData) return null
+  const formattedData = {
+    date: format(data.starts_at, 'd.M.yyyy HH:mm'),
+    duration: `${eventType.minutes} min`,
+    employee: data.employee?.profile.name ?? 'Неизвестно',
+    service: eventType.title,
+    price: `${eventType.payments?.total_payment ?? 'N/A'} Kč`,
+  }
 
   return (
     <>
@@ -150,14 +34,12 @@ const BookServicePage = () => {
             { label: 'Datum', value: formattedData.date },
             { label: 'Trvání', value: formattedData.duration },
             { label: 'Zaměstnanec', value: formattedData.employee },
-            { label: 'Služba', value: formattedData.service },
+            { label: 'Služba', value: formattedData.service, border: true },
             { label: 'Celková cena', value: formattedData.price },
-          ].map(({ label, value }) => (
+          ].map(({ label, value, border }) => (
             <li
               key={label}
-              className={
-                'py-2.5 flex justify-between border-t-2 border-dotted border-[#3C3C3C] first:border-t-0'
-              }
+              className={`flex justify-between ${border ? 'border-t-2 border-b-2 border-dotted border-[#3C3C3C] py-5 mt-2.5' : 'py-2.5'} last:py-5`}
             >
               <span className={'text-[#A0A0A0]'}>{label}</span>
               <span className={'text-white'}>{value}</span>
@@ -166,34 +48,7 @@ const BookServicePage = () => {
         </ul>
       </div>
 
-      <UserData userData={userData} handleChange={handleChange} errorData={errorData} />
-
-      <div className={'bg-[#252523] rounded-special-small px-5 py-3.5 mb-5'}>
-        <div className={'max-w-[270px] mx-auto'}>
-          <h3 className={'text-[#FFFFFFBF] text-[16px] mb-3.5'}>{'Storno podmínky'}</h3>
-          <p className={'text-[#FFFFFF99] text-xss font-normal'}>
-            {'Vezměte prosím na vědomí, že schůzky lze zrušit pouze s tříhodinovým předstihem.'}
-          </p>
-        </div>
-      </div>
-
-      <div
-        className={
-          'fixed flex items-center bottom-0 left-0 w-full h-[70px] bg-[#252523] shadow-default-level4'
-        }
-      >
-        <Container size={'sm'} className={'text-right'}>
-          <Button
-            text={'POTVRDIT REZERVACI'}
-            inverse
-            small
-            href={'/thank-you'}
-            onClick={handleBook}
-          />
-        </Container>
-      </div>
+      <BookForm idReservation={idReservation} />
     </>
   )
 }
-
-export default BookServicePage

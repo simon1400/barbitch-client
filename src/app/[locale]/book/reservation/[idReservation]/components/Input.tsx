@@ -1,4 +1,4 @@
-import type { IUserData } from '../page'
+import type { IUserData } from '../BookForm'
 
 export const Input = ({
   label,
@@ -23,6 +23,7 @@ export const Input = ({
       <input
         className={`bg-[#161615] border block w-full ${error ? 'border-[#E71E1E]' : 'border-[#4A4A4A]'} outline-none focus:border-[#929292] rounded-special-small text-book text-white h-10 px-3.5`}
         type={'text'}
+        name={name}
         value={data[name]}
         onChange={(e) => handleChange(name, e.target.value)}
       />

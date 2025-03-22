@@ -1,6 +1,7 @@
 import { Container } from 'components/Container'
 
 import { BookHeader } from './components/BookHeader'
+import HideSmartsupp from './components/HiddenChatbox'
 
 export default async function BookLayout({
   children,
@@ -12,6 +13,7 @@ export default async function BookLayout({
       <Container size={'sm'}>
         <BookHeader />
         {children}
+        <HideSmartsupp />
       </Container>
     </main>
   )

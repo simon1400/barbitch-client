@@ -33,8 +33,11 @@ const BookPersonalPage = async ({ params }: any) => {
               href={`/book/${serviceId}/any`}
             >
               <span className={'flex'}>
-                <ProfileImage src={'/assets/iconService.jpg'} className={'w-5.5 h-5.5'} />
-                <ProfileImage src={'/assets/iconService.jpg'} className={'w-5.5 h-5.5 -ml-2.5'} />
+                <ProfileImage src={'/assets/iconService.jpg'} className={'min-w-5.5 w-5.5 h-5.5'} />
+                <ProfileImage
+                  src={'/assets/iconService.jpg'}
+                  className={'min-w-5.5 w-5.5 h-5.5 -ml-2.5'}
+                />
               </span>
               <h2 className={'w-full text-xs1 leading-none'}>{'Kdokoliv'}</h2>
               <ChevronRight />
@@ -42,12 +45,15 @@ const BookPersonalPage = async ({ params }: any) => {
           </li>
         )}
         {data.map((personal) => (
-          <li key={personal.id} className={'border-t-2 border-[#3C3C3C] border-dotted'}>
+          <li
+            key={personal.id}
+            className={'border-t-2 first:border-t-0 border-[#3C3C3C] border-dotted'}
+          >
             <Link
               className={'flex items-center justify-between py-4 px-1 gap-4'}
               href={`/book/${serviceId}/${personal.id}`}
             >
-              <ProfileImage src={'/assets/iconService.jpg'} className={'w-9 h-9'} />
+              <ProfileImage src={'/assets/iconService.jpg'} className={'min-w-9 w-9 h-9'} />
               <h2 className={'w-full text-xs1 leading-none'}>{personal.profile.name}</h2>
               <ChevronRight />
             </Link>
