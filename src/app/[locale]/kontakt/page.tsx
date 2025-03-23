@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 
+import { getLinkToReserve } from 'fetch/contact'
 import { getContactMeta } from 'fetch/getMeta'
 import { Top } from 'sections/Top/Top'
 
@@ -47,9 +48,10 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 const Contact = async () => {
+  const dataLink = await getLinkToReserve()
   return (
     <main>
-      <Top title={'Kontakt'} small />
+      <Top title={'Kontakt'} small linkToReserve={dataLink.linkToReserve} />
     </main>
   )
 }

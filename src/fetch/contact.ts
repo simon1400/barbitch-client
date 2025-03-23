@@ -17,6 +17,10 @@ export interface IDataContact {
   linkToReserve: string
 }
 
+export interface IDataLinkToReserve {
+  linkToReserve: string
+}
+
 const query = qs.stringify(
   {
     fields: ['phone', 'email', 'openHours', 'address', 'linkToMap', 'linkToReserve'],
@@ -30,4 +34,18 @@ const query = qs.stringify(
 export const getContact = async () => {
   const dataContact: IDataContact = await Axios.get(`/api/contact?${query}`)
   return dataContact
+}
+
+const queryLink = qs.stringify(
+  {
+    fields: ['linkToReserve'],
+  },
+  {
+    encodeValuesOnly: true, // prettify URL
+  },
+)
+
+export const getLinkToReserve = async () => {
+  const data: IDataLinkToReserve = await Axios.get(`/api/contact?${queryLink}`)
+  return data
 }

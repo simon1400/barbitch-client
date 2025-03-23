@@ -1,3 +1,4 @@
+import { Container } from 'components/Container'
 import Image from 'next/image'
 
 export const TopImage = ({ title, image }: { title: string; image: IGalery }) => {
@@ -18,13 +19,13 @@ export const TopImage = ({ title, image }: { title: string; image: IGalery }) =>
         />
       </div>
 
-      <div className={`container mx-auto w-full max-w-[1400px] px-4`}>
+      <Container size={'xl'}>
         <div className={'pb-15'}>
           <h1 id={'top-title'} className={'text-md2 lg:text-top pb-4 uppercase'}>
             {title}
           </h1>
         </div>
-      </div>
+      </Container>
     </div>
   )
 }

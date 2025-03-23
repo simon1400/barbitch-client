@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 
 import { getAllPost, getBlogPage } from 'fetch/blog'
+import { getLinkToReserve } from 'fetch/contact'
 import { getBlogPageMeta } from 'fetch/getMeta'
 import Posts from 'sections/Posts'
 import { Top } from 'sections/Top/Top'
@@ -33,12 +34,15 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 const Blog = async () => {
-  const data = await getBlogPage()
-  const posts = await getAllPost()
+  const [data, posts, dataLink] = await Promise.all([
+    getBlogPage(),
+    getAllPost(),
+    getLinkToReserve(),
+  ])
 
   return (
     <main>
-      <Top title={data.title} small />
+      <Top title={data.title} small linkToReserve={dataLink.linkToReserve} />
       <section className={'pb-16'}>
         <Posts data={posts} blog />
       </section>

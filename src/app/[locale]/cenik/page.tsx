@@ -1,5 +1,7 @@
 import type { Metadata } from 'next'
 
+import { Container } from 'components/Container'
+import { getLinkToReserve } from 'fetch/contact'
 import { getPricelistMeta } from 'fetch/getMeta'
 import { getPriceList, getPricelistPage } from 'fetch/pricelist'
 import parse from 'html-react-parser'
@@ -42,20 +44,24 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 const PriceList = async () => {
-  const [data, dataPage] = await Promise.all([getPriceList(), getPricelistPage()])
+  const [data, dataPage, dataLink] = await Promise.all([
+    getPriceList(),
+    getPricelistPage(),
+    getLinkToReserve(),
+  ])
 
   return (
     <main>
-      <Top title={dataPage.title} small />
+      <Top title={dataPage.title} small linkToReserve={dataLink.linkToReserve} />
       <section className={'pb-16'}>
-        <div className={'container mx-auto w-full max-w-[900px] px-4'}>
+        <Container size={'lg'}>
           {dataPage.contentText && (
             <div className={'w-full mb-20 text-xs1 lg:text-base'}>
               {parse(dataPage.contentText, { trim: true })}
             </div>
           )}
-        </div>
-        <div className={'container mx-auto w-full max-w-[900px] px-4'}>
+        </Container>
+        <Container size={'lg'}>
           {data.map(({ title: categoryTitle, table }) => (
             <div key={categoryTitle} className={'pb-15'}>
               {table.map(({ title: tableTitle, item }, tableIdx) => {
@@ -151,7 +157,7 @@ const PriceList = async () => {
               })}
             </div>
           ))}
-        </div>
+        </Container>
       </section>
     </main>
   )

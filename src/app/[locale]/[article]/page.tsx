@@ -1,6 +1,8 @@
 import type { Metadata } from 'next'
 
+import { Container } from 'components/Container'
 import { getArticle, getArticleMeta } from 'fetch/article'
+import { getLinkToReserve } from 'fetch/contact'
 import parse from 'html-react-parser'
 import { notFound } from 'next/navigation'
 import { Top } from 'sections/Top/Top'
@@ -41,6 +43,7 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
 const Article = async ({ params }: any) => {
   const { article } = params
   const data = await getArticle(article)
+  const dataLink = await getLinkToReserve()
 
   if (!data) {
     return notFound()
@@ -48,13 +51,13 @@ const Article = async ({ params }: any) => {
 
   return (
     <main>
-      <Top title={data.title} small />
+      <Top title={data.title} small linkToReserve={dataLink.linkToReserve} />
       <section className={'pb-16'}>
-        <div className={'container mx-auto w-full max-w-[900px] px-4'}>
+        <Container size={'lg'}>
           <div className={'w-full mb-20 text-xs1 lg:text-base content'}>
             {parse(data.content, { trim: true })}
           </div>
-        </div>
+        </Container>
       </section>
     </main>
   )

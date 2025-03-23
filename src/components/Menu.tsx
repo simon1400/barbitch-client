@@ -4,6 +4,7 @@ import { motion, useMotionValue } from 'motion/react'
 import { useRef } from 'react'
 
 import Button from './Button'
+import { Container } from './Container'
 // import Lang from './Lang'
 
 interface LinkProps {
@@ -86,7 +87,7 @@ const Menu = ({ open, nav }: { open: boolean; nav: IDataNav }) => {
       role={'menu'}
       aria-hidden={!open}
     >
-      <div className={'container mx-auto max-w-[1400px] px-4'}>
+      <Container size={'xl'}>
         <div className={'text-right lg:text-left'}>
           {/* Языковое меню */}
           {/* <div className={'lg:hidden'}>
@@ -135,7 +136,7 @@ const Menu = ({ open, nav }: { open: boolean; nav: IDataNav }) => {
             />
           </div>
         </div>
-      </div>
+      </Container>
     </div>
   )
 }

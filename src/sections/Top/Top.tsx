@@ -1,10 +1,19 @@
 'use client'
 
 import Button from 'components/Button'
+import { Container } from 'components/Container'
 import { motion, useAnimation } from 'motion/react'
 import { useEffect } from 'react'
 
-export const Top = ({ title, small = false }: { title: string; small?: boolean }) => {
+export const Top = ({
+  title,
+  small = false,
+  linkToReserve,
+}: {
+  title: string
+  small?: boolean
+  linkToReserve: string
+}) => {
   const backgroundAnimation = useAnimation()
 
   useEffect(() => {
@@ -32,24 +41,17 @@ export const Top = ({ title, small = false }: { title: string; small?: boolean }
         small ? 'h-[545px]' : 'h-screen md:min-h-[800px]'
       } mix-blend-multiply flex items-end relative z-10 mb-13.5`}
     >
-      <div
-        className={`container mx-auto w-full max-w-[1400px] px-4 ${small ? '' : 'md:min-h-[500px]'}`}
-      >
+      <Container size={'xl'} className={small ? '' : 'md:min-h-[500px]'}>
         <div className={`${small ? 'pb-10' : 'pb-23'} md:pb-15 max-w-[650px]`}>
           <h1 id={'top-title'} className={'text-md2 lg:text-top pb-4 uppercase'}>
             {title}
           </h1>
 
           <div>
-            <Button
-              text={'Rezervovat termín'}
-              id={'book-button'}
-              blank
-              href={'https://noona.app/cs/barbitch/book'}
-            />
+            <Button text={'Rezervovat termín'} id={'book-button'} blank href={linkToReserve} />
           </div>
         </div>
-      </div>
+      </Container>
     </motion.section>
   )
 }

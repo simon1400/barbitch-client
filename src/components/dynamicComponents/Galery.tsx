@@ -1,10 +1,11 @@
+import { Container } from 'components/Container'
 import Image from 'next/image'
 
 export const Galery = ({ data }: { data: { image: IGalery[] } }) => {
   const length = data.image.length
   return (
     <section className={'pt-0 pb-12 md:pt-10 mb:pb-17'}>
-      <div className={'container mx-auto w-full max-w-[1440px] px-4'}>
+      <Container size={'xl'}>
         <div
           className={`grid grid-cols-2 md:grid-cols-${length >= 3 ? '3' : length} gap-4 md:gap-8`}
         >
@@ -19,7 +20,7 @@ export const Galery = ({ data }: { data: { image: IGalery[] } }) => {
             </div>
           ))}
         </div>
-      </div>
+      </Container>
     </section>
   )
 }
