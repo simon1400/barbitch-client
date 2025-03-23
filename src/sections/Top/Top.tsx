@@ -48,7 +48,7 @@ export const Top = ({
           </h1>
 
           <div>
-            <Button text={'Rezervovat termín'} id={'book-button'} blank href={linkToReserve} />
+            <Button text={'Rezervovat termín'} id={'book-button'} href={linkToReserve} />
           </div>
         </div>
       </Container>

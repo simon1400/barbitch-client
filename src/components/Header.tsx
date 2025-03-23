@@ -60,7 +60,6 @@ export const Header = ({ dataNav, linkReserve }: { dataNav: IDataNav; linkReserv
                   id={'book-button'}
                   white={!!params?.post}
                   small
-                  blank
                   href={linkReserve}
                 />
               )}
