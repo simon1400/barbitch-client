@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 
 import { Container } from 'components/Container'
+import { getLinkToReserve } from 'fetch/contact'
 import { getPricelistMeta } from 'fetch/getMeta'
 import { getPriceList, getPricelistPage } from 'fetch/pricelist'
 import parse from 'html-react-parser'
@@ -43,11 +44,15 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 const PriceList = async () => {
-  const [data, dataPage] = await Promise.all([getPriceList(), getPricelistPage()])
+  const [data, dataPage, dataLink] = await Promise.all([
+    getPriceList(),
+    getPricelistPage(),
+    getLinkToReserve(),
+  ])
 
   return (
     <main>
-      <Top title={dataPage.title} small />
+      <Top title={dataPage.title} small linkToReserve={dataLink.linkToReserve} />
       <section className={'pb-16'}>
         <Container size={'lg'}>
           {dataPage.contentText && (

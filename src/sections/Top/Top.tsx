@@ -5,7 +5,15 @@ import { Container } from 'components/Container'
 import { motion, useAnimation } from 'motion/react'
 import { useEffect } from 'react'
 
-export const Top = ({ title, small = false }: { title: string; small?: boolean }) => {
+export const Top = ({
+  title,
+  small = false,
+  linkToReserve,
+}: {
+  title: string
+  small?: boolean
+  linkToReserve: string
+}) => {
   const backgroundAnimation = useAnimation()
 
   useEffect(() => {
@@ -40,12 +48,7 @@ export const Top = ({ title, small = false }: { title: string; small?: boolean }
           </h1>
 
           <div>
-            <Button
-              text={'Rezervovat termín'}
-              id={'book-button'}
-              blank
-              href={'https://noona.app/cs/barbitch/book'}
-            />
+            <Button text={'Rezervovat termín'} id={'book-button'} blank href={linkToReserve} />
           </div>
         </div>
       </Container>

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next'
 
 import { getRandomPost } from 'fetch/blog'
+import { getLinkToReserve } from 'fetch/contact'
 import { getHomeMeta } from 'fetch/getMeta'
 import { getHomepage } from 'fetch/homepage'
 import { getServiceHomepage } from 'fetch/service'
@@ -61,16 +62,17 @@ export async function generateMetadata(): Promise<Metadata> {
 
 const Home = async () => {
   try {
-    const [dataService, data, posts] = await Promise.all([
+    const [dataService, data, posts, dataLink] = await Promise.all([
       getServiceHomepage(),
       getHomepage(),
       getRandomPost(),
+      getLinkToReserve(),
     ])
 
     return (
       <main>
         <SchemaJsonHomepage />
-        <Top title={data.title} />
+        <Top title={data.title} linkToReserve={dataLink.linkToReserve} />
         <HandSec service={dataService} />
         <Galery data={data.galery} />
         {!!posts.length && <Posts data={posts} />}

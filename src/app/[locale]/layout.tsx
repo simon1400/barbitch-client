@@ -1,6 +1,6 @@
-import type { IDataBanner } from 'fetch/banner'
-import type { IDataContact } from 'fetch/contact'
-import type { IDataNav } from 'fetch/nav'
+// import type { IDataBanner } from 'fetch/banner'
+// import type { IDataContact } from 'fetch/contact'
+// import type { IDataNav } from 'fetch/nav'
 import type { Metadata } from 'next'
 
 import { GoogleTagManager } from '@next/third-parties/google'
@@ -44,9 +44,15 @@ export default async function RootLayout({
   }
   const messages = await getMessages()
 
-  const dataContact: IDataContact = await getContact()
-  const dataBanner: IDataBanner = await getBanner()
-  const dataNav: IDataNav = await getNav()
+  const [dataContact, dataBanner, dataNav] = await Promise.all([
+    getContact(),
+    getBanner(),
+    getNav(),
+  ])
+
+  // const dataContact: IDataContact = await getContact()
+  // const dataBanner: IDataBanner = await getBanner()
+  // const dataNav: IDataNav = await getNav()
 
   return (
     <html lang={locale}>

@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import Button from 'components/Button'
 import { Container } from 'components/Container'
 import { MasonryGalery } from 'components/MansoryGalery'
+import { getLinkToReserve } from 'fetch/contact'
 import { getFullServiceMeta } from 'fetch/getMeta'
 import { getFullService } from 'fetch/service'
 import parse from 'html-react-parser'
@@ -12,7 +13,7 @@ import { SchemaJsonRasy } from 'schemasOrg/rasy'
 import { Top } from 'sections/Top/Top'
 
 export async function generateMetadata({ params }: any): Promise<Metadata> {
-  const { slug } = params
+  const { slug } = await params
   const meta = await getFullServiceMeta(slug)
 
   return {
@@ -58,15 +59,16 @@ const Section = ({ children, className }: { children: React.ReactNode; className
 )
 
 const Service = async ({ params }: any) => {
-  const { slug } = params
-  const data = await getFullService(slug)
+  const { slug } = await params
+
+  const [data, dataLink] = await Promise.all([getFullService(slug), getLinkToReserve()])
 
   return (
     <main>
       {slug === 'oboci' && <SchemaJsonOboci />}
       {slug === 'rasy' && <SchemaJsonRasy />}
       {slug === 'manikura' && <SchemaJsonManikura />}
-      <Top title={data.title} small />
+      <Top title={data.title} small linkToReserve={dataLink.linkToReserve} />
       <Section>
         <div className={'text-xs1 lg:text-base'}>
           {parse(data.description || '', { trim: true })}
@@ -82,7 +84,7 @@ const Service = async ({ params }: any) => {
           id={'book-button'}
           blank
           text={'Rezervovat termín'}
-          href={'https://noona.app/cs/barbitch/book'}
+          href={dataLink.linkToReserve}
         />
       </Section>
     </main>
