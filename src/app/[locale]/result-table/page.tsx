@@ -69,7 +69,7 @@ const Result = () => {
 
   return (
     <main>
-      <Top title={'Prace'} small />
+      <Top title={'Prace'} small linkToReserve={'/'} />
       <section className={'pt-20 pb-16'}>
         {!auth ? (
           <Auth
