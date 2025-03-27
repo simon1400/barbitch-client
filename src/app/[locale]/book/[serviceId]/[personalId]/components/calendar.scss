@@ -18,7 +18,7 @@
       font-weight: 500;
 
       &.react-datepicker__day--outside-month {
-        color: rgba(#A0A0A0, 0.2);
+        color: rgba(#A0A0A0, 0.7);
 
         &.react-datepicker__day--disabled.react-datepicker__day--excluded {
           color: rgba(#A0A0A0, 0.2);
@@ -37,6 +37,9 @@
       &.react-datepicker__day--selected {
         background: #E71E6E;
         color: white;
+        &:hover{
+          background: #E71E6E!important;
+        }
 
         &.react-datepicker__day--disabled.react-datepicker__day--excluded {
           color: rgba(white, 0.7);

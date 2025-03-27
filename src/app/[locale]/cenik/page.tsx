@@ -124,7 +124,6 @@ const PriceList = async () => {
                               {!!linkRezervation && (
                                 <a
                                   href={linkRezervation}
-                                  target={'_blank'}
                                   id={'book-button'}
                                   className={
                                     'text-[10px] font-bold text-primary mr-7 hover:underline'

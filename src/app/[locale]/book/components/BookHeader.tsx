@@ -1,10 +1,10 @@
-/* eslint-disable sonarjs/no-commented-code */
 'use client'
 
-// import { addMinutes } from 'date-fns'
+import { addMinutes } from 'date-fns'
 import { ChevronLeft } from 'icons/ChevronLeft'
 import { useParams, useRouter } from 'next/navigation'
-// import { useTimer } from 'react-timer-hook'
+import { useEffect } from 'react'
+import { useTimer } from 'react-timer-hook'
 
 export const BookHeader = () => {
   const params = useParams()
@@ -17,7 +17,16 @@ export const BookHeader = () => {
     }
   }
 
-  // const { seconds, minutes } = useTimer({ expiryTimestamp: addMinutes(new Date(), 5) })
+  const { seconds, minutes, start } = useTimer({
+    expiryTimestamp: addMinutes(new Date(), 5),
+    autoStart: false,
+  })
+
+  useEffect(() => {
+    if (params?.idReservation) {
+      start()
+    }
+  }, [params])
 
   const backText = params?.serviceId
     ? 'zpět na výběr služby'
@@ -46,17 +55,17 @@ export const BookHeader = () => {
           <ChevronLeft />
           <span>{backText}</span>
         </a>
-        {/* {params?.idReservation && (
+        {params?.idReservation && (
           <div>
             <span
               className={
                 'text-[#E71E6E] bg-[#E71E6E40] rounded-special-small py-1 px-1.5 text-book'
               }
             >
-              {`${minutes}:${seconds}`}
+              {`${minutes < 10 ? '0' : ''}${minutes}:${seconds < 10 ? '0' : ''}${seconds}`}
             </span>
           </div>
-        )} */}
+        )}
       </div>
       <div className={'mb-5.5 text-center'}>
         <h1 className={'text-[#FFFFFFBF] text-resLg'}>{headerText}</h1>
