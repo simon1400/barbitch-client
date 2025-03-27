@@ -20,7 +20,7 @@ const BookServiceItem = ({ service }: { service: IBookService }) => {
         >
           <Image
             className={'object-cover object-center w-full h-full'}
-            src={'/assets/iconService.jpg'}
+            src={`/assets/bookIcons/${service.title}.svg`}
             fill
             alt={'Icon service'}
           />

@@ -39,7 +39,7 @@ const BookPersonalPage = async ({ params }: any) => {
                     src={
                       item.profile.image?.image
                         ? item.profile.image.thumb
-                        : '/assets/iconService.jpg'
+                        : '/assets/bookIcons/master.svg'
                     }
                     className={`min-w-5.5 w-5.5 h-5.5${idx > 0 ? ' -ml-2.5' : ''}`}
                   />
@@ -64,7 +64,7 @@ const BookPersonalPage = async ({ params }: any) => {
                   src={
                     personal.profile.image?.image
                       ? personal.profile.image.thumb
-                      : '/assets/iconService.jpg'
+                      : '/assets/bookIcons/master.svg'
                   }
                   className={'min-w-9 w-9 h-9'}
                 />
