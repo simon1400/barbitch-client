@@ -12,10 +12,7 @@ export const Noona = axios.create({
 // Добавляем интерцептор для установки токена
 Noona.interceptors.request.use(
   (config) => {
-    const token = '927ae84e9d3cef2c1c8757e665559fe07e2783718a1c4456f33d6ba431a9f367'
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`
-    }
+    config.headers.Authorization = `Bearer ${process.env.NOONA_TOKEN}`
     return config
   },
   (error) => {

@@ -1,5 +1,7 @@
 import { Noona } from 'lib/api'
 
+const NOONA_COMPANY_ID = process.env.NOONA_COMPANY_ID || ''
+
 export interface IBookService {
   title: string
   minutes: number
@@ -27,7 +29,7 @@ export const getBookService = async () => {
   })
 
   const data = await Noona.get(
-    `/companies/8qcJwRg6dbNh6Gqvm/event_types/expanded?${queryString.toString()}`,
+    `/companies/${NOONA_COMPANY_ID}/event_types/expanded?${queryString.toString()}`,
   )
   return data.data
 }

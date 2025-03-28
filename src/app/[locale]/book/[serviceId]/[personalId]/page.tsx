@@ -14,6 +14,8 @@ import { BookDatePicker } from './components/DatePicker'
 import { EmptyAlert } from './components/EmptyAlert'
 import { TimePicker } from './components/TimePicker'
 
+const NOONA_COMPANY_ID = process.env.NOONA_COMPANY_ID || ''
+
 const BookCalendarPage: NextPage = () => {
   const params = useParams()
   const serviceId = params?.serviceId as string
@@ -74,9 +76,8 @@ const BookCalendarPage: NextPage = () => {
       selected.setHours(hours, minutes, 0, 0)
 
       const slotRezervation = await createSlotReservation({
-        company: '8qcJwRg6dbNh6Gqvm',
+        company: NOONA_COMPANY_ID,
         event_types: [serviceId],
-        number_of_guests: 1,
         starts_at: formatISO(selected),
         employee: employeeId,
       })

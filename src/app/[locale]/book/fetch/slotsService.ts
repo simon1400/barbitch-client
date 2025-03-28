@@ -12,6 +12,8 @@ import { Noona } from 'lib/api'
 
 import { getPersonalService } from './personalService'
 
+const NOONA_COMPANY_ID = process.env.NOONA_COMPANY_ID || ''
+
 export interface ISlotService {
   date: string
   slots: {
@@ -70,7 +72,7 @@ export const getSlotService = async (eventId: string, employeesId: string) => {
   })
 
   const response = await Noona.get(
-    `/companies/8qcJwRg6dbNh6Gqvm/time_slots?${queryString.toString()}`,
+    `/companies/${NOONA_COMPANY_ID}/time_slots?${queryString.toString()}`,
   )
 
   if (!response.data) return { executeDate: [], filteredData: [] }

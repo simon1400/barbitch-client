@@ -40,6 +40,8 @@ const nextConfig: NextConfig = {
     PIXEL_ID: process.env.PIXEL_ID,
     PIXEL_ACCESS_TOKEN: process.env.PIXEL_ACCESS_TOKEN,
     FEATURABLE_WIDGET_ID: process.env.FEATURABLE_WIDGET_ID,
+    NOONA_COMPANY_ID: process.env.NOONA_COMPANY_ID,
+    NOONA_TOKEN: process.env.NOONA_TOKEN,
   },
   images: {
     remotePatterns: [

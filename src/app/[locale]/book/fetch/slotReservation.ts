@@ -3,7 +3,6 @@ import { Noona } from 'lib/api'
 export interface ISlotReservationReqData {
   company: string
   event_types: string[]
-  number_of_guests: number
   starts_at: string
   employee: string
 }

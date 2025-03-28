@@ -78,6 +78,7 @@ const BookForm = ({ idReservation }: Props) => {
         time_slot_reservation: idReservation,
         customer_name: userData.name,
         number_of_guests: 1,
+        no_show_acknowledged: true,
         email: userData.email,
         phone_country_code: phoneData.phone_country_code,
         phone_number: phoneData.phone_number,

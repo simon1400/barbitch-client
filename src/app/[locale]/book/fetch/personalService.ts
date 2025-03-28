@@ -1,5 +1,7 @@
 import { Noona } from 'lib/api'
 
+const NOONA_COMPANY_ID = process.env.NOONA_COMPANY_ID || ''
+
 export interface IPersonalService {
   id: string
   profile: {
@@ -25,7 +27,7 @@ export const getPersonalService = async (id: string) => {
     }
   })
 
-  const data = await Noona.get(`/companies/8qcJwRg6dbNh6Gqvm/employees?${queryString.toString()}`)
+  const data = await Noona.get(`/companies/${NOONA_COMPANY_ID}/employees?${queryString.toString()}`)
 
   return data.data
 }
