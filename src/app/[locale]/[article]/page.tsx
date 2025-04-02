@@ -9,7 +9,7 @@ import { Top } from 'sections/Top/Top'
 
 // Функция generateMetadata с правильным типом params
 export async function generateMetadata({ params }: any): Promise<Metadata> {
-  const { article } = params
+  const { article } = await params
   const { title, metaData } = await getArticleMeta(article)
 
   if (!metaData) {

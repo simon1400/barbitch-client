@@ -56,7 +56,28 @@ body{
   }
   
   p {
-    @apply text-baseText mb-5;
+    @apply text-baseText mb-11;
+    a{
+      position: relative;
+      transition: all .2s ease;
+      &:hover{
+        color: $primary;
+        &::after{
+          bottom: 2px;
+        }
+      }
+      &::after{
+        content: '';
+        display: block;
+        width: 100%;
+        height: 1.5px;
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        background: $primary;
+        transition: all .2s ease;
+      }
+    }
   }
   ol {
     padding-left: 25px;
@@ -83,7 +104,7 @@ body{
     list-style: none;
     padding-top: 6px;
     padding-left: 30px;
-    @apply text-baseText mb-5;
+    @apply text-baseText mb-11;
     > li {
       color: $accent !important;
       position: relative;
