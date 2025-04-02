@@ -3,7 +3,7 @@ import type { IDataBanner } from 'fetch/banner'
 
 import { Container } from 'components/Container'
 import { motion } from 'motion/react'
-import Image from 'next/image'
+// import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 
 import Button from '../components/Button'
@@ -28,10 +28,9 @@ export const Banner = ({ data }: { data: IDataBanner }) => {
           'mix-blend-multiply bg-[#E71E6E] top-0 left-0 absolute overflow-hidden w-full h-full -z-10 '
         }
       >
-        <Image
-          className={'object-cover object-center  w-full h-full grayscale opacity-70'}
+        <img
+          className={'absolute object-cover object-center w-full h-full grayscale opacity-70'}
           src={'/assets/banner.jpg'}
-          fill
           alt={''}
         />
       </div>
