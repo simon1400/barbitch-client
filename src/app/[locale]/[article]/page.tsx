@@ -41,7 +41,7 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
 }
 
 const Article = async ({ params }: any) => {
-  const { article } = params
+  const { article } = await params
   const data = await getArticle(article)
   const dataLink = await getLinkToReserve()
 

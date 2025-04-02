@@ -20,5 +20,4 @@ export const logins: Record<string, string> = {
   'Azaliya Baltiyeva': '34ndbQ1a',
   'Mariia Medvedeva': 'jB467eMO',
   'Svetlana Vilisova': 'J7h133Jz',
-  'Anastasiia Karpenko': 'wL9eg58g',
 }

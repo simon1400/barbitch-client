@@ -1,16 +1,19 @@
-export const Auth = ({
-  login,
-  username,
-  password,
-  setUsername,
-  setPassword,
-}: {
-  login: () => void
-  username: string
-  password: string
-  setUsername: (value: string) => void
-  setPassword: (value: string) => void
-}) => {
+import { useCallback, useState } from 'react'
+
+import { logins } from '../data'
+
+export const Login = () => {
+  const [username, setUsername] = useState<string>('')
+  const [password, setPassword] = useState<string>('')
+
+  const login = useCallback(() => {
+    if (logins[username] === password) {
+      localStorage.setItem('usernameLocalData', username)
+      localStorage.setItem('passwordLocalData', password)
+      localStorage.setItem('auth', 'true')
+    }
+  }, [username, password])
+
   return (
     <div className={'border border-primary bg-white max-w-[350px] p-10 mx-auto'}>
       <h2 className={'text-md1 mb-5'}>{'Login'}</h2>
