@@ -3,6 +3,7 @@ import type { IDataBanner } from 'fetch/banner'
 
 import { Container } from 'components/Container'
 import { motion } from 'motion/react'
+import Image from 'next/image'
 import { usePathname } from 'next/navigation'
 
 import Button from '../components/Button'
@@ -22,6 +23,18 @@ export const Banner = ({ data }: { data: IDataBanner }) => {
         'h-screen bg-gradient-to-t from-[#E71E6E] to-[#FF006580] mix-blend-multiply flex items-center justify-center relative overflow-hidden'
       }
     >
+      <div
+        className={
+          'mix-blend-multiply bg-[#E71E6E] top-0 left-0 absolute overflow-hidden w-full h-full -z-10 '
+        }
+      >
+        <Image
+          className={'object-cover object-center  w-full h-full grayscale opacity-70'}
+          src={'/assets/banner.jpg'}
+          fill
+          alt={''}
+        />
+      </div>
       <div className={`absolute top-[20%] -right-[30%] w-full h-[30px] md:h-[50px] rotate-45 z-50`}>
         <motion.div
           animate={{ x: '-50%' }}
@@ -50,11 +63,13 @@ export const Banner = ({ data }: { data: IDataBanner }) => {
 
       <Container size={'md'} className={'z-50'}>
         {!!data.title?.length && (
-          <h2 className={'text-md1 lg:text-big pb-4 text-center'}>{data.title}</h2>
+          <h2 className={'text-md1 lg:text-big pb-4 text-center uppercase text-white'}>
+            {data.title}
+          </h2>
         )}
         {data?.cta && (
           <div className={'flex justify-center'}>
-            <Button text={data.cta.title} id={'book-button'} blank href={data.cta.link} />
+            <Button text={data.cta.title} id={'book-button'} white blank href={data.cta.link} />
           </div>
         )}
       </Container>

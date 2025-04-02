@@ -10,7 +10,7 @@ export const TopImage = ({ title, image }: { title: string; image: IGalery }) =>
         backgroundImage: 'linear-gradient(0deg, rgba(231,30,110,1) 0%, rgba(255,0,101,0.5) 100%)',
       }}
     >
-      <div className={'mix-blend-multiply absolute h-full w-full -z-10 bg-cover bg-center'}>
+      <div className={'mix-blend-multiply bg-[#E71E6E] absolute h-full w-full -z-10'}>
         <Image
           className={'object-cover object-center opacity-70 grayscale'}
           src={image?.url || '/assets/bigBaner.jpg'}

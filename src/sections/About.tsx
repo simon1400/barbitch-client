@@ -1,6 +1,6 @@
 'use client'
+import Button from 'components/Button'
 import { Container } from 'components/Container'
-// import Button from 'components/Button'
 import parse from 'html-react-parser'
 import { BigLogoIcon } from 'icons/BigLogo'
 
@@ -16,9 +16,9 @@ const About = ({ text }: { text: string }) => {
           <div className={'w-full mb-5 lg:mb-0'}>
             <div className={'text-xs1 lg:text-base'}>{parse(text)}</div>
           </div>
-          {/* <div className={'text-center lg:text-left'}>
+          <div className={'text-center lg:text-left'}>
             <Button text={'vice o nas'} href={'/o-nas'} />
-          </div> */}
+          </div>
         </div>
       </Container>
     </section>

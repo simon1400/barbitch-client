@@ -6,7 +6,7 @@ import { getPostMeta } from 'fetch/getMeta'
 import { TopImage } from 'sections/Top/TopImage'
 
 export async function generateMetadata({ params }: any): Promise<Metadata> {
-  const { post } = params
+  const { post } = await params
   const { title, metaData } = await getPostMeta(post)
 
   return {
@@ -34,7 +34,8 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
 }
 
 const Post = async ({ params }: any) => {
-  const data = await getPost(params.post)
+  const { post } = await params
+  const data = await getPost(post)
 
   return (
     <main>
