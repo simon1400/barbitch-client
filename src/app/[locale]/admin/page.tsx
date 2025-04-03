@@ -4,9 +4,8 @@ import type { IDataWorks } from 'fetch/works'
 import { Container } from 'components/Container'
 import { getWorks } from 'fetch/works'
 import { useOnMountUnsafe } from 'helpers/useOnMountUnsaf'
+import { redirect } from 'next/navigation'
 import React, { useCallback, useEffect, useState } from 'react'
-
-import { Top } from '../../../sections/Top/Top'
 
 import { Table } from './components/Table'
 import { logins, monthLabels } from './data'
@@ -14,7 +13,7 @@ import { logins, monthLabels } from './data'
 const Result = () => {
   const [month, setMonth] = useState<number>(new Date().getMonth())
   const [data, setData] = useState<IDataWorks>()
-  const [cache, setCache] = useState<Record<string, IDataWorks>>({})
+  const [username, setUsername] = useState<string>('')
 
   const getAuthUser = () => {
     const storedUsername = localStorage.getItem('usernameLocalData')
@@ -23,29 +22,29 @@ const Result = () => {
     if (storedUsername && storedPassword && logins[storedUsername] === storedPassword) {
       getWorks(storedUsername, month).then((offers) => {
         setData(offers)
-        setCache((prevCache) => ({
-          ...prevCache,
-          [`${storedUsername}-${month}`]: offers,
-        }))
       })
+      setUsername(storedUsername)
+    } else {
+      redirect('/login')
     }
   }
 
   const loadData = useCallback(async () => {
     const offers = await getWorks(username, month)
     setData(offers)
-  }, [username, month, cache])
+  }, [username, month])
 
-  useOnMountUnsafe(() => {})
+  useOnMountUnsafe(() => {
+    getAuthUser()
+  })
 
   useEffect(() => {
-    if (auth) loadData()
-  }, [auth, month, loadData])
+    loadData()
+  }, [month, loadData])
 
   return (
-    <main>
-      <Top title={'Prace'} small linkToReserve={'/'} />
-      <section className={'pt-20 pb-16'}>
+    <>
+      <section className={'pb-16'}>
         <Container size={'md'}>
           <div className={'flex justify-between flex-col md:flex-row items-center mb-5'}>
             <h2 className={'text-md1 mb-5 w-full text-center md:mb-0 md:text-left'}>
@@ -68,14 +67,14 @@ const Result = () => {
           </div>
           <div
             className={
-              'relative flex flex-col w-full h-full overflow-scroll text-gray-700 bg-white shadow-md rounded-xl'
+              'relative flex flex-col w-full h-full overflow-hidden text-gray-700 bg-white shadow-md rounded-xl'
             }
           >
             {data?.offersDone && <Table data={data.offersDone} />}
           </div>
         </Container>
       </section>
-    </main>
+    </>
   )
 }
 
