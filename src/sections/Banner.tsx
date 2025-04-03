@@ -68,7 +68,7 @@ export const Banner = ({ data }: { data: IDataBanner }) => {
         )}
         {data?.cta && (
           <div className={'flex justify-center'}>
-            <Button text={data.cta.title} id={'book-button'} white blank href={data.cta.link} />
+            <Button text={data.cta.title} white href={data.cta.link} />
           </div>
         )}
       </Container>
