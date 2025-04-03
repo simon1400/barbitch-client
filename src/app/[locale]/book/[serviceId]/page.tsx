@@ -10,10 +10,9 @@ const ProfileImage = ({ src, className }: { src: string; className?: string }) =
   <span
     className={`block rounded-full overflow-hidden relative border border-[#16161566] ${className}`}
   >
-    <Image
-      className={'object-cover object-center w-full h-full'}
+    <img
+      className={'absolute object-cover object-center w-full h-full'}
       src={src}
-      fill
       alt={'icon service'}
     />
   </span>
