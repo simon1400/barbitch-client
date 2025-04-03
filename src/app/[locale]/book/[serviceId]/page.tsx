@@ -1,7 +1,7 @@
 import type { IPersonalService } from '../fetch/personalService'
 
 import { ChevronRight } from 'icons/ChevronRight'
-import Image from 'next/image'
+// import Image from 'next/image'
 import Link from 'next/link'
 
 import { getPersonalService } from '../fetch/personalService'
