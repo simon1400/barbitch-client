@@ -42,7 +42,7 @@ const BookServicePage = async () => {
   const data: IBookServiceGroup[] = await getBookService()
 
   return (
-    <Accordion type={'multiple'}>
+    <Accordion type={'multiple'} defaultValue={data.map((item) => item.title)}>
       {data.map((group) => (
         <AccordionItem
           key={group.title}
