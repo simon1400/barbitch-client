@@ -10,6 +10,9 @@ export default async function BookServicePage({ params }: any) {
 
   const eventType = data.event_types?.[0]
 
+  console.log('data.starts_at', data.starts_at)
+  console.log("format(data.starts_at, 'd.M.yyyy HH:mm')", format(data.starts_at, 'd.M.yyyy HH:mm'))
+
   const formattedData = {
     date: format(data.starts_at, 'd.M.yyyy HH:mm'),
     duration: `${eventType.minutes} min`,
