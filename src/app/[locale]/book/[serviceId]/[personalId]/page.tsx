@@ -68,12 +68,19 @@ const BookCalendarPage: NextPage = () => {
   }
 
   const handleSelect = async (employeeId: string, time: string) => {
+    console.log('time', time)
     try {
       if (!time || !selected) throw new Error('Неверные входные данные')
 
       const [hours, minutes] = time.split(':').map(Number)
 
-      selected.setHours(hours + 2, minutes, 0, 0)
+      console.log('hours', hours)
+      console.log('minutes', minutes)
+
+      selected.setHours(hours, minutes, 0, 0)
+
+      console.log('selected', selected)
+      console.log('formatISO(selected)', formatISO(selected))
 
       const slotRezervation = await createSlotReservation({
         company: NOONA_COMPANY_ID,
