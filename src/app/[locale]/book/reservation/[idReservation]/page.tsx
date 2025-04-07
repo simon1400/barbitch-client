@@ -1,4 +1,5 @@
 import { format } from 'date-fns'
+import { formatInTimeZone } from 'date-fns-tz'
 
 import { getSlotReservation } from '../../fetch/slotReservation'
 
@@ -14,7 +15,7 @@ export default async function BookServicePage({ params }: any) {
   console.log("format(data.starts_at, 'd.M.yyyy HH:mm')", format(data.starts_at, 'd.M.yyyy HH:mm'))
 
   const formattedData = {
-    date: format(data.starts_at, 'd.M.yyyy HH:mm'),
+    date: formatInTimeZone(new Date(data.starts_at), 'Europe/Prague', 'd.M.yyyy HH:mm'),
     duration: `${eventType.minutes} min`,
     employee: data.employee?.profile.name ?? 'Неизвестно',
     service: eventType.title,
