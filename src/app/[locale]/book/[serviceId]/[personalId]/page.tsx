@@ -73,7 +73,7 @@ const BookCalendarPage: NextPage = () => {
 
       const [hours, minutes] = time.split(':').map(Number)
 
-      selected.setHours(hours, minutes, 0, 0)
+      selected.setHours(hours + 2, minutes, 0, 0)
 
       const slotRezervation = await createSlotReservation({
         company: NOONA_COMPANY_ID,
