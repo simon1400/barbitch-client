@@ -1,6 +1,3 @@
-// import type { IDataBanner } from 'fetch/banner'
-// import type { IDataContact } from 'fetch/contact'
-// import type { IDataNav } from 'fetch/nav'
 import type { Metadata } from 'next'
 
 import { GoogleTagManager } from '@next/third-parties/google'
@@ -50,16 +47,13 @@ export default async function RootLayout({
     getNav(),
   ])
 
-  // const dataContact: IDataContact = await getContact()
-  // const dataBanner: IDataBanner = await getBanner()
-  // const dataNav: IDataNav = await getNav()
-
   return (
     <html lang={locale}>
       <head>
         <link rel={'preconnect'} href={'https://connect.facebook.net'} crossOrigin={'anonymous'} />
         <meta name={'viewport'} content={'width=device-width, initial-scale=1.0'} />
         <meta name={'theme-color'} content={'#e71e6e'} />
+        <meta name={'yandex-verification'} content={'93178409d4f4b109'} />
         <link rel={'icon'} type={'image/png'} href={'/favicon/favicon-96x96.png'} sizes={'96x96'} />
         <link rel={'icon'} type={'image/svg+xml'} href={'/favicon/favicon.svg'} />
         <link rel={'shortcut icon'} href={'/favicon/favicon.ico'} />
