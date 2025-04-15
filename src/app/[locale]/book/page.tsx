@@ -29,7 +29,7 @@ import { getBookService } from './fetch/bookService'
 
 const icons: any = {
   'Hygienická manikúra': <HygienaIcon />,
-  'Manikúra + gel lak': <GelLakIcon />,
+  'Gel lak manikúra': <GelLakIcon />,
   'Gel lak + francouzská manikúra': <GelLakIcon />,
   'Gel lak + design ': <GelLakIcon />,
   'Prodloužení nehtů': <LongIcon />,
