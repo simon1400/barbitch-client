@@ -1,6 +1,7 @@
 import type { IDataPriceList } from 'fetch/pricelist'
 
 import { CalendarIcon } from 'icons/Calendar'
+import { PayCardIcon } from 'icons/PayCard'
 
 import { Container } from './Container'
 
@@ -104,6 +105,9 @@ export const PriceTable = ({
           })}
         </div>
       ))}
+      <div className={'max-w-[300px] -mt-[50px] mb-[50px]'}>
+        <PayCardIcon />
+      </div>
     </Container>
   )
 }

@@ -67,8 +67,6 @@ const Service = async ({ params }: any) => {
 
   const priceList = await getCurrentPriceList(data.title === 'Manikúra' ? 'Nehty' : data.title)
 
-  console.log(data.title)
-
   return (
     <main>
       {slug === 'oboci' && <SchemaJsonOboci />}

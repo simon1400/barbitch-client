@@ -1,4 +1,3 @@
-import { format } from 'date-fns'
 import { formatInTimeZone } from 'date-fns-tz'
 
 import { getSlotReservation } from '../../fetch/slotReservation'
@@ -10,9 +9,6 @@ export default async function BookServicePage({ params }: any) {
   const data = await getSlotReservation(idReservation)
 
   const eventType = data.event_types?.[0]
-
-  console.log('data.starts_at', data.starts_at)
-  console.log("format(data.starts_at, 'd.M.yyyy HH:mm')", format(data.starts_at, 'd.M.yyyy HH:mm'))
 
   const formattedData = {
     date: formatInTimeZone(new Date(data.starts_at), 'Europe/Prague', 'd.M.yyyy HH:mm'),
@@ -43,6 +39,9 @@ export default async function BookServicePage({ params }: any) {
               <span className={'text-white'}>{value}</span>
             </li>
           ))}
+          <li className={`text-[11px]`}>
+            <span className={'text-[#A0A0A0]'}>{'Platba - hotově nebo kartou na pobočce'}</span>
+          </li>
         </ul>
       </div>
 
