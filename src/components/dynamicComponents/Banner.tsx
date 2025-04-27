@@ -35,7 +35,7 @@ export const Banner = ({
             </div>
           )}
           <h2 className={`banner-head`}>{data.title}</h2>
-          <Button text={data.cta.title} blank href={data.cta.link} />
+          <Button text={data.cta.title} href={data.cta.link} />
         </div>
       </Container>
     </section>

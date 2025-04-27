@@ -1,10 +1,51 @@
+/* eslint-disable perfectionist/sort-imports */
 import type { IBookService, IBookServiceGroup } from './fetch/bookService'
 
-import { Accordion, AccordionContent, AccordionItem, AccordionTrigger } from '@/components/ui/accordion'
 import { ChevronRight } from 'icons/ChevronRight'
-import Image from 'next/image'
+import { ClasicRasIcon } from 'icons/book/ClasicRas'
+import { ColorRasIcon } from 'icons/book/ColorRas'
+import { FirstObociIcon } from 'icons/book/FirstOboci'
+import { FiveDayIcon } from 'icons/book/FiveDay'
+import { FourObociIcon } from 'icons/book/FourOboci'
+import { GelLakIcon } from 'icons/book/GelLak'
+import { HubyIcon } from 'icons/book/Huby'
+import { HygienaIcon } from 'icons/book/Hygiena'
+import { LongIcon } from 'icons/book/Long'
+import { MaxiIcon } from 'icons/book/Maxi'
+import { SeccondObociIcon } from 'icons/book/SeccondOboci'
+import { ThirdObociIcon } from 'icons/book/ThirdOboci'
+import { ThreeDIcon } from 'icons/book/ThreeD'
+import { TwoDIcon } from 'icons/book/TwoD'
 import Link from 'next/link'
+
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from '@/components/ui/accordion'
+
 import { getBookService } from './fetch/bookService'
+
+const icons: any = {
+  'Hygienická manikúra': <HygienaIcon />,
+  'Gel lak manikúra': <GelLakIcon />,
+  'Gel lak + francouzská manikúra': <GelLakIcon />,
+  'Gel lak + design ': <GelLakIcon />,
+  'Prodloužení nehtů': <LongIcon />,
+  'Prodloužení + francouzská manikúra': <LongIcon />,
+  'Prodloužení + design': <MaxiIcon />,
+  'Korekce do 5 dnů': <FiveDayIcon />,
+  'Prodloužení řas Classic': <ClasicRasIcon />,
+  '2D': <TwoDIcon />,
+  '3D': <ThreeDIcon />,
+  'Barvení řas': <ColorRasIcon />,
+  'Modelování obočí': <FirstObociIcon />,
+  'Laminace (+modelování)': <SeccondObociIcon />,
+  'Barvení obočí (+modelování)': <ThirdObociIcon />,
+  'Laminace + modelování + barvení': <FourObociIcon />,
+  'Depilace horního rtu': <HubyIcon />,
+}
 
 const BookServiceItem = ({ service }: { service: IBookService }) => {
   const price = service.variations?.[0]?.prices?.[0]?.amount ?? 'N/A'
@@ -18,12 +59,7 @@ const BookServiceItem = ({ service }: { service: IBookService }) => {
         <span
           className={'min-w-[36px] w-[36px] h-[36px] overflow-hidden rounded-full block relative'}
         >
-          <Image
-            className={'object-cover object-center w-full h-full'}
-            src={`/assets/bookIcons/${service.title.replace(/ /g, '_').replace(/\+/g, 'p')}.svg`}
-            fill
-            alt={'Icon service'}
-          />
+          {icons[service.title]}
         </span>
         <span className={'w-full'}>
           <h3 className={'text-xs1 leading-none mb-1.5'}>{service.title}</h3>
@@ -42,7 +78,7 @@ const BookServicePage = async () => {
   const data: IBookServiceGroup[] = await getBookService()
 
   return (
-    <Accordion type={'multiple'}>
+    <Accordion type={'multiple'} defaultValue={data.map((item) => item.title)}>
       {data.map((group) => (
         <AccordionItem
           key={group.title}

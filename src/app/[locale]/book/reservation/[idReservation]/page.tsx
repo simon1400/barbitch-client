@@ -1,4 +1,4 @@
-import { format } from 'date-fns'
+import { formatInTimeZone } from 'date-fns-tz'
 
 import { getSlotReservation } from '../../fetch/slotReservation'
 
@@ -11,7 +11,7 @@ export default async function BookServicePage({ params }: any) {
   const eventType = data.event_types?.[0]
 
   const formattedData = {
-    date: format(data.starts_at, 'd.M.yyyy HH:mm'),
+    date: formatInTimeZone(new Date(data.starts_at), 'Europe/Prague', 'd.M.yyyy HH:mm'),
     duration: `${eventType.minutes} min`,
     employee: data.employee?.profile.name ?? 'Неизвестно',
     service: eventType.title,
@@ -39,6 +39,9 @@ export default async function BookServicePage({ params }: any) {
               <span className={'text-white'}>{value}</span>
             </li>
           ))}
+          <li className={`text-[11px]`}>
+            <span className={'text-[#A0A0A0]'}>{'Platba - hotově nebo kartou na pobočce'}</span>
+          </li>
         </ul>
       </div>
 

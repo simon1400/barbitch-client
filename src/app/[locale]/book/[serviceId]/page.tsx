@@ -1,7 +1,7 @@
 import type { IPersonalService } from '../fetch/personalService'
 
+import { MasterIcon } from 'icons/book/Master'
 import { ChevronRight } from 'icons/ChevronRight'
-import Image from 'next/image'
 import Link from 'next/link'
 
 import { getPersonalService } from '../fetch/personalService'
@@ -10,12 +10,15 @@ const ProfileImage = ({ src, className }: { src: string; className?: string }) =
   <span
     className={`block rounded-full overflow-hidden relative border border-[#16161566] ${className}`}
   >
-    <Image
-      className={'object-cover object-center w-full h-full'}
-      src={src}
-      fill
-      alt={'icon service'}
-    />
+    {src ? (
+      <img
+        className={'absolute object-cover object-center w-full h-full'}
+        src={src}
+        alt={'icon service'}
+      />
+    ) : (
+      <MasterIcon />
+    )}
   </span>
 )
 
@@ -36,11 +39,7 @@ const BookPersonalPage = async ({ params }: any) => {
                 {[data[0], data[1]].map((item, idx) => (
                   <ProfileImage
                     key={item.id}
-                    src={
-                      item.profile.image?.image
-                        ? item.profile.image.thumb
-                        : '/assets/bookIcons/master.svg'
-                    }
+                    src={item.profile.image?.image ? item.profile.image.thumb : undefined}
                     className={`min-w-5.5 w-5.5 h-5.5${idx > 0 ? ' -ml-2.5' : ''}`}
                   />
                 ))}
@@ -61,12 +60,8 @@ const BookPersonalPage = async ({ params }: any) => {
                 href={`/book/${serviceId}/${personal.id}`}
               >
                 <ProfileImage
-                  src={
-                    personal.profile.image?.image
-                      ? personal.profile.image.thumb
-                      : '/assets/bookIcons/master.svg'
-                  }
-                  className={'min-w-9 w-9 h-9'}
+                  src={personal.profile.image?.image ? personal.profile.image.thumb : undefined}
+                  className={'min-w-10 w-10 h-10'}
                 />
                 <h2 className={'w-full text-xs1 leading-none'}>{personal.profile.name}</h2>
                 <ChevronRight />

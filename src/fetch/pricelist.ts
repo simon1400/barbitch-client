@@ -40,17 +40,40 @@ interface IDataPricelistPage {
   contentText: string
 }
 
-const queryPage = qs.stringify(
-  {
-    fields: ['title', 'contentText'],
-  },
-  {
-    encodeValuesOnly: true, // prettify URL
-  },
-)
-
 export const getPricelistPage = async () => {
+  const queryPage = qs.stringify(
+    {
+      fields: ['title', 'contentText'],
+    },
+    {
+      encodeValuesOnly: true, // prettify URL
+    },
+  )
+
   const data: IDataPricelistPage = await Axios.get(`/api/pricelist-page?${queryPage}`)
 
+  return data
+}
+
+export const getCurrentPriceList = async (name: string) => {
+  const query = qs.stringify(
+    {
+      filters: {
+        title: {
+          $contains: name,
+        },
+      },
+      populate: {
+        table: {
+          populate: ['item'],
+        },
+      },
+    },
+    {
+      encodeValuesOnly: true, // prettify URL
+    },
+  )
+
+  const data: IDataPriceList[] = await Axios.get(`/api/pricelists?${query}`)
   return data
 }

@@ -130,9 +130,8 @@ const Menu = ({ open, nav }: { open: boolean; nav: IDataNav }) => {
               inverse={open}
               className={'mt-5 lg:hidden'}
               id={'book-button'}
-              blank
               text={'Rezervovat termín'}
-              href={'https://noona.app/cs/barbitch/book'}
+              href={'/book'}
             />
           </div>
         </div>
