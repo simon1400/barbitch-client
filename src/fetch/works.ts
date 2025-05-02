@@ -1,3 +1,4 @@
+import { getMonthRange } from 'helpers/getMounthRange'
 import qs from 'qs'
 
 import { Axios } from '../lib/api'
@@ -14,8 +15,8 @@ export interface IDataWorks {
 }
 
 export const getWorks = async (name: string, month: number) => {
-  const firstDayOfMonth = new Date(2025, month, 0, 0, 0, 0, 0)
-  const lastDayOfMonth = new Date(2025, month + 1, 0, 23, 59, 59, 999)
+  const { firstDay, lastDay } = getMonthRange(2025, month)
+
   const query = qs.stringify(
     {
       filters: {
@@ -29,7 +30,8 @@ export const getWorks = async (name: string, month: number) => {
           sort: ['date:desc'],
           filters: {
             date: {
-              $between: [firstDayOfMonth.toISOString(), lastDayOfMonth.toISOString()],
+              $gte: firstDay.toISOString(),
+              $lte: lastDay.toISOString(),
             },
           },
           fields: ['date', 'clientName', 'staffSalaries', 'tip'],

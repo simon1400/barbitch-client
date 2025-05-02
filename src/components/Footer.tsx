@@ -10,7 +10,7 @@ import CustomMap from '../sections/Map'
 export const Footer = ({ contact }: { contact: IDataContact }) => {
   const pathname = usePathname()
 
-  if (pathname.includes('/book')) {
+  if (pathname.includes('/book') || pathname.includes('/admin')) {
     return null
   }
   return (
