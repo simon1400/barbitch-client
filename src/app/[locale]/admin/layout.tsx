@@ -1,6 +1,8 @@
 import { Container } from 'components/Container'
 import { Top } from 'sections/Top/Top'
 
+// import { Sidebar } from './Sidebar'
+
 export default async function AdminLayout({
   children,
   params,
@@ -9,22 +11,11 @@ export default async function AdminLayout({
   params: Promise<{ locale: string }>
 }>) {
   return (
-    <div id={'layout-page'}>
-      <Top title={'Admin'} small linkToReserve={'/'} />
+    <div id={'layout-admin-page'}>
+      <Top title={'Admin'} small linkToReserve={'/book'} />
       <Container size={'xl'}>
         <div className={'md:flex'}>
-          <aside className={'min-w-[200px] max-w-[300px] w-full'}>
-            <nav>
-              <ul>
-                <li>
-                  <a href={'/admin'}>{'Moje prace'}</a>
-                </li>
-                <li>
-                  <a href={'/admin/stats'}>{'Statictika'}</a>
-                </li>
-              </ul>
-            </nav>
-          </aside>
+          {/* <Sidebar /> */}
           <main className={'w-full'}>{children}</main>
         </div>
       </Container>

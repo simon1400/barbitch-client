@@ -13,7 +13,7 @@ const duration = 40
 export const Banner = ({ data }: { data: IDataBanner }) => {
   const pathname = usePathname()
 
-  if (pathname === '/kontakt' || pathname.includes('/book')) {
+  if (pathname === '/kontakt' || pathname.includes('/book') || pathname.includes('/admin')) {
     return null
   }
 

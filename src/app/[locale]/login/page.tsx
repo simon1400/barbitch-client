@@ -19,7 +19,7 @@ const Login = () => {
   }, [username, password])
 
   return (
-    <>
+    <section className={'pb-15'}>
       <Top title={'Login'} small linkToReserve={'/'} />
       <div className={'border border-primary bg-white max-w-[350px] p-10 mx-auto'}>
         <h2 className={'text-md1 mb-5'}>{'Login'}</h2>
@@ -48,7 +48,7 @@ const Login = () => {
           </button>
         </form>
       </div>
-    </>
+    </section>
   )
 }
 

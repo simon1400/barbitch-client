@@ -7,8 +7,9 @@ import { useOnMountUnsafe } from 'helpers/useOnMountUnsaf'
 import { redirect } from 'next/navigation'
 import React, { useCallback, useEffect, useState } from 'react'
 
+import { Select } from './components/Select'
 import { Table } from './components/Table'
-import { logins, monthLabels } from './data'
+import { logins } from './data'
 
 const Result = () => {
   const [month, setMonth] = useState<number>(new Date().getMonth())
@@ -43,38 +44,21 @@ const Result = () => {
   }, [month, loadData])
 
   return (
-    <>
-      <section className={'pb-16'}>
-        <Container size={'md'}>
-          <div className={'flex justify-between flex-col md:flex-row items-center mb-5'}>
-            <h2 className={'text-md1 mb-5 w-full text-center md:mb-0 md:text-left'}>
-              {data?.name}
-            </h2>
-            <select
-              id={'month-select'}
-              value={month}
-              onChange={(e) => setMonth(Number(e.target.value))}
-              className={
-                'bg-white border border-accent text-sm focus:ring-blue-500 focus:border-blue-500 block w-[200px] p-2.5'
-              }
-            >
-              {monthLabels.map((label, idx) => (
-                <option value={idx} key={label}>
-                  {label}
-                </option>
-              ))}
-            </select>
-          </div>
-          <div
-            className={
-              'relative flex flex-col w-full h-full overflow-hidden text-gray-700 bg-white shadow-md rounded-xl'
-            }
-          >
-            {data?.offersDone && <Table data={data.offersDone} />}
-          </div>
-        </Container>
-      </section>
-    </>
+    <section className={'pb-16'}>
+      <Container size={'md'}>
+        <div className={'flex justify-between flex-col md:flex-row items-center mb-5'}>
+          <h2 className={'text-md1 mb-5 w-full text-center md:mb-0 md:text-left'}>{data?.name}</h2>
+          <Select month={month} setMonth={setMonth} />
+        </div>
+        <div
+          className={
+            'relative flex flex-col w-full h-full overflow-hidden text-gray-700 bg-white shadow-md rounded-xl'
+          }
+        >
+          {data?.offersDone && <Table data={data.offersDone} />}
+        </div>
+      </Container>
+    </section>
   )
 }
 
