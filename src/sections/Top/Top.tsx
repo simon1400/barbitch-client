@@ -47,9 +47,11 @@ export const Top = ({
             {title}
           </h1>
 
-          <div>
-            <Button text={'Rezervovat termín'} id={'book-button'} href={linkToReserve} />
-          </div>
+          {!!linkToReserve.length && (
+            <div>
+              <Button text={'Rezervovat termín'} id={'book-button'} href={linkToReserve} />
+            </div>
+          )}
         </div>
       </Container>
     </motion.section>

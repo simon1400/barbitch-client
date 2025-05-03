@@ -1,18 +1,40 @@
+'use client'
+
+import { useAppContext } from 'app/context/AppContext'
 import { Container } from 'components/Container'
+import { useOnMountUnsafe } from 'helpers/useOnMountUnsaf'
+import { redirect } from 'next/navigation'
 import { Top } from 'sections/Top/Top'
 
-// import { Sidebar } from './Sidebar'
+// import { Sidebar } from './components/Sidebar'
+import { logins } from './data'
 
-export default async function AdminLayout({
+export default function AdminLayout({
   children,
-  params,
 }: Readonly<{
   children: React.ReactNode
-  params: Promise<{ locale: string }>
 }>) {
+  const { adminName, setAdminName } = useAppContext()
+
+  const getAuthUser = () => {
+    const storedUsername = localStorage.getItem('usernameLocalData')
+    const storedPassword = localStorage.getItem('passwordLocalData')
+
+    if (storedUsername && storedPassword && logins[storedUsername] === storedPassword) {
+      setAdminName(storedUsername)
+    } else {
+      setAdminName('')
+      redirect('/login')
+    }
+  }
+
+  useOnMountUnsafe(() => {
+    getAuthUser()
+  })
+
   return (
     <div id={'layout-admin-page'}>
-      <Top title={'Admin'} small linkToReserve={'/book'} />
+      <Top title={adminName} small linkToReserve={''} />
       <Container size={'xl'}>
         <div className={'md:flex'}>
           {/* <Sidebar /> */}

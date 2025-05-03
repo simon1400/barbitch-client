@@ -1,19 +1,21 @@
+/* eslint-disable perfectionist/sort-imports */
 import type { Metadata } from 'next'
 
 import { GoogleTagManager } from '@next/third-parties/google'
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
+import { AppProvider } from 'app/context/AppContext'
 import { Footer } from 'components/Footer'
 import { Header } from 'components/Header'
 import { getBanner } from 'fetch/banner'
 import { getContact } from 'fetch/contact'
 import { getNav } from 'fetch/nav'
 import { routing } from 'i18n/routing'
-import { NextIntlClientProvider } from 'next-intl'
-import { getMessages } from 'next-intl/server'
 import { Montserrat } from 'next/font/google'
 import { notFound } from 'next/navigation'
 import Script from 'next/script'
+import { NextIntlClientProvider } from 'next-intl'
+import { getMessages } from 'next-intl/server'
 import { Banner } from 'sections/Banner'
 import './globals.scss'
 
@@ -84,10 +86,12 @@ export default async function RootLayout({
           />
         </noscript>
         <NextIntlClientProvider messages={messages}>
-          <Header dataNav={dataNav} linkReserve={dataContact.linkToReserve} />
-          {children}
-          <Banner data={dataBanner} />
-          <Footer contact={dataContact} />
+          <AppProvider>
+            <Header dataNav={dataNav} linkReserve={dataContact.linkToReserve} />
+            {children}
+            <Banner data={dataBanner} />
+            <Footer contact={dataContact} />
+          </AppProvider>
         </NextIntlClientProvider>
         <Analytics />
         <SpeedInsights />

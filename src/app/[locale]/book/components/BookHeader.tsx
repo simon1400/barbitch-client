@@ -6,6 +6,22 @@ import { useParams, useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import { useTimer } from 'react-timer-hook'
 
+type Step = 'service' | 'personal' | 'reservation' | 'home'
+
+const backTextMap: Record<Step, string> = {
+  service: 'zpět na výběr služby',
+  personal: 'zpět na výběr obsluhy',
+  reservation: 'zpět na výběr datumu',
+  home: 'zpět na úvodní stránku',
+}
+
+const headerTextMap: Record<Step, string> = {
+  service: 'Vyberte si obsluhu',
+  personal: 'Vyberte si datum a čas',
+  reservation: 'Objednávka',
+  home: 'Vyberte službu',
+}
+
 export const BookHeader = () => {
   const params = useParams()
   const router = useRouter()
@@ -28,21 +44,16 @@ export const BookHeader = () => {
     }
   }, [params])
 
-  const backText = params?.serviceId
-    ? 'zpět na výběr služby'
-    : params?.personalId
-      ? 'zpět na výběr obsluhy'
+  const step: Step = params?.personalId
+    ? 'personal'
+    : params?.serviceId
+      ? 'service'
       : params?.idReservation
-        ? 'zpět na výběr datumu'
-        : 'zpět na úvodní stránku'
+        ? 'reservation'
+        : 'home'
 
-  const headerText = params?.serviceId
-    ? 'Vyberte si obsluhu'
-    : params?.personalId
-      ? 'Vyberte si datum a čas'
-      : params?.idReservation
-        ? 'Objednávka'
-        : 'Vyberte službu'
+  const backText = backTextMap[step]
+  const headerText = headerTextMap[step]
 
   return (
     <>

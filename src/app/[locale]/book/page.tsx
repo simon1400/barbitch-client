@@ -54,7 +54,7 @@ const BookServiceItem = ({ service }: { service: IBookService }) => {
     <li className={'border-t-2 border-[#3C3C3C] border-dotted'}>
       <Link
         className={'flex py-3.5 px-1 items-center gap-4 hover:bg-[#3C3C3C] duration-200'}
-        href={`/book/${service.id}`}
+        href={`/book/${service.id}/any`}
       >
         <span
           className={'min-w-[36px] w-[36px] h-[36px] overflow-hidden rounded-full block relative'}
