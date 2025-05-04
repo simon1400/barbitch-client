@@ -1,6 +1,5 @@
 import React from 'react'
 
-// Компонент ячейки таблицы
 export const Cell = React.memo(({ title, asHeader }: { title: string; asHeader?: boolean }) =>
   asHeader ? (
     <th className={'p-4 border-b border-blue-gray-100 bg-blue-gray-50'}>

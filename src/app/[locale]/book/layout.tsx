@@ -3,6 +3,8 @@ import { Container } from 'components/Container'
 import { BookHeader } from './components/BookHeader'
 import HideSmartsupp from './components/HiddenChatbox'
 
+import './styles.scss'
+
 export default async function BookLayout({
   children,
 }: Readonly<{

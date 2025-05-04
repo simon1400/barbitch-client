@@ -9,6 +9,8 @@ import { Top } from 'sections/Top/Top'
 // import { Sidebar } from './components/Sidebar'
 import { logins } from './data'
 
+import './styles.scss'
+
 export default function AdminLayout({
   children,
 }: Readonly<{
