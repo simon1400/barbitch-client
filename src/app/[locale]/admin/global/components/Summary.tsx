@@ -44,12 +44,10 @@ export const Summary = ({
             <tbody>
               <tr>
                 <Cell title={`${income.toLocaleString()} Kč`} />
-                <Cell
-                  title={`${card.toLocaleString()}+${cash.toLocaleString()}=${(card + cash).toLocaleString()}`}
-                />
-                <Cell title={`${salary.toLocaleString()} Kč`} />
-                <Cell title={`${salaryAdmin.toLocaleString()} Kč`} />
-                <Cell title={`${costs.toLocaleString()} Kč`} />
+                <Cell title={`${(card + cash).toLocaleString()} Kč`} />
+                <Cell title={`-${salary.toLocaleString()} Kč`} />
+                <Cell title={`-${salaryAdmin.toLocaleString()} Kč`} />
+                <Cell title={`-${costs.toLocaleString()} Kč`} />
                 <Cell
                   title={`${(card + cash - salary - salaryAdmin - costs).toLocaleString()} Kč`}
                 />

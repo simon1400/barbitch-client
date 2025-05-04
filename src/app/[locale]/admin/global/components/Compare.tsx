@@ -39,10 +39,10 @@ export const Compare = ({
             </thead>
             <tbody>
               <tr>
-                <Cell title={`${card.toLocaleString()} Kč`} />
-                <Cell title={`${cash.toLocaleString()} Kč`} />
-                <Cell title={`${payroll.toLocaleString()} Kč`} />
-                <Cell title={`${(card + cash + payroll).toLocaleString()} Kč`} />
+                <Cell title={`+${card.toLocaleString()} Kč`} />
+                <Cell title={`+${cash.toLocaleString()} Kč`} />
+                <Cell title={`+${payroll.toLocaleString()} Kč`} />
+                <Cell title={`=${(card + cash + payroll).toLocaleString()} Kč`} />
                 <Cell title={`${income.toLocaleString()} Kč`} />
                 <Cell title={`${(income - (card + cash + payroll)).toLocaleString()}`} />
               </tr>

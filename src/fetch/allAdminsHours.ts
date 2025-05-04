@@ -52,8 +52,6 @@ function summarizeByName(
 
     const hours = Number.parseFloat(item.sum || '0')
 
-    sumAdmins += hours
-
     if (!resultMap.has(name)) {
       resultMap.set(name, {
         name,
