@@ -1,9 +1,9 @@
 'use client'
-import type { IDataWorks } from 'fetch/works'
+import type { IDataWorks } from 'app/[locale]/admin/fetch/works'
 
 import { useAppContext } from 'app/context/AppContext'
 import { Container } from 'components/Container'
-import { getWorks } from 'fetch/works'
+import { getWorks } from 'app/[locale]/admin/fetch/works'
 import { formatDate } from 'helpers/parseDate'
 import React, { useCallback, useEffect, useState } from 'react'
 

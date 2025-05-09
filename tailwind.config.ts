@@ -252,10 +252,10 @@ const config: Config = {
         ],
       },
       boxShadow: {
-        'default-level1': '0 4px 8px var(--darkBlueUltraSoft)',
-        'default-level2': '0 4px 16px var(--darkBlueUltraSoft)',
-        'default-level3': '0 8px 24px var(--darkBlueUltraSoft)',
-        'default-level4': '0 24px 40px var(--darkBlueUltraSoft)',
+        'default-level1': '0 4px 8px #000',
+        'default-level2': '0 4px 16px #000',
+        'default-level3': '0 8px 24px #000',
+        'default-level4': '0 24px 40px #000',
       },
       spacing: {
         '0': '0px',

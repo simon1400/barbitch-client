@@ -2,7 +2,7 @@
 import { getMonthRange } from 'helpers/getMounthRange'
 import qs from 'qs'
 
-import { Axios } from '../lib/api'
+import { Axios } from '../../../../lib/api'
 
 interface IDataAllWorks {
   name: string
@@ -42,6 +42,7 @@ export interface IFilteredData {
   summary: Result[]
   globalFlow: number
   sumMasters: number
+  sumClientsDone: number
 }
 
 function summarizeByName(
@@ -52,6 +53,7 @@ function summarizeByName(
 ): IFilteredData {
   const resultMap = new Map<string, Result>()
   let globalSum = 0
+  let sumClientsDone = 0
   let sumMasters = 0
 
   data.forEach((item) => {
@@ -115,10 +117,11 @@ function summarizeByName(
 
   summary.map((item) => {
     sumMasters += item.sum + item.sumTip + item.extraProfit - item.penalty - item.payrolls
+    sumClientsDone += item.countClient
     return null
   })
 
-  return { summary, globalFlow: globalSum, sumMasters }
+  return { summary, globalFlow: globalSum, sumMasters, sumClientsDone }
 }
 
 export const getAllWorks = async (month: number) => {
@@ -183,5 +186,6 @@ export const getAllWorks = async (month: number) => {
     summary: filteredData.summary,
     globalFlow: filteredData.globalFlow,
     sumMasters: filteredData.sumMasters,
+    sumClientsDone: filteredData.sumClientsDone,
   }
 }

@@ -1,7 +1,7 @@
 import { getMonthRange } from 'helpers/getMounthRange'
 import qs from 'qs'
 
-import { Axios } from '../lib/api'
+import { Axios } from '../../../../lib/api'
 
 interface IDataCosts {
   sum: number

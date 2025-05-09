@@ -15,6 +15,9 @@ export default async function BookServicePage({ params }: any) {
     duration: `${eventType.minutes} min`,
     employee: data.employee?.profile.name ?? 'Неизвестно',
     service: eventType.title,
+    origin: 'online',
+    channel: 'google maps',
+    source: 'quick bookings',
     price: `${eventType.payments?.total_payment ?? 'N/A'} Kč`,
   }
 

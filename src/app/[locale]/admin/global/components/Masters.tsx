@@ -1,4 +1,4 @@
-import type { IFilteredData } from 'fetch/allWorks'
+import type { IFilteredData } from 'app/[locale]/admin/fetch/allWorks'
 
 import { Cell } from '../../components/Cell'
 import { Select } from '../../components/Select'

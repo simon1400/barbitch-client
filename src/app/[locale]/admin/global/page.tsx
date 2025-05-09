@@ -1,22 +1,27 @@
 'use client'
-import type { IFilteredAdminsData } from 'fetch/allAdminsHours'
-import type { IFilteredData } from 'fetch/allWorks'
-import type { ICombineData } from 'fetch/costs'
+import type { IFilteredAdminsData } from 'app/[locale]/admin/fetch/allAdminsHours'
+import type { IFilteredData } from 'app/[locale]/admin/fetch/allWorks'
+import type { ICombineData } from 'app/[locale]/admin/fetch/costs'
 
+import { getAdminsHours } from 'app/[locale]/admin/fetch/allAdminsHours'
+import { getAllWorks } from 'app/[locale]/admin/fetch/allWorks'
+import { getMoney } from 'app/[locale]/admin/fetch/costs'
 import { Container } from 'components/Container'
-import { getAdminsHours } from 'fetch/allAdminsHours'
-import { getAllWorks } from 'fetch/allWorks'
-import { getMoney } from 'fetch/costs'
 import { useCallback, useEffect, useState } from 'react'
+
+import { BlocksContent } from '../components/BlocksContent'
+import { getEvents } from '../fetch/getEvents'
 
 import { Administrators } from './components/Administrators'
 import { Compare } from './components/Compare'
 import { Masters } from './components/Masters'
 import { Summary } from './components/Summary'
+import { blockReservationsItems, blockStateItems } from './data'
 
 const GlobalMonthStates = () => {
   const [month, setMonth] = useState<number>(new Date().getMonth())
   const [works, setWorks] = useState<IFilteredData['summary']>([])
+  const [sumClientsDone, setSumClientsDone] = useState<number>(0)
   const [globalFlow, setGlobalFlow] = useState<number>(0)
   const [sumMasters, setSumMasters] = useState<number>(0)
   const [sumAdmins, setSumAdmins] = useState<number>(0)
@@ -25,10 +30,18 @@ const GlobalMonthStates = () => {
   const [cardMoney, setCardMoney] = useState<number>(0)
   const [cashMoney, setCashMoney] = useState<number>(0)
   const [payrollSum, setPayrollSum] = useState<number>(0)
+  const [clientsAll, setClientsAll] = useState<number>(0)
+  const [clientsCanceled, setClientsCanceled] = useState<number>(0)
+  const [clientsNoshow, setClientsNoshow] = useState<number>(0)
+  const [clientsPayed, setClientsPayed] = useState<number>(0)
+  const [clientsFree, setClientsFree] = useState<number>(0)
+  const [clientsFixed, setClientsFixed] = useState<number>(0)
+  const [clientsPersonal, setClientsPersonal] = useState<number>(0)
 
   const loadData = useCallback(async () => {
     getAllWorks(month).then((res: IFilteredData) => {
       setWorks(res.summary)
+      setSumClientsDone(res.sumClientsDone)
       setGlobalFlow(res.globalFlow)
       setSumMasters(res.sumMasters)
     })
@@ -42,6 +55,15 @@ const GlobalMonthStates = () => {
       setCashMoney(res.cashMoney)
       setPayrollSum(res.payrollSum)
     })
+    getEvents(month).then((res) => {
+      setClientsAll(res.all)
+      setClientsCanceled(res.cancelled)
+      setClientsNoshow(res.noshow)
+      setClientsPayed(res.payed)
+      setClientsFree(res.free)
+      setClientsFixed(res.fixed)
+      setClientsPersonal(res.personal)
+    })
   }, [month])
 
   useEffect(() => {
@@ -51,16 +73,30 @@ const GlobalMonthStates = () => {
   return (
     <section className={'pb-20'}>
       <Container size={'md'}>
-        <div className={'flex justify-between flex-col md:flex-row items-center mb-10'}>
-          <h2 className={'text-md1 mb-5 w-full text-center md:mb-0 md:text-left'}>
-            {'Глобально денег с услуг'}
-          </h2>
-          <div>
-            <span
-              className={'text-[50px] font-bold whitespace-nowrap'}
-            >{`${globalFlow.toLocaleString()} Kč`}</span>
-          </div>
-        </div>
+        <BlocksContent
+          items={blockStateItems(
+            globalFlow,
+            cashMoney,
+            cardMoney,
+            sumMasters,
+            sumAdmins,
+            costs,
+            payrollSum,
+          )}
+        />
+        <BlocksContent
+          title={'Резервации'}
+          items={blockReservationsItems(
+            clientsAll,
+            clientsPayed,
+            clientsNoshow,
+            clientsCanceled,
+            clientsFree,
+            clientsFixed,
+            clientsPersonal,
+            sumClientsDone,
+          )}
+        />
         <Masters data={works} month={month} setMonth={setMonth} sumMasters={sumMasters} />
         <Administrators data={admins} sumAdmins={sumAdmins} />
         <Summary
