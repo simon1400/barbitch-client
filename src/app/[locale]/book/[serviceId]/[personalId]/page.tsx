@@ -79,6 +79,9 @@ const BookCalendarPage: NextPage = () => {
         company: NOONA_COMPANY_ID,
         event_types: [serviceId],
         starts_at: formatISO(selected),
+        origin: 'online',
+        channel: 'google maps',
+        source: 'quick bookings',
         employee: employeeId,
       })
       router.push(`/book/reservation/${slotRezervation.id}`)

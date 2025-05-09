@@ -4,6 +4,9 @@ export interface ISlotReservationReqData {
   company: string
   event_types: string[]
   starts_at: string
+  origin: string
+  channel: string
+  source: string
   employee: string
 }
 
