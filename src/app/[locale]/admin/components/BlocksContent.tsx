@@ -14,7 +14,7 @@ export const BlocksContent = ({
           <h2 className={'text-md1  w-full text-center md:mb-0 md:text-left'}>{title}</h2>
         </div>
       )}
-      <div className={'grid grid-cols-3 gap-5 mb-10'}>
+      <div className={'grid md:grid-cols-3 grid-cols-2 md:gap-5 gap-3 mb-10'}>
         {items.map((item) => (
           <BlockItem key={item.title} title={item.title} content={`${item.value}`} />
         ))}

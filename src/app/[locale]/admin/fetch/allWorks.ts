@@ -183,7 +183,7 @@ export const getAllWorks = async (month: number) => {
   const filteredData = summarizeByName(data, dataPenalty, dataExtraProfit, dataPayroll)
 
   return {
-    summary: filteredData.summary,
+    summary: filteredData.summary.sort((a, b) => b.sum - a.sum),
     globalFlow: filteredData.globalFlow,
     sumMasters: filteredData.sumMasters,
     sumClientsDone: filteredData.sumClientsDone,

@@ -14,6 +14,10 @@ export interface IDataWorks {
   }[]
 }
 
+interface IDataPenalties {
+  sum: string
+}
+
 export const getWorks = async (name: string, month: number) => {
   const { firstDay, lastDay } = getMonthRange(2025, month)
 
@@ -43,15 +47,53 @@ export const getWorks = async (name: string, month: number) => {
     },
   )
 
-  const data: IDataWorks[] = await Axios.get(`/api/personals?${query}`)
+  const queryPenalty = qs.stringify(
+    {
+      filters: {
+        personal: {
+          name: { $eq: name },
+        },
+        date: {
+          $gte: firstDay.toISOString(),
+          $lte: lastDay.toISOString(),
+        },
+      },
+      fields: ['sum'],
+    },
+    {
+      encodeValuesOnly: true,
+    },
+  )
 
-  const total = data[0].offersDone.reduce((sum, item) => {
+  const data: IDataWorks[] = await Axios.get(`/api/personals?${query}`)
+  const dataPenalty: IDataPenalties[] = await Axios.get(`/api/penalties?${queryPenalty}`)
+  const dataExtraProfit: IDataPenalties[] = await Axios.get(`/api/add-moneys?${queryPenalty}`)
+  const dataPayroll: IDataPenalties[] = await Axios.get(`/api/payrolls?${queryPenalty}`)
+
+  const penalty = dataPenalty.reduce((sum, item) => +sum + +item.sum, 0)
+  const extraProfit = dataExtraProfit.reduce((sum, item) => +sum + +item.sum, 0)
+  const payrolls = dataPayroll.reduce((sum, item) => +sum + +item.sum, 0)
+
+  let tipSum = 0
+
+  const salary = data[0].offersDone.reduce((sum, item) => {
     const salary = Number.parseFloat(item.staffSalaries) || 0
     const tip = item.tip ? Number.parseFloat(item.tip) : 0
+    tipSum += tip
     return sum + salary + tip
   }, 0)
 
-  console.log(total)
+  const result = salary + extraProfit - payrolls - penalty
 
-  return data[0]
+  // console.log(result)
+
+  return {
+    works: data[0],
+    salary,
+    extraProfit,
+    payrolls,
+    penalty,
+    result,
+    tipSum,
+  }
 }

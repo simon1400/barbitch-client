@@ -2,10 +2,10 @@ export const BlockItem = ({ title, content }: { title: string; content: string }
   return (
     <div className={'rounded-xl shadow-lg bg-white p-5 w-full'}>
       <div>
-        <span className={'text-sm text-primary'}>{title}</span>
+        <span className={'text-resMd1 md:text-sm text-primary mb-3 md:mb-0 block'}>{title}</span>
       </div>
       <div>
-        <span className={'text-md'}>{content}</span>
+        <span className={'text-h5 md:text-md'}>{content}</span>
       </div>
     </div>
   )
