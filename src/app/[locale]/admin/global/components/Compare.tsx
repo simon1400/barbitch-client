@@ -44,7 +44,7 @@ export const Compare = ({
                 <Cell title={`+${payroll.toLocaleString()} Kč`} />
                 <Cell title={`=${(card + cash + payroll).toLocaleString()} Kč`} />
                 <Cell title={`${income.toLocaleString()} Kč`} />
-                <Cell title={`${(income - (card + cash + payroll)).toLocaleString()}`} />
+                <Cell title={`${(card + cash + payroll - income).toLocaleString()}`} />
               </tr>
             </tbody>
           </table>

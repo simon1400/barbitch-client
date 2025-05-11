@@ -17,7 +17,7 @@ export const blockStateItems = (
   },
   {
     title: 'Разниця',
-    value: `${(globalFlow - (cardMoney + cashMoney + payrollSum)).toLocaleString()}`,
+    value: `${(cardMoney + cashMoney + payrollSum - globalFlow).toLocaleString()}`,
   },
 ]
 
