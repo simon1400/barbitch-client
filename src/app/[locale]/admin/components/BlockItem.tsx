@@ -1,4 +1,12 @@
-export const BlockItem = ({ title, content }: { title: string; content: string }) => {
+export const BlockItem = ({
+  title,
+  content,
+  addContent,
+}: {
+  title: string
+  content: string
+  addContent?: string
+}) => {
   return (
     <div className={'rounded-xl shadow-lg bg-white p-5 w-full'}>
       <div>
@@ -7,6 +15,11 @@ export const BlockItem = ({ title, content }: { title: string; content: string }
       <div>
         <span className={'text-h5 md:text-md'}>{content}</span>
       </div>
+      {addContent && (
+        <div>
+          <span className={'text-h5 md:text-sm'}>{addContent}</span>
+        </div>
+      )}
     </div>
   )
 }

@@ -5,7 +5,7 @@ export const BlocksContent = ({
   items,
 }: {
   title?: string
-  items: { title: string; value: string | number }[]
+  items: { title: string; value: string | number; addValue?: string }[]
 }) => {
   return (
     <>
@@ -16,7 +16,12 @@ export const BlocksContent = ({
       )}
       <div className={'grid md:grid-cols-3 grid-cols-2 md:gap-5 gap-3 mb-10'}>
         {items.map((item) => (
-          <BlockItem key={item.title} title={item.title} content={`${item.value}`} />
+          <BlockItem
+            key={item.title}
+            title={item.title}
+            content={`${item.value}`}
+            addContent={item.addValue}
+          />
         ))}
       </div>
     </>

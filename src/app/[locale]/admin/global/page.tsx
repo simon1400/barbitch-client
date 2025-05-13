@@ -27,6 +27,7 @@ const GlobalMonthStates = () => {
   const [sumAdmins, setSumAdmins] = useState<number>(0)
   const [admins, setAdmins] = useState<IFilteredAdminsData['summary']>([])
   const [costs, setCosts] = useState<number>(0)
+  const [noDphCosts, setNoDphCost] = useState<number>(0)
   const [cardMoney, setCardMoney] = useState<number>(0)
   const [cashMoney, setCashMoney] = useState<number>(0)
   const [payrollSum, setPayrollSum] = useState<number>(0)
@@ -51,6 +52,7 @@ const GlobalMonthStates = () => {
     })
     getMoney(month).then((res: ICombineData) => {
       setCosts(res.sumCosts)
+      setNoDphCost(res.sumNoDphCosts)
       setCardMoney(res.cardMoney)
       setCashMoney(res.cashMoney)
       setPayrollSum(res.payrollSum)
@@ -75,6 +77,7 @@ const GlobalMonthStates = () => {
       <Container size={'md'}>
         <BlocksContent
           items={blockStateItems(
+            noDphCosts,
             globalFlow,
             cashMoney,
             cardMoney,
