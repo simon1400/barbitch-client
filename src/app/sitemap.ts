@@ -35,6 +35,10 @@ const sitemapStatic = [
     priority: 0.8,
   },
   {
+    url: '/blog/jak-dlouho-vydrzi-prodlouzene-rasy-a-co-jejich-zivotnost-ovlivnuje',
+    priority: 0.7,
+  },
+  {
     url: '/blog/jak-spravne-pecovat-o-nehty-v-domacich-podminkach',
     priority: 0.7,
   },

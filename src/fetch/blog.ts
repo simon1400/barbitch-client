@@ -48,6 +48,9 @@ export const getPost = async (slug: string) => {
                 },
               },
             },
+            'content.faq': {
+              populate: '*',
+            },
           },
         },
       },
