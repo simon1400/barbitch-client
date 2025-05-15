@@ -35,6 +35,10 @@ const sitemapStatic = [
     priority: 0.8,
   },
   {
+    url: '/blog/jak-spravne-pecovat-o-nehty-v-domacich-podminkach',
+    priority: 0.7,
+  },
+  {
     url: '/blog/nasivani-ras-typy-efekty-a-pece-po-procedure',
     priority: 0.7,
   },

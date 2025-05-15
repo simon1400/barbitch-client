@@ -83,9 +83,9 @@ body{
   ol {
     padding-left: 25px;
     list-style-type: decimal;
-    @apply text-baseText mb-5;
+    @apply text-baseText mb-10;
     > li {
-      padding-bottom: 20px;
+      // padding-bottom: 20px;
       line-height: 30px;
       margin-bottom: 15px;
       &::marker{
@@ -99,7 +99,8 @@ body{
         }
       }
       ul {
-        padding-left: 0px;
+        padding-left: 25px;
+        margin-bottom: 0;
       }
     }
   }
@@ -121,7 +122,7 @@ body{
         height: 1.5px;
         background-color: rgba($primary, .5);
         left: -25px;
-        top: 18px;
+        top: 15px;
       }
       p{
         margin-bottom: 0;
