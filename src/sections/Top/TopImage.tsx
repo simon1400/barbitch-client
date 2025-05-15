@@ -21,7 +21,7 @@ export const TopImage = ({ title, image }: { title: string; image: IGalery }) =>
 
       <Container size={'xl'}>
         <div className={'pb-15'}>
-          <h1 id={'top-title'} className={'text-md2 lg:text-top pb-4 uppercase'}>
+          <h1 id={'top-title'} className={'text-md2 leading-[45px] lg:text-big pb-4 uppercase'}>
             {title}
           </h1>
         </div>

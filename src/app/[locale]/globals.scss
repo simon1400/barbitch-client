@@ -46,9 +46,9 @@ body{
 
 .content {
   h2 {
-    @apply text-md1 mb-11;
+    @apply text-md1 mb-5;
     &.banner-head{
-      @apply text-xxl mb-12;
+      @apply text-xxl;
     }
   }
   h3 {
@@ -56,7 +56,8 @@ body{
   }
   
   p {
-    @apply text-baseText mb-11;
+    @apply text-baseText mb-5;
+    line-height: 30px;
     a{
       position: relative;
       transition: all .2s ease;
@@ -85,6 +86,8 @@ body{
     @apply text-baseText mb-5;
     > li {
       padding-bottom: 20px;
+      line-height: 30px;
+      margin-bottom: 15px;
       &::marker{
         @apply text-baseText font-bold;
         color: $primary;
@@ -104,10 +107,12 @@ body{
     list-style: none;
     padding-top: 6px;
     padding-left: 30px;
-    @apply text-baseText mb-11;
+    @apply text-baseText mb-5;
     > li {
       color: $accent !important;
       position: relative;
+      line-height: 30px;
+      margin-bottom: 15px;
       &:before{
         content: '';
         display: block;
@@ -128,15 +133,16 @@ body{
 @media (max-width: 900px) {
   .content {
     h2 {
+      @apply text-sm1 mb-2;
       &.banner-head{
-        @apply text-resTop mb-6;
+        @apply text-resTop;
       }
     }
     h3 {
       @apply text-h5 mb-5;
     }
     p {
-      @apply text-baseSm mb-5;
+      @apply text-baseSm mb-2;
     }
     ol {
       padding-left: 20px;
@@ -148,10 +154,12 @@ body{
     ul {
       padding-top: 5px;
       padding-left: 20px;
-      @apply text-baseSm mb-5;
+      @apply  mb-3;
       li{
         position: relative;
+        @apply text-baseSm leading-6 mb-2;
         &:before{
+          height: 2px;
           width: 14px;
           left: -22px;
           top: 15px;

@@ -7,7 +7,7 @@ export const Banner = ({
 }: {
   data: {
     title?: string
-    cta: {
+    cta?: {
       title: string
       link: string
     }
@@ -15,27 +15,33 @@ export const Banner = ({
   }
 }) => {
   return (
-    <section className={'pb-10 md:pb-17'}>
+    <section className={'pb-10 md:pb-15'}>
       <Container size={'md'}>
         <div
           style={{
             backgroundImage:
               'linear-gradient(0deg, rgba(231,30,110,1) 0%, rgba(255,0,101,0.5) 100%)',
           }}
-          className={`${data.image ? '' : 'mix-blend-multiply'} relative text-center px-13.5 py-18`}
+          className={`relative text-center px-7 md:px-13.5 py-9 md:py-18 z-10 flex items-center justify-center flex-col`}
         >
           {data.image && (
-            <div className={'top-0 left-0 absolute overflow-hidden w-full h-full -z-10 opacity-90'}>
+            <div
+              className={
+                'top-0 left-0 mix-blend-multiply bg-[#E71E6E] absolute w-full h-full -z-10'
+              }
+            >
               <Image
-                className={'object-cover object-center w-full h-full grayscale'}
+                className={'object-cover object-center opacity-60 grayscale'}
                 src={data.image.url}
                 fill
                 alt={data.image.alternativeText || ''}
               />
             </div>
           )}
-          <h2 className={`banner-head`}>{data.title}</h2>
-          <Button text={data.cta.title} href={data.cta.link} />
+          <h2 className={`banner-head text-white ${!data.cta ? 'mb-0 md:mb-0' : 'mb-6 md:!mb-12'}`}>
+            {data.title}
+          </h2>
+          {data.cta && <Button text={data.cta.title} href={data.cta.link} />}
         </div>
       </Container>
     </section>
