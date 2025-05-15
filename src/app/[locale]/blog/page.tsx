@@ -44,7 +44,7 @@ const Blog = async () => {
     <main>
       <Top title={data.title} small linkToReserve={dataLink.linkToReserve} />
       <section className={'pb-16'}>
-        <Posts data={posts} blog />
+        <Posts data={posts.reverse()} blog />
       </section>
     </main>
   )
