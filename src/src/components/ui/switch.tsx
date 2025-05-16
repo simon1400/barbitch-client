@@ -1,3 +1,4 @@
+/* eslint-disable import/order */
 'use client'
 import { cn } from '@/lib/utils'
 import * as SwitchPrimitives from '@radix-ui/react-switch'
