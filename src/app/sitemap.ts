@@ -23,6 +23,10 @@ const sitemapStatic = [
     priority: 0.9,
   },
   {
+    url: '/book',
+    priority: 0.9,
+  },
+  {
     url: '/service/manikura',
     priority: 0.8,
   },

@@ -34,6 +34,7 @@ export async function generateMetadata(): Promise<Metadata> {
       'Cenik',
       'Brno',
       'Manikúra',
+      'Nehty',
       'Prodlužování řas',
       'Úprava obočí',
     ],

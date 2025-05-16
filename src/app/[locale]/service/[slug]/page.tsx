@@ -45,6 +45,7 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
       'bar bitch',
       'Brno',
       'Manikúra',
+      'Nehty',
       'Prodlužování řas',
       'Úprava obočí',
     ],

@@ -50,6 +50,7 @@ export async function generateMetadata(): Promise<Metadata> {
       'bar bitch',
       'Brno',
       'Kosmetický salon',
+      'Nehty',
       'Manikúra',
       'Prodlužování řas',
       'Úprava obočí',

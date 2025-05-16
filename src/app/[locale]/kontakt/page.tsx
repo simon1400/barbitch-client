@@ -12,20 +12,16 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: data.metaData.title,
     description: data.metaData.description,
-    openGraph: data.metaData.image
-      ? {
-          title: data.metaData.title || 'Kontakt',
-          description: data.metaData.description || '',
-          siteName: 'Barbitch',
-          images: [
-            data.metaData.image
-              ? data.metaData.image.url
-              : 'https://barbitch.cz/assets/bigBaner.jpg',
-          ],
-          url: `https://barbitch.cz/kontakt`,
-          type: 'article',
-        }
-      : null,
+    openGraph: {
+      title: data.metaData.title || 'Kontakt',
+      description: data.metaData.description || '',
+      siteName: 'Barbitch',
+      images: [
+        data.metaData.image ? data.metaData.image.url : 'https://barbitch.cz/assets/bigBaner.jpg',
+      ],
+      url: `https://barbitch.cz/kontakt`,
+      type: 'article',
+    },
     twitter: {
       card: 'summary_large_image',
       title: data.metaData.title || 'Kontakt',
@@ -39,6 +35,7 @@ export async function generateMetadata(): Promise<Metadata> {
       'bar.bitch',
       'Kontakt',
       'Brno',
+      'Nehty',
       'Manikúra',
       'Prodlužování řas',
       'Úprava obočí',

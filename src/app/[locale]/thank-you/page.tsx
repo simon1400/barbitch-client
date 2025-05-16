@@ -27,7 +27,7 @@ export async function generateMetadata(): Promise<Metadata> {
       description,
       images: ['https://barbitch.cz/assets/bigBaner.jpg'],
     },
-    keywords: ['barbitch', 'bar.bitch', 'bar bitch', 'Brno', 'Děkujeme'],
+    keywords: ['barbitch', 'bar.bitch', 'bar bitch', 'Brno', 'Nehty', 'Děkujeme'],
     alternates: {
       canonical: 'https://barbitch.cz/thank-you',
     },

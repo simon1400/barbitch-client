@@ -33,7 +33,7 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
       description: metaData.description || '',
       images: [metaData.image ? metaData.image.url : 'https://barbitch.cz/assets/bigBaner.jpg'],
     },
-    keywords: ['barbitch', 'bar.bitch', 'bar bitch', 'Brno', title],
+    keywords: ['barbitch', 'bar.bitch', 'bar bitch', 'Brno', 'Nehty', title],
     alternates: {
       canonical: `https://barbitch.cz/${article}`,
     },
