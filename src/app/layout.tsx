@@ -1,4 +1,3 @@
-/* eslint-disable perfectionist/sort-imports */
 import type { Metadata } from 'next'
 
 import { GoogleTagManager } from '@next/third-parties/google'
@@ -10,12 +9,8 @@ import { Header } from 'components/Header'
 import { getBanner } from 'fetch/banner'
 import { getContact } from 'fetch/contact'
 import { getNav } from 'fetch/nav'
-import { routing } from 'i18n/routing'
 import { Montserrat } from 'next/font/google'
-import { notFound } from 'next/navigation'
 import Script from 'next/script'
-import { NextIntlClientProvider } from 'next-intl'
-import { getMessages } from 'next-intl/server'
 import { Banner } from 'sections/Banner'
 import './globals.scss'
 
@@ -31,18 +26,9 @@ const montserat = Montserrat({
 
 export default async function RootLayout({
   children,
-  params,
 }: Readonly<{
   children: React.ReactNode
-  params: Promise<{ locale: string }>
 }>) {
-  const { locale } = await params
-
-  if (!routing.locales.includes(locale as any)) {
-    notFound()
-  }
-  const messages = await getMessages()
-
   const [dataContact, dataBanner, dataNav] = await Promise.all([
     getContact(),
     getBanner(),
@@ -50,7 +36,7 @@ export default async function RootLayout({
   ])
 
   return (
-    <html lang={locale}>
+    <html lang={'cs'}>
       <head>
         <link rel={'preconnect'} href={'https://connect.facebook.net'} crossOrigin={'anonymous'} />
         <meta name={'viewport'} content={'width=device-width, initial-scale=1.0'} />
@@ -85,14 +71,12 @@ export default async function RootLayout({
             src={'https://www.facebook.com/tr?id=530946079324140&ev=PageView&noscript=1'}
           />
         </noscript>
-        <NextIntlClientProvider messages={messages}>
-          <AppProvider>
-            <Header dataNav={dataNav} linkReserve={dataContact.linkToReserve} />
-            {children}
-            <Banner data={dataBanner} />
-            <Footer contact={dataContact} />
-          </AppProvider>
-        </NextIntlClientProvider>
+        <AppProvider>
+          <Header dataNav={dataNav} linkReserve={dataContact.linkToReserve} />
+          {children}
+          <Banner data={dataBanner} />
+          <Footer contact={dataContact} />
+        </AppProvider>
         <Analytics />
         <SpeedInsights />
       </body>
