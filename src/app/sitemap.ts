@@ -62,6 +62,10 @@ const sitemapStatic = [
     url: '/blog/jak-spravne-pecovat-o-nehty-v-domacim-prostredi',
     priority: 0.7,
   },
+  {
+    url: '/blog/laminace-oboci-trend-ktery-si-v-roce-2025-zamilujete',
+    priority: 0.7,
+  },
 ]
 
 export default function sitemap(): MetadataRoute.Sitemap {
