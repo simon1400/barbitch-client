@@ -1,12 +1,12 @@
 const namePrice = 'Ceník Řas'
-const linkOffers = 'https://barbitch.cz/rasy'
+const linkOffers = 'https://barbitch.cz/service/rasy'
 const lowPrice = '1000'
 const highPrice = '1300'
 const offerCount = '3'
 const serviceType = 'Řasy'
-const name = 'Prodlužování řas a lash lifting'
+const name = 'Řasy Brno | Prodloužení a barvení řas – Barbitch Beauty Studio'
 const description =
-  'Profesionální prodlužování řas v Brně – klasické, objemové a hybridní metody. Přirozený vzhled a dlouhá výdrž. Objednejte se nyní!'
+  'Užij si krásné řasy bez stresu! Nabízíme prodloužení řas Classic, 2D, 3D i barvení – vše v moderním beauty studiu v Brně. Objednej se ještě dnes.'
 const priceList = [
   {
     name: 'Prodloužení řas Classic',

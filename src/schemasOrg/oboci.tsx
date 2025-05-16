@@ -1,12 +1,12 @@
 const namePrice = 'Ceník Obočí'
-const linkOffers = 'https://barbitch.cz/oboci'
+const linkOffers = 'https://barbitch.cz/service/oboci'
 const lowPrice = '200'
 const highPrice = '1000'
 const offerCount = '5'
 const serviceType = 'Obočí'
-const name = 'Laminace, barvení a úprava obočí'
+const name = 'Obočí Brno | Laminace, barvení a modelace – Barbitch Beauty Studio'
 const description =
-  'Chcete dokonale upravené obočí v Brně? Nabízíme laminaci, tvarování a barvení obočí. Objednejte se a získejte perfektní tvar!'
+  'Upravené obočí bez starostí! Nabízíme laminaci, barvení i modelaci obočí v Brně. Svěř se profesionálkám z Barbitch studia a objednej se online.'
 const priceList = [
   {
     name: 'Odstranění chloupků nad pusou',

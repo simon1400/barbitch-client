@@ -28,7 +28,7 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
       images: [
         meta.metaData.image ? meta.metaData.image.url : 'https://barbitch.cz/assets/bigBaner.jpg',
       ],
-      url: `https://barbitch.cz/${slug}`,
+      url: `https://barbitch.cz/service/${slug}`,
       type: 'article',
     },
     twitter: {
@@ -49,7 +49,7 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
       'Úprava obočí',
     ],
     alternates: {
-      canonical: `https://barbitch.cz/${slug}`,
+      canonical: `https://barbitch.cz/service/${slug}`,
     },
   }
 }

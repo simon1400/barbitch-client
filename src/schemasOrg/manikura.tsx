@@ -1,12 +1,12 @@
 const namePrice = 'Ceník manikúry'
-const linkOffers = 'https://barbitch.cz/manikura'
+const linkOffers = 'https://barbitch.cz/service/manikura'
 const lowPrice = '400'
 const highPrice = '2000'
 const offerCount = '7'
 const serviceType = 'Manikúra'
-const name = 'Kompletní manikúra a nehtový design'
+const name = 'Manikúra Brno | Gelové nehty & profesionální péče | Barbitch'
 const description =
-  'Profesionální manikúra v Brně – gelové, akrylové a francouzské nehty. Objednejte si termín online!'
+  'Hledáš kvalitní manikúru v Brně? Nabízíme gelové, francouzské a designové nehty v moderním beauty studiu. Objednej se online ještě dnes!'
 const priceList = [
   {
     name: 'Hygienická manikúra',
