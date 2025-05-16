@@ -15,6 +15,7 @@ export interface IDataContact {
   linkToMap?: string
   socItems?: ISocItem[]
   linkToReserve: string
+  content: string
 }
 
 export interface IDataLinkToReserve {
@@ -33,6 +34,20 @@ const query = qs.stringify(
 
 export const getContact = async () => {
   const dataContact: IDataContact = await Axios.get(`/api/contact?${query}`)
+  return dataContact
+}
+
+const queryContactContent = qs.stringify(
+  {
+    fields: ['content'],
+  },
+  {
+    encodeValuesOnly: true, // prettify URL
+  },
+)
+
+export const getContactContent = async () => {
+  const dataContact: IDataContact = await Axios.get(`/api/contact?${queryContactContent}`)
   return dataContact
 }
 
