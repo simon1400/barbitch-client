@@ -1,3 +1,4 @@
+/* eslint-disable react/no-unstable-context-value */
 'use client'
 
 import type { ReactNode } from 'react'
