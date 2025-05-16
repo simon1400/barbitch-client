@@ -3,7 +3,15 @@ import qs from 'qs'
 
 const query = qs.stringify(
   {
-    populate: ['metaData'],
+    populate: {
+      metaData: {
+        populate: {
+          image: {
+            fields: ['url'],
+          },
+        },
+      },
+    },
   },
   {
     encodeValuesOnly: true, // prettify URL
@@ -42,7 +50,15 @@ export const getPostMeta = async (slug: string) => {
         },
       },
       fields: ['title'],
-      populate: ['metaData'],
+      populate: {
+        metaData: {
+          populate: {
+            image: {
+              fields: ['url'],
+            },
+          },
+        },
+      },
     },
     {
       encodeValuesOnly: true, // prettify URL
