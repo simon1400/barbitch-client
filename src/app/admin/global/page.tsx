@@ -1,15 +1,15 @@
 'use client'
-import type { IFilteredAdminsData } from 'app/[locale]/admin/fetch/allAdminsHours'
-import type { IFilteredData } from 'app/[locale]/admin/fetch/allWorks'
-import type { ICombineData } from 'app/[locale]/admin/fetch/costs'
+import type { IFilteredAdminsData } from '../fetch/allAdminsHours'
+import type { IFilteredData } from '../fetch/allWorks'
+import type { ICombineData } from '../fetch/costs'
 
-import { getAdminsHours } from 'app/[locale]/admin/fetch/allAdminsHours'
-import { getAllWorks } from 'app/[locale]/admin/fetch/allWorks'
-import { getMoney } from 'app/[locale]/admin/fetch/costs'
 import { Container } from 'components/Container'
 import { useCallback, useEffect, useState } from 'react'
 
 import { BlocksContent } from '../components/BlocksContent'
+import { getAdminsHours } from '../fetch/allAdminsHours'
+import { getAllWorks } from '../fetch/allWorks'
+import { getMoney } from '../fetch/costs'
 import { getEvents } from '../fetch/getEvents'
 
 import { Administrators } from './components/Administrators'

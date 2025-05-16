@@ -1,4 +1,4 @@
-import type { IFilteredAdminsData } from 'app/[locale]/admin/fetch/allAdminsHours'
+import type { IFilteredAdminsData } from '../../fetch/allAdminsHours'
 
 import { Cell } from '../../components/Cell'
 
