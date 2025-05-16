@@ -28,14 +28,18 @@ const sitemapStatic = [
   },
   {
     url: '/service/manikura',
-    priority: 0.8,
+    priority: 0.9,
   },
   {
     url: '/service/rasy',
-    priority: 0.8,
+    priority: 0.9,
   },
   {
     url: '/service/oboci',
+    priority: 0.9,
+  },
+  {
+    url: '/hiring',
     priority: 0.8,
   },
   {
