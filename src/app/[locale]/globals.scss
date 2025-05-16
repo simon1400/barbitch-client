@@ -64,7 +64,7 @@ body{
   }
   
   p {
-    @apply text-baseText mb-5;
+    @apply text-baseText pb-5;
     line-height: 30px;
     a{
       position: relative;
@@ -151,7 +151,7 @@ body{
       @apply text-h5 mb-5;
     }
     p {
-      @apply text-baseSm mb-2;
+      @apply text-baseSm pb-2;
     }
     ol {
       padding-left: 20px;

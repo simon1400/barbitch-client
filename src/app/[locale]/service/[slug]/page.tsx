@@ -74,7 +74,7 @@ const Service = async ({ params }: any) => {
       {slug === 'manikura' && <SchemaJsonManikura />}
       <Top title={data.title} small linkToReserve={dataLink.linkToReserve} />
       <Section>
-        <div className={'text-xs1 lg:text-base'}>
+        <div className={'text-xs1 lg:text-base content'}>
           {parse(data.description || '', { trim: true })}
         </div>
       </Section>
@@ -83,7 +83,7 @@ const Service = async ({ params }: any) => {
         <PriceTable data={priceList} />
       </section>
       <Section>
-        <div className={'text-xs1 lg:text-base'}>
+        <div className={'text-xs1 lg:text-base content'}>
           {parse(data.additionalDescription || '', { trim: true })}
         </div>
         <Button
