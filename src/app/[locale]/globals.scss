@@ -102,6 +102,7 @@ body{
       }
       >p{
         margin-bottom: 0;
+        padding-bottom: 0;
         &:first-of-type{
           @apply text-baseText font-bold;
         }
@@ -134,6 +135,7 @@ body{
       }
       p{
         margin-bottom: 0;
+        padding-bottom: 0;
       }
     }
   }
