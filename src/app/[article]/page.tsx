@@ -7,7 +7,6 @@ import parse from 'html-react-parser'
 import { notFound } from 'next/navigation'
 import { Top } from 'sections/Top/Top'
 
-// Функция generateMetadata с правильным типом params
 export async function generateMetadata({ params }: any): Promise<Metadata> {
   const { article } = await params
   const data = await getArticleMeta(article)

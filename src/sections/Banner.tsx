@@ -26,7 +26,9 @@ const Banner = async () => {
         <img
           className={'absolute object-cover object-center w-full h-full grayscale opacity-70'}
           src={'/assets/banner.jpg'}
-          alt={''}
+          alt={
+            'Proces manikúry v salonu: nehtová specialistka v růžových rukavicích upravuje nehty zákaznice pomocí přístroje s růžovým povrchem'
+          }
         />
       </div>
       <BannerLines data={data} />
