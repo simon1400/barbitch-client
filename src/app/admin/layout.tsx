@@ -1,7 +1,7 @@
 'use client'
 
-import { useAppContext } from 'app/context/AppContext'
 import { Container } from 'components/Container'
+import { useAppContext } from 'context/AppContext'
 import { useOnMountUnsafe } from 'helpers/useOnMountUnsaf'
 import { redirect } from 'next/navigation'
 import { Top } from 'sections/Top/Top'

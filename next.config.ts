@@ -39,6 +39,7 @@ const nextConfig: NextConfig = {
     NOONA_COMPANY_ID: process.env.NOONA_COMPANY_ID,
     NOONA_TOKEN: process.env.NOONA_TOKEN,
   },
+  compress: true,
   images: {
     remotePatterns: [
       { hostname: 'lh3.googleusercontent.com' },

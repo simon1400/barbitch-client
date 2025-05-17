@@ -3,15 +3,12 @@ import type { Metadata } from 'next'
 import { GoogleTagManager } from '@next/third-parties/google'
 import { Analytics } from '@vercel/analytics/react'
 import { SpeedInsights } from '@vercel/speed-insights/next'
-import { AppProvider } from 'app/context/AppContext'
-import { Footer } from 'components/Footer'
+import Footer from 'components/Footer'
 import { Header } from 'components/Header'
-import { getBanner } from 'fetch/banner'
-import { getContact } from 'fetch/contact'
-import { getNav } from 'fetch/nav'
+import { AppProvider } from 'context/AppContext'
 import { Montserrat } from 'next/font/google'
 import Script from 'next/script'
-import { Banner } from 'sections/Banner'
+import Banner from 'sections/Banner'
 import './globals.scss'
 
 export const metadata: Metadata = {
@@ -29,12 +26,6 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const [dataContact, dataBanner, dataNav] = await Promise.all([
-    getContact(),
-    getBanner(),
-    getNav(),
-  ])
-
   return (
     <html lang={'cs'}>
       <head>
@@ -47,18 +38,6 @@ export default async function RootLayout({
         <link rel={'shortcut icon'} href={'/favicon/favicon.ico'} />
         <link rel={'apple-touch-icon'} sizes={'180x180'} href={'/favicon/apple-touch-icon.png'} />
         <link rel={'manifest'} href={'/favicon/site.webmanifest'} />
-        <Script id={'Meta pixel'}>
-          {`!function(f,b,e,v,n,t,s)
-            {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-            n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-            if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-            n.queue=[];t=b.createElement(e);t.async=!0;
-            t.src=v;s=b.getElementsByTagName(e)[0];
-            s.parentNode.insertBefore(t,s)}(window, document,'script',
-            'https://connect.facebook.net/en_US/fbevents.js');
-            fbq('init', '530946079324140');
-            fbq('track', 'PageView');`}
-        </Script>
       </head>
       {/* <!-- Google tag (gtag.js) --> */}
       <GoogleTagManager gtmId={'GTM-5SP5MPTB'} />
@@ -71,11 +50,27 @@ export default async function RootLayout({
             src={'https://www.facebook.com/tr?id=530946079324140&ev=PageView&noscript=1'}
           />
         </noscript>
+        <Script
+          strategy={'afterInteractive'}
+          id={'fb-pixel'}
+          dangerouslySetInnerHTML={{
+            __html: `!function(f,b,e,v,n,t,s)
+            {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+            n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+            if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+            n.queue=[];t=b.createElement(e);t.async=!0;
+            t.src=v;s=b.getElementsByTagName(e)[0];
+            s.parentNode.insertBefore(t,s)}(window, document,'script',
+            'https://connect.facebook.net/en_US/fbevents.js');
+            fbq('init', '530946079324140');
+            fbq('track', 'PageView');`,
+          }}
+        />
         <AppProvider>
-          <Header dataNav={dataNav} linkReserve={dataContact.linkToReserve} />
+          <Header />
           {children}
-          <Banner data={dataBanner} />
-          <Footer contact={dataContact} />
+          <Banner />
+          <Footer />
         </AppProvider>
         <Analytics />
         <SpeedInsights />

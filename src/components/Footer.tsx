@@ -1,22 +1,15 @@
-'use client'
-
-import type { IDataContact } from 'fetch/contact'
-
-import { usePathname } from 'next/navigation'
+import { withHiddenRoutes } from 'helpers/withHiddenRoutes'
 
 import Contact from '../sections/Contact'
 import CustomMap from '../sections/Map'
 
-export const Footer = ({ contact }: { contact: IDataContact }) => {
-  const pathname = usePathname()
-
-  if (pathname.includes('/book') || pathname.includes('/admin')) {
-    return null
-  }
+const Footer = async () => {
   return (
     <footer className={'pt-27 lg:pt-30'}>
-      <Contact contact={contact} />
+      <Contact />
       <CustomMap />
     </footer>
   )
 }
+
+export default withHiddenRoutes(Footer, ['/book'])

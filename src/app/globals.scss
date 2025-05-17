@@ -105,7 +105,6 @@ body{
     list-style-type: decimal;
     @apply text-baseText mb-10;
     > li {
-      // padding-bottom: 20px;
       line-height: 30px;
       margin-bottom: 15px;
       &::marker{

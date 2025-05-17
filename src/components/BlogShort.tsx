@@ -1,4 +1,3 @@
-// import { ArrowRightIcon } from 'icons/ArrowIcon'
 import type { IDataPostShort } from 'fetch/blog'
 
 import parse from 'html-react-parser'
@@ -26,7 +25,7 @@ export const BlogBigShort = ({ data }: { data: IDataPostShort }) => {
         <h2 className={'text-resBig md:text-xxl md:mb-7'}>
           <span className={'duration-300 group-hover:text-primary'}>
             {data.title.replaceAll(';sp;', ' ')}
-            <b className={'text-primary duration-300 ml-3 group-hover:ml-5'}>{'→'}</b>
+            <span className={'text-primary duration-300 ml-3 group-hover:ml-5'}>{'→'}</span>
           </span>
         </h2>
         <div className={'hidden md:visible text-baseSm md:text-baseText'}>
@@ -55,7 +54,7 @@ export const BlogShort = ({ data }: { data: IDataPostShort }) => {
         <h3 className={'text-h5'}>
           <span className={'duration-300 group-hover:text-primary'}>
             {data.title.replaceAll(';sp;', ' ')}
-            <b className={'text-primary duration-300 ml-3 group-hover:ml-5'}>{' →'}</b>
+            <span className={'text-primary duration-300 ml-3 group-hover:ml-5'}>{' →'}</span>
           </span>
         </h3>
       </div>

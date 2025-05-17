@@ -1,11 +1,12 @@
+'use client'
 import type { IDataNav, INavItem } from 'fetch/nav'
 
+import { useAppContext } from 'context/AppContext'
 import { motion, useMotionValue } from 'motion/react'
 import { useRef } from 'react'
 
 import Button from './Button'
 import { Container } from './Container'
-// import Lang from './Lang'
 
 interface LinkProps {
   heading: string
@@ -78,7 +79,8 @@ const Link = ({ heading, href, size, reverse = false }: LinkProps) => {
   )
 }
 
-const Menu = ({ open, nav }: { open: boolean; nav: IDataNav }) => {
+const Menu = ({ nav }: { nav: IDataNav }) => {
+  const { menu: open } = useAppContext()
   return (
     <div
       className={`fixed top-0 left-0 w-full bg-accent z-20 overflow-hidden flex items-end transition-opacity duration-300 ${
@@ -89,43 +91,32 @@ const Menu = ({ open, nav }: { open: boolean; nav: IDataNav }) => {
     >
       <Container size={'xl'}>
         <div className={'text-right lg:text-left'}>
-          {/* Языковое меню */}
-          {/* <div className={'lg:hidden'}>
-            <Lang menu={open} />
-          </div> */}
-          <div className={'lg:flex items-center justify-between w-full pb-20'}>
-            {/* Левая навигация */}
+          <nav className={'lg:flex items-center justify-between w-full pb-20'}>
             <div>
-              <nav className={'mb-2.5 lg:mb-0'} aria-label={'Основная навигация'}>
-                <ul>
-                  {nav.leftNav?.length &&
-                    nav.leftNav.map((item: INavItem) => (
-                      <li key={`leftMenu_${item.title}`}>
-                        <Link size={'text-sm1 lg:text-lg'} heading={item.title} href={item.link} />
-                      </li>
-                    ))}
-                </ul>
-              </nav>
+              <ul className={'mb-2.5 lg:mb-0 block'} aria-label={'Основная навигация'}>
+                {nav.leftNav?.length &&
+                  nav.leftNav.map((item: INavItem) => (
+                    <li key={`leftMenu_${item.title}`}>
+                      <Link size={'text-sm1 lg:text-lg'} heading={item.title} href={item.link} />
+                    </li>
+                  ))}
+              </ul>
             </div>
-            {/* Правая навигация */}
             <div>
-              <nav aria-label={'Дополнительная навигация'}>
-                <ul className={'text-right'}>
-                  {nav.rightNav?.length &&
-                    nav.rightNav.map((item: INavItem) => (
-                      <li className={'mt-2 lg:mt-2.5 text-right'} key={`rightMenu_${item.title}`}>
-                        <Link
-                          size={'text-resLg lg:text-md text-right'}
-                          href={item.link}
-                          heading={item.title}
-                          reverse
-                        />
-                      </li>
-                    ))}
-                </ul>
-              </nav>
+              <ul className={'block text-right'} aria-label={'Дополнительная навигация'}>
+                {nav.rightNav?.length &&
+                  nav.rightNav.map((item: INavItem) => (
+                    <li className={'mt-2 lg:mt-2.5 text-right'} key={`rightMenu_${item.title}`}>
+                      <Link
+                        size={'text-resLg lg:text-md text-right'}
+                        href={item.link}
+                        heading={item.title}
+                        reverse
+                      />
+                    </li>
+                  ))}
+              </ul>
             </div>
-            {/* Кнопка */}
             <Button
               inverse={open}
               className={'mt-5 lg:hidden'}
@@ -133,7 +124,7 @@ const Menu = ({ open, nav }: { open: boolean; nav: IDataNav }) => {
               text={'Rezervovat termín'}
               href={'/book'}
             />
-          </div>
+          </nav>
         </div>
       </Container>
     </div>

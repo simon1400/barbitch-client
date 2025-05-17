@@ -2,18 +2,22 @@ import type { IDataContact } from 'fetch/contact'
 
 import { Container } from 'components/Container'
 import { SocNav } from 'components/SocNav'
+import { getContact } from 'fetch/contact'
 import parse from 'html-react-parser'
 import { SmallHandIcon } from 'icons/SmallHand'
+import { headers } from 'next/headers'
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
 
-const Contact = ({ contact }: { contact: IDataContact }) => {
-  const pathname = usePathname()
+const Contact = async () => {
+  const headersList = await headers()
+  const referer = headersList.get('referer') || ''
+
+  const contact: IDataContact = await getContact()
 
   return (
     <section className={'pb-23 lg:pb-27'}>
       <Container size={'xl'}>
-        {pathname !== '/kontakt' && (
+        {referer !== '/kontakt' && (
           <h2 className={'text-md lg:text-big text-center mb-5 lg:mb-11.5'}>{'KONTAKT'}</h2>
         )}
         <div className={'flex justify-center mb-5 lg:mb-16'}>
@@ -54,7 +58,7 @@ const Contact = ({ contact }: { contact: IDataContact }) => {
             </Link>
           </div>
         </div>
-        {pathname === '/kontakt' && (
+        {referer === '/kontakt' && (
           <section className={'hidden lg:block py-11.5'}>
             <Container size={'sm'} className={'px-11'}>
               <SmallHandIcon />

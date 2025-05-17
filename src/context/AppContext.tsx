@@ -10,12 +10,15 @@ interface AppContextType {
   setAdminName: (value: string) => void
   select: string
   setSelect: (value: string) => void
+  menu: boolean
+  setMenu: (value: boolean) => void
 }
 
 const AppContext = createContext<AppContextType | undefined>(undefined)
 
 export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [adminName, setAdminName] = useState<string>('')
+  const [menu, setMenu] = useState<boolean>(false)
   const [select, setSelect] = useState<string>('works')
 
   const adminValues = {
@@ -23,6 +26,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     setAdminName,
     select,
     setSelect,
+    menu,
+    setMenu,
   }
 
   return <AppContext value={adminValues}>{children}</AppContext>
