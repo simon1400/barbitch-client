@@ -10,11 +10,13 @@ import { Top } from 'sections/Top/Top'
 // Функция generateMetadata с правильным типом params
 export async function generateMetadata({ params }: any): Promise<Metadata> {
   const { article } = await params
-  const { title, metaData } = await getArticleMeta(article)
+  const data = await getArticleMeta(article)
 
-  if (!metaData) {
+  if (!data) {
     return notFound()
   }
+
+  const { title, metaData } = data
 
   return {
     title: metaData?.title || title,

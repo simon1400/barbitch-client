@@ -7,7 +7,6 @@ import Footer from 'components/Footer'
 import { Header } from 'components/Header'
 import { AppProvider } from 'context/AppContext'
 import { Montserrat } from 'next/font/google'
-import Script from 'next/script'
 import Banner from 'sections/Banner'
 import './globals.scss'
 
