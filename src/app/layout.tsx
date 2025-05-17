@@ -29,7 +29,6 @@ export default async function RootLayout({
   return (
     <html lang={'cs'}>
       <head>
-        <link rel={'preconnect'} href={'https://connect.facebook.net'} crossOrigin={'anonymous'} />
         <meta name={'viewport'} content={'width=device-width, initial-scale=1.0'} />
         <meta name={'theme-color'} content={'#e71e6e'} />
         <meta name={'yandex-verification'} content={'93178409d4f4b109'} />
@@ -42,30 +41,6 @@ export default async function RootLayout({
       {/* <!-- Google tag (gtag.js) --> */}
       <GoogleTagManager gtmId={'GTM-5SP5MPTB'} />
       <body className={`bg-base antialiased overflow-x-hidden ${montserat.className}`}>
-        <noscript>
-          <img
-            height={'1'}
-            width={'1'}
-            style={{ display: 'none' }}
-            src={'https://www.facebook.com/tr?id=530946079324140&ev=PageView&noscript=1'}
-          />
-        </noscript>
-        <Script
-          strategy={'afterInteractive'}
-          id={'fb-pixel'}
-          dangerouslySetInnerHTML={{
-            __html: `!function(f,b,e,v,n,t,s)
-            {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
-            n.callMethod.apply(n,arguments):n.queue.push(arguments)};
-            if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
-            n.queue=[];t=b.createElement(e);t.async=!0;
-            t.src=v;s=b.getElementsByTagName(e)[0];
-            s.parentNode.insertBefore(t,s)}(window, document,'script',
-            'https://connect.facebook.net/en_US/fbevents.js');
-            fbq('init', '530946079324140');
-            fbq('track', 'PageView');`,
-          }}
-        />
         <AppProvider>
           <Header />
           {children}
