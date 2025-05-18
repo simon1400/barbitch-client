@@ -29,7 +29,7 @@ const Contact = async () => {
               className={
                 'block text-primary underline duration-300 underline-offset-2 hover:underline-offset-4'
               }
-              href={`tel:${contact.phone}`}
+              href={`tel:${contact.phone.replaceAll(' ', '')}`}
             >
               {contact.phone}
             </Link>

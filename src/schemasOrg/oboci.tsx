@@ -85,7 +85,7 @@ const schema = {
 export const SchemaJsonOboci = () => {
   return (
     <script
-      id={'Schema org'}
+      id={'schema-org'}
       type={'application/ld+json'}
       dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
     />

@@ -18,6 +18,7 @@ const Menu = ({ nav }: { nav: IDataNav }) => {
       }`}
       role={'menu'}
       aria-hidden={!open}
+      aria-label={'Основное меню'}
     >
       <Container size={'xl'}>
         <div className={'text-right lg:text-left'}>

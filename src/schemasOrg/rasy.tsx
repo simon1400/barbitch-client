@@ -76,7 +76,7 @@ const schema = {
 export const SchemaJsonRasy = () => {
   return (
     <script
-      id={'Schema org'}
+      id={'schema-org'}
       type={'application/ld+json'}
       dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
     />

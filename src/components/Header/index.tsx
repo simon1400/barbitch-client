@@ -16,7 +16,7 @@ export const Header = async () => {
 
   return (
     <>
-      <header className={'absolute w-full z-50'} role={'banner'} aria-label={'Основное меню'}>
+      <header className={'absolute w-full z-50'}>
         <Container size={'xl'}>
           <div className={'flex justify-between py-3 lg:py-8 items-center'}>
             <LogoWrap />

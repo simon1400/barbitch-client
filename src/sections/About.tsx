@@ -16,7 +16,7 @@ const About = ({ text }: { text: string }) => {
             <div className={'text-xs1 lg:text-base'}>{parse(text)}</div>
           </div>
           <div className={'text-center lg:text-left'}>
-            <Button text={'vice o nas'} href={'/o-nas'} />
+            <Button text={'vice o nas'} href={'/o-nas'} id={'about-us-btn'} />
           </div>
         </div>
       </Container>
