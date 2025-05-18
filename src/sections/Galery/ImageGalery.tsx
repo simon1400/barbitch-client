@@ -15,7 +15,6 @@ interface NextJsImageProps {
   rect: { width: number; height: number }
 }
 
-// Type Guard для проверки slide на SlideImage
 const isNextJsImage = (slide: Slide): slide is SlideImage & { src: string } => {
   return (
     isImageSlide(slide) &&
@@ -58,9 +57,9 @@ export const NextJsImage = ({ slide, offset, rect }: NextJsImageProps) => {
         width={width}
         height={height}
         style={styles}
-        sizes={'(max-width: 768px) 90vw, (max-width: 1200px) 50vw, 30vw'} // Улучшает адаптивность
-        priority={offset === 0} // Только активный слайд грузим с приоритетом
-        decoding={'async'} // Улучшает рендеринг
+        sizes={'(max-width: 768px) 90vw, (max-width: 1200px) 50vw, 30vw'}
+        priority={offset === 0}
+        decoding={'async'}
         draggable={false}
         onClick={offset === 0 ? () => click?.({ index: currentIndex }) : undefined}
       />

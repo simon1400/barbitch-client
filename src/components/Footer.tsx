@@ -1,7 +1,8 @@
 import { withHiddenRoutes } from 'helpers/withHiddenRoutes'
+import dynamic from 'next/dynamic'
 
 import Contact from '../sections/Contact'
-import CustomMap from '../sections/Map'
+const CustomMap = dynamic(() => import('../sections/Map'))
 
 const Footer = async () => {
   return (

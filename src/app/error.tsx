@@ -1,16 +1,32 @@
 /* eslint-disable sonarjs/no-globals-shadowing */
 'use client'
 
+import Button from 'components/Button'
+
 export default function Error({ error, reset }: { error: Error; reset: () => void }) {
   return (
-    <div
-      className={'min-h-screen flex flex-col items-center justify-center text-center py-20 px-4'}
+    <section
+      className={'min-h-[600px] md:min-h-[700px] h-screen flex'}
+      style={{
+        backgroundImage: 'linear-gradient(0deg, rgba(231,30,110,1) 0%, rgba(255,0,101,0.5) 100%)',
+      }}
     >
-      <h1 className={'text-4xl font-bold mb-4 text-red-600'}>{'Došlo k chybě'}</h1>
-      <p className={'mb-6'}>{error.message}</p>
-      <button className={'bg-primary text-white px-6 py-2 rounded'} onClick={() => reset()}>
-        {'Zkusit znovu'}
-      </button>
-    </div>
+      <div className={'m-auto text-center'}>
+        <div className={'mb-[50px] md:mb-[150px]'}>
+          <h1 className={'text-big md:text-[250px] font-bold leading-none'}>{'Chyba!'}</h1>
+          <p className={'text-white font-bold text-md md:text-[50px] md:-mt-[150px]'}>
+            {error.message}
+          </p>
+        </div>
+        <Button
+          text={'Zkusit znovu'}
+          href={'/'}
+          onClick={(e) => {
+            e.preventDefault()
+            reset()
+          }}
+        />
+      </div>
+    </section>
   )
 }

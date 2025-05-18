@@ -16,7 +16,7 @@ export const Banner = ({
 }) => {
   return (
     <section className={'pb-10 md:pb-15'}>
-      <Container size={'md'}>
+      <Container size={'lg'}>
         <div
           style={{
             backgroundImage:

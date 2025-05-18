@@ -1,11 +1,13 @@
 import type { Metadata } from 'next'
 
 import { Container } from 'components/Container'
+import { DynamicContent } from 'components/DynamicContent'
 import { PriceTable } from 'components/PriceTable'
 import { getLinkToReserve } from 'fetch/contact'
 import { getPricelistMeta } from 'fetch/getMeta'
 import { getPriceList, getPricelistPage } from 'fetch/pricelist'
 import parse from 'html-react-parser'
+import Reviews from 'sections/Reviews'
 import { Top } from 'sections/Top/Top'
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -54,16 +56,16 @@ const PriceList = async () => {
   return (
     <main>
       <Top title={dataPage.title} small linkToReserve={dataLink.linkToReserve} />
-      <section className={'pb-16'}>
-        <Container size={'lg'}>
-          {dataPage.contentText && (
-            <div className={'w-full mb-20 text-xs1 lg:text-base'}>
-              {parse(dataPage.contentText, { trim: true })}
-            </div>
-          )}
-        </Container>
-        <PriceTable data={data} showTitle />
-      </section>
+      <Container size={'lg'}>
+        {dataPage.contentText && (
+          <div className={'w-full mb-20 text-xs1 lg:text-base content'}>
+            {parse(dataPage.contentText, { trim: true })}
+          </div>
+        )}
+      </Container>
+      <PriceTable data={data} showTitle />
+      <DynamicContent data={dataPage.dynamicContent} />
+      <Reviews />
     </main>
   )
 }

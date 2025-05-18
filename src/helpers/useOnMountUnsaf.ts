@@ -10,6 +10,5 @@ export function useOnMountUnsafe(effect: EffectCallback | (() => Promise<void>))
       initialized.current = true
       effect()
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 }

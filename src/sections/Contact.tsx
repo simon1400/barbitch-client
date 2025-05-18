@@ -10,14 +10,14 @@ import Link from 'next/link'
 
 const Contact = async () => {
   const headersList = await headers()
-  const referer = headersList.get('referer') || ''
+  const pathname = headersList.get('x-next-pathname') || ''
 
   const contact: IDataContact = await getContact()
 
   return (
     <section className={'pb-23 lg:pb-27'}>
       <Container size={'xl'}>
-        {referer !== '/kontakt' && (
+        {pathname !== '/kontakt' && (
           <h2 className={'text-md lg:text-big text-center mb-5 lg:mb-11.5'}>{'KONTAKT'}</h2>
         )}
         <div className={'flex justify-center mb-5 lg:mb-16'}>
@@ -58,7 +58,7 @@ const Contact = async () => {
             </Link>
           </div>
         </div>
-        {referer === '/kontakt' && (
+        {pathname === '/kontakt' && (
           <section className={'hidden lg:block py-11.5'}>
             <Container size={'sm'} className={'px-11'}>
               <SmallHandIcon />

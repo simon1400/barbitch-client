@@ -38,12 +38,35 @@ export const getPriceList = async () => {
 interface IDataPricelistPage {
   title: string
   contentText: string
+  dynamicContent: any[]
 }
 
 export const getPricelistPage = async () => {
   const queryPage = qs.stringify(
     {
       fields: ['title', 'contentText'],
+      populate: {
+        dynamicContent: {
+          on: {
+            'content.text': {
+              populate: '*',
+            },
+            'content.content-baner': {
+              populate: '*',
+            },
+            'content.galery': {
+              populate: {
+                image: {
+                  fields: ['url', 'hash', 'alternativeText'],
+                },
+              },
+            },
+            'content.faq': {
+              populate: '*',
+            },
+          },
+        },
+      },
     },
     {
       encodeValuesOnly: true, // prettify URL

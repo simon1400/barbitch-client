@@ -5,10 +5,10 @@ import { getLinkToReserve } from 'fetch/contact'
 import { getNav } from 'fetch/nav'
 
 import { Container } from '../Container'
-import Menu from '../Menu'
 
 import Buttons from './Buttons'
 import LogoWrap from './LogoWrap'
+import Menu from './Menu'
 
 export const Header = async () => {
   const dataLinkReserve: IDataLinkToReserve = await getLinkToReserve()
@@ -20,7 +20,6 @@ export const Header = async () => {
         <Container size={'xl'}>
           <div className={'flex justify-between py-3 lg:py-8 items-center'}>
             <LogoWrap />
-
             <Buttons linkToReserve={dataLinkReserve.linkToReserve} />
           </div>
         </Container>

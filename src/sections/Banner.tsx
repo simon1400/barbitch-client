@@ -4,6 +4,7 @@ import { Container } from 'components/Container'
 import { getBanner } from 'fetch/banner'
 import { withHiddenRoutes } from 'helpers/withHiddenRoutes'
 import dynamic from 'next/dynamic'
+import Image from 'next/image'
 
 import Button from '../components/Button'
 
@@ -23,12 +24,14 @@ const Banner = async () => {
           'mix-blend-multiply bg-[#E71E6E] top-0 left-0 absolute overflow-hidden w-full h-full -z-10 '
         }
       >
-        <img
-          className={'absolute object-cover object-center w-full h-full grayscale opacity-70'}
+        <Image
           src={'/assets/banner.jpg'}
+          className={'absolute object-cover object-center grayscale opacity-70 w-full h-full'}
+          fill
           alt={
             'Proces manikúry v salonu: nehtová specialistka v růžových rukavicích upravuje nehty zákaznice pomocí přístroje s růžovým povrchem'
           }
+          loading={'lazy'}
         />
       </div>
       <BannerLines data={data} />

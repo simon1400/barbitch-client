@@ -7,7 +7,6 @@ import { NextJsImage } from './ImageGalery'
 
 import 'yet-another-react-lightbox/styles.css'
 
-// Динамическая загрузка Lightbox (уменьшает FCP)
 const Lightbox = dynamic(() => import('yet-another-react-lightbox'), { ssr: false })
 
 const Galery = ({ data }: { data: IGalery[] }) => {

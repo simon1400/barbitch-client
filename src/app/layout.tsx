@@ -1,8 +1,6 @@
 import type { Metadata } from 'next'
 
 import { GoogleTagManager } from '@next/third-parties/google'
-import { Analytics } from '@vercel/analytics/react'
-import { SpeedInsights } from '@vercel/speed-insights/next'
 import Footer from 'components/Footer'
 import { Header } from 'components/Header'
 import { AppProvider } from 'context/AppContext'
@@ -37,7 +35,6 @@ export default async function RootLayout({
         <link rel={'apple-touch-icon'} sizes={'180x180'} href={'/favicon/apple-touch-icon.png'} />
         <link rel={'manifest'} href={'/favicon/site.webmanifest'} />
       </head>
-      {/* <!-- Google tag (gtag.js) --> */}
       <GoogleTagManager gtmId={'GTM-5SP5MPTB'} />
       <body className={`bg-base antialiased overflow-x-hidden ${montserat.className}`}>
         <AppProvider>
@@ -46,8 +43,6 @@ export default async function RootLayout({
           <Banner />
           <Footer />
         </AppProvider>
-        <Analytics />
-        <SpeedInsights />
       </body>
     </html>
   )

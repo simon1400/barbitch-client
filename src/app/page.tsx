@@ -62,34 +62,24 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 const Home = async () => {
-  try {
-    const [dataService, data, posts, dataLink] = await Promise.all([
-      getServiceHomepage(),
-      getHomepage(),
-      getRandomPost(),
-      getLinkToReserve(),
-    ])
+  const [dataService, data, posts, dataLink] = await Promise.all([
+    getServiceHomepage(),
+    getHomepage(),
+    getRandomPost(),
+    getLinkToReserve(),
+  ])
 
-    return (
-      <main>
-        <SchemaJsonHomepage />
-        <Top title={data.title} linkToReserve={dataLink.linkToReserve} />
-        <HandSec service={dataService} />
-        <Galery data={data.galery} />
-        {!!posts.length && <Posts data={posts} />}
-        <About text={data.aboutUs} />
-        <Reviews />
-      </main>
-    )
-  } catch (error) {
-    console.error('Ошибка при получении данных:', error)
-
-    return (
-      <main>
-        <p>{'Chyba při načítání dat. Zkuste to prosím později.'}</p>
-      </main>
-    )
-  }
+  return (
+    <main>
+      <SchemaJsonHomepage />
+      <Top title={data.title} linkToReserve={dataLink.linkToReserve} />
+      <HandSec service={dataService} />
+      <Galery data={data.galery} />
+      <Posts data={posts} />
+      <About text={data.aboutUs} />
+      <Reviews />
+    </main>
+  )
 }
 
 export default Home

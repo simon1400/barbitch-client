@@ -20,7 +20,7 @@ export const Faq = ({
 }) => {
   return (
     <section className={'pb-10 md:pb-15 faq-sec'}>
-      <Container size={'md'}>
+      <Container size={'lg'}>
         <h2>{'FAQ'}</h2>
         <Accordion type={'single'} defaultValue={data.item[0].title}>
           {data.item.map((item) => (
@@ -34,7 +34,7 @@ export const Faq = ({
                   'p-5 text-resMd1 flex justify-between w-full items-center transition-all text-left [&[data-state=open]>svg]:rotate-180'
                 }
               >
-                {item.title}
+                <h3 className={'!text-resMd1 !mb-0 !mt-0'}>{item.title}</h3>
                 <ChevronDown
                   className={
                     'h-4 w-4 shrink-0 text-muted-foreground transition-transform duration-200'

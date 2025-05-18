@@ -80,9 +80,7 @@ const Service = async ({ params }: any) => {
         </div>
       </Section>
       {data.galery?.length > 0 && <MasonryGalery images={data.galery} />}
-      <section>
-        <PriceTable data={priceList} />
-      </section>
+      <PriceTable data={priceList} />
       <Section>
         <div className={'text-xs1 lg:text-base content'}>
           {parse(data.additionalDescription || '', { trim: true })}

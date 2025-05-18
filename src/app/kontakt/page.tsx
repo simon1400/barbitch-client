@@ -52,11 +52,9 @@ const Contact = async () => {
   return (
     <main>
       <Top title={'Kontakt'} small linkToReserve={dataLink.linkToReserve} />
-      <section>
-        <Container size={'md'}>
-          <div className={'content'}>{parse(dataContent.content, { trim: true })}</div>
-        </Container>
-      </section>
+      <Container size={'md'}>
+        <div className={'content'}>{parse(dataContent.content, { trim: true })}</div>
+      </Container>
     </main>
   )
 }

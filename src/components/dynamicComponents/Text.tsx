@@ -9,7 +9,7 @@ export const Text = ({
 }) => {
   return (
     <section className={'mb-11'}>
-      <Container size={'md'}>
+      <Container size={'lg'}>
         <div>
           {data.title && <h2>{data.title}</h2>}
           <div>{parse(data.contentText, { trim: true })}</div>

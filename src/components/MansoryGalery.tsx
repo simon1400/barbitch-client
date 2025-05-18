@@ -38,12 +38,11 @@ export const MasonryGalery = ({ images }: MasonryGalleryProps) => {
               width={600}
               height={600}
               alt={`Obrázek ${idx + 1} z galerie: ${image.name}`}
-              loading={'lazy'} // Lazy loading для производительности
+              loading={'lazy'}
             />
           </div>
         ))}
       </MasonryGrid>
-      {/* Lightbox загружается только при клике */}
       {index >= 0 && (
         <Lightbox
           index={index}

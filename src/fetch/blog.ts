@@ -4,7 +4,6 @@ import { Axios } from '../lib/api'
 
 export interface IDataPost {
   title: string
-
   image: IGalery
   dynamicContent: any[]
 }
