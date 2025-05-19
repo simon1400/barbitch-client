@@ -1,7 +1,6 @@
 'use client'
 
 import { addMinutes } from 'date-fns'
-import { ChevronLeft } from 'icons/ChevronLeft'
 import { useParams, useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import { useTimer } from 'react-timer-hook'
@@ -63,7 +62,7 @@ export const BookHeader = () => {
           onClick={handleBack}
           className={'flex items-center gap-3 text-[#A0A0A0] text-resXs '}
         >
-          <ChevronLeft />
+          <img src={'/assets/icons/chevronLeft.svg'} />
           <span>{backText}</span>
         </a>
         {params?.idReservation && (

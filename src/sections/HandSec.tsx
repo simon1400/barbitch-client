@@ -3,8 +3,6 @@ import type { IDataHomepageService } from 'fetch/service'
 
 import { Container } from 'components/Container'
 import { Hand } from 'components/Hand'
-import { ArrowRightIcon } from 'icons/ArrowIcon'
-import { SmallHandIcon } from 'icons/SmallHand'
 import Link from 'next/link'
 
 const HandSec = ({ service }: { service: IDataHomepageService[] }) => {
@@ -18,7 +16,7 @@ const HandSec = ({ service }: { service: IDataHomepageService[] }) => {
       <section className={'lg:hidden py-16'}>
         <Container size={'xl'}>
           <div className={'pr-16 pl-8 mb-8'}>
-            <SmallHandIcon />
+            <img src={'/assets/smallHand.svg'} alt={'Small hand Barbitch'} />
           </div>
           <nav>
             <ul>
@@ -26,7 +24,7 @@ const HandSec = ({ service }: { service: IDataHomepageService[] }) => {
                 <li key={item.shortTitle} className={'mb-4'}>
                   <Link href={`/service/${item.slug}`} className={'flex text-md1 uppercase gap-3'}>
                     <span>{item.shortTitle}</span>
-                    <ArrowRightIcon />
+                    <img src={'assets/icons/arrowRight.svg'} />
                   </Link>
                 </li>
               ))}

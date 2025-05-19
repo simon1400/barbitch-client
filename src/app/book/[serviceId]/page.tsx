@@ -1,7 +1,6 @@
 import type { IPersonalService } from '../fetch/personalService'
 
 import { MasterIcon } from 'icons/book/Master'
-import { ChevronRight } from 'icons/ChevronRight'
 import Link from 'next/link'
 
 import { getPersonalService } from '../fetch/personalService'
@@ -45,7 +44,7 @@ const BookPersonalPage = async ({ params }: any) => {
                 ))}
               </span>
               <h2 className={'w-full text-xs1 leading-none'}>{'Kdokoliv'}</h2>
-              <ChevronRight />
+              <img src={'/assets/icons/chevronRight.svg'} />
             </Link>
           </li>
         )}
@@ -64,7 +63,7 @@ const BookPersonalPage = async ({ params }: any) => {
                   className={'min-w-10 w-10 h-10'}
                 />
                 <h2 className={'w-full text-xs1 leading-none'}>{personal.profile.name}</h2>
-                <ChevronRight />
+                <img src={'/assets/icons/chevronRight.svg'} />
               </Link>
             </li>
           )

@@ -2,7 +2,6 @@ import type { Metadata } from 'next'
 
 import Button from 'components/Button'
 import { Container } from 'components/Container'
-import { HeartIcon } from 'icons/Heart'
 
 export async function generateMetadata(): Promise<Metadata> {
   const title = 'Děkujeme | Barbitch – Manikúra, řasy a obočí v Brně'
@@ -48,7 +47,7 @@ export default function ThankYou() {
             'absolute top-[50%] left-[50%] -translate-y-1/2 -translate-x-1/2 w-[660px] h-[578px] -z-10'
           }
         >
-          <HeartIcon />
+          <img src={'/assets/icons/heart.svg'} />
         </div>
         <Container size={'lg'}>
           <div className={'mb-17'}>

@@ -33,7 +33,7 @@ const schema = {
 export const SchemaJsonHomepage = () => {
   return (
     <script
-      id={'Schema org'}
+      id={'schema-org'}
       type={'application/ld+json'}
       dangerouslySetInnerHTML={{
         __html: JSON.stringify(schema),

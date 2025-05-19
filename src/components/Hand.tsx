@@ -143,16 +143,6 @@ export const Hand = () => {
             </tspan>
           </text>
         </g>
-        {/* <g id={'PEDIKÚRA'} onClick={() => router.push('/pedikura')}>
-          <text
-            transform={'translate(931.98 633.64)'}
-            className={'text-accent text-xl cursor-pointer'}
-          >
-            <tspan x={'1.83'} y={'0'}>
-              {'PEDIKÚRA'}
-            </tspan>
-          </text>
-        </g> */}
         <g id={'MANIKÚRA'} onClick={() => (window.location.href = '/service/manikura')}>
           <text
             transform={'translate(237.53 367.64)'}

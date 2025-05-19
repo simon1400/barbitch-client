@@ -1,7 +1,5 @@
-/* eslint-disable perfectionist/sort-imports */
 import type { IBookService, IBookServiceGroup } from './fetch/bookService'
 
-import { ChevronRight } from 'icons/ChevronRight'
 import { ClasicRasIcon } from 'icons/book/ClasicRas'
 import { ColorRasIcon } from 'icons/book/ColorRas'
 import { FirstObociIcon } from 'icons/book/FirstOboci'
@@ -67,7 +65,7 @@ const BookServiceItem = ({ service }: { service: IBookService }) => {
         </span>
         <span className={'flex items-center text-xs1 text-primary font-bold gap-2.5'}>
           <span className={'whitespace-nowrap'}>{`${price} Kč`}</span>
-          <ChevronRight />
+          <img src={'/assets/icons/chevronRight.svg'} />
         </span>
       </Link>
     </li>

@@ -1,9 +1,5 @@
-'use client'
 import type { ISocItem } from 'fetch/contact'
 
-import { FacebookIcon } from 'icons/Facebook'
-import { InstagramIcon } from 'icons/Instagram'
-import { TiktokIcon } from 'icons/Tiktok'
 import Link from 'next/link'
 
 export const SocNav = ({ items }: { items?: ISocItem[] }) => {
@@ -20,17 +16,17 @@ export const SocNav = ({ items }: { items?: ISocItem[] }) => {
               >
                 {item.type === 'instagram' && (
                   <span className={'block w-8 lg:w-16'}>
-                    <InstagramIcon />
+                    <img src={'/assets/icons/instagram.svg'} />
                   </span>
                 )}
                 {item.type === 'tiktok' && (
                   <span className={'block w-8 lg:w-16'}>
-                    <TiktokIcon />
+                    <img src={'/assets/icons/tikTok.svg'} />
                   </span>
                 )}
                 {item.type === 'facebook' && (
                   <span className={'block w-8 lg:w-16'}>
-                    <FacebookIcon />
+                    <img src={'/assets/icons/facebook.svg'} />
                   </span>
                 )}
               </Link>

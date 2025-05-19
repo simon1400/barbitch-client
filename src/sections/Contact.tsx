@@ -4,7 +4,6 @@ import { Container } from 'components/Container'
 import { SocNav } from 'components/SocNav'
 import { getContact } from 'fetch/contact'
 import parse from 'html-react-parser'
-import { SmallHandIcon } from 'icons/SmallHand'
 import { headers } from 'next/headers'
 import Link from 'next/link'
 
@@ -61,7 +60,7 @@ const Contact = async () => {
         {pathname === '/kontakt' && (
           <section className={'hidden lg:block py-11.5'}>
             <Container size={'sm'} className={'px-11'}>
-              <SmallHandIcon />
+              <img src={'/assets/icons/smallHand.svg'} />
             </Container>
           </section>
         )}

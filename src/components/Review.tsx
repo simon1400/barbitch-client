@@ -1,5 +1,3 @@
-import { StarEmpty } from 'icons/StarEmpty'
-import { StarSolid } from 'icons/StarSolid'
 import Image from 'next/image'
 
 export const Stars = ({ star, align }: { star: number; align?: 'right' | 'center' }) => {
@@ -8,12 +6,36 @@ export const Stars = ({ star, align }: { star: number; align?: 'right' | 'center
       className={`flex items-center gap-0.5 ${align === 'right' ? 'md:justify-end' : 'justify-center'}`}
     >
       <span className={'w-4'}>
-        <StarSolid />
+        <img src={'/assets/icons/starSolid.svg'} />
       </span>
-      <span className={'w-4'}>{star >= 2 ? <StarSolid /> : <StarEmpty />}</span>
-      <span className={'w-4'}>{star >= 3 ? <StarSolid /> : <StarEmpty />}</span>
-      <span className={'w-4'}>{star >= 4 ? <StarSolid /> : <StarEmpty />}</span>
-      <span className={'w-4'}>{star === 5 ? <StarSolid /> : <StarEmpty />}</span>
+      <span className={'w-4'}>
+        {star >= 2 ? (
+          <img src={'/assets/icons/starSolid.svg'} />
+        ) : (
+          <img src={'/assets/icons/starEmpty.svg'} />
+        )}
+      </span>
+      <span className={'w-4'}>
+        {star >= 3 ? (
+          <img src={'/assets/icons/starSolid.svg'} />
+        ) : (
+          <img src={'/assets/icons/starEmpty.svg'} />
+        )}
+      </span>
+      <span className={'w-4'}>
+        {star >= 4 ? (
+          <img src={'/assets/icons/starSolid.svg'} />
+        ) : (
+          <img src={'/assets/icons/starEmpty.svg'} />
+        )}
+      </span>
+      <span className={'w-4'}>
+        {star === 5 ? (
+          <img src={'/assets/icons/starSolid.svg'} />
+        ) : (
+          <img src={'/assets/icons/starEmpty.svg'} />
+        )}
+      </span>
     </div>
   )
 }
