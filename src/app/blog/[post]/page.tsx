@@ -3,11 +3,18 @@ import type { Metadata } from 'next'
 import { DynamicContent } from 'components/DynamicContent'
 import { getPost } from 'fetch/blog'
 import { getPostMeta } from 'fetch/getMeta'
+import { notFound } from 'next/navigation'
 import { TopImage } from 'sections/Top/TopImage'
 
 export async function generateMetadata({ params }: any): Promise<Metadata> {
   const { post } = await params
-  const { title, metaData } = await getPostMeta(post)
+  const data = await getPostMeta(post)
+
+  if (!data) {
+    return notFound()
+  }
+
+  const { title, metaData } = data
 
   return {
     title: metaData?.title || title,
@@ -36,6 +43,10 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
 const Post = async ({ params }: any) => {
   const { post } = await params
   const data = await getPost(post)
+
+  if (!data) {
+    return notFound()
+  }
 
   return (
     <main>
