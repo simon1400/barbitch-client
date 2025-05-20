@@ -16,7 +16,7 @@ const HandSec = ({ service }: { service: IDataHomepageService[] }) => {
       <section className={'lg:hidden py-16'}>
         <Container size={'xl'}>
           <div className={'pr-16 pl-8 mb-8'}>
-            <img src={'/assets/smallHand.svg'} alt={'Small hand Barbitch'} />
+            <img src={'/assets/icons/smallHand.svg'} alt={'Small hand Barbitch'} />
           </div>
           <nav>
             <ul>

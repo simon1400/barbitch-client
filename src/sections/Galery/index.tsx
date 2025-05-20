@@ -25,7 +25,6 @@ const Galery = ({ data }: { data: IGalery[] }) => {
             className={'relative w-full overflow-hidden cursor-pointer hover:scale-95 duration-200'}
             onClick={() => setIndex(i)}
           >
-            {/* Используем aspect-ratio, чтобы избежать CLS */}
             <div className={'relative w-full'} style={{ aspectRatio: '1 / 1' }}>
               <CldImage
                 src={item.hash}
@@ -41,7 +40,6 @@ const Galery = ({ data }: { data: IGalery[] }) => {
         ))}
       </div>
 
-      {/* Lightbox загружается только при клике */}
       {index >= 0 && (
         <Lightbox
           index={index}

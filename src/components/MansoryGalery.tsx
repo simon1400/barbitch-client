@@ -13,6 +13,7 @@ interface Image {
   name: string
   hash: string
   url: string
+  alternativeText: string
 }
 
 interface MasonryGalleryProps {
@@ -37,7 +38,7 @@ export const MasonryGalery = ({ images }: MasonryGalleryProps) => {
               src={image.hash}
               width={600}
               height={600}
-              alt={`Obrázek ${idx + 1} z galerie: ${image.name}`}
+              alt={image.alternativeText || `Obrázek ${idx + 1} z galerie: ${image.name}`}
               loading={'lazy'}
             />
           </div>

@@ -15,6 +15,7 @@ export interface IDataFullService {
     hash: string
     name: string
     url: string
+    alternativeText: string
   }[]
 }
 
@@ -53,5 +54,3 @@ export const getFullService = async (slug: string) => {
   const dataContact: IDataFullService[] = await Axios.get(`/api/services?${query}`)
   return dataContact[0]
 }
-
-
