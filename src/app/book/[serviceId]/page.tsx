@@ -13,7 +13,7 @@ const ProfileImage = ({ src, className }: { src: string; className?: string }) =
       <img
         className={'absolute object-cover object-center w-full h-full'}
         src={src}
-        alt={'icon service'}
+        alt={'Icon service book'}
       />
     ) : (
       <MasterIcon />
@@ -44,7 +44,7 @@ const BookPersonalPage = async ({ params }: any) => {
                 ))}
               </span>
               <h2 className={'w-full text-xs1 leading-none'}>{'Kdokoliv'}</h2>
-              <img src={'/assets/icons/chevronRight.svg'} />
+              <img src={'/assets/icons/chevronRight.svg'} alt={'Chevron right icon'} />
             </Link>
           </li>
         )}
@@ -63,7 +63,7 @@ const BookPersonalPage = async ({ params }: any) => {
                   className={'min-w-10 w-10 h-10'}
                 />
                 <h2 className={'w-full text-xs1 leading-none'}>{personal.profile.name}</h2>
-                <img src={'/assets/icons/chevronRight.svg'} />
+                <img src={'/assets/icons/chevronRight.svg'} alt={'Chevron right icon'} />
               </Link>
             </li>
           )

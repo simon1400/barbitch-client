@@ -65,7 +65,7 @@ const BookServiceItem = ({ service }: { service: IBookService }) => {
         </span>
         <span className={'flex items-center text-xs1 text-primary font-bold gap-2.5'}>
           <span className={'whitespace-nowrap'}>{`${price} Kč`}</span>
-          <img src={'/assets/icons/chevronRight.svg'} />
+          <img src={'/assets/icons/chevronRight.svg'} alt={'Chevron right icon'} />
         </span>
       </Link>
     </li>

@@ -47,7 +47,7 @@ export default function ThankYou() {
             'absolute top-[50%] left-[50%] -translate-y-1/2 -translate-x-1/2 w-[660px] h-[578px] -z-10'
           }
         >
-          <img src={'/assets/icons/heart.svg'} />
+          <img src={'/assets/icons/heart.svg'} alt={'Big pink heart icon'} />
         </div>
         <Container size={'lg'}>
           <div className={'mb-17'}>

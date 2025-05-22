@@ -60,7 +60,7 @@ const Contact = async () => {
         {pathname === '/kontakt' && (
           <section className={'hidden lg:block py-11.5'}>
             <Container size={'sm'} className={'px-11'}>
-              <img src={'/assets/icons/smallHand.svg'} />
+              <img src={'/assets/icons/smallHand.svg'} alt={'Small hand Barbitch logo icon'} />
             </Container>
           </section>
         )}

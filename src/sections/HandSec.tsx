@@ -1,4 +1,3 @@
-'use client'
 import type { IDataHomepageService } from 'fetch/service'
 
 import { Container } from 'components/Container'
@@ -24,7 +23,7 @@ const HandSec = ({ service }: { service: IDataHomepageService[] }) => {
                 <li key={item.shortTitle} className={'mb-4'}>
                   <Link href={`/service/${item.slug}`} className={'flex text-md1 uppercase gap-3'}>
                     <span>{item.shortTitle}</span>
-                    <img src={'assets/icons/arrowRight.svg'} />
+                    <img src={'assets/icons/arrowRight.svg'} alt={'Arrow right icon'} />
                   </Link>
                 </li>
               ))}

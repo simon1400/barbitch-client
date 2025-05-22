@@ -6,34 +6,34 @@ export const Stars = ({ star, align }: { star: number; align?: 'right' | 'center
       className={`flex items-center gap-0.5 ${align === 'right' ? 'md:justify-end' : 'justify-center'}`}
     >
       <span className={'w-4'}>
-        <img src={'/assets/icons/starSolid.svg'} />
+        <img src={'/assets/icons/starSolid.svg'} alt={'Review star solid icons'} />
       </span>
       <span className={'w-4'}>
         {star >= 2 ? (
-          <img src={'/assets/icons/starSolid.svg'} />
+          <img src={'/assets/icons/starSolid.svg'} alt={'Review star solid icons'} />
         ) : (
-          <img src={'/assets/icons/starEmpty.svg'} />
+          <img src={'/assets/icons/starEmpty.svg'} alt={'Review star empty icons'} />
         )}
       </span>
       <span className={'w-4'}>
         {star >= 3 ? (
-          <img src={'/assets/icons/starSolid.svg'} />
+          <img src={'/assets/icons/starSolid.svg'} alt={'Review star solid icons'} />
         ) : (
-          <img src={'/assets/icons/starEmpty.svg'} />
+          <img src={'/assets/icons/starEmpty.svg'} alt={'Review star empty icons'} />
         )}
       </span>
       <span className={'w-4'}>
         {star >= 4 ? (
-          <img src={'/assets/icons/starSolid.svg'} />
+          <img src={'/assets/icons/starSolid.svg'} alt={'Review star solid icons'} />
         ) : (
-          <img src={'/assets/icons/starEmpty.svg'} />
+          <img src={'/assets/icons/starEmpty.svg'} alt={'Review star empty icons'} />
         )}
       </span>
       <span className={'w-4'}>
         {star === 5 ? (
-          <img src={'/assets/icons/starSolid.svg'} />
+          <img src={'/assets/icons/starSolid.svg'} alt={'Review star solid icons'} />
         ) : (
-          <img src={'/assets/icons/starEmpty.svg'} />
+          <img src={'/assets/icons/starEmpty.svg'} alt={'Review star empty icons'} />
         )}
       </span>
     </div>

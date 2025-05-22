@@ -1,7 +1,7 @@
 'use client'
-
 import type { NextPage } from 'next'
 import type { ISlotService } from '../../fetch/slotsService'
+
 import { format, formatISO } from 'date-fns'
 import { useOnMountUnsafe } from 'helpers/useOnMountUnsaf'
 import { useParams, useRouter } from 'next/navigation'

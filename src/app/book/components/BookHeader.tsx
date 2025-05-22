@@ -62,7 +62,7 @@ export const BookHeader = () => {
           onClick={handleBack}
           className={'flex items-center gap-3 text-[#A0A0A0] text-resXs '}
         >
-          <img src={'/assets/icons/chevronLeft.svg'} />
+          <img src={'/assets/icons/chevronLeft.svg'} alt={'Chevron left icon'} />
           <span>{backText}</span>
         </a>
         {params?.idReservation && (

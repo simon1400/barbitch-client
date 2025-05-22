@@ -16,17 +16,17 @@ export const SocNav = ({ items }: { items?: ISocItem[] }) => {
               >
                 {item.type === 'instagram' && (
                   <span className={'block w-8 lg:w-16'}>
-                    <img src={'/assets/icons/instagram.svg'} />
+                    <img src={'/assets/icons/instagram.svg'} alt={'Instagram logo icon'} />
                   </span>
                 )}
                 {item.type === 'tiktok' && (
                   <span className={'block w-8 lg:w-16'}>
-                    <img src={'/assets/icons/tikTok.svg'} />
+                    <img src={'/assets/icons/tikTok.svg'} alt={'TikTok logo icon'} />
                   </span>
                 )}
                 {item.type === 'facebook' && (
                   <span className={'block w-8 lg:w-16'}>
-                    <img src={'/assets/icons/facebook.svg'} />
+                    <img src={'/assets/icons/facebook.svg'} alt={'Facebook logo icon'} />
                   </span>
                 )}
               </Link>

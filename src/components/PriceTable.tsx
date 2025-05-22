@@ -76,7 +76,7 @@ export const PriceTable = ({
                           >
                             <span className={'hidden md:inline'}>{'Rezervace'}</span>
                             <span className={'md:hidden inline-block w-5 h-5'}>
-                              <img src={'/assets/icons/calendar.svg'} />
+                              <img src={'/assets/icons/calendar.svg'} alt={'Book calendar icon'} />
                             </span>
                           </a>
                         )}
@@ -101,7 +101,7 @@ export const PriceTable = ({
         </div>
       ))}
       <div className={'max-w-[300px] -mt-[50px] mb-[50px]'}>
-        <img src={'/assets/icons/payCard.svg'} />
+        <img src={'/assets/icons/payCard.svg'} alt={'Pay cards icons'} />
       </div>
     </Container>
   )
