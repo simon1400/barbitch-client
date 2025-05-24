@@ -14,8 +14,8 @@ export const blockStateItems = (
   },
   {
     title: 'Результат за месяц',
-    value: `${(cashMoney + cardMoney - sumMasters - sumAdmins - costs).toLocaleString()} Kč`,
-    addValue: `${(cashMoney + cardMoney / 1.21 - sumMasters - sumAdmins - noDphCosts).toLocaleString()} Kč`,
+    value: `${(cashMoney + cardMoney - sumMasters - sumAdmins - costs).toLocaleString()}`,
+    addValue: `${(cashMoney + cardMoney / 1.21 - sumMasters - sumAdmins - noDphCosts).toLocaleString()}`,
   },
   {
     title: 'Разниця',
@@ -38,11 +38,15 @@ export const blockReservationsItems = (
     value: clientsAll,
   },
   {
-    title: 'Успешные',
-    value: clientsPayed,
+    title: 'Реалз. / Все Платные',
+    value: `${sumClientsDone - clientsPersonal - clientsFree - clientsFixed} / ${clientsPayed}`,
   },
   {
-    title: 'Проведенные',
+    title: 'Осталось платных',
+    value: `${clientsPayed - (sumClientsDone - clientsPersonal - clientsFree - clientsFixed)}`,
+  },
+  {
+    title: 'Все проведенные',
     value: sumClientsDone,
   },
   {

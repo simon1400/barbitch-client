@@ -10,6 +10,8 @@ import parse from 'html-react-parser'
 import Reviews from 'sections/Reviews'
 import { Top } from 'sections/Top/Top'
 
+export const dynamic = 'force-static'
+
 export async function generateMetadata(): Promise<Metadata> {
   const { metaData } = await getPricelistMeta()
 
@@ -30,16 +32,6 @@ export async function generateMetadata(): Promise<Metadata> {
       description: metaData.description || '',
       images: [metaData.image ? metaData.image.url : 'https://barbitch.cz/assets/bigBaner.jpg'],
     },
-    keywords: [
-      'barbitch',
-      'bar.bitch',
-      'Cenik',
-      'Brno',
-      'Manikúra',
-      'Nehty',
-      'Prodlužování řas',
-      'Úprava obočí',
-    ],
     alternates: {
       canonical: `https://barbitch.cz/cenik`,
     },
@@ -58,7 +50,7 @@ const PriceList = async () => {
       <Top title={dataPage.title} small linkToReserve={dataLink.linkToReserve} />
       <Container size={'lg'}>
         {dataPage.contentText && (
-          <div className={'w-full mb-20 text-xs1 lg:text-base content'}>
+          <div className={'w-full mb-10 text-xs1 lg:text-base content'}>
             {parse(dataPage.contentText, { trim: true })}
           </div>
         )}

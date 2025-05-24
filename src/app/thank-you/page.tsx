@@ -3,6 +3,8 @@ import type { Metadata } from 'next'
 import Button from 'components/Button'
 import { Container } from 'components/Container'
 
+export const dynamic = 'force-static'
+
 export async function generateMetadata(): Promise<Metadata> {
   const title = 'Děkujeme | Barbitch – Manikúra, řasy a obočí v Brně'
   const description =

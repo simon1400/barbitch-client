@@ -13,6 +13,8 @@ import Posts from 'sections/Posts'
 import Reviews from 'sections/Reviews'
 import { Top } from 'sections/Top/Top'
 
+export const dynamic = 'force-static'
+
 export async function generateMetadata(): Promise<Metadata> {
   const homepageMeta = await getHomeMeta()
 
@@ -44,17 +46,6 @@ export async function generateMetadata(): Promise<Metadata> {
           : 'https://barbitch.cz/assets/bigBaner.jpg',
       ],
     },
-    keywords: [
-      'barbitch',
-      'bar.bitch',
-      'bar bitch',
-      'Brno',
-      'Kosmetický salon',
-      'Nehty',
-      'Manikúra',
-      'Prodlužování řas',
-      'Úprava obočí',
-    ],
     alternates: {
       canonical: 'https://barbitch.cz',
     },

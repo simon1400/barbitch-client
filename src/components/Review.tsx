@@ -6,34 +6,79 @@ export const Stars = ({ star, align }: { star: number; align?: 'right' | 'center
       className={`flex items-center gap-0.5 ${align === 'right' ? 'md:justify-end' : 'justify-center'}`}
     >
       <span className={'w-4'}>
-        <img src={'/assets/icons/starSolid.svg'} alt={'Review star solid icons'} />
+        <img
+          src={'/assets/icons/starSolid.svg'}
+          alt={'Review star solid icons'}
+          width={16}
+          height={14.22}
+        />
       </span>
       <span className={'w-4'}>
         {star >= 2 ? (
-          <img src={'/assets/icons/starSolid.svg'} alt={'Review star solid icons'} />
+          <img
+            src={'/assets/icons/starSolid.svg'}
+            alt={'Review star solid icons'}
+            width={16}
+            height={14.22}
+          />
         ) : (
-          <img src={'/assets/icons/starEmpty.svg'} alt={'Review star empty icons'} />
+          <img
+            src={'/assets/icons/starEmpty.svg'}
+            alt={'Review star empty icons'}
+            width={16}
+            height={14.22}
+          />
         )}
       </span>
       <span className={'w-4'}>
         {star >= 3 ? (
-          <img src={'/assets/icons/starSolid.svg'} alt={'Review star solid icons'} />
+          <img
+            src={'/assets/icons/starSolid.svg'}
+            alt={'Review star solid icons'}
+            width={16}
+            height={14.22}
+          />
         ) : (
-          <img src={'/assets/icons/starEmpty.svg'} alt={'Review star empty icons'} />
+          <img
+            src={'/assets/icons/starEmpty.svg'}
+            alt={'Review star empty icons'}
+            width={16}
+            height={14.22}
+          />
         )}
       </span>
       <span className={'w-4'}>
         {star >= 4 ? (
-          <img src={'/assets/icons/starSolid.svg'} alt={'Review star solid icons'} />
+          <img
+            src={'/assets/icons/starSolid.svg'}
+            alt={'Review star solid icons'}
+            width={16}
+            height={14.22}
+          />
         ) : (
-          <img src={'/assets/icons/starEmpty.svg'} alt={'Review star empty icons'} />
+          <img
+            src={'/assets/icons/starEmpty.svg'}
+            alt={'Review star empty icons'}
+            width={16}
+            height={14.22}
+          />
         )}
       </span>
       <span className={'w-4'}>
         {star === 5 ? (
-          <img src={'/assets/icons/starSolid.svg'} alt={'Review star solid icons'} />
+          <img
+            src={'/assets/icons/starSolid.svg'}
+            alt={'Review star solid icons'}
+            width={16}
+            height={14.22}
+          />
         ) : (
-          <img src={'/assets/icons/starEmpty.svg'} alt={'Review star empty icons'} />
+          <img
+            src={'/assets/icons/starEmpty.svg'}
+            alt={'Review star empty icons'}
+            width={16}
+            height={14.22}
+          />
         )}
       </span>
     </div>
@@ -71,7 +116,11 @@ const Review = ({
         </div>
       </div>
       <div className={'text-baseSm'}>
-        <p>{data.comment.split('(Original)')[1]}</p>
+        <p>
+          {data.comment.split('(Original)')[1]?.length > 200
+            ? `${data.comment.split('(Original)')[1].slice(0, 200)}…`
+            : data.comment.split('(Original)')[1]}
+        </p>
       </div>
     </div>
   )
