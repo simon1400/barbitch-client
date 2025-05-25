@@ -1,6 +1,11 @@
+/* eslint-disable ts/no-require-imports */
 import type { NextConfig } from 'next'
 
 /** @type {import('next').NextConfig} */
+
+const withBundleAnalyzer = require('@next/bundle-analyzer')({
+  enabled: process.env.ANALYZE === 'true',
+})
 
 const nextConfig: NextConfig = {
   env: {
@@ -26,4 +31,4 @@ const nextConfig: NextConfig = {
   },
 }
 
-export default nextConfig
+export default withBundleAnalyzer(nextConfig)

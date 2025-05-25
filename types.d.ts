@@ -33,3 +33,12 @@ interface IGalery {
   alternativeText?: string
   documentId?: string
 }
+
+interface Window {
+  smartsupp?: {
+    chat: {
+      hide: () => void
+      show: () => void
+    }
+  }
+}

@@ -1,13 +1,21 @@
 'use client'
 import Button from 'components/Button'
-import Review, { Stars } from 'components/Review'
+import { Stars } from 'components/Review'
+import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import React from 'react'
-import { ReactGoogleReviews } from 'react-google-reviews'
 import { Autoplay } from 'swiper/modules'
-import { Swiper, SwiperSlide } from 'swiper/react'
+import { SwiperSlide } from 'swiper/react'
 
 const featurableWidgetId = process.env.FEATURABLE_WIDGET_ID || ''
+
+const ReactGoogleReviews = dynamic(
+  () => import('react-google-reviews').then((mod) => mod.ReactGoogleReviews),
+  { ssr: false },
+)
+
+const Swiper = dynamic(() => import('swiper/react').then((mod) => mod.Swiper), { ssr: false })
+const Review = dynamic(() => import('components/Review'))
 
 const CtaReview = () => {
   return (

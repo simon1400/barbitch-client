@@ -1,13 +1,25 @@
 'use client'
 
-import { useOnMountUnsafe } from 'helpers/useOnMountUnsaf'
+import { useEffect } from 'react'
 
 export default function HideSmartsupp() {
-  useOnMountUnsafe(() => {
-    if (typeof window !== 'undefined' && window.smartsupp) {
-      window.smartsupp('chat:hide')
+  useEffect(() => {
+    const tryHide = () => {
+      if (typeof window !== 'undefined' && window.smartsupp?.chat?.hide) {
+        window.smartsupp.chat.hide()
+      }
     }
-  })
+
+    if (document.readyState === 'complete') {
+      tryHide()
+    } else {
+      window.addEventListener('load', tryHide)
+    }
+
+    return () => {
+      window.removeEventListener('load', tryHide)
+    }
+  }, [])
 
   return null
 }
