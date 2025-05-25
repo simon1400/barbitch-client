@@ -1,10 +1,10 @@
 import type { Metadata } from 'next'
 
-import { GoogleTagManager } from '@next/third-parties/google'
 import Footer from 'components/Footer'
 import { Header } from 'components/Header'
 import { AppProvider } from 'context/AppContext'
 import { Montserrat } from 'next/font/google'
+import Script from 'next/script'
 import Banner from 'sections/Banner'
 import './globals.scss'
 
@@ -35,7 +35,20 @@ export default async function RootLayout({
         <link rel={'apple-touch-icon'} sizes={'180x180'} href={'/favicon/apple-touch-icon.png'} />
         <link rel={'manifest'} href={'/favicon/site.webmanifest'} />
       </head>
-      <GoogleTagManager gtmId={'GTM-5SP5MPTB'} />
+      <Script
+        id={'gtm-script'}
+        strategy={'lazyOnload'}
+        src={'https://www.googletagmanager.com/gtm.js?id=GTM-5SP5MPTB'}
+      />
+      <Script id={'gtm-init'} strategy={'lazyOnload'}>
+        {`
+          window.dataLayer = window.dataLayer || [];
+          window.dataLayer.push({
+            'gtm.start': new Date().getTime(),
+            event: 'gtm.js',
+          });
+        `}
+      </Script>
       <body className={`bg-base antialiased overflow-x-hidden ${montserat.className}`}>
         <AppProvider>
           <Header />
