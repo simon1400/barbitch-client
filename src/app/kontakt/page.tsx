@@ -6,8 +6,6 @@ import { getContactMeta } from 'fetch/getMeta'
 import parse from 'html-react-parser'
 import { Top } from 'sections/Top/Top'
 
-export const dynamic = 'force-static'
-
 export async function generateMetadata(): Promise<Metadata> {
   const data = await getContactMeta()
 
