@@ -1,5 +1,4 @@
 'use client'
-import { CldImage } from 'next-cloudinary'
 import dynamic from 'next/dynamic'
 import { useState } from 'react'
 
@@ -8,6 +7,9 @@ import { NextJsImage } from './ImageGalery'
 import 'yet-another-react-lightbox/styles.css'
 
 const Lightbox = dynamic(() => import('yet-another-react-lightbox'), { ssr: false })
+const CldImage = dynamic(() => import('next-cloudinary').then((mod) => mod.CldImage), {
+  ssr: false,
+})
 
 const Galery = ({ data }: { data: IGalery[] }) => {
   const [index, setIndex] = useState(-1)

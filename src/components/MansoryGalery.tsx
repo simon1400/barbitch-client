@@ -1,5 +1,4 @@
 'use client'
-import { CldImage } from 'next-cloudinary'
 import dynamic from 'next/dynamic'
 import { useState } from 'react'
 import { NextJsImage } from 'sections/Galery/ImageGalery'
@@ -8,6 +7,9 @@ import { MasonryGrid } from 'sections/MasonryGrid'
 import 'yet-another-react-lightbox/styles.css'
 
 const Lightbox = dynamic(() => import('yet-another-react-lightbox'), { ssr: false })
+const CldImage = dynamic(() => import('next-cloudinary').then((mod) => mod.CldImage), {
+  ssr: false,
+})
 
 interface Image {
   name: string

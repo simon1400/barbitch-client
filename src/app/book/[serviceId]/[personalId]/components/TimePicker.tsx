@@ -2,7 +2,7 @@
 import { parse } from 'date-fns'
 import { useEffect, useState } from 'react'
 
-export const TimePicker = ({
+const TimePicker = ({
   slots,
   handleSelect,
 }: {
@@ -58,3 +58,5 @@ export const TimePicker = ({
     </div>
   )
 }
+
+export default TimePicker

@@ -4,15 +4,19 @@ import type { ISlotService } from '../../fetch/slotsService'
 
 import { format, formatISO } from 'date-fns'
 import { useOnMountUnsafe } from 'helpers/useOnMountUnsaf'
+import dynamic from 'next/dynamic'
 import { useParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
 import { createSlotReservation } from '../../fetch/slotReservation'
 import { getSlotService } from '../../fetch/slotsService'
 
-import { BookDatePicker } from './components/DatePicker'
-import { EmptyAlert } from './components/EmptyAlert'
-import { TimePicker } from './components/TimePicker'
+const BookDatePicker = dynamic(() => import('./components/DatePicker'), {
+  ssr: false,
+  loading: () => <p className={'text-center'}>{'Loading calendar...'}</p>,
+})
+const EmptyAlert = dynamic(() => import('./components/EmptyAlert'), { ssr: false })
+const TimePicker = dynamic(() => import('./components/TimePicker'), { ssr: false })
 
 const NOONA_COMPANY_ID = process.env.NOONA_COMPANY_ID || ''
 
@@ -93,7 +97,7 @@ const BookCalendarPage: NextPage = () => {
   return (
     <div className={'bg-[#252523] rounded-special-small px-7.5 py-5'}>
       {loading ? (
-        <p className={'text-center'}>{'loading...'}</p>
+        <p className={'text-center'}>{'Loading calendar...'}</p>
       ) : (
         <>
           <BookDatePicker

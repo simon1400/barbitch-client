@@ -1,4 +1,4 @@
-export const EmptyAlert = () => {
+const EmptyAlert = () => {
   return (
     <div
       className={
@@ -11,3 +11,5 @@ export const EmptyAlert = () => {
     </div>
   )
 }
+
+export default EmptyAlert

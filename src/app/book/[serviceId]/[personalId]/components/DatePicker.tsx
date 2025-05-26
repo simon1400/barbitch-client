@@ -1,5 +1,4 @@
 'use client'
-
 import { format } from 'date-fns'
 import { cs } from 'date-fns/locale/cs'
 import DatePicker, { registerLocale } from 'react-datepicker'
@@ -8,7 +7,7 @@ import './calendar.scss'
 
 registerLocale('cs', cs)
 
-export const BookDatePicker = ({
+const BookDatePicker = ({
   data,
   selectDate,
   selected,
@@ -33,3 +32,5 @@ export const BookDatePicker = ({
     </div>
   )
 }
+
+export default BookDatePicker

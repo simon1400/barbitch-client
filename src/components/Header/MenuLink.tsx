@@ -1,3 +1,4 @@
+'use cleint'
 import { motion, useMotionValue } from 'motion/react'
 import { useRef } from 'react'
 
