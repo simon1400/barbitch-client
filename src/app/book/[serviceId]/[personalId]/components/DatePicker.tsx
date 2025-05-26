@@ -2,7 +2,6 @@
 import { format } from 'date-fns'
 import { cs } from 'date-fns/locale/cs'
 import DatePicker, { registerLocale } from 'react-datepicker'
-import 'react-datepicker/dist/react-datepicker.css'
 import './calendar.scss'
 
 registerLocale('cs', cs)
@@ -19,7 +18,7 @@ const BookDatePicker = ({
   return (
     <div className={'text-center'}>
       <DatePicker
-        calendarClassName={'book-calendar-wrap mb-5'}
+        calendarClassName={`book-calendar-wrap mb-5`}
         selected={selected}
         locale={'cs'}
         onChange={(date) => selectDate(date as Date)}

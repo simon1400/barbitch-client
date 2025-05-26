@@ -20,6 +20,17 @@ const nextConfig: NextConfig = {
     NOONA_TOKEN: process.env.NOONA_TOKEN,
   },
   compress: true,
+  experimental: {
+    optimizeCss: true,
+  },
+  reactStrictMode: true,
+  swcMinify: true,
+  modularizeImports: {
+    'date-fns': {
+      transform: 'date-fns/{{member}}',
+    },
+  },
+  productionBrowserSourceMaps: true,
   images: {
     remotePatterns: [
       { hostname: 'lh3.googleusercontent.com' },
@@ -28,6 +39,7 @@ const nextConfig: NextConfig = {
       { hostname: 'strapi.barbitch.cz' },
       { hostname: 'localhost' },
     ],
+    formats: ['image/avif', 'image/webp'],
   },
 }
 

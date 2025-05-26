@@ -16,6 +16,8 @@ export const metadata: Metadata = {
 const montserat = Montserrat({
   subsets: ['latin'],
   weight: ['400', '700'],
+  display: 'swap',
+  fallback: ['Arial', 'sans-serif'],
 })
 
 export default async function RootLayout({

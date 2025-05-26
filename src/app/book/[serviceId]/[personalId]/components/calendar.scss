@@ -1,8 +1,10 @@
+@import 'react-datepicker/dist/react-datepicker.css';
+
 .book-calendar-wrap {
   color: white;
   background-color: transparent;
   font-size: 14px;
-  font-family: 'Montserrat', sans-serif;
+  font-family: inherit;
   border: none;
   border-radius: 0;
 

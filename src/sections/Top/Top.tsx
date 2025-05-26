@@ -1,5 +1,11 @@
 import Button from 'components/Button'
 import { Container } from 'components/Container'
+import { Montserrat } from 'next/font/google'
+const montserat = Montserrat({
+  subsets: ['latin'],
+  weight: ['400', '700'],
+  display: 'swap',
+})
 
 export const Top = ({
   title,
@@ -19,7 +25,10 @@ export const Top = ({
     >
       <Container size={'xl'} className={small ? '' : 'md:min-h-[500px]'}>
         <div className={`${small ? 'pb-10' : 'pb-23'} md:pb-15 max-w-[650px]`}>
-          <h1 id={'top-title'} className={'text-md2 lg:text-top pb-4 uppercase'}>
+          <h1
+            id={'top-title'}
+            className={`text-md2 lg:text-top pb-4 uppercase ${montserat.className}`}
+          >
             {title}
           </h1>
 
