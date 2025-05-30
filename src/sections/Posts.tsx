@@ -3,7 +3,7 @@ import type { IDataPostShort } from 'fetch/blog'
 import { BlogBigShort, BlogShort } from 'components/BlogShort'
 import { Container } from 'components/Container'
 
-import { MasonryGrid } from './MasonryGrid'
+import { MasonryGrid } from './Masonry/MasonryGrid'
 
 const Posts = ({ data, blog = false }: { data: IDataPostShort[]; blog?: boolean }) => {
   return (
