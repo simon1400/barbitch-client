@@ -6,6 +6,9 @@ export interface IEventReqData {
   number_of_guests: number
   no_show_acknowledged: boolean
   email: string
+  origin: string
+  channel: string
+  source: string
   phone_country_code: string
   phone_number: string
   comment: string

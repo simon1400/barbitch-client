@@ -1,6 +1,7 @@
 'use client'
-import type { NextPage } from 'next'
 import type { ISlotService } from '../../fetch/slotsService'
+// eslint-disable-next-line perfectionist/sort-imports
+import type { NextPage } from 'next'
 
 import { format, formatISO } from 'date-fns'
 import { useOnMountUnsafe } from 'helpers/useOnMountUnsaf'
@@ -8,7 +9,7 @@ import dynamic from 'next/dynamic'
 import { useParams, useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
-import { createSlotReservation } from '../../fetch/slotReservation'
+import { createSlotReservation, deleteSlotReservation } from '../../fetch/slotReservation'
 import { getSlotService } from '../../fetch/slotsService'
 
 const BookDatePicker = dynamic(() => import('./components/DatePicker'), {
@@ -33,6 +34,7 @@ const BookCalendarPage: NextPage = () => {
   const [slots, setSlots] = useState<{ employeeIds: string[]; time: string }[]>([])
   const [selected, setSelected] = useState<Date | null>(new Date())
   const [loading, setLoading] = useState<boolean>(true)
+  const [loadingTimepicker, setLoadingTimepicker] = useState<string>('')
 
   const handleFilterSlots = (
     data: { executeDate: Date[]; filteredData: ISlotService[] },
@@ -56,8 +58,17 @@ const BookCalendarPage: NextPage = () => {
     }
   }
 
+  const controlReservationSlot = () => {
+    const idReservation = localStorage.getItem('idSlotReservation') || null
+    if (idReservation) {
+      deleteSlotReservation(idReservation)
+      localStorage.removeItem('idSlotReservation')
+    }
+  }
+
   useOnMountUnsafe(() => {
     fetchData()
+    controlReservationSlot()
   })
 
   useEffect(() => {
@@ -72,6 +83,7 @@ const BookCalendarPage: NextPage = () => {
   }
 
   const handleSelect = async (employeeId: string, time: string) => {
+    setLoadingTimepicker(time)
     try {
       if (!time || !selected) throw new Error('Неверные входные данные')
 
@@ -83,13 +95,12 @@ const BookCalendarPage: NextPage = () => {
         company: NOONA_COMPANY_ID,
         event_types: [serviceId],
         starts_at: formatISO(selected),
-        origin: 'online',
-        channel: 'google maps',
-        source: 'quick bookings',
         employee: employeeId,
       })
       router.push(`/book/reservation/${slotRezervation.id}`)
+      setLoadingTimepicker('')
     } catch (error) {
+      setLoadingTimepicker('')
       console.error('Ошибка бронирования слота:', error)
     }
   }
@@ -105,7 +116,15 @@ const BookCalendarPage: NextPage = () => {
             selected={selected as Date}
             selectDate={selectDate}
           />
-          {slots.length ? <TimePicker slots={slots} handleSelect={handleSelect} /> : <EmptyAlert />}
+          {slots.length ? (
+            <TimePicker
+              slots={slots}
+              handleSelect={handleSelect}
+              loadingTimepicker={loadingTimepicker}
+            />
+          ) : (
+            <EmptyAlert />
+          )}
         </>
       )}
     </div>

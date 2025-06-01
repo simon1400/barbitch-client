@@ -1,7 +1,7 @@
 'use client'
-
 import Button from 'components/Button'
 import { Container } from 'components/Container'
+import { useOnMountUnsafe } from 'helpers/useOnMountUnsaf'
 import { useRouter } from 'next/navigation'
 import { useCallback, useMemo, useState } from 'react'
 
@@ -44,6 +44,10 @@ const BookForm = ({ idReservation }: Props) => {
     email: false,
   })
 
+  useOnMountUnsafe(() => {
+    localStorage.setItem('idSlotReservation', idReservation)
+  })
+
   const handleChange = useCallback((name: string, value: string | boolean) => {
     setUserData((prev) => ({ ...prev, [name]: value }))
     setErrorData((prev) => ({ ...prev, [name]: false }))
@@ -80,6 +84,9 @@ const BookForm = ({ idReservation }: Props) => {
         number_of_guests: 1,
         no_show_acknowledged: true,
         email: userData.email,
+        origin: 'online',
+        channel: 'google maps',
+        source: 'quick bookings',
         phone_country_code: phoneData.phone_country_code,
         phone_number: phoneData.phone_number,
         comment: userData.comment,

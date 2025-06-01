@@ -4,9 +4,6 @@ export interface ISlotReservationReqData {
   company: string
   event_types: string[]
   starts_at: string
-  origin: string
-  channel: string
-  source: string
   employee: string
 }
 
@@ -16,6 +13,12 @@ export const createSlotReservation = async (body: ISlotReservationReqData) => {
   const data = await Noona.post(`/time_slot_reservations`, reqData)
 
   return data.data
+}
+
+export const deleteSlotReservation = async (id: string) => {
+  await Noona.delete(`/time_slot_reservations/${id}`)
+
+  return true
 }
 
 export const getSlotReservation = async (id: string) => {
