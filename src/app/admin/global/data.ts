@@ -7,6 +7,8 @@ export const blockStateItems = (
   sumAdmins: number,
   costs: number,
   payrollSum: number,
+  voucherRealized: number,
+  voucherPayed: number,
 ) => [
   {
     title: 'За услуги',
@@ -14,12 +16,12 @@ export const blockStateItems = (
   },
   {
     title: 'Результат за месяц',
-    value: `${(cashMoney + cardMoney - sumMasters - sumAdmins - costs).toLocaleString()}`,
-    addValue: `${(cashMoney + cardMoney / 1.21 - sumMasters - sumAdmins - noDphCosts).toLocaleString()}`,
+    value: `${(cashMoney + cardMoney + voucherPayed - sumMasters - sumAdmins - costs).toLocaleString()}`,
+    addValue: `${(cashMoney + (voucherPayed + cardMoney) / 1.21 - sumMasters - sumAdmins - noDphCosts).toLocaleString()}`,
   },
   {
     title: 'Разниця',
-    value: `${(cardMoney + cashMoney + payrollSum - globalFlow).toLocaleString()} Kč`,
+    value: `${(cardMoney + cashMoney + payrollSum + voucherRealized - globalFlow).toLocaleString()} Kč`,
   },
 ]
 

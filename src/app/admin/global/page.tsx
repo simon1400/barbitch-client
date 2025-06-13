@@ -31,6 +31,8 @@ const GlobalMonthStates = () => {
   const [cardMoney, setCardMoney] = useState<number>(0)
   const [cashMoney, setCashMoney] = useState<number>(0)
   const [payrollSum, setPayrollSum] = useState<number>(0)
+  const [voucherRealized, setVoucherRealizedSum] = useState<number>(0)
+  const [voucherPayed, setVoucherPayedSum] = useState<number>(0)
   const [clientsAll, setClientsAll] = useState<number>(0)
   const [clientsCanceled, setClientsCanceled] = useState<number>(0)
   const [clientsNoshow, setClientsNoshow] = useState<number>(0)
@@ -56,6 +58,8 @@ const GlobalMonthStates = () => {
       setCardMoney(res.cardMoney)
       setCashMoney(res.cashMoney)
       setPayrollSum(res.payrollSum)
+      setVoucherRealizedSum(res.voucherRealizedSum)
+      setVoucherPayedSum(res.voucherPayedSum)
     })
     getEvents(month).then((res) => {
       setClientsAll(res.all)
@@ -74,7 +78,7 @@ const GlobalMonthStates = () => {
 
   return (
     <section className={'pb-20'}>
-      <Container size={'md'}>
+      <Container size={'lg'}>
         <BlocksContent
           items={blockStateItems(
             noDphCosts,
@@ -85,6 +89,8 @@ const GlobalMonthStates = () => {
             sumAdmins,
             costs,
             payrollSum,
+            voucherRealized,
+            voucherPayed,
           )}
         />
         <BlocksContent
@@ -109,8 +115,15 @@ const GlobalMonthStates = () => {
           costs={costs}
           cash={cashMoney}
           card={cardMoney}
+          voucherPayed={voucherPayed}
         />
-        <Compare income={globalFlow} cash={cashMoney} card={cardMoney} payroll={payrollSum} />
+        <Compare
+          income={globalFlow}
+          cash={cashMoney}
+          card={cardMoney}
+          payroll={payrollSum}
+          voucherRealized={voucherRealized}
+        />
       </Container>
     </section>
   )

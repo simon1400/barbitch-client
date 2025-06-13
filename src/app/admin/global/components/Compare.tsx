@@ -5,11 +5,13 @@ export const Compare = ({
   cash,
   card,
   payroll,
+  voucherRealized,
 }: {
   income: number
   cash: number
   card: number
   payroll: number
+  voucherRealized: number
 }) => {
   return (
     <>
@@ -34,6 +36,7 @@ export const Compare = ({
                 <Cell title={'Списывание'} asHeader />
                 <Cell title={'Сумма реал'} asHeader />
                 <Cell title={'Доход адм'} asHeader />
+                <Cell title={'Воуч. рлз.'} asHeader />
                 <Cell title={'Разница'} asHeader />
               </tr>
             </thead>
@@ -43,8 +46,11 @@ export const Compare = ({
                 <Cell title={`+${cash.toLocaleString()} Kč`} />
                 <Cell title={`+${payroll.toLocaleString()} Kč`} />
                 <Cell title={`=${(card + cash + payroll).toLocaleString()} Kč`} />
-                <Cell title={`${income.toLocaleString()} Kč`} />
-                <Cell title={`${(card + cash + payroll - income).toLocaleString()}`} />
+                <Cell title={`- ${income.toLocaleString()} Kč`} />
+                <Cell title={`+${voucherRealized.toLocaleString()} Kč`} />
+                <Cell
+                  title={`= ${(card + cash + payroll + voucherRealized - income).toLocaleString()} Kč`}
+                />
               </tr>
             </tbody>
           </table>

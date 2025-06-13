@@ -7,6 +7,7 @@ export const Summary = ({
   costs,
   cash,
   card,
+  voucherPayed,
 }: {
   income: number
   salary: number
@@ -14,6 +15,7 @@ export const Summary = ({
   costs: number
   cash: number
   card: number
+  voucherPayed: number
 }) => {
   return (
     <>
@@ -35,6 +37,7 @@ export const Summary = ({
               <tr>
                 <Cell title={'Дох. усл.'} asHeader />
                 <Cell title={'Карта и кеш'} asHeader />
+                <Cell title={'Воуч. куп.'} asHeader />
                 <Cell title={'Мастерам'} asHeader />
                 <Cell title={'Админам'} asHeader />
                 <Cell title={'Затраты'} asHeader />
@@ -43,13 +46,14 @@ export const Summary = ({
             </thead>
             <tbody>
               <tr>
-                <Cell title={`${income.toLocaleString()} Kč`} />
-                <Cell title={`${(card + cash).toLocaleString()} Kč`} />
+                <Cell title={`+ ${income.toLocaleString()} Kč`} />
+                <Cell title={`+ ${(card + cash).toLocaleString()} Kč`} />
+                <Cell title={`+ ${voucherPayed.toLocaleString()} Kč`} />
                 <Cell title={`-${salary.toLocaleString()} Kč`} />
                 <Cell title={`-${salaryAdmin.toLocaleString()} Kč`} />
                 <Cell title={`-${costs.toLocaleString()} Kč`} />
                 <Cell
-                  title={`${(card + cash - salary - salaryAdmin - costs).toLocaleString()} Kč`}
+                  title={`= ${(card + cash + voucherPayed - salary - salaryAdmin - costs).toLocaleString()} Kč`}
                 />
               </tr>
             </tbody>
