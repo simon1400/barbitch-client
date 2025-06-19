@@ -33,6 +33,7 @@ const GlobalMonthStates = () => {
   const [payrollSum, setPayrollSum] = useState<number>(0)
   const [voucherRealized, setVoucherRealizedSum] = useState<number>(0)
   const [voucherPayed, setVoucherPayedSum] = useState<number>(0)
+  const [extraMoney, setExtraMoneySum] = useState<number>(0)
   const [clientsAll, setClientsAll] = useState<number>(0)
   const [clientsCanceled, setClientsCanceled] = useState<number>(0)
   const [clientsNoshow, setClientsNoshow] = useState<number>(0)
@@ -60,6 +61,7 @@ const GlobalMonthStates = () => {
       setPayrollSum(res.payrollSum)
       setVoucherRealizedSum(res.voucherRealizedSum)
       setVoucherPayedSum(res.voucherPayedSum)
+      setExtraMoneySum(res.extraMoneySum)
     })
     getEvents(month).then((res) => {
       setClientsAll(res.all)
@@ -91,6 +93,7 @@ const GlobalMonthStates = () => {
             payrollSum,
             voucherRealized,
             voucherPayed,
+            extraMoney,
           )}
         />
         <BlocksContent
@@ -123,6 +126,7 @@ const GlobalMonthStates = () => {
           card={cardMoney}
           payroll={payrollSum}
           voucherRealized={voucherRealized}
+          extraMoney={extraMoney}
         />
       </Container>
     </section>
