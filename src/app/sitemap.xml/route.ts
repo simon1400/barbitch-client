@@ -10,6 +10,12 @@ export async function GET() {
     { update: '2025-05-17T20:30:30.002Z', slug: ``, priority: '1.0', changefreq: 'weekly' },
     { update: '2025-05-17T20:30:30.002Z', slug: '/blog', priority: '0.9', changefreq: 'weekly' },
     {
+      update: '2025-06-22T10:30:30.002Z',
+      slug: '/darkovy-voucher',
+      priority: '0.8',
+      changefreq: 'monthly',
+    },
+    {
       update: '2025-05-17T20:30:30.002Z',
       slug: '/kontakt',
       priority: '0.8',

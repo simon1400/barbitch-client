@@ -24,6 +24,12 @@ export const getHomeMeta = async () => {
   return data
 }
 
+export const getVoucherMeta = async () => {
+  const data: IDataMetaWrap = await Axios.get(`/api/vaucher-page?${query}`)
+
+  return data
+}
+
 export const getPricelistMeta = async () => {
   const data: IDataMetaWrap = await Axios.get(`/api/pricelist-page?${query}`)
 
