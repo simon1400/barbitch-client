@@ -9,6 +9,7 @@ export const blockStateItems = (
   payrollSum: number,
   voucherRealized: number,
   voucherPayed: number,
+  extraMoney: number,
 ) => [
   {
     title: 'За услуги',
@@ -21,7 +22,7 @@ export const blockStateItems = (
   },
   {
     title: 'Разниця',
-    value: `${(cardMoney + cashMoney + payrollSum + voucherRealized - globalFlow).toLocaleString()} Kč`,
+    value: `${(cardMoney + cashMoney + payrollSum + voucherRealized + extraMoney - globalFlow).toLocaleString()} Kč`,
   },
 ]
 
