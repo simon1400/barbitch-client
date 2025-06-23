@@ -35,6 +35,7 @@ const icons: any = {
   'Prodloužení + design': <MaxiIcon />,
   'Korekce do 5 dnů': <FiveDayIcon />,
   'Prodloužení řas Classic': <ClasicRasIcon />,
+  'Doplnění řas': <ClasicRasIcon />,
   '2D': <TwoDIcon />,
   '3D': <ThreeDIcon />,
   'Barvení řas': <ColorRasIcon />,
