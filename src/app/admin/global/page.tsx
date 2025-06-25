@@ -38,6 +38,7 @@ const GlobalMonthStates = () => {
   const [clientsCanceled, setClientsCanceled] = useState<number>(0)
   const [clientsNoshow, setClientsNoshow] = useState<number>(0)
   const [clientsPayed, setClientsPayed] = useState<number>(0)
+  const [clientsPastPayed, setClientsPastPayed] = useState<number>(0)
   const [clientsFree, setClientsFree] = useState<number>(0)
   const [clientsFixed, setClientsFixed] = useState<number>(0)
   const [clientsPersonal, setClientsPersonal] = useState<number>(0)
@@ -68,6 +69,7 @@ const GlobalMonthStates = () => {
       setClientsCanceled(res.cancelled)
       setClientsNoshow(res.noshow)
       setClientsPayed(res.payed)
+      setClientsPastPayed(res.pastPayed)
       setClientsFree(res.free)
       setClientsFixed(res.fixed)
       setClientsPersonal(res.personal)
@@ -107,6 +109,7 @@ const GlobalMonthStates = () => {
             clientsFixed,
             clientsPersonal,
             sumClientsDone,
+            clientsPastPayed,
           )}
         />
         <Masters data={works} month={month} setMonth={setMonth} sumMasters={sumMasters} />

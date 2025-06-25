@@ -35,6 +35,7 @@ export const blockReservationsItems = (
   clientsFixed: number,
   clientsPersonal: number,
   sumClientsDone: number,
+  clientsPastPayed: number,
 ) => [
   {
     title: 'Резервации все',
@@ -42,11 +43,11 @@ export const blockReservationsItems = (
   },
   {
     title: 'Реалз. / Все Платные',
-    value: `${sumClientsDone - clientsPersonal - clientsFree - clientsFixed} / ${clientsPayed}`,
+    value: `${clientsPastPayed} / ${clientsPayed}`,
   },
   {
     title: 'Осталось платных',
-    value: `${clientsPayed - (sumClientsDone - clientsPersonal - clientsFree - clientsFixed)}`,
+    value: `${clientsPayed - clientsPastPayed}`,
   },
   {
     title: 'Все проведенные',

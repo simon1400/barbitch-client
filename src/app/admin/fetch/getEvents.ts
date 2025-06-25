@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { isBefore, isEqual, parseISO } from 'date-fns'
 import { getMonthRange } from 'helpers/getMounthRange'
 
 export const NoonaHQ = axios.create({
@@ -58,7 +59,7 @@ export const getEvents = async (month: number) => {
   const queryString = new URLSearchParams()
 
   const queryParams: Record<string, string | string[]> = {
-    select: ['id', 'event_types.color', 'customer_name', 'status'],
+    select: ['id', 'event_types.color', 'customer_name', 'status', 'ends_at'],
     filter: JSON.stringify({
       from: firstDay.toISOString(),
       to: lastDay.toISOString(),
@@ -76,13 +77,23 @@ export const getEvents = async (month: number) => {
   const data = await NoonaHQ.get(`/8qcJwRg6dbNh6Gqvm/events?${queryString.toString()}`)
   const { cancelled, noshow, others } = splitEventsByStatus(data.data)
   const groupedByColor = groupByColor(others)
-  return {
+
+  const now = new Date()
+
+  const filteredBeenPayed = groupedByColor['#FF787D'].filter((item) => {
+    const date = parseISO(item.ends_at)
+    return isBefore(date, now) || isEqual(date, now)
+  })
+
+  const result = {
     all: data.data.length,
     cancelled: cancelled?.length || 0,
     noshow: noshow?.length || 0,
     payed: groupedByColor['#FF787D']?.length || 0,
+    pastPayed: filteredBeenPayed?.length || 0,
     free: groupedByColor['#3d4881']?.length || 0,
     personal: groupedByColor['#59c3b9']?.length || 0,
     fixed: groupedByColor['#822949']?.length || 0,
   }
+  return result
 }
