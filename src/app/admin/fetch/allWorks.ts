@@ -88,7 +88,7 @@ function summarizeByName(
 
   penaltyData.forEach((item) => {
     const name = item.personal?.name
-    if (!name || !resultMap.has(name) || name == 'Mariia Medvedeva') return
+    if (!name || !resultMap.has(name)) return
     const sumPenalty = Number.parseFloat(item.sum || '0')
     const result = resultMap.get(name)!
 
@@ -97,7 +97,7 @@ function summarizeByName(
 
   extraProfit.forEach((item) => {
     const name = item.personal?.name
-    if (!name || !resultMap.has(name) || name == 'Mariia Medvedeva') return
+    if (!name || !resultMap.has(name)) return
     const sum = Number.parseFloat(item.sum || '0')
     const result = resultMap.get(name)!
 
