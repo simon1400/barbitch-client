@@ -12,6 +12,7 @@ import { getAllWorks } from '../fetch/allWorks'
 import { getMoney } from '../fetch/costs'
 import { getEvents } from '../fetch/getEvents'
 
+import { GlobalLineChart } from './charts/components/GlobalLineChart'
 import { Administrators } from './components/Administrators'
 import { Compare } from './components/Compare'
 import { Masters } from './components/Masters'
@@ -24,6 +25,7 @@ const GlobalMonthStates = () => {
   const [sumClientsDone, setSumClientsDone] = useState<number>(0)
   const [globalFlow, setGlobalFlow] = useState<number>(0)
   const [sumMasters, setSumMasters] = useState<number>(0)
+  const [daysResult, setDaysResult] = useState([])
   const [sumAdmins, setSumAdmins] = useState<number>(0)
   const [admins, setAdmins] = useState<IFilteredAdminsData['summary']>([])
   const [costs, setCosts] = useState<number>(0)
@@ -44,11 +46,12 @@ const GlobalMonthStates = () => {
   const [clientsPersonal, setClientsPersonal] = useState<number>(0)
 
   const loadData = useCallback(async () => {
-    getAllWorks(month).then((res: IFilteredData) => {
+    getAllWorks(month).then((res: any) => {
       setWorks(res.summary)
       setSumClientsDone(res.sumClientsDone)
       setGlobalFlow(res.globalFlow)
       setSumMasters(res.sumMasters)
+      setDaysResult(res.daysResult)
     })
     getAdminsHours(month).then((res: IFilteredAdminsData) => {
       setAdmins(res.summary)
@@ -111,6 +114,11 @@ const GlobalMonthStates = () => {
             sumClientsDone,
             clientsPastPayed,
           )}
+        />
+        <GlobalLineChart
+          data={daysResult}
+          title={'Услуги'}
+          lines={[{ dataKey: 'sum', stroke: '#e71e6e', name: 'Сумма' }]}
         />
         <Masters data={works} month={month} setMonth={setMonth} sumMasters={sumMasters} />
         <Administrators data={admins} sumAdmins={sumAdmins} />
