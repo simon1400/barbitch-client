@@ -1,13 +1,15 @@
 import { getMonthRange } from 'helpers/getMounthRange'
-import qs from 'qs'
 
 import { Axios } from '../../../lib/api'
 
-interface IDataCosts {
+import { buildQueryCost } from './fetchHelpers'
+
+export interface IDataCosts {
   sum: number
   noDph?: number
 }
-interface IDataCash {
+
+export interface IDataCash {
   profit: string
 }
 
@@ -22,115 +24,55 @@ export interface ICombineData {
   extraMoneySum: number
 }
 
-export const getMoney = async (month: number) => {
+export const getMoney = async (month: number): Promise<ICombineData> => {
   const { firstDay, lastDay } = getMonthRange(2025, month)
 
-  const filters = {
-    date: {
-      $gte: firstDay.toISOString(),
-      $lte: lastDay.toISOString(),
-    },
-  }
+  const [
+    dataCosts,
+    dataCard,
+    dataExtra,
+    dataCash,
+    dataPayroll,
+    dataVouchersRealized,
+    dataVouchersPayed,
+  ] = await Promise.all([
+    Axios.get<IDataCosts[]>(
+      `/api/costs?${buildQueryCost(['sum', 'noDph'], 'date', firstDay, lastDay)}`,
+    ),
+    Axios.get<IDataCosts[]>(
+      `/api/card-profits?${buildQueryCost(['sum'], 'date', firstDay, lastDay)}`,
+    ),
+    Axios.get<IDataCosts[]>(
+      `/api/extra-profits?${buildQueryCost(['sum'], 'date', firstDay, lastDay)}`,
+    ),
+    Axios.get<IDataCash[]>(`/api/cashs?${buildQueryCost(['profit'], 'date', firstDay, lastDay)}`),
+    Axios.get<IDataCosts[]>(`/api/payrolls?${buildQueryCost(['sum'], 'date', firstDay, lastDay)}`),
+    Axios.get<IDataCosts[]>(
+      `/api/vouchers?${buildQueryCost(['sum'], 'dateRealized', firstDay, lastDay)}`,
+    ),
+    Axios.get<IDataCosts[]>(
+      `/api/vouchers?${buildQueryCost(['sum'], 'datePay', firstDay, lastDay)}`,
+    ),
+  ])
 
-  const pagination = {
-    page: 1,
-    pageSize: 40,
-  }
+  const sumReducer = (arr: { sum: number }[]) =>
+    arr.reduce((acc, item) => acc + Number(item.sum), 0)
+  const noDphReducer = (arr: IDataCosts[]) =>
+    arr.reduce((acc, item) => acc + (Number(item.noDph) || 0), 0)
 
-  const queryCostsAndMoney = qs.stringify(
-    {
-      filters,
-      fields: ['sum', 'noDph'],
-      pagination,
-    },
-    {
-      encodeValuesOnly: true,
-    },
-  )
-
-  const queryMoney = qs.stringify(
-    {
-      filters,
-      fields: ['sum'],
-      pagination,
-    },
-    {
-      encodeValuesOnly: true,
-    },
-  )
-
-  const queryCashMoney = qs.stringify(
-    {
-      filters,
-      fields: ['profit'],
-      pagination,
-    },
-    {
-      encodeValuesOnly: true,
-    },
-  )
-
-  const queryVouchersRealized = qs.stringify(
-    {
-      filters: {
-        dateRealized: {
-          $gte: firstDay.toISOString(),
-          $lte: lastDay.toISOString(),
-        },
-      },
-      fields: ['sum'],
-      pagination,
-    },
-    {
-      encodeValuesOnly: true,
-    },
-  )
-  const queryVouchersPayed = qs.stringify(
-    {
-      filters: {
-        datePay: {
-          $gte: firstDay.toISOString(),
-          $lte: lastDay.toISOString(),
-        },
-      },
-      fields: ['sum'],
-      pagination,
-    },
-    {
-      encodeValuesOnly: true,
-    },
-  )
-
-  const dataCosts: IDataCosts[] = await Axios.get(`/api/costs?${queryCostsAndMoney}`)
-  const dataCard: IDataCosts[] = await Axios.get(`/api/card-profits?${queryMoney}`)
-  const dataExtra: IDataCosts[] = await Axios.get(`/api/extra-profits?${queryMoney}`)
-  const dataCash: IDataCash[] = await Axios.get(`/api/cashs?${queryCashMoney}`)
-  const dataPayroll: IDataCosts[] = await Axios.get(`/api/payrolls?${queryMoney}`)
-  const dataVouchersRealized: IDataCosts[] = await Axios.get(
-    `/api/vouchers?${queryVouchersRealized}`,
-  )
-  const dataVouchersPayed: IDataCosts[] = await Axios.get(`/api/vouchers?${queryVouchersPayed}`)
-
-  const maxProfit = dataCash.reduce((max, item) => {
+  const maxProfit = (dataCash as any).reduce((max: number, item: { profit: number }) => {
     const profit = Number(item.profit) || 0
     return Math.max(max, profit)
   }, 0)
 
-  const sumCosts = dataCosts.reduce((acc, item) => acc + Number(item.sum), 0)
-  const sumNoDphCosts = dataCosts.reduce((acc, item) => acc + Number(item.noDph), 0)
-  const extraMoneySum = dataExtra.reduce((acc, item) => acc + Number(item.sum), 0)
-  const payrollSum = dataPayroll.reduce((acc, item) => acc + Number(item.sum), 0)
-  const voucherRealizedSum = dataVouchersRealized.reduce((acc, item) => acc + Number(item.sum), 0)
-  const voucherPayedSum = dataVouchersPayed.reduce((acc, item) => acc + Number(item.sum), 0)
-
   return {
-    sumCosts,
-    sumNoDphCosts,
-    cardMoney: +dataCard[0].sum,
-    cashMoney: +maxProfit,
-    payrollSum,
-    voucherRealizedSum,
-    voucherPayedSum,
-    extraMoneySum,
+    sumCosts: sumReducer(dataCosts as any),
+    sumNoDphCosts: noDphReducer(dataCosts as any),
+    cardMoney: Number((dataCard as any)?.[0]?.sum || 0),
+    cashMoney: maxProfit,
+    payrollSum: sumReducer(dataPayroll as any),
+    voucherRealizedSum: sumReducer(dataVouchersRealized as any),
+    voucherPayedSum: sumReducer(dataVouchersPayed as any),
+    extraMoneySum: sumReducer(dataExtra as any),
   }
 }

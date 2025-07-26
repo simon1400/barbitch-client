@@ -1,30 +1,10 @@
+import type { PersonalSumData } from './fetchHelpers'
+
 import { getMonthRange } from 'helpers/getMounthRange'
-import qs from 'qs'
 
-import { Axios } from '../../../lib/api'
+import { buildQuery, fetchData, summarizeGeneric } from './fetchHelpers'
 
-interface IDataAdminsHours {
-  sum: string
-  personal: {
-    name: string
-  }
-}
-
-interface IDataPenalties {
-  sum: string
-  personal: {
-    name: string
-  }
-}
-
-interface IDataExtraProfit {
-  sum: string
-  personal: {
-    name: string
-  }
-}
-
-interface Result {
+export interface ResultAdmins {
   name: string
   sum: number
   penalty: number
@@ -33,70 +13,36 @@ interface Result {
 }
 
 export interface IFilteredAdminsData {
-  summary: Result[]
+  summary: ResultAdmins[]
   sumAdmins: number
 }
 
-function summarizeByName(
-  data: IDataAdminsHours[],
-  penaltyData: IDataPenalties[],
-  extraProfit: IDataExtraProfit[],
-  payrolls: IDataExtraProfit[],
+function summarizeAdmins(
+  data: PersonalSumData[],
+  penalty: PersonalSumData[],
+  extra: PersonalSumData[],
+  payrolls: PersonalSumData[],
 ): IFilteredAdminsData {
-  const resultMap = new Map<string, Result>()
+  const resultMap = new Map<string, ResultAdmins>()
   let sumAdmins = 0
 
-  data.forEach((item) => {
-    const name = item.personal?.name
+  data.forEach(({ sum, personal }) => {
+    const name = personal?.name
     if (!name) return
-
-    const hours = Number.parseFloat(item.sum || '0')
-
+    const hours = Number.parseFloat(sum || '0')
     if (!resultMap.has(name)) {
-      resultMap.set(name, {
-        name,
-        sum: 0,
-        penalty: 0,
-        extraProfit: 0,
-        payrolls: 0,
-      })
+      resultMap.set(name, { name, sum: 0, penalty: 0, extraProfit: 0, payrolls: 0 })
     }
-
-    const result = resultMap.get(name)!
-    result.sum += hours
+    resultMap.get(name)!.sum += hours
   })
 
-  penaltyData.forEach((item) => {
-    const name = item.personal?.name
-    if (!name || !resultMap.has(name) || name === 'Mariia Medvedeva') return
-    const sumPenalty = Number.parseFloat(item.sum || '0')
-    const result = resultMap.get(name)!
-
-    result.penalty += sumPenalty
-  })
-
-  extraProfit.forEach((item) => {
-    const name = item.personal?.name
-    if (!name || !resultMap.has(name) || name === 'Mariia Medvedeva') return
-    const sum = Number.parseFloat(item.sum || '0')
-    const result = resultMap.get(name)!
-
-    result.extraProfit += sum
-  })
-  payrolls.forEach((item) => {
-    const name = item.personal?.name
-    if (!name || !resultMap.has(name)) return
-    const sum = Number.parseFloat(item.sum || '0')
-    const result = resultMap.get(name)!
-
-    result.payrolls += sum
-  })
+  summarizeGeneric(resultMap, penalty, 'penalty', ['Mariia Medvedeva'])
+  summarizeGeneric(resultMap, extra, 'extraProfit', ['Mariia Medvedeva'])
+  summarizeGeneric(resultMap, payrolls, 'payrolls')
 
   const summary = Array.from(resultMap.values())
-
-  summary.map((item) => {
+  summary.forEach((item) => {
     sumAdmins += item.sum * 115 + item.extraProfit - item.penalty - item.payrolls
-    return null
   })
 
   return { summary, sumAdmins }
@@ -105,69 +51,30 @@ function summarizeByName(
 export const getAdminsHours = async (month: number) => {
   const { firstDay, lastDay } = getMonthRange(2025, month)
 
-  const queryWorkTimes = qs.stringify(
-    {
-      filters: {
-        start: {
-          $gte: firstDay.toISOString(),
-          $lte: lastDay.toISOString(),
-        },
-      },
-      fields: ['start', 'sum'],
-      populate: {
-        personal: {
-          fields: ['name'],
-        },
-      },
-      pagination: {
-        page: 1,
-        pageSize: 70,
-      },
-    },
-    {
-      encodeValuesOnly: true,
-    },
+  const filters = {
+    date: { $gte: firstDay.toISOString(), $lte: lastDay.toISOString() },
+  }
+
+  const queryWorkTimes = buildQuery(
+    { start: filters.date },
+    ['start', 'sum'],
+    { personal: { fields: ['name'] } },
+    { page: 1, pageSize: 70 },
   )
 
-  const queryPenaltiesAndProfits = qs.stringify(
-    {
-      filters: {
-        date: {
-          $gte: firstDay.toISOString(),
-          $lte: lastDay.toISOString(),
-        },
-      },
-      fields: ['sum'],
-      populate: {
-        personal: {
-          fields: ['name'],
-        },
-      },
-      pagination: {
-        page: 1,
-        pageSize: 200,
-      },
-    },
-    {
-      encodeValuesOnly: true,
-    },
-  )
+  const genericQuery = buildQuery(filters, ['sum'], { personal: { fields: ['name'] } })
 
-  const data: IDataAdminsHours[] = await Axios.get(`/api/work-times?${queryWorkTimes}`)
-  const dataPenalty: IDataPenalties[] = await Axios.get(
-    `/api/penalties?${queryPenaltiesAndProfits}`,
-  )
-  const dataExtraProfit: IDataExtraProfit[] = await Axios.get(
-    `/api/add-moneys?${queryPenaltiesAndProfits}`,
-  )
-  const dataPayroll: IDataExtraProfit[] = await Axios.get(
-    `/api/payrolls?${queryPenaltiesAndProfits}`,
-  )
+  const [data, penalties, extras, payrolls] = await Promise.all([
+    fetchData<PersonalSumData>('/api/work-times', queryWorkTimes),
+    fetchData<PersonalSumData>('/api/penalties', genericQuery),
+    fetchData<PersonalSumData>('/api/add-moneys', genericQuery),
+    fetchData<PersonalSumData>('/api/payrolls', genericQuery),
+  ])
 
-  const filteredData = summarizeByName(data, dataPenalty, dataExtraProfit, dataPayroll)
+  const { summary, sumAdmins } = summarizeAdmins(data, penalties, extras, payrolls)
 
   return {
-    summary: filteredData.summary.sort((a, b) => b.sum - a.sum),
-    sumAdmins: filteredData.sumAdmins,
+    summary: summary.sort((a, b) => b.sum - a.sum),
+    sumAdmins,
   }
 }
