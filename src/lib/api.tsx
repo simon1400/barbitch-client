@@ -18,6 +18,20 @@ Noona.interceptors.request.use(
   },
 )
 
+export const NoonaHQ = axios.create({
+  baseURL: 'https://api.noona.is/v1/hq/companies',
+})
+
+NoonaHQ.interceptors.request.use(
+  (config) => {
+    config.headers.Authorization = `Bearer ${process.env.NOONA_TOKEN}`
+    return config
+  },
+  (error) => {
+    return Promise.reject(error)
+  },
+)
+
 Axios.interceptors.response.use(
   (response) => {
     return response.data.data

@@ -1,16 +1,11 @@
 import type { IFilteredData } from '../../fetch/allWorks'
 
 import { Cell } from '../../components/Cell'
-import { Select } from '../../components/Select'
 
 export const Masters = ({
-  month,
-  setMonth,
   data,
   sumMasters,
 }: {
-  month: number
-  setMonth: (month: number) => void
   data: IFilteredData['summary']
   sumMasters: number
 }) => {
@@ -18,7 +13,6 @@ export const Masters = ({
     <>
       <div className={'flex justify-between flex-col md:flex-row items-center mb-5'}>
         <h2 className={'text-md1 mb-5 w-full text-center md:mb-0 md:text-left'}>{'Мастера'}</h2>
-        <Select month={month} setMonth={setMonth} />
       </div>
       <div
         className={

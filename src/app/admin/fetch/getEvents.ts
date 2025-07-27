@@ -1,20 +1,6 @@
-import axios from 'axios'
 import { isBefore, isEqual, parseISO } from 'date-fns'
 import { getMonthRange } from 'helpers/getMounthRange'
-
-export const NoonaHQ = axios.create({
-  baseURL: 'https://api.noona.is/v1/hq/companies',
-})
-
-NoonaHQ.interceptors.request.use(
-  (config) => {
-    config.headers.Authorization = `Bearer ${process.env.NOONA_TOKEN}`
-    return config
-  },
-  (error) => {
-    return Promise.reject(error)
-  },
-)
+import { NoonaHQ } from 'lib/api'
 
 interface EventItem {
   status?: string
@@ -85,6 +71,26 @@ export const getEvents = async (month: number) => {
     return isBefore(date, now) || isEqual(date, now)
   })
 
+  const queryStringMetric = new URLSearchParams()
+
+  const queryParamsMetric: Record<string, string | string[]> = {
+    filter: JSON.stringify({
+      from: firstDay.toISOString(),
+      to: lastDay.toISOString(),
+    }),
+  }
+
+  Object.entries(queryParamsMetric).forEach(([key, value]) => {
+    if (Array.isArray(value)) {
+      value.forEach((val) => queryStringMetric.append(key, val))
+    } else {
+      queryStringMetric.append(key, String(value))
+    }
+  })
+
+  const dataMetrics = await NoonaHQ.get(
+    `/8qcJwRg6dbNh6Gqvm/events_count?${queryStringMetric.toString()}`,
+  )
   const result = {
     all: data.data.length,
     cancelled: cancelled?.length || 0,
@@ -94,6 +100,7 @@ export const getEvents = async (month: number) => {
     free: groupedByColor['#3d4881']?.length || 0,
     personal: groupedByColor['#59c3b9']?.length || 0,
     fixed: groupedByColor['#822949']?.length || 0,
+    dataMetrics: dataMetrics.data || [],
   }
   return result
 }

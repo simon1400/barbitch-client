@@ -2,7 +2,7 @@ import { getMonthRange } from 'helpers/getMounthRange'
 
 import { buildQuery, fetchData } from './fetchHelpers'
 
-interface IDataWorks {
+export interface IDataWorks {
   name: string
   offersDone: {
     id: number
