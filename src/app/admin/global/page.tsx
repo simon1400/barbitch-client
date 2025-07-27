@@ -7,6 +7,7 @@ import { Container } from 'components/Container'
 import { useCallback, useEffect, useState } from 'react'
 
 import { BlocksContent } from '../components/BlocksContent'
+import { Select } from '../components/Select'
 import { getAdminsHours } from '../fetch/allAdminsHours'
 import { getAllWorks } from '../fetch/allWorks'
 import { getMoney } from '../fetch/costs'
@@ -44,6 +45,7 @@ const GlobalMonthStates = () => {
   const [clientsFree, setClientsFree] = useState<number>(0)
   const [clientsFixed, setClientsFixed] = useState<number>(0)
   const [clientsPersonal, setClientsPersonal] = useState<number>(0)
+  const [dataMetrics, setDataMetrics] = useState([])
 
   const loadData = useCallback(async () => {
     getAllWorks(month).then((res: any) => {
@@ -76,6 +78,7 @@ const GlobalMonthStates = () => {
       setClientsFree(res.free)
       setClientsFixed(res.fixed)
       setClientsPersonal(res.personal)
+      setDataMetrics(res.dataMetrics)
     })
   }, [month])
 
@@ -86,6 +89,10 @@ const GlobalMonthStates = () => {
   return (
     <section className={'pb-20'}>
       <Container size={'lg'}>
+        <div className={'mb-10'}>
+          <Select month={month} setMonth={setMonth} />
+        </div>
+
         <BlocksContent
           items={blockStateItems(
             noDphCosts,
@@ -120,7 +127,12 @@ const GlobalMonthStates = () => {
           title={'Услуги'}
           lines={[{ dataKey: 'sum', stroke: '#e71e6e', name: 'Сумма' }]}
         />
-        <Masters data={works} month={month} setMonth={setMonth} sumMasters={sumMasters} />
+        <GlobalLineChart
+          data={dataMetrics}
+          title={'Записи'}
+          lines={[{ dataKey: 'count', stroke: '#161615', name: 'Резервации' }]}
+        />
+        <Masters data={works} sumMasters={sumMasters} />
         <Administrators data={admins} sumAdmins={sumAdmins} />
         <Summary
           income={globalFlow}
