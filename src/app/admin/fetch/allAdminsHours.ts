@@ -10,6 +10,8 @@ export interface ResultAdmins {
   penalty: number
   extraProfit: number
   payrolls: number
+  advance: number
+  salaries: number
 }
 
 export interface IFilteredAdminsData {
@@ -22,6 +24,8 @@ function summarizeAdmins(
   penalty: PersonalSumData[],
   extra: PersonalSumData[],
   payrolls: PersonalSumData[],
+  advance: PersonalSumData[],
+  salaries: PersonalSumData[],
 ): IFilteredAdminsData {
   const resultMap = new Map<string, ResultAdmins>()
   let sumAdmins = 0
@@ -31,7 +35,15 @@ function summarizeAdmins(
     if (!name) return
     const hours = Number.parseFloat(sum || '0')
     if (!resultMap.has(name)) {
-      resultMap.set(name, { name, sum: 0, penalty: 0, extraProfit: 0, payrolls: 0 })
+      resultMap.set(name, {
+        name,
+        sum: 0,
+        penalty: 0,
+        extraProfit: 0,
+        payrolls: 0,
+        advance: 0,
+        salaries: 0,
+      })
     }
     resultMap.get(name)!.sum += hours
   })
@@ -39,6 +51,8 @@ function summarizeAdmins(
   summarizeGeneric(resultMap, penalty, 'penalty', ['Mariia Medvedeva'])
   summarizeGeneric(resultMap, extra, 'extraProfit', ['Mariia Medvedeva'])
   summarizeGeneric(resultMap, payrolls, 'payrolls')
+  summarizeGeneric(resultMap, advance, 'advance')
+  summarizeGeneric(resultMap, salaries, 'salaries')
 
   const summary = Array.from(resultMap.values())
   summary.forEach((item) => {
@@ -64,14 +78,23 @@ export const getAdminsHours = async (month: number) => {
 
   const genericQuery = buildQuery(filters, ['sum'], { personal: { fields: ['name'] } })
 
-  const [data, penalties, extras, payrolls] = await Promise.all([
+  const [data, penalties, extras, payrolls, advance, salaries] = await Promise.all([
     fetchData<PersonalSumData>('/api/work-times', queryWorkTimes),
     fetchData<PersonalSumData>('/api/penalties', genericQuery),
     fetchData<PersonalSumData>('/api/add-moneys', genericQuery),
     fetchData<PersonalSumData>('/api/payrolls', genericQuery),
+    fetchData<PersonalSumData>('/api/avanses', genericQuery),
+    fetchData<PersonalSumData>('/api/salaries', genericQuery),
   ])
 
-  const { summary, sumAdmins } = summarizeAdmins(data, penalties, extras, payrolls)
+  const { summary, sumAdmins } = summarizeAdmins(
+    data,
+    penalties,
+    extras,
+    payrolls,
+    advance,
+    salaries,
+  )
 
   return {
     summary: summary.sort((a, b) => b.sum - a.sum),

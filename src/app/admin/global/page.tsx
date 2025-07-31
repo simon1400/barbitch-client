@@ -46,6 +46,7 @@ const GlobalMonthStates = () => {
   const [clientsFixed, setClientsFixed] = useState<number>(0)
   const [clientsPersonal, setClientsPersonal] = useState<number>(0)
   const [dataMetrics, setDataMetrics] = useState([])
+  const [qrMoney, setQrMoney] = useState<number>(0)
 
   const loadData = useCallback(async () => {
     getAllWorks(month).then((res: any) => {
@@ -68,6 +69,7 @@ const GlobalMonthStates = () => {
       setVoucherRealizedSum(res.voucherRealizedSum)
       setVoucherPayedSum(res.voucherPayedSum)
       setExtraMoneySum(res.extraMoneySum)
+      setQrMoney(res.qrMoney)
     })
     getEvents(month).then((res) => {
       setClientsAll(res.all)
@@ -86,6 +88,8 @@ const GlobalMonthStates = () => {
     loadData()
   }, [month, loadData])
 
+  console.log(admins)
+
   return (
     <section className={'pb-20'}>
       <Container size={'lg'}>
@@ -101,11 +105,10 @@ const GlobalMonthStates = () => {
             cardMoney,
             sumMasters,
             sumAdmins,
-            costs,
             payrollSum,
             voucherRealized,
             voucherPayed,
-            extraMoney,
+            qrMoney,
           )}
         />
         <BlocksContent

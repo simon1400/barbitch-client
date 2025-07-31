@@ -1,5 +1,7 @@
 import type { IFilteredData } from '../../fetch/allWorks'
 
+import { findCommonZeroKeys } from 'helpers/findCommonZeroKeys'
+
 import { Cell } from '../../components/Cell'
 
 export const Masters = ({
@@ -9,6 +11,7 @@ export const Masters = ({
   data: IFilteredData['summary']
   sumMasters: number
 }) => {
+  const emptyKeys = new Set(findCommonZeroKeys(data))
   return (
     <>
       <div className={'flex justify-between flex-col md:flex-row items-center mb-5'}>
@@ -21,7 +24,7 @@ export const Masters = ({
       >
         <div
           className={
-            'relative flex flex-col w-full h-full overflow-x-scroll md:overflow-hidden text-gray-700 bg-white shadow-md rounded-xl'
+            'relative flex flex-col w-full h-full overflow-x-scroll text-gray-700 bg-white shadow-md rounded-xl'
           }
         >
           <table className={'w-full text-left table-auto min-w-max'}>
@@ -30,28 +33,55 @@ export const Masters = ({
                 <Cell title={'Имя'} asHeader />
                 <Cell title={'Кл.'} asHeader />
                 <Cell title={'Зарб.'} asHeader />
-                <Cell title={'Чай'} asHeader />
-                <Cell title={'Штрафы'} asHeader />
-                <Cell title={'Доп.'} asHeader />
-                <Cell title={'Спис.'} asHeader />
+                {!emptyKeys.has('sumTip') && <Cell title={'Чай'} asHeader />}
+                {!emptyKeys.has('penalty') && <Cell title={'Штрафы'} asHeader />}
+                {!emptyKeys.has('extraProfit') && <Cell title={'Доп.'} asHeader />}
+                {!emptyKeys.has('payrolls') && <Cell title={'Спис.'} asHeader />}
                 <Cell title={'Результат'} asHeader />
+                {!emptyKeys.has('advance') && <Cell title={'Аванс'} asHeader />}
+                {!emptyKeys.has('salaries') && <Cell title={'ЗП.'} asHeader />}
+                {!emptyKeys.has('advance') && <Cell title={'Осталось'} asHeader />}
               </tr>
             </thead>
             <tbody>
-              {data.map((item) => (
-                <tr key={item.name}>
-                  <Cell title={item.name} />
-                  <Cell title={`${item.countClient}`} />
-                  <Cell title={`${item.sum.toLocaleString()} Kč`} />
-                  <Cell title={item.sumTip ? `${item.sumTip.toLocaleString()} Kč` : ''} />
-                  <Cell title={item.penalty ? `-${item.penalty.toLocaleString()} Kč` : ''} />
-                  <Cell title={item.extraProfit ? `${item.extraProfit.toLocaleString()} Kč` : ''} />
-                  <Cell title={item.payrolls ? `-${item.payrolls.toLocaleString()} Kč` : ''} />
-                  <Cell
-                    title={`${(item.sum + item.sumTip + item.extraProfit - item.penalty - item.payrolls).toLocaleString()} Kč`}
-                  />
-                </tr>
-              ))}
+              {data.map((item) => {
+                const result =
+                  item.sum + item.sumTip + item.extraProfit - item.penalty - item.payrolls
+                return (
+                  <tr key={item.name} className={'hover:bg-gray-200'}>
+                    <Cell title={item.name} />
+                    <Cell title={`${item.countClient}`} />
+                    <Cell title={`${item.sum.toLocaleString()}`} />
+                    {!emptyKeys.has('sumTip') && (
+                      <Cell title={item.sumTip ? `${item.sumTip.toLocaleString()}` : ''} />
+                    )}
+                    {!emptyKeys.has('penalty') && (
+                      <Cell title={item.penalty ? `-${item.penalty.toLocaleString()}` : ''} />
+                    )}
+                    {!emptyKeys.has('extraProfit') && (
+                      <Cell
+                        title={item.extraProfit ? `${item.extraProfit.toLocaleString()}` : ''}
+                      />
+                    )}
+                    {!emptyKeys.has('payrolls') && (
+                      <Cell title={item.payrolls ? `-${item.payrolls.toLocaleString()}` : ''} />
+                    )}
+                    <Cell className={'text-primary'} title={`${result.toLocaleString()}`} />
+                    {!emptyKeys.has('advance') && (
+                      <Cell title={item.advance ? `-${item.advance.toLocaleString()}` : ''} />
+                    )}
+                    {!emptyKeys.has('salaries') && (
+                      <Cell title={item.salaries ? `-${item.salaries.toLocaleString()}` : ''} />
+                    )}
+                    {(!emptyKeys.has('advance') || !emptyKeys.has('salaries')) && (
+                      <Cell
+                        className={'text-primary'}
+                        title={`${(result - item.advance - item.salaries).toLocaleString()}`}
+                      />
+                    )}
+                  </tr>
+                )
+              })}
             </tbody>
           </table>
         </div>

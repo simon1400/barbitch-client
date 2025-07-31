@@ -19,6 +19,8 @@ interface Result {
   penalty: number
   extraProfit: number
   payrolls: number
+  advance: number
+  salaries: number
 }
 
 export interface IFilteredData {
@@ -33,6 +35,8 @@ function summarizeWorks(
   penalties: PersonalSumData[],
   extras: PersonalSumData[],
   payrolls: PersonalSumData[],
+  advance: PersonalSumData[],
+  salaries: PersonalSumData[],
 ): IFilteredData {
   const resultMap = new Map<string, Result>()
   let globalFlow = 0
@@ -58,6 +62,8 @@ function summarizeWorks(
         penalty: 0,
         extraProfit: 0,
         payrolls: 0,
+        advance: 0,
+        salaries: 0,
       })
     }
 
@@ -70,6 +76,8 @@ function summarizeWorks(
   summarizeGeneric(resultMap, penalties, 'penalty')
   summarizeGeneric(resultMap, extras, 'extraProfit')
   summarizeGeneric(resultMap, payrolls, 'payrolls')
+  summarizeGeneric(resultMap, advance, 'advance')
+  summarizeGeneric(resultMap, salaries, 'salaries')
 
   const summary = Array.from(resultMap.values())
 
@@ -92,14 +100,16 @@ export const getAllWorks = async (month: number) => {
 
   const genericQuery = buildQuery(filters, ['sum'], { personal: { fields: ['name'] } })
 
-  const [data, penalties, extras, payrolls] = await Promise.all([
+  const [data, penalties, extras, payrolls, advance, salaries] = await Promise.all([
     fetchData<IDataAllWorks>('/api/services-provided', serviceQuery),
     fetchData<PersonalSumData>('/api/penalties', genericQuery),
     fetchData<PersonalSumData>('/api/add-moneys', genericQuery),
     fetchData<PersonalSumData>('/api/payrolls', genericQuery),
+    fetchData<PersonalSumData>('/api/avanses', genericQuery),
+    fetchData<PersonalSumData>('/api/salaries', genericQuery),
   ])
 
-  const filteredData = summarizeWorks(data, penalties, extras, payrolls)
+  const filteredData = summarizeWorks(data, penalties, extras, payrolls, advance, salaries)
 
   return {
     summary: filteredData.summary.sort((a, b) => b.sum - a.sum),
