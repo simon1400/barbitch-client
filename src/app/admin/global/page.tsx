@@ -88,8 +88,6 @@ const GlobalMonthStates = () => {
     loadData()
   }, [month, loadData])
 
-  console.log(admins)
-
   return (
     <section className={'pb-20'}>
       <Container size={'lg'}>
