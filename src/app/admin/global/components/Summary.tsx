@@ -8,6 +8,7 @@ export const Summary = ({
   cash,
   card,
   voucherPayed,
+  qrMoney,
 }: {
   income: number
   salary: number
@@ -16,6 +17,7 @@ export const Summary = ({
   cash: number
   card: number
   voucherPayed: number
+  qrMoney: number
 }) => {
   return (
     <>
@@ -24,7 +26,7 @@ export const Summary = ({
       </div>
       <div
         className={
-          'relative flex flex-col w-full h-full overflow-hidden text-gray-700 bg-white shadow-md rounded-xl mb-10'
+          'relative flex flex-col w-full h-full overflow-hidden text-gray-700 bg-white shadow-md rounded-xl'
         }
       >
         <div
@@ -37,23 +39,36 @@ export const Summary = ({
               <tr>
                 <Cell title={'Дох. усл.'} asHeader />
                 <Cell title={'Карта и кеш'} asHeader />
-                <Cell title={'Воуч. куп.'} asHeader />
+                {!!voucherPayed && <Cell title={'Воуч. куп.'} asHeader />}
                 <Cell title={'Мастерам'} asHeader />
                 <Cell title={'Админам'} asHeader />
                 <Cell title={'Затраты'} asHeader />
+                {!!qrMoney && <Cell title={'QR'} asHeader />}
                 <Cell title={'Результат'} asHeader />
               </tr>
             </thead>
             <tbody>
               <tr>
-                <Cell title={`+ ${income.toLocaleString()} Kč`} />
-                <Cell title={`+ ${(card + cash).toLocaleString()} Kč`} />
-                <Cell title={`+ ${voucherPayed.toLocaleString()} Kč`} />
-                <Cell title={`-${salary.toLocaleString()} Kč`} />
-                <Cell title={`-${salaryAdmin.toLocaleString()} Kč`} />
-                <Cell title={`-${costs.toLocaleString()} Kč`} />
+                <Cell title={`+ ${income.toLocaleString()}`} />
+                <Cell title={`+ ${(card + cash).toLocaleString()}`} />
+                {!!voucherPayed && <Cell title={`+ ${voucherPayed.toLocaleString()}`} />}
+                <Cell title={`-${salary.toLocaleString()}`} />
+                <Cell title={`-${salaryAdmin.toLocaleString()}`} />
+                <Cell title={`-${costs.toLocaleString()}`} />
+                {!!qrMoney && <Cell title={`+ ${qrMoney.toLocaleString()}`} />}
                 <Cell
-                  title={`= ${(card + cash + voucherPayed - salary - salaryAdmin - costs).toLocaleString()} Kč`}
+                  title={`= ${(
+                    card +
+                    cash +
+                    voucherPayed -
+                    salary -
+                    salaryAdmin -
+                    costs +
+                    qrMoney
+                  ).toLocaleString('cz-CZ', {
+                    minimumFractionDigits: 2,
+                    maximumFractionDigits: 2,
+                  })}`}
                 />
               </tr>
             </tbody>

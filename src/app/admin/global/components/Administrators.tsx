@@ -12,7 +12,6 @@ export const Administrators = ({
   sumAdmins: number
 }) => {
   const emptyKeys = new Set(findCommonZeroKeys(data))
-  console.log(data)
   return (
     <>
       <div className={'flex justify-between flex-col md:flex-row items-center mb-5'}>

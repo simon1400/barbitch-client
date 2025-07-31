@@ -7,6 +7,7 @@ export const Compare = ({
   payroll,
   voucherRealized,
   extraMoney,
+  qrMoney,
 }: {
   income: number
   cash: number
@@ -14,6 +15,7 @@ export const Compare = ({
   payroll: number
   voucherRealized: number
   extraMoney: number
+  qrMoney: number
 }) => {
   return (
     <>
@@ -22,7 +24,7 @@ export const Compare = ({
       </div>
       <div
         className={
-          'relative flex flex-col w-full h-full overflow-hidden text-gray-700 bg-white shadow-md rounded-xl'
+          'relative flex flex-col w-full h-full overflow-hidden text-gray-700 bg-white shadow-md rounded-xl mb-10'
         }
       >
         <div
@@ -35,23 +37,25 @@ export const Compare = ({
               <tr>
                 <Cell title={'Карта'} asHeader />
                 <Cell title={'Нал'} asHeader />
-                <Cell title={'Списывание'} asHeader />
+                {!!payroll && <Cell title={'Списывание'} asHeader />}
                 <Cell title={'Сумма реал'} asHeader />
                 <Cell title={'Доход адм'} asHeader />
-                <Cell title={'Воуч. рлз.'} asHeader />
+                {!!voucherRealized && <Cell title={'Воуч. рлз.'} asHeader />}
+                {!!qrMoney && <Cell title={'QR'} asHeader />}
                 <Cell title={'Разница'} asHeader />
               </tr>
             </thead>
             <tbody>
               <tr>
-                <Cell title={`+${card.toLocaleString()} Kč`} />
-                <Cell title={`+${cash.toLocaleString()} Kč`} />
-                <Cell title={`+${payroll.toLocaleString()} Kč`} />
-                <Cell title={`=${(card + cash + payroll).toLocaleString()} Kč`} />
-                <Cell title={`- ${income.toLocaleString()} Kč`} />
-                <Cell title={`+${voucherRealized.toLocaleString()} Kč`} />
+                <Cell title={`+${card.toLocaleString()}`} />
+                <Cell title={`+${cash.toLocaleString()}`} />
+                {!!payroll && <Cell title={`+${payroll.toLocaleString()}`} />}
+                <Cell title={`=${(card + cash + payroll).toLocaleString()}`} />
+                <Cell title={`- ${income.toLocaleString()}`} />
+                {!!voucherRealized && <Cell title={`+${voucherRealized.toLocaleString()}`} />}
+                {!!qrMoney && <Cell title={`+${qrMoney.toLocaleString()}`} />}
                 <Cell
-                  title={`= ${(card + cash + payroll + voucherRealized + extraMoney - income).toLocaleString()} Kč`}
+                  title={`= ${(card + cash + payroll + voucherRealized + qrMoney - income).toLocaleString()}`}
                 />
               </tr>
             </tbody>

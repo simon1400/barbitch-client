@@ -78,7 +78,7 @@ interface Entry {
   tip: string | null
 }
 
-interface GroupedSum {
+export interface GroupedSum {
   date: string
   sum: number
 }
