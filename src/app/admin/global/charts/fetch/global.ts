@@ -1,10 +1,12 @@
 import { getAdminsHours } from 'app/admin/fetch/allAdminsHours'
 import { getAllWorks } from 'app/admin/fetch/allWorks'
 import { getMoney } from 'app/admin/fetch/costs'
+import { getMonth } from 'date-fns'
 
 export const getGlobalStats = async () => {
   const globalStats = []
-  for (let i = 2; i <= 6; i++) {
+  const currentMonth = getMonth(new Date())
+  for (let i = 2; i <= currentMonth; i++) {
     const dataAllWorks = await getAllWorks(i)
     const dataCosts = await getMoney(i)
     const dataAdmin = await getAdminsHours(i)
@@ -16,7 +18,7 @@ export const getGlobalStats = async () => {
       allCosts: dataCosts.sumNoDphCosts + dataAllWorks.sumMasters + dataAdmin.sumAdmins,
       result: (
         dataCosts.cashMoney +
-        (dataCosts.voucherPayedSum + dataCosts.cardMoney) / 1.21 -
+        (dataCosts.voucherPayedSum + dataCosts.cardMoney + dataCosts.qrMoney) / 1.21 -
         dataAllWorks.sumMasters -
         dataAdmin.sumAdmins -
         dataCosts.sumNoDphCosts
