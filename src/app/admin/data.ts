@@ -16,11 +16,12 @@ export const monthLabels = [
 
 // Логины
 export const logins: Record<string, string> = {
-  'Liliia Radchenko': '5pzR773z',
   'Azaliya Baltiyeva': '34ndbQ1a',
   'Mariia Medvedeva': 'jB467eMO',
-  'Svetlana Vilisova': 'J7h133Jz',
   Alexandra: 'J7h133Jz',
+  'Ilona Hrybenkina': 's9FQ78Ct',
+  'Alina Prydatkina': 'o64U34Kl',
+  'Veronika Simonova': 'Ti9FN52l',
 }
 
 export const blockStatsItems = (
