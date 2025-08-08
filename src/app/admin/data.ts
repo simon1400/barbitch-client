@@ -18,7 +18,7 @@ export const monthLabels = [
 export const logins: Record<string, string> = {
   'Azaliya Baltiyeva': '34ndbQ1a',
   'Mariia Medvedeva': 'jB467eMO',
-  Alexandra: 'J7h133Jz',
+  'Alexandra Pashkova': 'J7h133Jz',
   'Ilona Hrybenkina': 's9FQ78Ct',
   'Alina Prydatkina': 'o64U34Kl',
   'Veronika Simonova': 'Ti9FN52l',

@@ -3,7 +3,6 @@
 import { Container } from 'components/Container'
 import { useEffect, useState } from 'react'
 
-
 import { GlobalLineChart } from './components/GlobalLineChart'
 import { getGlobalStats } from './fetch/global'
 
@@ -26,8 +25,9 @@ const GlobalMonthStats = () => {
           data={data}
           title={'Global'}
           lines={[
-            { dataKey: 'flow', stroke: 'purple', name: 'Оборот' },
+            { dataKey: 'flow', stroke: 'green', name: 'Оборот' },
             { dataKey: 'allCosts', stroke: 'red', name: 'Все затраты' },
+            { dataKey: 'allCostsWhithotAdmins', stroke: 'blue', name: 'Все затраты без админов' },
           ]}
         />
       </Container>

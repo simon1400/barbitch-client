@@ -15,6 +15,7 @@ export const getGlobalStats = async () => {
       flow: dataAllWorks.globalFlow,
       costs: dataCosts.sumNoDphCosts,
       masters: dataAllWorks.sumMasters,
+      allCostsWhithotAdmins: dataCosts.sumNoDphCosts + dataAllWorks.sumMasters,
       allCosts: dataCosts.sumNoDphCosts + dataAllWorks.sumMasters + dataAdmin.sumAdmins,
       result: (
         dataCosts.cashMoney +

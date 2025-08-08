@@ -41,8 +41,10 @@ const Works = () => {
   }, [adminName, month])
 
   useEffect(() => {
-    loadData()
-  }, [month, loadData])
+    if (adminName) {
+      loadData()
+    }
+  }, [month, loadData, adminName])
 
   return (
     <section className={'pb-16'}>

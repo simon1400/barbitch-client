@@ -36,7 +36,7 @@ export default function AdminLayout({
 
   return (
     <div id={'layout-admin-page'}>
-      <Top title={adminName} small linkToReserve={''} />
+      <Top title={adminName} small linkToReserve={''} admin />
       <Container size={'xl'}>
         <div className={'md:flex'}>
           {/* <Sidebar /> */}
