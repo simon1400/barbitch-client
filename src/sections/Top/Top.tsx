@@ -1,9 +1,8 @@
-'use client'
 import Button from 'components/Button'
 import { Container } from 'components/Container'
-import { useAppContext } from 'context/AppContext'
 import { Montserrat } from 'next/font/google'
-import { redirect } from 'next/navigation'
+
+import { LogoutButton } from './LogoutButton'
 const montserat = Montserrat({
   subsets: ['latin'],
   weight: ['400', '700'],
@@ -21,14 +20,6 @@ export const Top = ({
   linkToReserve: string
   admin?: boolean
 }) => {
-  const { setAdminName } = useAppContext()
-  const logout = (e: any) => {
-    e.preventDefault()
-    localStorage.removeItem('usernameLocalData')
-    localStorage.removeItem('passwordLocalData')
-    setAdminName('')
-    redirect('/login')
-  }
   return (
     <section
       aria-labelledby={'top-title'}
@@ -50,16 +41,7 @@ export const Top = ({
               <Button text={'Rezervovat termín'} id={'book-button'} href={linkToReserve} />
             </div>
           )}
-          {admin && (
-            <div>
-              <Button
-                text={'Odhlasit se'}
-                id={'book-button'}
-                href={'/'}
-                onClick={(e) => logout(e)}
-              />
-            </div>
-          )}
+          {admin && <LogoutButton />}
         </div>
       </Container>
     </section>
