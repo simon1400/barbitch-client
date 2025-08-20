@@ -9,6 +9,7 @@ export const blockStateItems = (
   voucherRealized: number,
   voucherPayed: number,
   qrMoney: number,
+  extraMoney: number,
 ) => [
   {
     title: 'За услуги',
@@ -29,7 +30,7 @@ export const blockStateItems = (
   },
   {
     title: 'Разниця',
-    value: `${(cardMoney + cashMoney + payrollSum + voucherRealized + qrMoney - globalFlow).toLocaleString()} Kč`,
+    value: `${(cardMoney + cashMoney + payrollSum + voucherRealized + qrMoney - globalFlow - extraMoney).toLocaleString()} Kč`,
   },
 ]
 

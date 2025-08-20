@@ -36,6 +36,7 @@ const GlobalMonthStates = () => {
             data.voucherRealized,
             data.voucherPayed,
             data.qrMoney,
+            data.extraMoney,
           )}
         />
 
