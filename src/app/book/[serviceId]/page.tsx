@@ -1,6 +1,6 @@
 import type { IPersonalService } from '../fetch/personalService'
 
-import { MasterIcon } from 'icons/book/Master'
+import { MasterIcon } from 'icons/Master'
 import Link from 'next/link'
 
 import { getPersonalService } from '../fetch/personalService'

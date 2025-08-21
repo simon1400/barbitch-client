@@ -1,19 +1,5 @@
 import type { IBookService, IBookServiceGroup } from './fetch/bookService'
 
-import { ClasicRasIcon } from 'icons/book/ClasicRas'
-import { ColorRasIcon } from 'icons/book/ColorRas'
-import { FirstObociIcon } from 'icons/book/FirstOboci'
-import { FiveDayIcon } from 'icons/book/FiveDay'
-import { FourObociIcon } from 'icons/book/FourOboci'
-import { GelLakIcon } from 'icons/book/GelLak'
-import { HubyIcon } from 'icons/book/Huby'
-import { HygienaIcon } from 'icons/book/Hygiena'
-import { LongIcon } from 'icons/book/Long'
-import { MaxiIcon } from 'icons/book/Maxi'
-import { SeccondObociIcon } from 'icons/book/SeccondOboci'
-import { ThirdObociIcon } from 'icons/book/ThirdOboci'
-import { ThreeDIcon } from 'icons/book/ThreeD'
-import { TwoDIcon } from 'icons/book/TwoD'
 import Link from 'next/link'
 
 import {
@@ -25,27 +11,6 @@ import {
 
 import { getBookService } from './fetch/bookService'
 
-const icons: any = {
-  'Hygienická manikúra': <HygienaIcon />,
-  'Gel lak manikúra': <GelLakIcon />,
-  'Gel lak + francouzská manikúra': <GelLakIcon />,
-  'Gel lak + design ': <GelLakIcon />,
-  'Prodloužení nehtů': <LongIcon />,
-  'Prodloužení + francouzská manikúra': <LongIcon />,
-  'Prodloužení + design': <MaxiIcon />,
-  'Korekce do 5 dnů': <FiveDayIcon />,
-  'Prodloužení řas Classic': <ClasicRasIcon />,
-  'Doplnění řas': <ClasicRasIcon />,
-  '2D': <TwoDIcon />,
-  '3D': <ThreeDIcon />,
-  'Barvení řas': <ColorRasIcon />,
-  'Modelování obočí': <FirstObociIcon />,
-  'Laminace (+modelování)': <SeccondObociIcon />,
-  'Barvení obočí (+modelování)': <ThirdObociIcon />,
-  'Laminace + modelování + barvení': <FourObociIcon />,
-  'Depilace horního rtu': <HubyIcon />,
-}
-
 const BookServiceItem = ({ service }: { service: IBookService }) => {
   const price = service.variations?.[0]?.prices?.[0]?.amount ?? 'N/A'
 
@@ -56,13 +21,27 @@ const BookServiceItem = ({ service }: { service: IBookService }) => {
         href={`/book/${service.id}`}
       >
         <span
-          className={'min-w-[36px] w-[36px] h-[36px] overflow-hidden rounded-full block relative'}
+          className={
+            'min-w-[36px] w-[36px] h-[36px] overflow-hidden self-start rounded-full block relative'
+          }
         >
-          {icons[service.title]}
+          {!!service.images && <img src={service.images[0].image} alt={service.title} />}
         </span>
         <span className={'w-full'}>
-          <h3 className={'text-xs1 leading-none mb-1.5'}>{service.title}</h3>
-          <p className={'text-[#A0A0A0] text-xs1 leading-none'}>{`${service.minutes} min`}</p>
+          <h3 className={'text-xs1 leading-5 mb-1.5'}>
+            {service.title}
+            {/* <span
+              role={'button'}
+              onClick={(e) => handleInfoService(e)}
+              className={'inline-block ml-2 text-[11px] bg-[#A0A0A0] py-1 px-2 rounded-xl'}
+            >
+              {'info'}
+            </span> */}
+          </h3>
+          <p
+            className={`text-[#A0A0A0] text-xs1 leading-none ${service.description ? 'mb-1.5' : ''}`}
+          >{`${service.minutes} min`}</p>
+          <p className={'text-[#A0A0A0] text-xss font-normal'}>{service.description}</p>
         </span>
         <span className={'flex items-center text-xs1 text-primary font-bold gap-2.5'}>
           <span className={'whitespace-nowrap'}>{`${price} Kč`}</span>

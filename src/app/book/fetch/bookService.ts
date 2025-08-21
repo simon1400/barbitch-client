@@ -7,6 +7,8 @@ export interface IBookService {
   minutes: number
   id: string
   variations: { prices: { amount: number }[] }[]
+  images: { image: string }[]
+  description: string
 }
 
 export interface IBookServiceGroup {
@@ -17,7 +19,7 @@ export const getBookService = async () => {
   const queryString = new URLSearchParams()
 
   const queryParams: Record<string, string | string[]> = {
-    select: ['title', 'group_event_types'],
+    select: ['title', 'group_event_types', 'image', 'description'],
   }
 
   Object.entries(queryParams).forEach(([key, value]) => {
