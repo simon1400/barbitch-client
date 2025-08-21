@@ -64,7 +64,11 @@ const GlobalMonthStates = () => {
         <GlobalLineChart
           data={data.dataMetrics}
           title={'Записи'}
-          lines={[{ dataKey: 'count', stroke: '#161615', name: 'Резервации' }]}
+          lines={[
+            { dataKey: 'countPayed', stroke: '#e71e6e', name: 'Резервации' },
+            { dataKey: 'countCanceled', stroke: '#161615', name: 'Отмены' },
+            { dataKey: 'countNoshow', stroke: 'orange', name: 'Не пришли' },
+          ]}
         />
 
         <Masters data={data.works} sumMasters={data.sumMasters} />

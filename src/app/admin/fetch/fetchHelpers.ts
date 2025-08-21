@@ -112,3 +112,59 @@ export function groupAndSumByDateWithGaps(data: Entry[]): GroupedSum[] {
 
   return result
 }
+
+export interface InputItemReservation {
+  ends_at: string
+}
+
+export interface OutputMetrictsItem {
+  date: string
+  [key: string]: number | string
+}
+
+export function groupCountReservationByDate(
+  datasets: Record<string, InputItemReservation[]>,
+): OutputMetrictsItem[] {
+  const result: Record<string, any> = {}
+
+  // проходим по каждому массиву
+  Object.entries(datasets).forEach(([key, data]) => {
+    data.forEach((item) => {
+      const d = new Date(item.ends_at)
+      const day = String(d.getDate()).padStart(2, '0')
+      const month = String(d.getMonth() + 1).padStart(2, '0')
+      const formatted = `${day}.${month}`
+
+      if (!result[formatted]) {
+        result[formatted] = { date: formatted }
+      }
+      result[formatted][`count${key}`] = (result[formatted][`count${key}`] ?? 0) + 1
+    })
+  })
+
+  // берём любую дату как базу (первый массив)
+  const allItems = Object.values(datasets).flat()
+  const baseDate = allItems.length ? new Date(allItems[0].ends_at) : new Date()
+  const year = baseDate.getFullYear()
+  const month = baseDate.getMonth()
+  const daysInMonth = new Date(year, month + 1, 0).getDate()
+
+  // создаём полный месяц
+  const fullMonth: OutputMetrictsItem[] = []
+  for (let day = 1; day <= daysInMonth; day++) {
+    const d = String(day).padStart(2, '0')
+    const m = String(month + 1).padStart(2, '0')
+    const formatted = `${d}.${m}`
+
+    fullMonth.push({
+      date: formatted,
+      ...result[formatted],
+      ...Object.keys(datasets).reduce(
+        (acc, key) => ({ ...acc, [`count${key}`]: result[formatted]?.[`count${key}`] ?? 0 }),
+        {},
+      ),
+    })
+  }
+
+  return fullMonth
+}

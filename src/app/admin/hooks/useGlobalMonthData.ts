@@ -2,7 +2,7 @@
 import type { IFilteredAdminsData } from '../fetch/allAdminsHours'
 import type { IFilteredData } from '../fetch/allWorks'
 // import type { ICombineData } from '../fetch/costs'
-import type { GroupedSum } from '../fetch/fetchHelpers'
+import type { GroupedSum, OutputMetrictsItem } from '../fetch/fetchHelpers'
 
 import { useCallback, useEffect, useState } from 'react'
 
@@ -39,7 +39,7 @@ export const useGlobalMonthData = (month: number) => {
       fixed: 0,
       personal: 0,
     },
-    dataMetrics: [],
+    dataMetrics: [] as OutputMetrictsItem[],
   })
 
   const loadData = useCallback(async () => {

@@ -3,7 +3,7 @@
 import { CartesianGrid, Legend, Line, LineChart, Tooltip, XAxis, YAxis } from 'recharts'
 
 interface Props {
-  data: any[]
+  data: any
   lines: {
     dataKey: string
     stroke: string
