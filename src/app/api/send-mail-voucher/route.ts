@@ -68,9 +68,9 @@ export async function POST(req: NextRequest) {
     const emailParams = new EmailParams()
       .setFrom(from)
       .setTo(to)
-      // .setBcc(
-      //   process.env.MAILERSEND_BCC_EMAIL ? [new Recipient(process.env.MAILERSEND_BCC_EMAIL)] : [],
-      // )
+      .setBcc(
+        process.env.MAILERSEND_BCC_EMAIL ? [new Recipient(process.env.MAILERSEND_BCC_EMAIL)] : [],
+      )
       .setSubject('Děkujeme za objednávku, {{ name }}!')
       .setText('Objednávka pro {{ name }}, částka {{ sum }} Kč, VS {{ idVoucher }}')
       .setHtml(htmlTemplate)
