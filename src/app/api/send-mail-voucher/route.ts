@@ -1,37 +1,34 @@
-/* eslint-disable node/prefer-global/buffer */
-
 import type { NextRequest } from 'next/server'
 
-import fs from "node:fs";
-import path from "node:path";
-import sgMail from '@sendgrid/mail'
+import fs from 'node:fs'
+import path from 'node:path'
 import { addMonths, format } from 'date-fns'
+import { Attachment, EmailParams, MailerSend, Recipient, Sender } from 'mailersend'
 import { NextResponse } from 'next/server'
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib'
 
-sgMail.setApiKey(process.env.SENDGRID_API_KEY!)
+import { htmlTemplate } from './htmlTemplate'
+
+const mailerSend = new MailerSend({
+  apiKey: process.env.MAILERSEND_API_KEY!,
+})
 
 export async function POST(req: NextRequest) {
   try {
     const { email, name, sum, idVoucher, voucher } = await req.json()
 
     if (!email) {
-      return NextResponse.json(
-        { error: 'Missing required fields: to, subject, and text or html' },
-        { status: 400 },
-      )
+      return NextResponse.json({ error: 'Missing required field: email' }, { status: 400 })
     }
 
     const templatePath = path.join(process.cwd(), 'public', 'vouchers', `${voucher}.pdf`)
     const templateBytes = fs.readFileSync(templatePath)
 
     const pdfDoc = await PDFDocument.load(templateBytes)
-    const pages = pdfDoc.getPages()
-    const firstPage = pages[0]
-
+    const [firstPage] = pdfDoc.getPages()
     const font = await pdfDoc.embedFont(StandardFonts.HelveticaBold)
 
-    firstPage.drawText(`${idVoucher}`, {
+    firstPage.drawText(String(idVoucher), {
       x: 190,
       y: 30,
       size: 22,
@@ -42,7 +39,7 @@ export async function POST(req: NextRequest) {
     const sixMonthsFromNow = addMonths(new Date(), 6)
     const formattedDate = format(sixMonthsFromNow, 'dd.MM.yyyy')
 
-    firstPage.drawText(`${formattedDate}`, {
+    firstPage.drawText(formattedDate, {
       x: 320,
       y: 70,
       size: 22,
@@ -51,35 +48,42 @@ export async function POST(req: NextRequest) {
     })
 
     const modifiedPdf = await pdfDoc.save()
+    // eslint-disable-next-line ts/no-require-imports
+    const pdfBase64 = require('node:buffer').Buffer.from(modifiedPdf).toString('base64')
 
-    const msg: any = {
-      to: email,
-      bbc: process.env.SENDGRID_FROM_EMAIL!,
-      from: {
-        email: process.env.SENDGRID_FROM_EMAIL!,
-        name: 'Bar.Bitch Brno',
-      },
-      templateId: process.env.SENDGRID_TEMPLATE_ID,
-      dynamicTemplateData: {
-        name,
-        sum,
-        idVoucher,
-      },
-      attachments: [
-        {
-          content: Buffer.from(modifiedPdf).toString('base64'),
-          filename: `v_${voucher}_${idVoucher}.pdf`,
-          type: 'application/pdf',
-          disposition: 'attachment',
+    const from = new Sender(process.env.MAILERSEND_FROM_EMAIL!, 'Bar.Bitch Brno')
+    const to = [new Recipient(email, name || undefined)]
+
+    const personalization = [
+      {
+        email,
+        data: {
+          name,
+          sum,
+          idVoucher,
         },
-      ],
-    }
+      },
+    ]
 
-    await sgMail.send(msg)
+    const emailParams = new EmailParams()
+      .setFrom(from)
+      .setTo(to)
+      // .setBcc(
+      //   process.env.MAILERSEND_BCC_EMAIL ? [new Recipient(process.env.MAILERSEND_BCC_EMAIL)] : [],
+      // )
+      .setSubject('Děkujeme za objednávku, {{ name }}!')
+      .setText('Objednávka pro {{ name }}, částka {{ sum }} Kč, VS {{ idVoucher }}')
+      .setHtml(htmlTemplate)
+      .setPersonalization(personalization)
+      .setAttachments([
+        new Attachment(pdfBase64, `v_${voucher}_${idVoucher}.pdf`, 'attachment', 'application/pdf'),
+      ])
+
+    await mailerSend.email.send(emailParams)
 
     return NextResponse.json({ message: 'Email sent successfully' })
   } catch (error: any) {
-    console.error('SendGrid error:', error.response?.body || error)
+    console.error('MailerSend error:', error?.body || error)
     return NextResponse.json({ error: 'Failed to send email' }, { status: 500 })
   }
 }
