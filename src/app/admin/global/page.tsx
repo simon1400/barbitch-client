@@ -1,4 +1,5 @@
 'use client'
+import Button from 'components/Button'
 import { Container } from 'components/Container'
 import { useState } from 'react'
 
@@ -20,8 +21,11 @@ const GlobalMonthStates = () => {
   return (
     <section className={'pb-20'}>
       <Container size={'lg'}>
-        <div className={'mb-10'}>
+        <div className={'mb-10 flex justify-between'}>
           <Select month={month} setMonth={setMonth} />
+          <div>
+            <Button text={'Charts'} href={'/admin/global/charts'} />
+          </div>
         </div>
 
         <BlocksContent

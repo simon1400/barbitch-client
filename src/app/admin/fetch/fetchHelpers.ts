@@ -50,6 +50,7 @@ export interface PersonalSumData {
   sum: string
   personal: {
     name: string
+    rates?: any
   }
 }
 

@@ -27,10 +27,26 @@ export const blockStateItems = (
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     })}`,
+    addValue: `${(globalFlow - sumMasters - sumAdmins - noDphCosts).toLocaleString('cz-CZ', {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2,
+    })} - s DPH`,
   },
   {
     title: 'Разниця',
     value: `${(cardMoney + cashMoney + payrollSum + voucherRealized + qrMoney - globalFlow - extraMoney).toLocaleString()} Kč`,
+  },
+  {
+    title: 'Затраты на салон',
+    value: `${noDphCosts.toLocaleString()}`,
+  },
+  {
+    title: 'Зарплаты мастерам',
+    value: `${sumMasters.toLocaleString()}`,
+  },
+  {
+    title: 'Зарплаты админам',
+    value: `${sumAdmins.toLocaleString()}`,
   },
 ]
 

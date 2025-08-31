@@ -25,7 +25,7 @@ const Button = ({
   onClick,
   loading,
 }: ButtonProps) => {
-  const baseClasses = `inline-block border-0 uppercase text-nowrap duration-200`
+  const baseClasses = `inline-block border-0 uppercase text-nowrap duration-200 text-center`
   const textClasses = white && !inverse ? 'text-accent' : 'text-white'
   const cursorClasses = loading ? 'cursor-wait' : 'cursor-pointer'
   const sizeClasses = small

@@ -17,6 +17,7 @@ export const getGlobalStats = async () => {
       masters: dataAllWorks.sumMasters,
       allCostsWhithotAdmins: dataCosts.sumNoDphCosts + dataAllWorks.sumMasters,
       allCosts: dataCosts.sumNoDphCosts + dataAllWorks.sumMasters + dataAdmin.sumAdmins,
+      admins: dataAdmin.sumAdmins,
       result: (
         dataCosts.cashMoney +
         (dataCosts.voucherPayedSum + dataCosts.cardMoney + dataCosts.qrMoney) / 1.21 -

@@ -46,13 +46,14 @@ export const Administrators = ({
             </thead>
             <tbody>
               {data.map((item) => {
-                const result = item.sum * 115 + item.extraProfit - item.penalty - item.payrolls
+                const result =
+                  item.sum * item.rate + item.extraProfit - item.penalty - item.payrolls
                 const splitName = item.name.split(' ')
                 return (
                   <tr key={item.name} className={'hover:bg-gray-200'}>
                     <Cell title={`${splitName[0][0]}. ${splitName[1]}`} />
                     <Cell title={`${item.sum.toLocaleString()} hod`} />
-                    <Cell title={`${(item.sum * 115).toLocaleString()}`} />
+                    <Cell title={`${(item.sum * item.rate).toLocaleString()}`} />
                     {!emptyKeys.has('penalty') && (
                       <Cell title={item.penalty ? `-${item.penalty.toLocaleString()}` : ''} />
                     )}
