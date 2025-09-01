@@ -149,6 +149,38 @@ body{
       }
     }
   }
+  figure.table{
+    width: 100%;
+    table{
+      @apply w-full max-w-full border-collapse mb-5;
+      caption{
+        @apply caption-top text-md2 text-left mb-5;
+      }
+      thead {
+        tr{
+          @apply border-b-[1.5px] border-[#1616154D];
+          
+          th{
+            &:first-of-type{
+              padding-left: 0;
+            }
+            @apply text-left text-sm11 font-bold md:text-sm1 p-1 md:p-3.5 w-full;
+          }
+        }
+      }
+      tbody{
+        tr{
+          @apply text-sm font-normal md:text-sm11 border-b-[1.5px] border-[#1616154D];
+          td{
+            &:first-of-type{
+              padding-left: 0;
+            }
+            @apply whitespace-nowrap p-1 md:p-3.5;
+          }
+        }
+      }
+    }
+  }
 }
 
 @media (max-width: 900px) {
