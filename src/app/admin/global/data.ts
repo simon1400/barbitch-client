@@ -27,10 +27,13 @@ export const blockStateItems = (
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     })}`,
-    addValue: `${(globalFlow - sumMasters - sumAdmins - noDphCosts).toLocaleString('cz-CZ', {
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    })} - s DPH`,
+    addValue: `${(voucherPayed + globalFlow - sumMasters - sumAdmins - noDphCosts).toLocaleString(
+      'cz-CZ',
+      {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2,
+      },
+    )} - s DPH`,
   },
   {
     title: 'Разниця',
