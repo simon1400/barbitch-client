@@ -38,6 +38,9 @@ export const useGlobalMonthData = (month: number) => {
       free: 0,
       fixed: 0,
       personal: 0,
+      countCreatedMonthReservation: 0,
+      countCreatedTodayReservation: 0,
+      monthReservationIndex: 0,
     },
     dataMetrics: [] as OutputMetrictsItem[],
   })
@@ -76,6 +79,9 @@ export const useGlobalMonthData = (month: number) => {
         free: eventsRes.free,
         fixed: eventsRes.fixed,
         personal: eventsRes.personal,
+        countCreatedMonthReservation: eventsRes.countCreatedMonthReservation,
+        countCreatedTodayReservation: eventsRes.countCreatedTodayReservation,
+        monthReservationIndex: eventsRes.monthReservationIndex,
       },
       dataMetrics: eventsRes.dataMetrics,
     })

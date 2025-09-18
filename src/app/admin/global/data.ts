@@ -63,6 +63,9 @@ export const blockReservationsItems = (
   clientsPersonal: number,
   sumClientsDone: number,
   clientsPastPayed: number,
+  countCreatedMonthReservation: number,
+  countCreatedTodayReservation: number,
+  monthReservationIndex: number,
 ) => [
   {
     title: 'Резервации все',
@@ -99,5 +102,17 @@ export const blockReservationsItems = (
   {
     title: 'Персонал',
     value: clientsPersonal,
+  },
+  {
+    title: 'Зарезерв. за месяц',
+    value: countCreatedMonthReservation,
+  },
+  {
+    title: 'Сегодня зарезерв.',
+    value: countCreatedTodayReservation,
+  },
+  {
+    title: 'Индекс резерваций',
+    value: monthReservationIndex,
   },
 ]

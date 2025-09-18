@@ -56,6 +56,9 @@ const GlobalMonthStates = () => {
             data.clients.personal,
             data.sumClientsDone,
             data.clients.pastPayed,
+            data.clients.countCreatedMonthReservation,
+            data.clients.countCreatedTodayReservation,
+            data.clients.monthReservationIndex,
           )}
         />
 

@@ -49,6 +49,15 @@ export const groupByColor = (events: EventItem[]) => {
 export const getEvents = async (month: number) => {
   const { firstDay, lastDay } = getMonthRange(2025, month)
   const queryString = new URLSearchParams()
+  const queryString2 = new URLSearchParams()
+  const queryString3 = new URLSearchParams()
+
+  const today = new Date()
+  const day = today.getDate()
+  const startToday = new Date(today)
+  startToday.setHours(0, 0, 0, 0)
+  const endToday = new Date(today)
+  endToday.setHours(23, 59, 59, 999)
 
   const queryParams: Record<string, string | string[]> = {
     select: ['id', 'event_types.color', 'customer_name', 'status', 'ends_at'],
@@ -58,11 +67,43 @@ export const getEvents = async (month: number) => {
     }),
   }
 
+  const queryParams2: Record<string, string | string[]> = {
+    select: [''],
+    filter: JSON.stringify({
+      created_from: firstDay.toISOString(),
+      created_to: lastDay.toISOString(),
+    }),
+    include_count_header: 'true',
+  }
+  const queryParams3: Record<string, string | string[]> = {
+    select: [''],
+    filter: JSON.stringify({
+      created_from: startToday.toISOString(),
+      created_to: endToday.toISOString(),
+    }),
+    include_count_header: 'true',
+  }
+
   Object.entries(queryParams).forEach(([key, value]) => {
     if (Array.isArray(value)) {
       value.forEach((val) => queryString.append(key, val))
     } else {
       queryString.append(key, String(value))
+    }
+  })
+
+  Object.entries(queryParams2).forEach(([key, value]) => {
+    if (Array.isArray(value)) {
+      value.forEach((val) => queryString2.append(key, val))
+    } else {
+      queryString2.append(key, String(value))
+    }
+  })
+  Object.entries(queryParams3).forEach(([key, value]) => {
+    if (Array.isArray(value)) {
+      value.forEach((val) => queryString3.append(key, val))
+    } else {
+      queryString3.append(key, String(value))
     }
   })
 
@@ -83,6 +124,17 @@ export const getEvents = async (month: number) => {
     Noshow: noshow as InputItemReservation[],
   })
 
+  const createdReservationData = await NoonaHQ.get(
+    `/8qcJwRg6dbNh6Gqvm/events?${queryString2.toString()}`,
+  )
+  const createdReservationTodayData = await NoonaHQ.get(
+    `/8qcJwRg6dbNh6Gqvm/events?${queryString3.toString()}`,
+  )
+
+  const countCreatedMonthReservation = createdReservationData.headers['x-total-count']
+  const countCreatedTodayReservation = createdReservationTodayData.headers['x-total-count']
+  const monthReservationIndex = (countCreatedMonthReservation / day).toFixed(1)
+
   const result = {
     all: data.data.length,
     cancelled: cancelled?.length || 0,
@@ -93,6 +145,9 @@ export const getEvents = async (month: number) => {
     personal: groupedByColor['#59c3b9']?.length || 0,
     fixed: groupedByColor['#822949']?.length || 0,
     dataMetrics: dataMetrics || [],
+    countCreatedMonthReservation: countCreatedMonthReservation || 0,
+    countCreatedTodayReservation: countCreatedTodayReservation || 0,
+    monthReservationIndex: monthReservationIndex || 0,
   }
   return result
 }
