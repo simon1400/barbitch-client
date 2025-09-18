@@ -81,7 +81,7 @@ export const useGlobalMonthData = (month: number) => {
         personal: eventsRes.personal,
         countCreatedMonthReservation: eventsRes.countCreatedMonthReservation,
         countCreatedTodayReservation: eventsRes.countCreatedTodayReservation,
-        monthReservationIndex: eventsRes.monthReservationIndex,
+        monthReservationIndex: eventsRes.monthReservationIndex as number,
       },
       dataMetrics: eventsRes.dataMetrics,
     })
