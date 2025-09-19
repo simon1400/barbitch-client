@@ -55,7 +55,7 @@ export const getEvents = async (month: number) => {
   const today = new Date()
   let day = today.getDate()
   if (today.getMonth() !== month) {
-    day = new Date(new Date().getFullYear(), month, 0).getDate()
+    day = new Date(new Date().getFullYear(), month + 1, 0).getDate()
   }
 
   const startToday = new Date(today)
