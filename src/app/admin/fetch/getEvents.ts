@@ -53,7 +53,11 @@ export const getEvents = async (month: number) => {
   const queryString3 = new URLSearchParams()
 
   const today = new Date()
-  const day = today.getDate()
+  let day = today.getDate()
+  if (today.getMonth() !== month) {
+    day = new Date(new Date().getFullYear(), month, 0).getDate()
+  }
+
   const startToday = new Date(today)
   startToday.setHours(0, 0, 0, 0)
   const endToday = new Date(today)
