@@ -10,6 +10,7 @@ export const blockStateItems = (
   voucherPayed: number,
   qrMoney: number,
   extraMoney: number,
+  dphCosts: number,
 ) => [
   {
     title: 'За услуги',
@@ -27,7 +28,7 @@ export const blockStateItems = (
       minimumFractionDigits: 2,
       maximumFractionDigits: 2,
     })}`,
-    addValue: `${(voucherPayed + globalFlow - sumMasters - sumAdmins - noDphCosts).toLocaleString(
+    addValue: `${(voucherPayed + globalFlow - sumMasters - sumAdmins - dphCosts).toLocaleString(
       'cz-CZ',
       {
         minimumFractionDigits: 2,
