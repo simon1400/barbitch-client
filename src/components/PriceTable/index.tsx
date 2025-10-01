@@ -4,7 +4,7 @@ import { Container } from 'components/Container'
 import React from 'react'
 
 import { BookButton } from './BookButton'
-import { getColumns, SHORT } from './helpers'
+import { getColumns } from './helpers'
 
 const BORDER = 'border-b-[1.5px] border-[#1616154D]'
 const TD_BASE = 'whitespace-nowrap font-bold'
@@ -54,8 +54,8 @@ export const PriceTable = ({
                           key={c}
                           className={`${HEAD_TXT} ${i === 0 ? 'p-1 md:p-3.5' : 'py-1 md:py-3.5 pl-1 md:pl-3.5'}`}
                         >
-                          <span className={'hidden md:inline'}>{c}</span>
-                          <span className={'md:hidden'}>{SHORT[c]}</span>
+                          {/* <span className={'hidden md:inline'}>{c}</span>
+                          <span className={'md:hidden'}>{SHORT[c]}</span> */}
                         </th>
                       ))}
                     </tr>
