@@ -135,7 +135,7 @@ export const Hand = () => {
             </tspan>
           </text>
         </g>
-        {/* <g id={'OBOČÍ'} onClick={() => (window.location.href = '/service/oboci')}>
+        <g id={'OBOČÍ'} onClick={() => (window.location.href = '/service/oboci')}>
           <text
             transform={'translate(228.15 722.64)'}
             className={'fill-accent text-xl cursor-pointer hover:fill-primary duration-200'}
@@ -144,7 +144,7 @@ export const Hand = () => {
               {'OBOČÍ'}
             </tspan>
           </text>
-        </g> */}
+        </g>
         <g id={'MANIKÚRA'} onClick={() => (window.location.href = '/service/manikura')}>
           <text
             transform={'translate(237.53 367.64)'}
