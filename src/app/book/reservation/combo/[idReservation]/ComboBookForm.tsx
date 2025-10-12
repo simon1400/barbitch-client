@@ -4,12 +4,11 @@ import { Container } from 'components/Container'
 import { formatInTimeZone } from 'date-fns-tz'
 import { useOnMountUnsafe } from 'helpers/useOnMountUnsaf'
 import { useRouter } from 'next/navigation'
-import { useCallback, useEffect, useMemo, useState } from 'react'
+import { useCallback, useMemo, useState } from 'react'
 
 import { getComboServiceById } from '../../../fetch/comboService'
 import { createEvent } from '../../../fetch/createEvent'
 import { getSlotReservation } from '../../../fetch/slotReservation'
-
 import { UserData } from '../../[idReservation]/components/UserData'
 
 export interface IUserData {
@@ -26,11 +25,7 @@ export interface IErrorUserData {
   email: boolean
 }
 
-interface Props {
-  idReservation: string
-}
-
-const ComboBookForm = ({ idReservation }: Props) => {
+const ComboBookForm = () => {
   const router = useRouter()
 
   const [userData, setUserData] = useState<IUserData>({
@@ -114,9 +109,15 @@ const ComboBookForm = ({ idReservation }: Props) => {
     }
 
     try {
-      // Создаём события для всех резерваций
+      // Формируем автоматический комментарий о комплексной услуге
+      const comboComment = `Kombinovaný balíček: ${comboService?.title || 'Balíček služeb'}. Celková cena balíčku: ${comboService?.price || 0} Kč.`
+      const fullComment = userData.comment
+        ? `${comboComment}\n\nZákaznická poznámka: ${userData.comment}`
+        : comboComment
+
+      // Создаём события для всех резерваций с общим комментарием
       await Promise.all(
-        reservationIds.map((id) =>
+        reservationIds.map((id, index) =>
           createEvent({
             time_slot_reservation: id,
             customer_name: userData.name,
@@ -128,7 +129,7 @@ const ComboBookForm = ({ idReservation }: Props) => {
             source: 'quick bookings',
             phone_country_code: phoneData.phone_country_code,
             phone_number: phoneData.phone_number,
-            comment: userData.comment,
+            comment: `${fullComment}\n\nSlužba ${index + 1} z ${reservationIds.length} v komplexu.`,
           }),
         ),
       )
@@ -139,49 +140,52 @@ const ComboBookForm = ({ idReservation }: Props) => {
 
       router.push('/thank-you')
     } catch (err) {
-      console.error('Ошибка бронирования:', err)
+      console.error('Chyba při rezervaci:', err)
     }
   }
 
   if (loading) {
     return (
       <div className={'bg-[#252523] rounded-special-small px-5 pt-3.5 pb-2 mb-5'}>
-        <p className={'text-center'}>{'Загрузка...'}</p>
+        <p className={'text-center'}>{'Načítání...'}</p>
       </div>
     )
   }
 
   return (
     <>
-      {/* Информация о комбо-услуге */}
       <div
         className={'bg-[#252523] rounded-special-small px-5 pt-3.5 pb-2 text-[14px]/[17px] mb-5'}
       >
-        <h3 className={'text-white text-[16px] mb-3'}>{comboService?.title || 'Комбинированная услуга'}</h3>
+        <h3 className={'text-white text-[16px] mb-3'}>
+          {comboService?.title || 'Kombinovaný balíček'}
+        </h3>
         <ul>
           {reservationsData.map((reservation, index) => {
             const eventType = reservation.event_types?.[0]
             return (
               <li
-                key={reservation.id}
+                key={reservation.employee?.profile.name + reservation.id}
                 className={`py-2.5 ${index > 0 ? 'border-t border-dotted border-[#3C3C3C]' : ''}`}
               >
                 <div className={'flex justify-between mb-1'}>
-                  <span className={'text-[#A0A0A0]'}>{'Услуга ' + (index + 1)}</span>
+                  <span className={'text-[#A0A0A0]'}>{`Služba ${index + 1}`}</span>
                   <span className={'text-white'}>{eventType?.title}</span>
                 </div>
                 <div className={'flex justify-between mb-1'}>
-                  <span className={'text-[#A0A0A0]'}>{'Время'}</span>
+                  <span className={'text-[#A0A0A0]'}>{'Čas'}</span>
                   <span className={'text-white'}>
                     {formatInTimeZone(new Date(reservation.starts_at), 'Europe/Prague', 'HH:mm')}
                   </span>
                 </div>
                 <div className={'flex justify-between mb-1'}>
-                  <span className={'text-[#A0A0A0]'}>{'Мастер'}</span>
-                  <span className={'text-white'}>{reservation.employee?.profile.name ?? 'Неизвестно'}</span>
+                  <span className={'text-[#A0A0A0]'}>{'Mistr'}</span>
+                  <span className={'text-white'}>
+                    {reservation.employee?.profile.name ?? 'Neznámý'}
+                  </span>
                 </div>
                 <div className={'flex justify-between'}>
-                  <span className={'text-[#A0A0A0]'}>{'Длительность'}</span>
+                  <span className={'text-[#A0A0A0]'}>{'Trvání'}</span>
                   <span className={'text-white'}>{`${eventType?.minutes} min`}</span>
                 </div>
               </li>
@@ -189,7 +193,7 @@ const ComboBookForm = ({ idReservation }: Props) => {
           })}
           <li className={'border-t-2 border-b-2 border-dotted border-[#3C3C3C] py-5 mt-2.5'}>
             <div className={'flex justify-between'}>
-              <span className={'text-[#A0A0A0]'}>{'Дата'}</span>
+              <span className={'text-[#A0A0A0]'}>{'Datum'}</span>
               <span className={'text-white'}>
                 {formatInTimeZone(
                   new Date(reservationsData[0]?.starts_at),
@@ -201,7 +205,7 @@ const ComboBookForm = ({ idReservation }: Props) => {
           </li>
           <li className={'py-5'}>
             <div className={'flex justify-between'}>
-              <span className={'text-[#A0A0A0]'}>{'Общая стоимость'}</span>
+              <span className={'text-[#A0A0A0]'}>{'Celková cena'}</span>
               <span className={'text-white font-bold'}>{`${comboService?.price ?? 'N/A'} Kč`}</span>
             </div>
           </li>

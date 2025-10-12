@@ -7,7 +7,7 @@
       "description": "Kombinace prodloužení řas Classic a gel lak manikúry",
       "price": 1570,
       "totalMinutes": 150,
-      "image": "/assets/images/combo-classic-gel.jpg",
+      "image": "/assets/icons/combo_1.png",
       "services": [
         {
           "serviceId": "KokGs5qtRUFocO6LbT8uUn8z",
@@ -29,7 +29,7 @@
       "description": "Kombinace prodloužení řas Classic, gel lak manikúry a designu",
       "price": 1890,
       "totalMinutes": 180,
-      "image": "/assets/images/combo-classic-gel-design.jpg",
+      "image": "/assets/icons/combo_1.png",
       "services": [
         {
           "serviceId": "KokGs5qtRUFocO6LbT8uUn8z",
@@ -51,7 +51,7 @@
       "description": "Kombinace prodloužení řas Classic a prodloužení nehtů",
       "price": 1780,
       "totalMinutes": 180,
-      "image": "/assets/images/combo-classic-prodlouzeni.jpg",
+      "image": "/assets/icons/combo_1.png",
       "services": [
         {
           "serviceId": "KokGs5qtRUFocO6LbT8uUn8z",
@@ -73,7 +73,7 @@
       "description": "Kombinace prodloužení řas Classic, prodloužení nehtů a francouzského designu",
       "price": 1980,
       "totalMinutes": 210,
-      "image": "/assets/images/combo-classic-prodlouzeni-french.jpg",
+      "image": "/assets/icons/combo_1.png",
       "services": [
         {
           "serviceId": "KokGs5qtRUFocO6LbT8uUn8z",
@@ -95,7 +95,7 @@
       "description": "Kombinace prodloužení řas Classic, prodloužení nehtů a designu",
       "price": 2080,
       "totalMinutes": 210,
-      "image": "/assets/images/combo-classic-prodlouzeni-design.jpg",
+      "image": "/assets/icons/combo_1.png",
       "services": [
         {
           "serviceId": "KokGs5qtRUFocO6LbT8uUn8z",
@@ -117,7 +117,7 @@
       "description": "Kombinace 2D řas a gel lak manikúry",
       "price": 1680,
       "totalMinutes": 150,
-      "image": "/assets/images/combo-2d-gel.jpg",
+      "image": "/assets/icons/combo_2.png",
       "services": [
         {
           "serviceId": "eT9fsXB3rL5mt43P4JUYGqGw",
@@ -139,7 +139,7 @@
       "description": "Kombinace 2D řas, gel lak manikúry a designu",
       "price": 1990,
       "totalMinutes": 180,
-      "image": "/assets/images/combo-2d-gel-design.jpg",
+      "image": "/assets/icons/combo_2.png",
       "services": [
         {
           "serviceId": "eT9fsXB3rL5mt43P4JUYGqGw",
@@ -161,7 +161,7 @@
       "description": "Kombinace 2D řas a prodloužení nehtů",
       "price": 1890,
       "totalMinutes": 180,
-      "image": "/assets/images/combo-2d-prodlouzeni.jpg",
+      "image": "/assets/icons/combo_2.png",
       "services": [
         {
           "serviceId": "eT9fsXB3rL5mt43P4JUYGqGw",
@@ -183,7 +183,7 @@
       "description": "Kombinace 2D řas, prodloužení nehtů a francouzského designu",
       "price": 2090,
       "totalMinutes": 210,
-      "image": "/assets/images/combo-2d-prodlouzeni-french.jpg",
+      "image": "/assets/icons/combo_2.png",
       "services": [
         {
           "serviceId": "eT9fsXB3rL5mt43P4JUYGqGw",
@@ -205,7 +205,7 @@
       "description": "Kombinace 2D řas, prodloužení nehtů a designu",
       "price": 2180,
       "totalMinutes": 210,
-      "image": "/assets/images/combo-2d-prodlouzeni-design.jpg",
+      "image": "/assets/icons/combo_2.png",
       "services": [
         {
           "serviceId": "eT9fsXB3rL5mt43P4JUYGqGw",
@@ -227,7 +227,7 @@
       "description": "Kombinace 3D řas a gel lak manikúry",
       "price": 1780,
       "totalMinutes": 150,
-      "image": "/assets/images/combo-3d-gel.jpg",
+      "image": "/assets/icons/combo_3.png",
       "services": [
         {
           "serviceId": "oUAlYuPFy5uTTiyWZbP9lL5i",
@@ -249,7 +249,7 @@
       "description": "Kombinace 3D řas, gel lak manikúry a designu",
       "price": 2090,
       "totalMinutes": 180,
-      "image": "/assets/images/combo-3d-gel-design.jpg",
+      "image": "/assets/icons/combo_3.png",
       "services": [
         {
           "serviceId": "oUAlYuPFy5uTTiyWZbP9lL5i",
@@ -271,7 +271,7 @@
       "description": "Kombinace 3D řas a prodloužení nehtů",
       "price": 1990,
       "totalMinutes": 180,
-      "image": "/assets/images/combo-3d-prodlouzeni.jpg",
+      "image": "/assets/icons/combo_3.png",
       "services": [
         {
           "serviceId": "oUAlYuPFy5uTTiyWZbP9lL5i",
@@ -293,7 +293,7 @@
       "description": "Kombinace 3D řas, prodloužení nehtů a francouzského designu",
       "price": 2190,
       "totalMinutes": 210,
-      "image": "/assets/images/combo-3d-prodlouzeni-french.jpg",
+      "image": "/assets/icons/combo_3.png",
       "services": [
         {
           "serviceId": "oUAlYuPFy5uTTiyWZbP9lL5i",
@@ -315,7 +315,7 @@
       "description": "Kombinace 3D řas, prodloužení nehtů a designu",
       "price": 2280,
       "totalMinutes": 210,
-      "image": "/assets/images/combo-3d-prodlouzeni-design.jpg",
+      "image": "/assets/icons/combo_3.png",
       "services": [
         {
           "serviceId": "oUAlYuPFy5uTTiyWZbP9lL5i",

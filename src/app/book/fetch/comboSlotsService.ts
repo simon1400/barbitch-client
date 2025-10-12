@@ -1,17 +1,6 @@
 import type { IComboServiceItem } from './comboService'
 
-import {
-  addMinutes,
-  addMonths,
-  endOfMonth,
-  format,
-  // isAfter,
-  // isEqual,
-  parse,
-  parseISO,
-  // startOfDay,
-  subDays,
-} from 'date-fns'
+import { addMinutes, addMonths, endOfMonth, format, parse, parseISO, subDays } from 'date-fns'
 import { Noona } from 'lib/api'
 
 import { filterFutureDates } from './slotsService'
@@ -71,6 +60,116 @@ const getSlotsForService = async (
   return response.data || []
 }
 
+interface ComboSlotService {
+  serviceId: string
+  employeeId: string
+  startTime: string
+  endTime: string
+}
+
+interface ComboSlotResult {
+  time: string
+  services: ComboSlotService[]
+}
+
+/**
+ * Находит слоты для конкретной даты из данных услуги
+ */
+const getDateSlots = (slotsData: ISlotData[], date: string) => {
+  return slotsData.find((item) => item.date === date)
+}
+
+/**
+ * Проверяет валидность слота для услуги
+ */
+const isSlotValid = (slot: { employeeIds: string[]; time: string } | undefined): boolean => {
+  return !!(slot && slot.employeeIds && slot.employeeIds.length > 0)
+}
+
+/**
+ * Вычисляет время окончания услуги
+ */
+const calculateEndTime = (startTime: string, minutes: number): string => {
+  const parsedTime = parse(startTime, 'HH:mm', new Date())
+  return format(addMinutes(parsedTime, minutes), 'HH:mm')
+}
+
+/**
+ * Проверяет доступность всех услуг последовательно
+ */
+const checkSequentialAvailability = (
+  slotsData: Map<string, ISlotData[]>,
+  comboServices: IComboServiceItem[],
+  date: string,
+  startTime: string,
+  firstEmployeeId: string,
+): ComboSlotService[] | null => {
+  const comboSlot: ComboSlotService[] = []
+  let currentTime = startTime
+
+  for (let i = 0; i < comboServices.length; i++) {
+    const service = comboServices[i]
+    const serviceSlots = slotsData.get(service.serviceId)
+
+    if (!serviceSlots) return null
+
+    const serviceDateSlots = getDateSlots(serviceSlots, date)
+    if (!serviceDateSlots) return null
+
+    const matchingSlot = serviceDateSlots.slots.find((slot) => slot.time === currentTime)
+
+    if (!isSlotValid(matchingSlot)) return null
+
+    const employeeId = i === 0 ? firstEmployeeId : matchingSlot!.employeeIds[0]
+
+    if (!matchingSlot!.employeeIds.includes(employeeId)) return null
+
+    const endTime = calculateEndTime(currentTime, service.minutes)
+
+    comboSlot.push({
+      serviceId: service.serviceId,
+      employeeId,
+      startTime: currentTime,
+      endTime,
+    })
+
+    currentTime = endTime
+  }
+
+  return comboSlot
+}
+
+/**
+ * Обрабатывает один слот первой услуги
+ */
+const processFirstSlot = (
+  firstSlot: { employeeIds: string[]; time: string },
+  slotsData: Map<string, ISlotData[]>,
+  comboServices: IComboServiceItem[],
+  date: string,
+): ComboSlotResult | null => {
+  if (!firstSlot.employeeIds || firstSlot.employeeIds.length === 0) return null
+
+  for (const firstEmployeeId of firstSlot.employeeIds) {
+    const comboSlot = checkSequentialAvailability(
+      slotsData,
+      comboServices,
+      date,
+      firstSlot.time,
+      firstEmployeeId,
+    )
+
+    if (comboSlot && comboSlot.length === comboServices.length) {
+      return {
+        time: firstSlot.time,
+        services: comboSlot,
+      }
+    }
+  }
+
+  return null
+}
+
 /**
  * Проверяет, есть ли последовательные слоты для всех услуг комбо
  */
@@ -78,109 +177,24 @@ const findSequentialSlots = (
   slotsData: Map<string, ISlotData[]>,
   comboServices: IComboServiceItem[],
   date: string,
-): {
-  time: string
-  services: {
-    serviceId: string
-    employeeId: string
-    startTime: string
-    endTime: string
-  }[]
-}[] => {
-  const result: {
-    time: string
-    services: {
-      serviceId: string
-      employeeId: string
-      startTime: string
-      endTime: string
-    }[]
-  }[] = []
+): ComboSlotResult[] => {
+  const result: ComboSlotResult[] = []
 
-  // Получаем слоты для первой услуги (она будет отправной точкой)
   const firstService = comboServices[0]
   const firstServiceSlots = slotsData.get(firstService.serviceId)
 
   if (!firstServiceSlots) return result
 
-  const dateSlots = firstServiceSlots.find((item) => item.date === date)
+  const dateSlots = getDateSlots(firstServiceSlots, date)
   if (!dateSlots || !dateSlots.slots.length) return result
 
-  // Проходим по каждому слоту первой услуги
   for (const firstSlot of dateSlots.slots) {
-    if (!firstSlot.employeeIds || firstSlot.employeeIds.length === 0) continue
+    const comboSlotResult = processFirstSlot(firstSlot, slotsData, comboServices, date)
 
-    // Пробуем для каждого сотрудника первой услуги
-    for (const firstEmployeeId of firstSlot.employeeIds) {
-      const comboSlot: {
-        serviceId: string
-        employeeId: string
-        startTime: string
-        endTime: string
-      }[] = []
-
-      let currentTime = firstSlot.time
-      let isValid = true
-
-      // Проверяем все услуги последовательно
-      for (let i = 0; i < comboServices.length; i++) {
-        const service = comboServices[i]
-        const serviceSlots = slotsData.get(service.serviceId)
-
-        if (!serviceSlots) {
-          isValid = false
-          break
-        }
-
-        const serviceDateSlots = serviceSlots.find((item) => item.date === date)
-        if (!serviceDateSlots) {
-          isValid = false
-          break
-        }
-
-        // Ищем слот в нужное время
-        const matchingSlot = serviceDateSlots.slots.find((slot) => slot.time === currentTime)
-
-        if (!matchingSlot || !matchingSlot.employeeIds || matchingSlot.employeeIds.length === 0) {
-          isValid = false
-          break
-        }
-
-        // Для первой услуги используем выбранного сотрудника
-        // Для остальных берём первого доступного (или можно добавить логику выбора)
-        const employeeId = i === 0 ? firstEmployeeId : matchingSlot.employeeIds[0]
-
-        // Проверяем, что этот сотрудник доступен
-        if (!matchingSlot.employeeIds.includes(employeeId)) {
-          isValid = false
-          break
-        }
-
-        const startTime = currentTime
-        const parsedTime = parse(currentTime, 'HH:mm', new Date())
-        const endTime = format(addMinutes(parsedTime, service.minutes), 'HH:mm')
-
-        comboSlot.push({
-          serviceId: service.serviceId,
-          employeeId,
-          startTime,
-          endTime,
-        })
-
-        // Переходим к следующему временному слоту
-        currentTime = endTime
-      }
-
-      // Если все услуги нашли свои слоты, добавляем в результат
-      if (isValid && comboSlot.length === comboServices.length) {
-        // Проверяем, не добавили ли мы уже этот слот
-        const alreadyExists = result.some((r) => r.time === firstSlot.time)
-        if (!alreadyExists) {
-          result.push({
-            time: firstSlot.time,
-            services: comboSlot,
-          })
-        }
+    if (comboSlotResult) {
+      const alreadyExists = result.some((r) => r.time === comboSlotResult.time)
+      if (!alreadyExists) {
+        result.push(comboSlotResult)
       }
     }
   }
