@@ -66,7 +66,7 @@ export const getWorks = async (name: string, month: number) => {
     const salary = +offer.staffSalaries || 0
     const tip = +offer.tip || 0
     tipSum += tip
-    return acc + salary + tip
+    return acc + salary
   }, 0)
 
   const result = salary + extraProfit - payrolls - penalty
