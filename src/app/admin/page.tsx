@@ -3,12 +3,12 @@
 import { useAppContext } from 'context/AppContext'
 import React from 'react'
 
-import Works from './components/Works'
+import OptimizedWorks from './components/OptimizedWorks'
 
 const Admin = () => {
   const { select } = useAppContext()
   if (select === 'works') {
-    return <Works />
+    return <OptimizedWorks />
   }
   return null
 }
