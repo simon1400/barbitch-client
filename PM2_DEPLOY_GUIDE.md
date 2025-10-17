@@ -184,10 +184,10 @@ MAILER_SEND_TOKEN=...
 cd /opt/barbitch-client
 
 # Установи зависимости
-yarn install --frozen-lockfile
+npm ci
 
 # Собери Next.js приложение
-yarn build
+npm run build
 ```
 
 **Примечание:** Билд может занять 2-5 минут.
@@ -436,7 +436,7 @@ sudo tail -f /var/log/nginx/error.log
 1. Ты пушишь код в `main` ветку на GitHub
 2. GitHub Actions автоматически запускается
 3. Подключается к серверу по SSH
-4. Делает `git pull`, `yarn install`, `yarn build`
+4. Делает `git pull`, `npm ci`, `npm run build`
 5. Перезапускает PM2 процесс
 6. Готово! 🎉
 
@@ -484,7 +484,7 @@ sudo systemctl reload nginx
 ```bash
 # Увеличь лимит памяти для Node
 export NODE_OPTIONS="--max-old-space-size=4096"
-yarn build
+npm run build
 ```
 
 ### Проблема: Env переменные не подхватываются
@@ -521,9 +521,9 @@ cd /opt/barbitch-client
 
 # Удали node_modules и переустанови
 rm -rf node_modules
-rm yarn.lock
-yarn install
-yarn build
+rm package-lock.json
+npm install
+npm run build
 pm2 restart barbitch-client
 ```
 
@@ -559,8 +559,8 @@ pm2 restart OTHER_PROJECT_NAME
 - [ ] Создана директория `/opt/barbitch-client`
 - [ ] Репозиторий склонирован
 - [ ] Файл `.env` настроен с правильными данными
-- [ ] Выполнена `yarn install`
-- [ ] Выполнена `yarn build`
+- [ ] Выполнена `npm ci`
+- [ ] Выполнена `npm run build`
 - [ ] Проект запущен через PM2
 - [ ] PM2 сохранен (`pm2 save`)
 - [ ] PM2 автозапуск настроен (`pm2 startup`)

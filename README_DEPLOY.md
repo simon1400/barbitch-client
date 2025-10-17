@@ -61,8 +61,8 @@ sudo chown -R $USER:$USER /opt/barbitch-client /var/log/pm2
 cd /opt/barbitch-client
 git clone https://github.com/simon1400/barbitch-client.git .
 nano .env  # Скопируй из .env.production
-yarn install --frozen-lockfile
-yarn build
+npm ci
+npm run build
 pm2 start ecosystem.config.js
 pm2 save
 pm2 startup

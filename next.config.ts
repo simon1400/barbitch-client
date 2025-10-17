@@ -24,7 +24,6 @@ const nextConfig: NextConfig = {
     optimizeCss: true,
   },
   reactStrictMode: true,
-  swcMinify: true,
   modularizeImports: {
     'date-fns': {
       transform: 'date-fns/{{member}}',

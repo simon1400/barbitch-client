@@ -24,8 +24,8 @@ jobs:
           script: |
             cd /opt/barbitch-client
             git pull origin main
-            yarn install --frozen-lockfile
-            yarn build
+            npm ci
+            npm run build
             pm2 restart barbitch-client || pm2 start ecosystem.config.js
             pm2 save
             echo "✅ Deployment completed successfully!"
