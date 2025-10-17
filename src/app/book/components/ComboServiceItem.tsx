@@ -25,8 +25,10 @@ export const ComboServiceItem = ({ service }: { service: IComboService }) => {
           </span>
           <span className={'w-full'}>
             <h3 className={'text-xs1 leading-5 mb-1.5'}>{service.title}</h3>
-            <div className={'flex'}>
-              <p className={`text-[#A0A0A0] text-xs1 leading-none`}>{`${service.totalMinutes} min`}</p>
+            <div className={'flex items-center'}>
+              <p
+                className={`text-[#A0A0A0] text-xs1 leading-none`}
+              >{`${service.totalMinutes} min`}</p>
               {service.description && (
                 <span
                   role={'button'}
@@ -38,6 +40,14 @@ export const ComboServiceItem = ({ service }: { service: IComboService }) => {
                   {'info'}
                 </span>
               )}
+              {/* Иконка скидки */}
+              <span
+                className={
+                  'inline-flex items-center text-xss justify-center ml-2 bg-primary w-8 h-4 rounded-full'
+                }
+              >
+                {'-%'}
+              </span>
             </div>
           </span>
           <span className={'flex items-center text-xs1 text-primary font-bold gap-2.5 self-start'}>

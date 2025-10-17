@@ -1,6 +1,7 @@
 'use client'
-import type { NextPage } from 'next'
 import type { IComboSlot } from '../../fetch/comboSlotsService'
+// eslint-disable-next-line perfectionist/sort-imports
+import type { NextPage } from 'next'
 
 import { format, formatISO } from 'date-fns'
 import { useOnMountUnsafe } from 'helpers/useOnMountUnsaf'
@@ -12,12 +13,19 @@ import { getComboServiceById } from '../../fetch/comboService'
 import { getComboSlots } from '../../fetch/comboSlotsService'
 import { createSlotReservation, deleteSlotReservation } from '../../fetch/slotReservation'
 
-const BookDatePicker = dynamic(() => import('../../[serviceId]/[personalId]/components/DatePicker'), {
+const BookDatePicker = dynamic(
+  () => import('../../[serviceId]/[personalId]/components/DatePicker'),
+  {
+    ssr: false,
+    loading: () => <p className={'text-center'}>{'Loading calendar...'}</p>,
+  },
+)
+const EmptyAlert = dynamic(() => import('../../[serviceId]/[personalId]/components/EmptyAlert'), {
   ssr: false,
-  loading: () => <p className={'text-center'}>{'Loading calendar...'}</p>,
 })
-const EmptyAlert = dynamic(() => import('../../[serviceId]/[personalId]/components/EmptyAlert'), { ssr: false })
-const TimePicker = dynamic(() => import('../../[serviceId]/[personalId]/components/TimePicker'), { ssr: false })
+const TimePicker = dynamic(() => import('../../[serviceId]/[personalId]/components/TimePicker'), {
+  ssr: false,
+})
 
 const NOONA_COMPANY_ID = process.env.NOONA_COMPANY_ID || ''
 
@@ -42,10 +50,11 @@ const ComboBookingPage: NextPage = () => {
     const filterSlots = data.filteredData.find((item) => item.date === selectDate)
 
     // Преобразуем комбо-слоты в формат, понятный TimePicker
-    const formattedSlots = filterSlots?.slots.map((slot) => ({
-      time: slot.time,
-      employeeIds: slot.services.map((s) => s.employeeId),
-    })) || []
+    const formattedSlots =
+      filterSlots?.slots.map((slot) => ({
+        time: slot.time,
+        employeeIds: slot.services.map((s) => s.employeeId),
+      })) || []
 
     setSlots(formattedSlots)
   }
