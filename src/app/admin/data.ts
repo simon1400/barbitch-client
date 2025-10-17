@@ -14,14 +14,12 @@ export const monthLabels = [
   'Декабрь',
 ]
 
-// Логины
-export const logins: Record<string, string> = {
-  'Azaliya Baltiyeva': '34ndbQ1a',
-  'Mariia Medvedeva': 'jB467eMO',
-  'Alexandra Pashkova': 'J7h133Jz',
-  'Ilona Hrybenkina': 's9FQ78Ct',
-  'Alina Prydatkina': 'o64U34Kl',
-  'Veronika Simonova': 'Ti9FN52l',
+// Роли пользователей
+export type UserRole = 'master' | 'owner'
+
+export interface UserData {
+  password: string
+  role: UserRole
 }
 
 export const blockStatsItems = (

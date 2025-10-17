@@ -1,5 +1,7 @@
 'use client'
 
+import type { UserRole } from './data'
+
 import { Container } from 'components/Container'
 import { useAppContext } from 'context/AppContext'
 import { useOnMountUnsafe } from 'helpers/useOnMountUnsaf'
@@ -7,7 +9,6 @@ import { redirect } from 'next/navigation'
 import { Top } from 'sections/Top/Top'
 
 // import { Sidebar } from './components/Sidebar'
-import { logins } from './data'
 
 import './styles.scss'
 
@@ -18,16 +19,20 @@ export default function AdminLayout({
 }>) {
   const { adminName, setAdminName } = useAppContext()
 
+  const { setUserRole } = useAppContext()
+
   const getAuthUser = () => {
     const storedUsername = localStorage.getItem('usernameLocalData')
-    const storedPassword = localStorage.getItem('passwordLocalData')
+    const storedRole = localStorage.getItem('userRole') as UserRole | null
 
-    if (storedUsername && storedPassword && logins[storedUsername] === storedPassword) {
-      setAdminName(storedUsername)
-    } else {
+    if (!storedUsername || !storedRole) {
       setAdminName('')
+      setUserRole(null)
       redirect('/login')
     }
+
+    setAdminName(storedUsername)
+    setUserRole(storedRole)
   }
 
   useOnMountUnsafe(() => {
