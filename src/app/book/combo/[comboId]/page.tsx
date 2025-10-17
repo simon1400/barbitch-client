@@ -1,6 +1,6 @@
 'use client'
-import type { IComboSlot } from '../../fetch/comboSlotsService'
 import type { NextPage } from 'next'
+import type { IComboSlot } from '../../fetch/comboSlotsService'
 
 import { format, formatISO } from 'date-fns'
 import { useOnMountUnsafe } from 'helpers/useOnMountUnsaf'

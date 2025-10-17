@@ -147,10 +147,10 @@ MAILER_SEND_TOKEN=mlsn.25adab236be8b40d089a8766c47f8caea95dc4ebea7f7bf6d8f24c3ed
 cd /opt/barbitch-client
 
 # Установи зависимости (займет 1-2 минуты)
-yarn install --frozen-lockfile
+npm ci
 
-# Собери Next.js (займет 2-5 минут)
-yarn build
+# Собери Next.js (займет 2-5 минуты)
+npm run build
 ```
 
 ### 6. Запусти через PM2
@@ -391,7 +391,7 @@ sudo systemctl reload nginx
 ### Build падает
 ```bash
 export NODE_OPTIONS="--max-old-space-size=4096"
-yarn build
+npm run build
 ```
 
 ### GitHub Actions не работает
@@ -416,8 +416,8 @@ yarn build
 - [ ] Директория `/opt/barbitch-client` создана
 - [ ] Репо склонировано
 - [ ] `.env` файл создан
-- [ ] `yarn install` выполнен
-- [ ] `yarn build` выполнен
+- [ ] `npm ci` выполнен
+- [ ] `npm run build` выполнен
 - [ ] PM2 запущен и сохранен
 - [ ] PM2 startup настроен
 - [ ] Nginx настроен

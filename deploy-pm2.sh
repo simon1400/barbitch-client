@@ -16,11 +16,11 @@ git pull origin main || echo "⚠️  Git pull skipped (not a git repo or no cha
 
 # Install/update dependencies
 echo "📦 Installing dependencies..."
-yarn install --frozen-lockfile
+npm ci
 
 # Build the Next.js application
 echo "🔨 Building Next.js application..."
-yarn build
+npm run build
 
 # Restart PM2 process
 echo "🔄 Restarting PM2 process..."
