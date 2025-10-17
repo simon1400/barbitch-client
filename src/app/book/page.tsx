@@ -42,7 +42,18 @@ const BookServicePage = async () => {
         className={'rounded-special-small bg-[#252523] mb-2.5'}
         value={comboData.title}
       >
-        <AccordionTrigger className={'p-5 text-resMd1'}>{comboData.title}</AccordionTrigger>
+        <AccordionTrigger className={'p-5 text-resMd1'}>
+          <span className={'flex items-center gap-3'}>
+            {comboData.title}
+            <span
+              className={
+                'bg-primary py-0.5 px-2 rounded-full text-xss text-white block text-center'
+              }
+            >
+              {'sleva'}
+            </span>
+          </span>
+        </AccordionTrigger>
         <AccordionContent className={'px-3 pb-0'}>
           <ul>
             {comboData.services.map((service) => (

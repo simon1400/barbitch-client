@@ -20,6 +20,7 @@ export const getPriceList = async () => {
   const query = qs.stringify(
     {
       fields: ['title'],
+      sort: ['order:asc'],
       populate: {
         table: {
           populate: ['item'],
