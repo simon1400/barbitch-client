@@ -1,7 +1,7 @@
 import axios from 'axios'
 
 export const Axios = axios.create({
-  baseURL: process.env.APP_API,
+  baseURL: process.env.NEXT_PUBLIC_APP_API || process.env.APP_API,
 })
 
 export const Noona = axios.create({
