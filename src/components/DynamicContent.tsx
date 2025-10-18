@@ -1,6 +1,7 @@
 import { Banner } from './dynamicComponents/Banner'
 import { Faq } from './dynamicComponents/Faq'
 import { Galery } from './dynamicComponents/Galery'
+import { PriceList } from './dynamicComponents/PriceList'
 import { Text } from './dynamicComponents/Text'
 
 interface DynamicContentProps {
@@ -12,6 +13,7 @@ const COMPONENTS_MAP: Record<string, (item: any, idx: number) => React.ReactElem
   'content.galery': (item, idx) => <Galery key={item.__component + idx} data={item} />,
   'content.text': (item, idx) => <Text key={item.__component + idx} data={item} />,
   'content.faq': (item, idx) => <Faq key={item.__component + idx} data={item} />,
+  'content.price-list': (item, idx) => <PriceList key={item.__component + idx} data={item} />,
 }
 
 export const DynamicContent = ({ data }: DynamicContentProps) => {

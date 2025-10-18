@@ -26,7 +26,7 @@ export const BookHeader = () => {
   const router = useRouter()
 
   const handleBack = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    if (params?.serviceId || params?.idReservation) {
+    if (params?.serviceId || params?.idReservation || params?.comboId) {
       e.preventDefault()
       router.back()
     }
@@ -45,7 +45,7 @@ export const BookHeader = () => {
 
   const step: Step = params?.personalId
     ? 'personal'
-    : params?.serviceId
+    : params?.serviceId || params?.comboId
       ? 'service'
       : params?.idReservation
         ? 'reservation'
