@@ -13,6 +13,13 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
   const { slug } = await params
   const meta = await getFullServiceMeta(slug)
 
+  if (!meta || !meta.metaData) {
+    return {
+      title: 'Service Not Found',
+      description: '',
+    }
+  }
+
   return {
     title: meta.metaData.title || meta.title,
     description: meta.metaData.description || '',

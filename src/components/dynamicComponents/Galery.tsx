@@ -8,6 +8,10 @@ export const Galery = ({
   data: { image: IGalery[] }
   contain?: boolean
 }) => {
+  if (!data || !data.image || !Array.isArray(data.image) || data.image.length === 0) {
+    return null
+  }
+
   const length = data.image.length
   return (
     <section className={'pt-0 pb-12 mb:pb-17'}>

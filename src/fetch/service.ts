@@ -29,56 +29,31 @@ export const getServiceHomepage = async () => {
 }
 
 export const getFullService = async (slug: string) => {
-  const query = qs.stringify(
-    {
-      filters: {
-        slug: {
-          $eq: slug,
-        },
-      },
-      fields: ['title', 'description', 'additionalDescription'],
-      populate: {
-        dynamicContent: {
-          on: {
-            'content.text': {
-              populate: '*',
-            },
-            'content.price-list': {
-              populate: {
-                pricelistTable: {
-                  populate: {
-                    table: {
-                      populate: ['item'],
-                    },
-                  },
-                },
-                cta: {
-                  populate: '*',
-                },
-              },
-            },
-            'content.content-baner': {
-              populate: '*',
-            },
-            'content.galery': {
-              populate: {
-                image: {
-                  fields: ['url', 'hash', 'alternativeText'],
-                },
-              },
-            },
-            'content.faq': {
-              populate: '*',
-            },
-          },
-        },
+  // Используем массив populate для явного указания путей
+  const params = {
+    filters: {
+      slug: {
+        $eq: slug,
       },
     },
-    {
-      encodeValuesOnly: true, // prettify URL
-    },
-  )
+    'populate[0]': 'dynamicContent',
+    'populate[1]': 'dynamicContent.pricelistTable',
+    'populate[2]': 'dynamicContent.pricelistTable.table',
+    'populate[3]': 'dynamicContent.pricelistTable.table.item',
+    'populate[4]': 'dynamicContent.cta',
+    'populate[5]': 'dynamicContent.image',
+    'populate[6]': 'dynamicContent.item',
+  }
+
+  const query = qs.stringify(params, {
+    encodeValuesOnly: true,
+  })
 
   const dataContact: IDataFullService[] = await Axios.get(`/api/services?${query}`)
+
+  if (!dataContact || dataContact.length === 0) {
+    throw new Error(`Service not found: ${slug}`)
+  }
+
   return dataContact[0]
 }

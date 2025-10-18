@@ -1,7 +1,9 @@
 import axios from 'axios'
 
+const apiUrl = process.env.NEXT_PUBLIC_APP_API || process.env.APP_API
+
 export const Axios = axios.create({
-  baseURL: process.env.NEXT_PUBLIC_APP_API || process.env.APP_API,
+  baseURL: apiUrl,
 })
 
 export const Noona = axios.create({
@@ -33,9 +35,7 @@ NoonaHQ.interceptors.request.use(
 )
 
 Axios.interceptors.response.use(
-  (response) => {
-    return response.data.data
-  },
+  (response) => response.data.data,
   (error) => {
     return Promise.reject(error)
   },
