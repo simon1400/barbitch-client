@@ -92,5 +92,10 @@ export const getFullServiceMeta = async (slug: string) => {
   )
 
   const data: IDataMetaWrap[] = await Axios.get(`/api/services?${queryIn}`)
+
+  if (!data || data.length === 0) {
+    throw new Error(`Service not found: ${slug}`)
+  }
+
   return data[0]
 }

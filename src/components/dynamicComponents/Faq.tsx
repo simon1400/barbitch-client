@@ -18,11 +18,17 @@ export const Faq = ({
     }[]
   }
 }) => {
+  if (!data || !data.item || !Array.isArray(data.item) || data.item.length === 0) {
+    return null
+  }
+
+  const defaultValue = data.item[0]?.title || undefined
+
   return (
     <section className={'pb-10 md:pb-15 faq-sec'}>
       <Container size={'lg'}>
         <h2>{'FAQ'}</h2>
-        <Accordion type={'single'} defaultValue={data.item[0].title}>
+        <Accordion type={'single'} defaultValue={defaultValue}>
           {data.item.map((item) => (
             <AccordionItem
               key={item.title}
