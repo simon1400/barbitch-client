@@ -1,14 +1,9 @@
 import type { Metadata } from 'next'
 
-import Button from 'components/Button'
-import { Container } from 'components/Container'
-import { MasonryGalery } from 'components/MansoryGalery'
-import { PriceTable } from 'components/PriceTable'
+import { DynamicContent } from 'components/DynamicContent'
 import { getLinkToReserve } from 'fetch/contact'
 import { getFullServiceMeta } from 'fetch/getMeta'
-import { getCurrentPriceList } from 'fetch/pricelist'
 import { getFullService } from 'fetch/service'
-import parse from 'html-react-parser'
 import { SchemaJsonManikura } from 'schemasOrg/manikura'
 import { SchemaJsonOboci } from 'schemasOrg/oboci'
 import { SchemaJsonRasy } from 'schemasOrg/rasy'
@@ -55,18 +50,10 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
   }
 }
 
-const Section = ({ children, className }: { children: React.ReactNode; className?: string }) => (
-  <section className={`pb-16 ${className || ''}`}>
-    <Container size={'lg'}>{children}</Container>
-  </section>
-)
-
 const Service = async ({ params }: any) => {
   const { slug } = await params
 
   const [data, dataLink] = await Promise.all([getFullService(slug), getLinkToReserve()])
-
-  const priceList = await getCurrentPriceList(data.title === 'Manikúra' ? 'Nehty' : data.title)
 
   return (
     <main>
@@ -74,24 +61,7 @@ const Service = async ({ params }: any) => {
       {slug === 'rasy' && <SchemaJsonRasy />}
       {slug === 'manikura' && <SchemaJsonManikura />}
       <Top title={data.title} small linkToReserve={dataLink.linkToReserve} />
-      <Section>
-        <div className={'text-xs1 lg:text-base content'}>
-          {parse(data.description || '', { trim: true })}
-        </div>
-      </Section>
-      <MasonryGalery images={data.galery} />
-      <PriceTable data={priceList} />
-      <Section>
-        <div className={'text-xs1 lg:text-base content'}>
-          {parse(data.additionalDescription || '', { trim: true })}
-        </div>
-        <Button
-          className={'mt-5'}
-          id={'book-button'}
-          text={'Rezervovat termín'}
-          href={dataLink.linkToReserve}
-        />
-      </Section>
+      <DynamicContent data={data.dynamicContent} />
     </main>
   )
 }

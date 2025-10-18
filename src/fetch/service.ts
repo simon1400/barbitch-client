@@ -9,14 +9,7 @@ export interface IDataHomepageService {
 
 export interface IDataFullService {
   title: string
-  description: string
-  additionalDescription: string
-  galery: {
-    hash: string
-    name: string
-    url: string
-    alternativeText: string
-  }[]
+  dynamicContent: any[]
 }
 
 const queryServiceHomepage = qs.stringify(
@@ -44,7 +37,42 @@ export const getFullService = async (slug: string) => {
         },
       },
       fields: ['title', 'description', 'additionalDescription'],
-      populate: ['galery'],
+      populate: {
+        dynamicContent: {
+          on: {
+            'content.text': {
+              populate: '*',
+            },
+            'content.price-list': {
+              populate: {
+                pricelistTable: {
+                  populate: {
+                    table: {
+                      populate: ['item'],
+                    },
+                  },
+                },
+                cta: {
+                  populate: '*',
+                },
+              },
+            },
+            'content.content-baner': {
+              populate: '*',
+            },
+            'content.galery': {
+              populate: {
+                image: {
+                  fields: ['url', 'hash', 'alternativeText'],
+                },
+              },
+            },
+            'content.faq': {
+              populate: '*',
+            },
+          },
+        },
+      },
     },
     {
       encodeValuesOnly: true, // prettify URL
