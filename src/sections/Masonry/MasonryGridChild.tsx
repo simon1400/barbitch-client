@@ -12,13 +12,10 @@ const MasonryGridChild = ({
 }) => {
   return (
     <ResponsiveMasonry
-      {...{
-        className,
-        columnsCountBreakPoints: { 350: sm || 2, 750: 2, 900: 3 },
-        gutterBreakPoints: { 350: '16px', 750: '16px', 900: '24px' },
-      }}
+      className={className}
+      columnsCountBreakPoints={{ 350: sm || 2, 750: 2, 900: 3 }}
     >
-      <Masonry>{children}</Masonry>
+      <Masonry gutter={'20px'}>{children}</Masonry>
     </ResponsiveMasonry>
   )
 }

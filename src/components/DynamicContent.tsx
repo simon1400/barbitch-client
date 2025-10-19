@@ -6,17 +6,24 @@ import { Text } from './dynamicComponents/Text'
 
 interface DynamicContentProps {
   data: any[]
+  variant?: 'service' | 'default'
 }
 
-const COMPONENTS_MAP: Record<string, (item: any, idx: number) => React.ReactElement | null> = {
-  'content.content-baner': (item, idx) => <Banner key={item.__component + idx} data={item} />,
-  'content.galery': (item, idx) => <Galery key={item.__component + idx} data={item} />,
-  'content.text': (item, idx) => <Text key={item.__component + idx} data={item} />,
-  'content.faq': (item, idx) => <Faq key={item.__component + idx} data={item} />,
-  'content.price-list': (item, idx) => <PriceList key={item.__component + idx} data={item} />,
-}
+export const DynamicContent = ({ data, variant = 'default' }: DynamicContentProps) => {
+  const COMPONENTS_MAP: Record<string, (item: any, idx: number) => React.ReactElement | null> = {
+    'content.content-baner': (item, idx) => <Banner key={item.__component + idx} data={item} />,
+    'content.galery': (item, idx) => (
+      <Galery
+        key={item.__component + idx}
+        data={item}
+        variant={variant === 'service' ? 'masonry' : 'simple'}
+      />
+    ),
+    'content.text': (item, idx) => <Text key={item.__component + idx} data={item} />,
+    'content.faq': (item, idx) => <Faq key={item.__component + idx} data={item} />,
+    'content.price-list': (item, idx) => <PriceList key={item.__component + idx} data={item} />,
+  }
 
-export const DynamicContent = ({ data }: DynamicContentProps) => {
   return (
     <div className={'content'}>
       {data.map((item, idx) => {

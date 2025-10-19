@@ -84,7 +84,7 @@ const Service = async ({ params }: any) => {
       {slug === 'rasy' && <SchemaJsonRasy />}
       {slug === 'manikura' && <SchemaJsonManikura />}
       <Top title={data.title} small linkToReserve={dataLink.linkToReserve} />
-      <DynamicContent data={data.dynamicContent} />
+      <DynamicContent data={data.dynamicContent} variant="service" />
     </main>
   )
 }
