@@ -3,8 +3,19 @@ import type { Metadata } from 'next'
 import { DynamicContent } from 'components/DynamicContent'
 import { getPost } from 'fetch/blog'
 import { getPostMeta } from 'fetch/getMeta'
+import { Axios } from 'lib/api'
 import { notFound } from 'next/navigation'
+import { ArticleSchema } from 'schemasOrg/article'
+import { BreadcrumbSchema } from 'schemasOrg/breadcrumb'
 import { TopImage } from 'sections/Top/TopImage'
+
+export async function generateStaticParams() {
+  const posts = (await Axios.get('/api/blogs?fields[0]=slug')) as { slug: string }[]
+
+  return posts.map((post) => ({
+    post: post.slug,
+  }))
+}
 
 export async function generateMetadata({ params }: any): Promise<Metadata> {
   const { post } = await params
@@ -50,6 +61,21 @@ const Post = async ({ params }: any) => {
 
   return (
     <main>
+      <BreadcrumbSchema
+        items={[
+          { name: 'Hlavní strana', url: 'https://barbitch.cz' },
+          { name: 'Blog', url: 'https://barbitch.cz/blog' },
+          { name: data.title, url: `https://barbitch.cz/blog/${post}` },
+        ]}
+      />
+      <ArticleSchema
+        title={data.title}
+        description={data.title}
+        image={data.image?.url || 'https://barbitch.cz/assets/bigBaner.jpg'}
+        datePublished={data.publishedAt || new Date().toISOString()}
+        dateModified={data.updatedAt || new Date().toISOString()}
+        url={`https://barbitch.cz/blog/${post}`}
+      />
       <TopImage title={data.title} image={data.image} />
       <DynamicContent data={data.dynamicContent} />
     </main>

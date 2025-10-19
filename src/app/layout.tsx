@@ -31,6 +31,9 @@ export default async function RootLayout({
         <meta name={'viewport'} content={'width=device-width, initial-scale=1.0'} />
         <meta name={'theme-color'} content={'#e71e6e'} />
         <meta name={'yandex-verification'} content={'93178409d4f4b109'} />
+        <link rel={'preconnect'} href={'https://res.cloudinary.com'} />
+        <link rel={'preconnect'} href={'https://strapi.barbitch.cz'} />
+        <link rel={'dns-prefetch'} href={'https://lh3.googleusercontent.com'} />
         <link rel={'icon'} type={'image/png'} href={'/favicon/favicon-96x96.png'} sizes={'96x96'} />
         <link rel={'icon'} type={'image/svg+xml'} href={'/favicon/favicon.svg'} />
         <link rel={'shortcut icon'} href={'/favicon/favicon.ico'} />
