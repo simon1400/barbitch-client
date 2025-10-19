@@ -4,10 +4,20 @@ import { DynamicContent } from 'components/DynamicContent'
 import { getLinkToReserve } from 'fetch/contact'
 import { getFullServiceMeta } from 'fetch/getMeta'
 import { getFullService } from 'fetch/service'
+import { Axios } from 'lib/api'
+import { BreadcrumbSchema } from 'schemasOrg/breadcrumb'
 import { SchemaJsonManikura } from 'schemasOrg/manikura'
 import { SchemaJsonOboci } from 'schemasOrg/oboci'
 import { SchemaJsonRasy } from 'schemasOrg/rasy'
 import { Top } from 'sections/Top/Top'
+
+export async function generateStaticParams() {
+  const slugServices = (await Axios.get('/api/services?fields[0]=slug')) as { slug: string }[]
+
+  return slugServices.map((service) => ({
+    slug: service.slug,
+  }))
+}
 
 export async function generateMetadata({ params }: any): Promise<Metadata> {
   const { slug } = await params
@@ -64,6 +74,12 @@ const Service = async ({ params }: any) => {
 
   return (
     <main>
+      <BreadcrumbSchema
+        items={[
+          { name: 'Hlavní strana', url: 'https://barbitch.cz' },
+          { name: data.title, url: `https://barbitch.cz/service/${slug}` },
+        ]}
+      />
       {slug === 'oboci' && <SchemaJsonOboci />}
       {slug === 'rasy' && <SchemaJsonRasy />}
       {slug === 'manikura' && <SchemaJsonManikura />}

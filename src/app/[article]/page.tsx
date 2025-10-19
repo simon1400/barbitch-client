@@ -4,8 +4,17 @@ import { Container } from 'components/Container'
 import { getArticle, getArticleMeta } from 'fetch/article'
 import { getLinkToReserve } from 'fetch/contact'
 import parse from 'html-react-parser'
+import { Axios } from 'lib/api'
 import { notFound } from 'next/navigation'
 import { Top } from 'sections/Top/Top'
+
+export async function generateStaticParams() {
+  const articles = (await Axios.get('/api/articles?fields[0]=slug')) as { slug: string }[]
+
+  return articles.map((article) => ({
+    article: article.slug,
+  }))
+}
 
 export async function generateMetadata({ params }: any): Promise<Metadata> {
   const { article } = await params

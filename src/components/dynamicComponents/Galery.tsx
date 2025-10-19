@@ -78,7 +78,7 @@ export const Galery = ({
         <div
           className={`grid grid-cols-${length > 1 ? '2' : length} md:grid-cols-${length >= 3 ? '3' : length} gap-4 md:gap-8`}
         >
-          {data.image.map((item) => (
+          {data.image.map((item, index) => (
             <div key={item.documentId} className={`${!contain && 'pt-[100%]'} relative`}>
               <Image
                 className={`${contain ? 'object-contain' : 'object-cover'} object-center`}
@@ -87,6 +87,8 @@ export const Galery = ({
                 height={1000}
                 fill={!contain}
                 alt={item.alternativeText || ''}
+                loading={index < 3 ? 'eager' : 'lazy'}
+                sizes="(max-width: 768px) 50vw, 33vw"
               />
             </div>
           ))}

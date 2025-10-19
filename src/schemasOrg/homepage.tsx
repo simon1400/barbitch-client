@@ -7,6 +7,10 @@ const schema = {
   url: 'https://barbitch.cz',
   telephone: '+420 776 315 366',
   email: 'info@barbitch.cz',
+  priceRange: '200 CZK - 2000 CZK',
+  paymentAccepted: 'Cash, Card',
+  currenciesAccepted: 'CZK',
+  hasMap: 'https://maps.google.com/?q=Křenová+294/16,+Brno',
   address: {
     '@type': 'PostalAddress',
     streetAddress: 'Křenová 294/16',
