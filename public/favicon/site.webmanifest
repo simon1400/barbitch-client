@@ -1,21 +1,37 @@
 {
-  "name": "MyWebSite",
-  "short_name": "MySite",
+  "name": "Bar.bitch - Beauty Salon Brno | Manikúra, Řasy, Obočí",
+  "short_name": "Barbitch",
+  "description": "Profesionální manikúra, trendy obočí a dokonalé řasy v Brně",
   "icons": [
     {
-      "src": "/web-app-manifest-192x192.png",
-      "sizes": "192x192",
-      "type": "image/png",
-      "purpose": "maskable"
+      "src": "/favicon/favicon-96x96.png",
+      "sizes": "96x96",
+      "type": "image/png"
     },
     {
-      "src": "/web-app-manifest-512x512.png",
+      "src": "/favicon/apple-touch-icon.png",
+      "sizes": "180x180",
+      "type": "image/png"
+    },
+    {
+      "src": "/favicon/web-app-manifest-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/favicon/web-app-manifest-512x512.png",
       "sizes": "512x512",
       "type": "image/png",
-      "purpose": "maskable"
+      "purpose": "any maskable"
     }
   ],
-  "theme_color": "#ffffff",
-  "background_color": "#ffffff",
-  "display": "standalone"
+  "theme_color": "#e71e6e",
+  "background_color": "#1a0a0f",
+  "display": "standalone",
+  "start_url": "/",
+  "scope": "/",
+  "lang": "cs",
+  "dir": "ltr",
+  "orientation": "portrait-primary"
 }

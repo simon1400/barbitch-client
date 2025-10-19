@@ -1,6 +1,7 @@
 import type { IDataPriceList } from 'fetch/pricelist'
 
 import { Container } from 'components/Container'
+import Image from 'next/image'
 import React from 'react'
 
 import { BookButton } from './BookButton'
@@ -119,7 +120,13 @@ export const PriceTable = ({
       })}
 
       <div className={'max-w-[300px] -mt-[50px] mb-[50px]'}>
-        <img src={'/assets/icons/payCard.svg'} alt={'Pay cards icons'} />
+        <Image
+          src={'/assets/icons/payCard.svg'}
+          alt={'Pay cards icons'}
+          width={300}
+          height={60}
+          className={'w-full h-auto'}
+        />
       </div>
     </Container>
   )
