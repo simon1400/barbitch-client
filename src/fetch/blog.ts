@@ -6,6 +6,8 @@ export interface IDataPost {
   title: string
   image: IGalery
   dynamicContent: any[]
+  publishedAt?: string
+  updatedAt?: string
 }
 
 export interface IDataPostShort {
@@ -27,7 +29,7 @@ export const getPost = async (slug: string) => {
           $eq: slug,
         },
       },
-      fields: ['title'],
+      fields: ['title', 'publishedAt', 'updatedAt'],
       populate: {
         image: {
           fields: ['hash', 'url', 'alternativeText'],

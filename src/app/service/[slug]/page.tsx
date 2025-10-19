@@ -5,6 +5,7 @@ import { getLinkToReserve } from 'fetch/contact'
 import { getFullServiceMeta } from 'fetch/getMeta'
 import { getFullService } from 'fetch/service'
 import { Axios } from 'lib/api'
+import { BreadcrumbSchema } from 'schemasOrg/breadcrumb'
 import { SchemaJsonManikura } from 'schemasOrg/manikura'
 import { SchemaJsonOboci } from 'schemasOrg/oboci'
 import { SchemaJsonRasy } from 'schemasOrg/rasy'
@@ -73,6 +74,12 @@ const Service = async ({ params }: any) => {
 
   return (
     <main>
+      <BreadcrumbSchema
+        items={[
+          { name: 'Hlavní strana', url: 'https://barbitch.cz' },
+          { name: data.title, url: `https://barbitch.cz/service/${slug}` },
+        ]}
+      />
       {slug === 'oboci' && <SchemaJsonOboci />}
       {slug === 'rasy' && <SchemaJsonRasy />}
       {slug === 'manikura' && <SchemaJsonManikura />}
