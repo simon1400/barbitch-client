@@ -4,10 +4,19 @@ import { DynamicContent } from 'components/DynamicContent'
 import { getLinkToReserve } from 'fetch/contact'
 import { getFullServiceMeta } from 'fetch/getMeta'
 import { getFullService } from 'fetch/service'
+import { Axios } from 'lib/api'
 import { SchemaJsonManikura } from 'schemasOrg/manikura'
 import { SchemaJsonOboci } from 'schemasOrg/oboci'
 import { SchemaJsonRasy } from 'schemasOrg/rasy'
 import { Top } from 'sections/Top/Top'
+
+export async function generateStaticParams() {
+  const slugServices = (await Axios.get('/api/services?fields[0]=slug')) as { slug: string }[]
+
+  return slugServices.map((service) => ({
+    slug: service.slug,
+  }))
+}
 
 export async function generateMetadata({ params }: any): Promise<Metadata> {
   const { slug } = await params

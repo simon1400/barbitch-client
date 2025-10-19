@@ -1,6 +1,7 @@
 'use client'
 import type { IBookService } from '../fetch/bookService'
 
+import Image from 'next/image'
 import Link from 'next/link'
 import { useState } from 'react'
 
@@ -22,7 +23,15 @@ export const BookServiceItem = ({ service }: { service: IBookService }) => {
               'min-w-[36px] w-[36px] h-[36px] overflow-hidden self-start rounded-full block relative'
             }
           >
-            {!!service.images && <img src={service.images[0].image} alt={service.title} />}
+            {!!service.images && (
+              <Image
+                src={service.images[0].image}
+                alt={service.title}
+                width={36}
+                height={36}
+                className={'object-cover w-full h-full'}
+              />
+            )}
           </span>
           <span className={'w-full'}>
             <h3 className={'text-xs1 leading-5 mb-1.5'}>{service.title}</h3>
@@ -43,7 +52,13 @@ export const BookServiceItem = ({ service }: { service: IBookService }) => {
           </span>
           <span className={'flex items-center text-xs1 text-primary font-bold gap-2.5 self-start'}>
             <span className={'whitespace-nowrap'}>{`${price} Kč`}</span>
-            <img src={'/assets/icons/chevronRight.svg'} alt={'Chevron right icon'} />
+            <Image
+              src={'/assets/icons/chevronRight.svg'}
+              alt={'Chevron right icon'}
+              width={16}
+              height={16}
+              className={'w-auto h-auto'}
+            />
           </span>
         </div>
         {showInfo && (

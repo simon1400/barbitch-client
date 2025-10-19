@@ -3,8 +3,17 @@ import type { Metadata } from 'next'
 import { DynamicContent } from 'components/DynamicContent'
 import { getPost } from 'fetch/blog'
 import { getPostMeta } from 'fetch/getMeta'
+import { Axios } from 'lib/api'
 import { notFound } from 'next/navigation'
 import { TopImage } from 'sections/Top/TopImage'
+
+export async function generateStaticParams() {
+  const posts = (await Axios.get('/api/blogs?fields[0]=slug')) as { slug: string }[]
+
+  return posts.map((post) => ({
+    post: post.slug,
+  }))
+}
 
 export async function generateMetadata({ params }: any): Promise<Metadata> {
   const { post } = await params
