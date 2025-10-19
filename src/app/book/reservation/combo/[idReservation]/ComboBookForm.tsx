@@ -6,8 +6,9 @@ import { useOnMountUnsafe } from 'helpers/useOnMountUnsaf'
 import { useRouter } from 'next/navigation'
 import { useCallback, useMemo, useState } from 'react'
 
+import { checkBlacklist } from '../../../fetch/checkBlacklist'
 import { getComboServiceById } from '../../../fetch/comboService'
-import { createEvent } from '../../../fetch/createEvent'
+import { BlacklistError, createEvent } from '../../../fetch/createEvent'
 import { getSlotReservation } from '../../../fetch/slotReservation'
 import { UserData } from '../../[idReservation]/components/UserData'
 
@@ -109,6 +110,13 @@ const ComboBookForm = () => {
     }
 
     try {
+      // Check blacklist before creating events
+      const isBlacklisted = await checkBlacklist({
+        email: userData.email,
+        phone_number: phoneData.phone_number,
+        phone_country_code: phoneData.phone_country_code,
+      })
+
       // Формируем автоматический комментарий о комплексной услуге
       const comboComment = `Kombinovaný balíček: ${comboService?.title || 'Balíček služeb'}. Celková cena balíčku: ${comboService?.price || 0} Kč.`
       const fullComment = userData.comment
@@ -116,6 +124,7 @@ const ComboBookForm = () => {
         : comboComment
 
       // Создаём события для всех резерваций с общим комментарием
+      // Создаем даже для заблокированных пользователей - Noona сама обработает
       await Promise.all(
         reservationIds.map((id, index) =>
           createEvent({
@@ -138,9 +147,22 @@ const ComboBookForm = () => {
       localStorage.removeItem('comboReservationIds')
       localStorage.removeItem('comboId')
 
+      // Если пользователь в блэклисте, редиректим на /blocked
+      // Ивент уже создан в Noona, она сама обработает
+      if (isBlacklisted) {
+        router.push('/blocked')
+        return
+      }
+
       router.push('/thank-you')
     } catch (err) {
-      console.error('Chyba při rezervaci:', err)
+      // Check if customer is blacklisted
+      if (err instanceof BlacklistError) {
+        router.push('/blocked')
+        return
+      }
+
+      console.error('Booking error:', err)
     }
   }
 
