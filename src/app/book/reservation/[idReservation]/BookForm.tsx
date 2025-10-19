@@ -5,7 +5,8 @@ import { useOnMountUnsafe } from 'helpers/useOnMountUnsaf'
 import { useRouter } from 'next/navigation'
 import { useCallback, useMemo, useState } from 'react'
 
-import { createEvent } from '../../fetch/createEvent'
+import { checkBlacklist } from '../../fetch/checkBlacklist'
+import { BlacklistError, createEvent } from '../../fetch/createEvent'
 
 import { UserData } from './components/UserData'
 
@@ -78,6 +79,14 @@ const BookForm = ({ idReservation }: Props) => {
     }
 
     try {
+      // Check blacklist before creating event
+      const isBlacklisted = await checkBlacklist({
+        email: userData.email,
+        phone_number: phoneData.phone_number,
+        phone_country_code: phoneData.phone_country_code,
+      })
+
+      // Create event even for blacklisted users - Noona will handle it
       await createEvent({
         time_slot_reservation: idReservation,
         customer_name: userData.name,
@@ -92,9 +101,22 @@ const BookForm = ({ idReservation }: Props) => {
         comment: userData.comment,
       })
 
+      // If user is blacklisted, redirect to blocked page
+      // Event is already created in Noona, it will handle it automatically
+      if (isBlacklisted) {
+        router.push('/blocked')
+        return
+      }
+
       router.push('/thank-you')
     } catch (err) {
-      console.error('Ошибка бронирования:', err)
+      // Check if customer is blacklisted
+      if (err instanceof BlacklistError) {
+        router.push('/blocked')
+        return
+      }
+
+      console.error('Booking error:', err)
     }
   }
 
