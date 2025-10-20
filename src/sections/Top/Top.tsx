@@ -2,7 +2,6 @@ import Button from 'components/Button'
 import { Container } from 'components/Container'
 import { Montserrat } from 'next/font/google'
 
-import { LogoutButton } from './LogoutButton'
 const montserat = Montserrat({
   subsets: ['latin'],
   weight: ['400', '700'],
@@ -41,7 +40,6 @@ export const Top = ({
               <Button text={'Rezervovat termín'} id={'book-button'} href={linkToReserve} />
             </div>
           )}
-          {admin && <LogoutButton />}
         </div>
       </Container>
     </section>
