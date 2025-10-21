@@ -21,7 +21,7 @@ export const htmlTemplate = `<!DOCTYPE html>
             <!-- логотип -->
             <tr>
               <td style="padding:24px;text-align:center;background:#e71e6e;">
-                <img src="https://bucket.mailersendapp.com/z3m5jgr8emldpyo6/eqvygm0kk0zl0p7w/images/9fb5af81-c394-4517-9b60-9be27a764ad9.jpg" alt="Bar.Bitch" width="220" style="max-width:220px;height:auto;display:block;margin:0 auto;">
+                <img src="https://barbitch.cz/assets/logo-email.svg" alt="Bar.Bitch" width="220" style="max-width:220px;height:auto;display:block;margin:0 auto;">
               </td>
             </tr>
 
@@ -159,10 +159,9 @@ export const htmlTemplate = `<!DOCTYPE html>
 <tr>
   <td class="px" style="padding:8px 24px 24px 24px;text-align:center;background:#e71e6e;">
     <div style="font-family:Arial,Helvetica,sans-serif;font-size:12px;line-height:18px;color:#1f1f1f;">
-      Pokud si již nepřejete dostávat naše emaily, 
-      <a href="{{unsubscribe}}" style="color:#161615;">odhlaste se zde</a>
-      nebo nám napište na 
-      <a href="mailto:info@barbitch.cz?subject=Unsubscribe" style="color:#161615;">info@barbitch.cz</a>.
+      Pokud si již nepřejete dostávat naše emaily,
+      napište nám na
+      <a href="mailto:info@barbitch.cz?subject=Odhlásit odběr" style="color:#161615;">info@barbitch.cz</a>.
     </div>
   </td>
 </tr>

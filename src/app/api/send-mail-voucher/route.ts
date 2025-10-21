@@ -3,15 +3,13 @@ import type { NextRequest } from 'next/server'
 import fs from 'node:fs'
 import path from 'node:path'
 import { addMonths, format } from 'date-fns'
-import { Attachment, EmailParams, MailerSend, Recipient, Sender } from 'mailersend'
 import { NextResponse } from 'next/server'
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib'
+import { Resend } from 'resend'
 
 import { htmlTemplate } from './htmlTemplate'
 
-const mailerSend = new MailerSend({
-  apiKey: process.env.MAILERSEND_API_KEY!,
-})
+const resend = new Resend(process.env.RESEND_API_KEY!)
 
 export async function POST(req: NextRequest) {
   try {
@@ -51,39 +49,34 @@ export async function POST(req: NextRequest) {
     // eslint-disable-next-line ts/no-require-imports
     const pdfBase64 = require('node:buffer').Buffer.from(modifiedPdf).toString('base64')
 
-    const from = new Sender(process.env.MAILERSEND_FROM_EMAIL!, 'Bar.Bitch Brno')
-    const to = [new Recipient(email, name || undefined)]
+    // Заменяем персонализацию в HTML шаблоне
+    const personalizedHtml = htmlTemplate
+      .replace(/\{\{ name \}\}/g, name || 'Zákazník')
+      .replace(/\{\{ sum \}\}/g, String(sum))
+      .replace(/\{\{ idVoucher \}\}/g, String(idVoucher))
 
-    const personalization = [
-      {
-        email,
-        data: {
-          name,
-          sum,
-          idVoucher,
+    const { data, error } = await resend.emails.send({
+      from: `Bar.Bitch Brno <${process.env.RESEND_FROM_EMAIL!}>`,
+      to: [email],
+      bcc: process.env.RESEND_BCC_EMAIL ? [process.env.RESEND_BCC_EMAIL] : undefined,
+      subject: `Děkujeme za objednávku, ${name || 'Zákazník'}!`,
+      html: personalizedHtml,
+      attachments: [
+        {
+          filename: `v_${voucher}_${idVoucher}.pdf`,
+          content: pdfBase64,
         },
-      },
-    ]
+      ],
+    })
 
-    const emailParams = new EmailParams()
-      .setFrom(from)
-      .setTo(to)
-      .setBcc(
-        process.env.MAILERSEND_BCC_EMAIL ? [new Recipient(process.env.MAILERSEND_BCC_EMAIL)] : [],
-      )
-      .setSubject('Děkujeme za objednávku, {{ name }}!')
-      .setText('Objednávka pro {{ name }}, částka {{ sum }} Kč, VS {{ idVoucher }}')
-      .setHtml(htmlTemplate)
-      .setPersonalization(personalization)
-      .setAttachments([
-        new Attachment(pdfBase64, `v_${voucher}_${idVoucher}.pdf`, 'attachment', 'application/pdf'),
-      ])
+    if (error) {
+      console.error('Resend error:', error)
+      return NextResponse.json({ error: 'Failed to send email' }, { status: 500 })
+    }
 
-    await mailerSend.email.send(emailParams)
-
-    return NextResponse.json({ message: 'Email sent successfully' })
+    return NextResponse.json({ message: 'Email sent successfully', data })
   } catch (error: any) {
-    console.error('MailerSend error:', error?.body || error)
+    console.error('Resend error:', error)
     return NextResponse.json({ error: 'Failed to send email' }, { status: 500 })
   }
 }
