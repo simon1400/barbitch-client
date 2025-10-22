@@ -30,6 +30,8 @@ export default async function RootLayout({
       <head>
         <meta name={'viewport'} content={'width=device-width, initial-scale=1.0'} />
         <meta name={'theme-color'} content={'#e71e6e'} />
+        <meta name={'apple-mobile-web-app-capable'} content={'yes'} />
+        <meta name={'apple-mobile-web-app-status-bar-style'} content={'black-translucent'} />
         <meta name={'yandex-verification'} content={'93178409d4f4b109'} />
         <link rel={'preconnect'} href={'https://res.cloudinary.com'} />
         <link rel={'preconnect'} href={'https://strapi.barbitch.cz'} />

@@ -28,7 +28,7 @@
   ],
   "theme_color": "#e71e6e",
   "background_color": "#1a0a0f",
-  "display": "standalone",
+  "display": "browser",
   "start_url": "/",
   "scope": "/",
   "lang": "cs",
