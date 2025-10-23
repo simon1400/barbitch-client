@@ -1,4 +1,8 @@
+'use client'
+
 import type { IBookServiceGroup } from './fetch/bookService'
+
+import { useEffect, useState } from 'react'
 
 import {
   Accordion,
@@ -12,13 +16,37 @@ import { ComboServiceItem } from './components/ComboServiceItem'
 import { getBookService } from './fetch/bookService'
 import { getComboServices } from './fetch/comboService'
 
-const BookServicePage = async () => {
-  const data: IBookServiceGroup[] = await getBookService()
-  const comboData = getComboServices()
+const BookServicePage = () => {
+  const [data, setData] = useState<IBookServiceGroup[]>([])
+  const [comboData, setComboData] = useState<any>(null)
+  const [accordionValue, setAccordionValue] = useState<string>('')
+  const [selectedServiceId, setSelectedServiceId] = useState<string>('')
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const servicesData = await getBookService()
+      const comboServicesData = getComboServices()
+      setData(servicesData)
+      setComboData(comboServicesData)
+
+      const savedState = sessionStorage.getItem('lastBookingState')
+      if (savedState) {
+        const parsed = JSON.parse(savedState)
+        setAccordionValue(parsed.category)
+        setSelectedServiceId(parsed.serviceId)
+        sessionStorage.removeItem('lastBookingState')
+      }
+    }
+
+    fetchData()
+  }, [])
+
+  if (!comboData) {
+    return null
+  }
 
   return (
-    <Accordion type={'single'} collapsible defaultValue={''}>
-      {/* Обычные услуги */}
+    <Accordion type={'single'} collapsible value={accordionValue} onValueChange={setAccordionValue}>
       {data.map((group) => (
         <AccordionItem
           key={group.title}
@@ -29,14 +57,18 @@ const BookServicePage = async () => {
           <AccordionContent className={'px-3 pb-0'}>
             <ul>
               {group.group_event_types.map((service) => (
-                <BookServiceItem key={service.id} service={service} />
+                <BookServiceItem
+                  key={service.id}
+                  service={service}
+                  category={group.title}
+                  isSelected={selectedServiceId === service.id.toString()}
+                />
               ))}
             </ul>
           </AccordionContent>
         </AccordionItem>
       ))}
 
-      {/* Комбинированные услуги */}
       <AccordionItem
         key={comboData.title}
         className={'rounded-special-small bg-[#252523] mb-2.5'}
@@ -56,8 +88,13 @@ const BookServicePage = async () => {
         </AccordionTrigger>
         <AccordionContent className={'px-3 pb-0'}>
           <ul>
-            {comboData.services.map((service) => (
-              <ComboServiceItem key={service.id} service={service} />
+            {comboData.services.map((service: any) => (
+              <ComboServiceItem
+                key={service.id}
+                service={service}
+                category={comboData.title}
+                isSelected={selectedServiceId === service.id.toString()}
+              />
             ))}
           </ul>
         </AccordionContent>
