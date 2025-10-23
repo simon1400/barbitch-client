@@ -5,7 +5,13 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { useState } from 'react'
 
-export const BookServiceItem = ({ service }: { service: IBookService }) => {
+interface BookServiceItemProps {
+  service: IBookService
+  category: string
+  isSelected: boolean
+}
+
+export const BookServiceItem = ({ service, category, isSelected }: BookServiceItemProps) => {
   const price = service.variations?.[0]?.prices?.[0]?.amount ?? 'N/A'
   const [showInfo, setShowInfo] = useState(false)
 
@@ -14,9 +20,24 @@ export const BookServiceItem = ({ service }: { service: IBookService }) => {
     setShowInfo(!showInfo)
   }
 
+  const handleClick = () => {
+    // Сохраняем в sessionStorage для восстановления после возврата
+    sessionStorage.setItem(
+      'lastBookingState',
+      JSON.stringify({
+        category,
+        serviceId: service.id.toString(),
+      }),
+    )
+  }
+
   return (
     <li className={'border-t-2 border-[#3C3C3C] border-dotted'}>
-      <Link className={'block hover:bg-[#3C3C3C] duration-200'} href={`/book/${service.id}`}>
+      <Link
+        className={`block hover:bg-[#3C3C3C] duration-200 ${isSelected ? 'bg-[#3C3C3C]' : ''}`}
+        href={`/book/${service.id}`}
+        onClick={handleClick}
+      >
         <div className={'flex py-3.5 px-1 items-center gap-4'}>
           <span
             className={
