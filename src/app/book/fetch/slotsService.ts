@@ -44,7 +44,7 @@ export const getSlotService = async (eventId: string, employeesId: string) => {
       : new Date(currentYear, currentMonth - 1, 1)
   const start_date = format(startMonth, 'yyyy-MM-dd')
 
-  const endMonth = addMonths(today, 2)
+  const endMonth = addMonths(today, 3)
   const end_date = format(endOfMonth(endMonth), 'yyyy-MM-dd')
 
   const queryParams: Record<string, any> = {

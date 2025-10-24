@@ -220,7 +220,7 @@ export const getComboSlots = async (
       : new Date(currentYear, currentMonth - 1, 1)
   const start_date = format(startMonth, 'yyyy-MM-dd')
 
-  const endMonth = addMonths(today, 2)
+  const endMonth = addMonths(today, 3)
   const end_date = format(endOfMonth(endMonth), 'yyyy-MM-dd')
 
   // Получаем слоты для всех услуг параллельно
