@@ -1,29 +1,31 @@
-import { Resend } from 'resend';
-import { NextRequest, NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server'
 
-const resend = new Resend(process.env.RESEND_API_KEY);
+import { NextResponse } from 'next/server'
+import { Resend } from 'resend'
+
+const resend = new Resend(process.env.RESEND_API_KEY)
 
 // Add CORS headers
 const corsHeaders = {
   'Access-Control-Allow-Origin': '*',
   'Access-Control-Allow-Methods': 'POST, OPTIONS',
   'Access-Control-Allow-Headers': 'Content-Type',
-};
+}
 
 export async function OPTIONS() {
-  return NextResponse.json({}, { headers: corsHeaders });
+  return NextResponse.json({}, { headers: corsHeaders })
 }
 
 export async function POST(req: NextRequest) {
   try {
-    const { email, buyerName, recipientName, voucherId, validUntil } = await req.json();
+    const { email, buyerName, recipientName, voucherId, validUntil } = await req.json()
 
     // Validate required fields
     if (!email || !buyerName || !recipientName || !voucherId || !validUntil) {
       return NextResponse.json(
         { error: 'All fields are required' },
-        { status: 400, headers: corsHeaders }
-      );
+        { status: 400, headers: corsHeaders },
+      )
     }
 
     const htmlTemplate = `<!DOCTYPE html>
@@ -202,26 +204,26 @@ export async function POST(req: NextRequest) {
       </tr>
     </table>
   </body>
-</html>`;
+</html>`
 
     const { data, error } = await resend.emails.send({
       from: 'Bar.Bitch <info@barbitch.cz>',
       to: [email],
       subject: 'Váš voucher je aktivní - Bar.Bitch',
       html: htmlTemplate,
-    });
+    })
 
     if (error) {
-      console.error('Error sending email:', error);
-      return NextResponse.json({ error: error.message }, { status: 500, headers: corsHeaders });
+      console.error('Error sending email:', error)
+      return NextResponse.json({ error: error.message }, { status: 500, headers: corsHeaders })
     }
 
-    return NextResponse.json({ success: true, data }, { status: 200, headers: corsHeaders });
+    return NextResponse.json({ success: true, data }, { status: 200, headers: corsHeaders })
   } catch (error) {
-    console.error('Error in send-confirmation-voucher API:', error);
+    console.error('Error in send-confirmation-voucher API:', error)
     return NextResponse.json(
       { error: 'Failed to send email' },
-      { status: 500, headers: corsHeaders }
-    );
+      { status: 500, headers: corsHeaders },
+    )
   }
 }
