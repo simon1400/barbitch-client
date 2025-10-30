@@ -62,30 +62,59 @@ export async function POST(req: NextRequest) {
       )
     }
 
-    // Send emails to all recipients
-    const results = await Promise.allSettled(
-      recipients.map(async (recipient) => {
-        // Replace variables in template
-        let personalizedHtml = htmlTemplate
-        if (recipient.variables) {
-          Object.entries(recipient.variables).forEach(([key, value]) => {
-            const regex = new RegExp(`{{${key}}}`, 'g')
-            personalizedHtml = personalizedHtml.replace(regex, value)
-          })
-        }
-
-        return resend.emails.send({
-          from: 'Bar.Bitch <info@barbitch.cz>',
-          to: [recipient.email],
-          subject,
-          html: personalizedHtml,
+    // Prepare batch emails
+    const batchEmails = recipients.map((recipient) => {
+      // Replace variables in template
+      let personalizedHtml = htmlTemplate
+      if (recipient.variables) {
+        Object.entries(recipient.variables).forEach(([key, value]) => {
+          const regex = new RegExp(`{{${key}}}`, 'g')
+          personalizedHtml = personalizedHtml.replace(regex, value)
         })
-      }),
-    )
+      }
 
-    // Count successes and failures
-    const successful = results.filter((r) => r.status === 'fulfilled').length
-    const failed = results.filter((r) => r.status === 'rejected').length
+      return {
+        from: 'Bar.Bitch <info@barbitch.cz>',
+        to: [recipient.email],
+        subject,
+        html: personalizedHtml,
+      }
+    })
+
+    // Send emails using Resend batch API (up to 100 emails per request)
+    const batchSize = 100
+    const batches = []
+    for (let i = 0; i < batchEmails.length; i += batchSize) {
+      batches.push(batchEmails.slice(i, i + batchSize))
+    }
+
+    let successful = 0
+    let failed = 0
+    const allResults: Array<{ id?: string; error?: any }> = []
+
+    for (const batch of batches) {
+      try {
+        const result = await resend.batch.send(batch)
+
+        // Resend batch returns nested structure: { data: { data: [...] } }
+        const batchResults = (result.data as any)?.data
+
+        if (batchResults && Array.isArray(batchResults)) {
+          // Each item in data is { id: string }
+          successful += batchResults.length
+          allResults.push(...batchResults.map((item: any) => ({ id: item.id })))
+        } else {
+          // If no data, treat as failure
+          failed += batch.length
+          allResults.push(...batch.map(() => ({ error: 'No response data' })))
+        }
+      } catch (error) {
+        // If batch fails, mark all emails in this batch as failed
+        console.error('Batch send error:', error)
+        failed += batch.length
+        allResults.push(...batch.map(() => ({ error: 'Batch send failed' })))
+      }
+    }
 
     return NextResponse.json(
       {
@@ -93,10 +122,11 @@ export async function POST(req: NextRequest) {
         total: recipients.length,
         successful,
         failed,
-        results: results.map((r, i) => ({
-          email: recipients[i].email,
-          status: r.status,
-          error: r.status === 'rejected' ? r.reason : null,
+        results: recipients.map((recipient, i) => ({
+          email: recipient.email,
+          status: allResults[i]?.error ? 'rejected' : 'fulfilled',
+          error: allResults[i]?.error || null,
+          id: allResults[i]?.id || null,
         })),
       },
       { status: 200, headers: corsHeaders },
