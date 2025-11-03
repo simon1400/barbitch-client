@@ -46,28 +46,7 @@ export const getPricelistPage = async () => {
   const queryPage = qs.stringify(
     {
       fields: ['title', 'contentText'],
-      populate: {
-        dynamicContent: {
-          on: {
-            'content.text': {
-              populate: '*',
-            },
-            'content.content-baner': {
-              populate: '*',
-            },
-            'content.galery': {
-              populate: {
-                image: {
-                  fields: ['url', 'hash', 'alternativeText'],
-                },
-              },
-            },
-            'content.faq': {
-              populate: '*',
-            },
-          },
-        },
-      },
+      populate: 'dynamicContent',
     },
     {
       encodeValuesOnly: true, // prettify URL
