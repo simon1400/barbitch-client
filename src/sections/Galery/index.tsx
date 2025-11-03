@@ -1,4 +1,5 @@
 'use client'
+import { IKImage } from 'imagekitio-next'
 import dynamic from 'next/dynamic'
 import { useState } from 'react'
 
@@ -7,12 +8,10 @@ import { NextJsImage } from './ImageGalery'
 import 'yet-another-react-lightbox/styles.css'
 
 const Lightbox = dynamic(() => import('yet-another-react-lightbox'), { ssr: false })
-const CldImage = dynamic(() => import('next-cloudinary').then((mod) => mod.CldImage), {
-  ssr: false,
-})
 
 const Galery = ({ data }: { data: IGalery[] }) => {
   const [index, setIndex] = useState(-1)
+  const imagekitUrl = process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT || ''
 
   return (
     <section className={'pb-23 lg:pb-20'}>
@@ -28,14 +27,16 @@ const Galery = ({ data }: { data: IGalery[] }) => {
             onClick={() => setIndex(i)}
           >
             <div className={'relative w-full'} style={{ aspectRatio: '1 / 1' }}>
-              <CldImage
-                src={item.hash}
+              <IKImage
+                urlEndpoint={imagekitUrl}
+                src={item.url}
                 className={'object-cover absolute w-full h-full top-0 left-0'}
                 alt={item.alternativeText || `Some_key_${i}`}
                 width={400}
                 height={400}
-                sizes={'(max-width: 1024px) 33vw, 16vw'}
-                {...(i < 6 ? { priority: true } : { loading: 'lazy' })} // Исправлено
+                transformation={[{ width: '400', height: '400' }]}
+                lqip={{ active: true }}
+                loading={'lazy'}
               />
             </div>
           </div>
@@ -47,7 +48,10 @@ const Galery = ({ data }: { data: IGalery[] }) => {
           index={index}
           open={index >= 0}
           close={() => setIndex(-1)}
-          slides={data.map((item) => ({ src: item.url }))}
+          slides={data.map((item) => ({
+            src: `${imagekitUrl}/${item.hash}`,
+            alt: item.alternativeText || '',
+          }))}
           render={{ slide: NextJsImage }}
         />
       )}
