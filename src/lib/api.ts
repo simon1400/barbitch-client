@@ -1,6 +1,7 @@
 import axios from 'axios'
 
-const apiUrl = process.env.NEXT_PUBLIC_APP_API || process.env.APP_API
+const apiUrl =
+  process.env.NEXT_PUBLIC_APP_API || process.env.APP_API || 'https://strapi.barbitch.cz'
 
 export const Axios = axios.create({
   baseURL: apiUrl,
