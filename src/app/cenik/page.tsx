@@ -10,8 +10,7 @@ import parse from 'html-react-parser'
 import Reviews from 'sections/Reviews'
 import { Top } from 'sections/Top/Top'
 
-export const dynamic = 'force-dynamic'
-export const revalidate = 3600 // Revalidate every hour
+export const dynamic = 'force-static'
 
 export async function generateMetadata(): Promise<Metadata> {
   const { metaData } = await getPricelistMeta()
