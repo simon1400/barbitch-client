@@ -32,7 +32,7 @@ export const getPost = async (slug: string) => {
       fields: ['title', 'publishedAt', 'updatedAt'],
       populate: {
         image: {
-          fields: ['hash', 'url', 'alternativeText'],
+          fields: ['url', 'alternativeText'],
         },
         dynamicContent: {
           on: {
@@ -40,12 +40,19 @@ export const getPost = async (slug: string) => {
               populate: '*',
             },
             'content.content-baner': {
-              populate: '*',
+              populate: {
+                cta: {
+                  fields: ['title', 'link'],
+                },
+                image: {
+                  fields: ['url', 'alternativeText'],
+                },
+              },
             },
             'content.galery': {
               populate: {
                 image: {
-                  fields: ['url', 'hash', 'alternativeText'],
+                  fields: ['url', 'alternativeText'],
                 },
               },
             },
@@ -71,7 +78,7 @@ export const getAllPost = async () => {
       fields: ['title', 'slug', 'contentText'],
       populate: {
         image: {
-          fields: ['hash', 'url', 'alternativeText'],
+          fields: ['url', 'alternativeText'],
         },
       },
     },
@@ -90,7 +97,7 @@ export const getRandomPost = async () => {
       fields: ['title', 'slug'],
       populate: {
         image: {
-          fields: ['hash', 'url', 'alternativeText'],
+          fields: ['url', 'alternativeText'],
         },
       },
       sort: ['createdAt:desc'],

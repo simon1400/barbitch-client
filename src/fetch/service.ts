@@ -29,25 +29,67 @@ export const getServiceHomepage = async () => {
 }
 
 export const getFullService = async (slug: string) => {
-  // Используем массив populate для явного указания путей
-  const params = {
-    filters: {
-      slug: {
-        $eq: slug,
+  const query = qs.stringify(
+    {
+      filters: {
+        slug: {
+          $eq: slug,
+        },
+      },
+      fields: ['title'],
+      populate: {
+        dynamicContent: {
+          on: {
+            'content.text': {
+              populate: '*',
+            },
+            'content.content-baner': {
+              populate: {
+                cta: {
+                  fields: ['title', 'link'],
+                },
+                image: {
+                  fields: ['url', 'alternativeText'],
+                },
+              },
+            },
+            'content.galery': {
+              populate: {
+                image: {
+                  fields: ['url', 'alternativeText'],
+                },
+              },
+            },
+            'content.faq': {
+              populate: '*',
+            },
+            'content.price-list': {
+              fields: ['title', 'contentBefore', 'contentAfter'],
+              populate: {
+                cta: {
+                  fields: ['title', 'link'],
+                },
+                pricelistTable: {
+                  populate: {
+                    table: {
+                      populate: {
+                        item: {
+                          fields: ['*'],
+                        },
+                      },
+                    },
+                  },
+                },
+              },
+            },
+          },
+        },
       },
     },
-    'populate[0]': 'dynamicContent',
-    'populate[1]': 'dynamicContent.pricelistTable',
-    'populate[2]': 'dynamicContent.pricelistTable.table',
-    'populate[3]': 'dynamicContent.pricelistTable.table.item',
-    'populate[4]': 'dynamicContent.cta',
-    'populate[5]': 'dynamicContent.image',
-    'populate[6]': 'dynamicContent.item',
-  }
-
-  const query = qs.stringify(params, {
-    encodeValuesOnly: true,
-  })
+    {
+      encodeValuesOnly: true,
+    },
+  )
 
   const dataContact: IDataFullService[] = await Axios.get(`/api/services?${query}`)
 

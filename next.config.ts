@@ -30,6 +30,7 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       { hostname: 'lh3.googleusercontent.com' },
+      { hostname: 'ik.imagekit.io' },
       { hostname: 'res.cloudinary.com' },
       { hostname: 'scontent.cdninstagram.com' },
       { hostname: 'strapi.barbitch.cz' },

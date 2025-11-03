@@ -13,7 +13,21 @@ export interface IDataBanner {
 const query = qs.stringify(
   {
     fields: ['title'],
-    populate: ['cta', 'animateLine1', 'animateLine2', 'animateLine3'],
+    // populate: ['cta', 'animateLine1', 'animateLine2', 'animateLine3'],
+    populate: {
+      cta: {
+        fields: ['link', 'title'],
+      },
+      animateLine1: {
+        fields: ['url'],
+      },
+      animateLine2: {
+        fields: ['url'],
+      },
+      animateLine3: {
+        fields: ['url'],
+      },
+    },
   },
   {
     encodeValuesOnly: true, // prettify URL
