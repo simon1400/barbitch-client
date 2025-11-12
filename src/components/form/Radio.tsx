@@ -1,4 +1,4 @@
-const vouchers = ['500', '1000', '1500', '2000', 'free']
+const vouchers = ['500', '1000', '1500', '2000'] // --- free
 
 export const Radio = ({
   name,
