@@ -59,13 +59,7 @@ export const htmlTemplate = `<!DOCTYPE html>
                 </div>
               </td>
             </tr>
-            <tr>
-              <td class="px" style="padding:6px 24px;">
-                <div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:22px;color:#e6e6e6;margin:0;">
-                  2) Proveďte platbu podle údajů níže, abychom voucher aktivovali:
-                </div>
-              </td>
-            </tr>
+            {{ deliveryInstructions }}
 
             <!-- платёжные реквизиты -->
             <tr>
