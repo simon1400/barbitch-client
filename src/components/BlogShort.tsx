@@ -15,6 +15,13 @@ export const BlogBigShort = ({ data }: { data: IDataPostShort }) => {
           fill
           src={data.image?.url || '/assets/bigBaner.jpg'}
           alt={data.image?.alternativeText || ''}
+          priority
+          quality={75}
+          sizes={'(max-width: 768px) 100vw, 954px'}
+          placeholder={'blur'}
+          blurDataURL={
+            'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mN8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=='
+          }
         />
       </div>
       <div
@@ -48,6 +55,13 @@ export const BlogShort = ({ data }: { data: IDataPostShort }) => {
           height={500}
           src={data.image?.url || '/assets/bigBaner.jpg'}
           alt={data.image?.alternativeText || ''}
+          loading={'lazy'}
+          quality={70}
+          sizes={'(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 500px'}
+          placeholder={'blur'}
+          blurDataURL={
+            'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mN8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=='
+          }
         />
       </div>
       <div className={'max-w-[954px] w-full bg-accent text-white md:py-10 md:px-12 p-6'}>
