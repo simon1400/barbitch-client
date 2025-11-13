@@ -30,6 +30,8 @@ interface IInstagramItem {
 interface IGalery {
   hash: string
   url: string
+  width?: number
+  height?: number
   alternativeText?: string
   documentId?: string
 }
