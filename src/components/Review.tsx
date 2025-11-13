@@ -116,6 +116,9 @@ const Review = ({
               src={data.reviewer.profilePhotoUrl}
               fill
               alt={data.reviewer.displayName}
+              loading="lazy"
+              quality={70}
+              sizes="52px"
             />
           </div>
           <h5 className={'uppercase text-sm'}>{data.reviewer.displayName}</h5>

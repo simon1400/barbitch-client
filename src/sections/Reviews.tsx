@@ -33,6 +33,8 @@ const CtaReview = () => {
         width={63}
         height={63}
         alt={'google icon'}
+        loading="lazy"
+        quality={80}
       />
       <div className={'mx-auto mb-5'}>
         <Stars star={5} />

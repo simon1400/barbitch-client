@@ -1,5 +1,6 @@
 'use client'
 
+import { BLUR_DATA_URL } from 'lib/image-utils'
 import Image from 'next/image'
 
 interface ImageKitImageProps {
@@ -37,11 +38,12 @@ export const ImageKitImage = ({
   // Build transformation string for ImageKit
   const transformations: string[] = []
 
-  // Add default optimizations
+  // Add default optimizations for mobile
   transformations.push(`w-${width}`)
   transformations.push(`h-${height}`)
-  transformations.push(`q-80`)
-  transformations.push(`f-auto`)
+  transformations.push(`q-75`) // Reduced quality for mobile
+  transformations.push(`f-auto`) // Auto format (WebP/AVIF)
+  transformations.push(`pr-true`) // Progressive rendering
 
   // Add custom transformations
   transformation.forEach((t) => {
@@ -63,10 +65,12 @@ export const ImageKitImage = ({
       width={width}
       height={height}
       className={className}
-      sizes={sizes}
+      sizes={sizes || '(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw'}
       priority={priority}
       loading={priority ? 'eager' : loading}
-      quality={80}
+      quality={75}
+      placeholder="blur"
+      blurDataURL={BLUR_DATA_URL}
     />
   )
 }

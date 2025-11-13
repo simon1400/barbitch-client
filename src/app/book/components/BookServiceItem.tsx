@@ -51,6 +51,9 @@ export const BookServiceItem = ({ service, category, isSelected }: BookServiceIt
                 width={36}
                 height={36}
                 className={'object-cover w-full h-full'}
+                loading={'lazy'}
+                quality={70}
+                sizes={'36px'}
               />
             )}
           </span>

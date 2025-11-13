@@ -46,14 +46,20 @@ export const Galery = ({
           {data.image.map((image, idx) => (
             <div
               key={`${image.hash}-${idx}`}
-              className={'cursor-pointer transition-opacity hover:opacity-90 duration-200 w-full'}
+              className={'cursor-pointer transition-opacity hover:opacity-90 duration-200 w-full relative'}
               onClick={() => setIndex(idx)}
             >
-              <img
+              <Image
                 src={image.url}
                 alt={image.alternativeText || `Obrázek ${idx + 1} z galerie`}
-                loading={'lazy'}
+                width={image.width || 800}
+                height={image.height || 600}
                 className={'w-full h-auto block'}
+                loading={idx < 6 ? 'eager' : 'lazy'}
+                quality={70}
+                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                placeholder="blur"
+                blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mN8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=="
               />
             </div>
           ))}
@@ -88,7 +94,10 @@ export const Galery = ({
                 fill={!contain}
                 alt={item.alternativeText || ''}
                 loading={index < 3 ? 'eager' : 'lazy'}
-                sizes="(max-width: 768px) 50vw, 33vw"
+                quality={70}
+                sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw"
+                placeholder="blur"
+                blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mN8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=="
               />
             </div>
           ))}

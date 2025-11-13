@@ -13,6 +13,11 @@ export const TopImage = ({ title, image }: { title: string; image: IGalery }) =>
           src={image?.url || '/assets/bigBaner.jpg'}
           fill
           alt={image?.alternativeText || ''}
+          priority
+          quality={75}
+          sizes="100vw"
+          placeholder="blur"
+          blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mN8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=="
         />
       </div>
 
