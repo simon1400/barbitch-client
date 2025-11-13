@@ -3,6 +3,7 @@ import axios from 'axios'
 import Alert from 'components/Alert'
 import Button from 'components/Button'
 import { Container } from 'components/Container'
+import { Text } from 'components/dynamicComponents/Text'
 import { DeliveryMethod } from 'components/form/DeliveryMethod'
 import { Radio } from 'components/form/Radio'
 import { Textarea } from 'components/form/Textarea'
@@ -10,6 +11,9 @@ import { createVoucher } from 'fetch/voucher'
 import { useState } from 'react'
 
 import { Input } from '../../components/form/Input'
+
+const beforeFormContent =
+  '<p>Dárkové vouchery se staly moderním a stylovým způsobem, jak potěšit blízké – ať už k narozeninám, svátkům nebo prostě jen tak. V beauty salonu <b>Bar.Bitch Brno</b> vám nabízíme možnost darovat nezapomenutelný zážitek v podobě voucheru na profesionální péči o nehty, řasy a obočí. Čtěte dál a objevte, jaký typ voucheru je pro vás ideální a jak snadno ho můžete objednat.</p>'
 
 const VoucherForm = () => {
   const [data, setData] = useState({
@@ -122,116 +126,126 @@ const VoucherForm = () => {
   }
 
   return (
-    <Container size={'sm'}>
-      <div className={'py-5 mb-20'}>
-        <form id={'voucher-form'} onSubmit={handleSend}>
-          <Input
-            name={'name'}
-            label={'Jméno'}
-            placeholder={'Jan Macek'}
-            value={data.name}
-            handleChange={handleChange}
-            required
-            error={error.name}
-          />
-          <Input
-            name={'for'}
-            label={'Pro koho'}
-            placeholder={'Karolína Božková'}
-            value={data.for}
-            handleChange={handleChange}
-            required
-            error={error.for}
-            warning={data.for.length >= 18}
-            warningText={'Maximální počet znaků: 18'}
-          />
-          <Input
-            name={'email'}
-            label={'E-mail'}
-            placeholder={'example@gmail.com'}
-            value={data.email}
-            handleChange={handleChange}
-            required
-            error={error.email}
-          />
-          <Input
-            name={'phone'}
-            label={'Telefon'}
-            placeholder={'+420777777777'}
-            value={data.phone}
-            handleChange={handleChange}
-          />
-          <Radio
-            name={'voucher'}
-            label={'Voucher'}
-            checked={data.voucher}
-            handleChange={handleChange}
-            required
-          />
-          <Textarea
-            name={'comment'}
-            label={'Komentář'}
-            value={data.comment}
-            handleChange={handleChange}
-          />
-          <DeliveryMethod
-            name={'deliveryMethod'}
-            label={'Způsob doručení'}
-            checked={data.deliveryMethod}
-            handleChange={handleDeliveryChange}
-            required
-          />
-          {data.deliveryMethod === 'mail' && (
-            <div className={'space-y-0'}>
-              <div className={'grid grid-cols-1 md:grid-cols-2 gap-5 mb-5'}>
-                <Input
-                  name={'street'}
-                  label={'Ulice a číslo popisné'}
-                  placeholder={'Příkladná 123'}
-                  value={data.street}
-                  handleChange={handleChange}
-                  required
-                  error={error.street}
-                />
-                <Input
-                  name={'city'}
-                  label={'Město'}
-                  placeholder={'Praha'}
-                  value={data.city}
-                  handleChange={handleChange}
-                  required
-                  error={error.city}
-                />
-              </div>
-              <div className={'grid grid-cols-1 md:grid-cols-2 gap-5 mb-5'}>
-                <Input
-                  name={'postalCode'}
-                  label={'PSČ'}
-                  placeholder={'120 00'}
-                  value={data.postalCode}
-                  handleChange={handleChange}
-                  required
-                  error={error.postalCode}
-                />
-                <Input
-                  name={'country'}
-                  label={'Země'}
-                  placeholder={'Česká republika'}
-                  value={data.country}
-                  handleChange={handleChange}
-                  required
-                />
-              </div>
-            </div>
-          )}
-          {successAlert && <Alert state={'success'} />}
-          {errorAlert && <Alert state={'error'} />}
-          {!successAlert && (
-            <Button text={'Objednat'} href={'/'} onClick={(e) => handleSend(e)} loading={loading} />
-          )}
-        </form>
+    <>
+      <div className={'content'}>
+        <Text data={{ contentText: beforeFormContent }} />
       </div>
-    </Container>
+      <Container size={'sm'}>
+        <div className={'py-5 mb-20'}>
+          <form id={'voucher-form'} onSubmit={handleSend}>
+            <Input
+              name={'name'}
+              label={'Jméno'}
+              placeholder={'Jméno'}
+              value={data.name}
+              handleChange={handleChange}
+              required
+              error={error.name}
+            />
+            <Input
+              name={'for'}
+              label={'Pro koho'}
+              placeholder={'Pro koho'}
+              value={data.for}
+              handleChange={handleChange}
+              required
+              error={error.for}
+              warning={data.for.length >= 18}
+              warningText={'Maximální počet znaků: 18'}
+            />
+            <Input
+              name={'email'}
+              label={'E-mail'}
+              placeholder={'E-mail'}
+              value={data.email}
+              handleChange={handleChange}
+              required
+              error={error.email}
+            />
+            <Input
+              name={'phone'}
+              label={'Telefon'}
+              placeholder={'Telefon'}
+              value={data.phone}
+              handleChange={handleChange}
+            />
+            <Radio
+              name={'voucher'}
+              label={'Hodnota voucheru'}
+              checked={data.voucher}
+              handleChange={handleChange}
+              required
+            />
+            <Textarea
+              name={'comment'}
+              label={'Poznámka k objednávce'}
+              value={data.comment}
+              handleChange={handleChange}
+            />
+            <DeliveryMethod
+              name={'deliveryMethod'}
+              label={'Způsob doručení'}
+              checked={data.deliveryMethod}
+              handleChange={handleDeliveryChange}
+              required
+            />
+            {data.deliveryMethod === 'mail' && (
+              <div className={'space-y-0'}>
+                <div className={'grid grid-cols-1 md:grid-cols-2 gap-5 mb-5'}>
+                  <Input
+                    name={'street'}
+                    label={'Ulice a číslo popisné'}
+                    placeholder={'Příkladná 123'}
+                    value={data.street}
+                    handleChange={handleChange}
+                    required
+                    error={error.street}
+                  />
+                  <Input
+                    name={'city'}
+                    label={'Město'}
+                    placeholder={'Praha'}
+                    value={data.city}
+                    handleChange={handleChange}
+                    required
+                    error={error.city}
+                  />
+                </div>
+                <div className={'grid grid-cols-1 md:grid-cols-2 gap-5 mb-5'}>
+                  <Input
+                    name={'postalCode'}
+                    label={'PSČ'}
+                    placeholder={'120 00'}
+                    value={data.postalCode}
+                    handleChange={handleChange}
+                    required
+                    error={error.postalCode}
+                  />
+                  <Input
+                    name={'country'}
+                    label={'Země'}
+                    placeholder={'Česká republika'}
+                    value={data.country}
+                    handleChange={handleChange}
+                    required
+                  />
+                </div>
+              </div>
+            )}
+            {successAlert && <Alert state={'success'} />}
+            {errorAlert && <Alert state={'error'} />}
+            {!successAlert && (
+              <Button
+                text={'Objednat'}
+                href={'/'}
+                onClick={(e) => handleSend(e)}
+                loading={loading}
+              />
+            )}
+          </form>
+        </div>
+      </Container>
+    </>
   )
 }
 

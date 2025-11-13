@@ -19,12 +19,12 @@ export const DeliveryMethod = ({
     },
     {
       value: 'mail',
-      label: 'Poštou (vytištěný voucher)',
+      label: 'Česká Pošta (vytištěný voucher na tvrdém papíře)',
       description: '+100 Kč',
     },
     {
       value: 'pickup',
-      label: 'Osobní vyzvednutí',
+      label: 'Osobní vyzvednutí (vytištěný voucher na tvrdém papíře)',
       description: '+50 Kč',
     },
   ]

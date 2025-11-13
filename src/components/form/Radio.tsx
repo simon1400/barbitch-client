@@ -27,7 +27,9 @@ export const Radio = ({
             key={item}
             onClick={() => handleChange(name, item)}
           >
-            <span className={'font-bold text-center'}>{item}</span>
+            <span className={'font-bold text-center'}>
+              {item} {'Kč'}
+            </span>
           </div>
         ))}
       </div>

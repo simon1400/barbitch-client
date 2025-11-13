@@ -21,7 +21,7 @@ export const htmlTemplate = `<!DOCTYPE html>
             <!-- логотип -->
             <tr>
               <td style="padding:24px;text-align:center;background:#e71e6e;">
-                <img src="https://barbitch.cz/assets/logo-email.svg" alt="Bar.Bitch" width="220" style="max-width:220px;height:auto;display:block;margin:0 auto;">
+                <img src="https://barbitch.cz/assets/logo-email.png" alt="Bar.Bitch" width="220" style="max-width:220px;height:auto;display:block;margin:0 auto;">
               </td>
             </tr>
 

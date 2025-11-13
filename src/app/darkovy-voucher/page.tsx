@@ -43,8 +43,8 @@ const Voucher = async () => {
   return (
     <main>
       <Top title={data.title} small linkToReserve={dataLink.linkToReserve} />
-      <DynamicContent data={data.dynamicContent} />
       <VoucherForm />
+      <DynamicContent data={data.dynamicContent} />
     </main>
   )
 }
