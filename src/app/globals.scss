@@ -151,15 +151,19 @@ body{
   }
   figure.table{
     width: 100%;
+    overflow-x: auto;
+    margin: 0 auto 20px;
+    display: block;
     table{
       @apply w-full max-w-full border-collapse mb-5;
+      margin: 0 auto;
       caption{
         @apply caption-top text-md2 text-left mb-5;
       }
       thead {
         tr{
           @apply border-b-[1.5px] border-[#1616154D];
-          
+
           th{
             &:first-of-type{
               padding-left: 0;
