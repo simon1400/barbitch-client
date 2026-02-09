@@ -1,5 +1,6 @@
 'use client'
 import { Container } from 'components/Container'
+import { getStrapiImageUrl } from 'lib/image-utils'
 import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import { useState } from 'react'
@@ -52,7 +53,7 @@ export const Galery = ({
               onClick={() => setIndex(idx)}
             >
               <Image
-                src={image.url}
+                src={getStrapiImageUrl(image.url)}
                 alt={image.alternativeText || `Obrázek ${idx + 1} z galerie`}
                 width={image?.width || 800}
                 height={image?.height || 600}
@@ -73,7 +74,7 @@ export const Galery = ({
             index={index}
             open={index >= 0}
             close={() => setIndex(-1)}
-            slides={data.image.map((item) => ({ src: item.url }))}
+            slides={data.image.map((item) => ({ src: getStrapiImageUrl(item.url) }))}
             render={{ slide: NextJsImage }}
           />
         )}
@@ -92,7 +93,7 @@ export const Galery = ({
             <div key={item.documentId} className={`${!contain && 'pt-[100%]'} relative`}>
               <Image
                 className={`${contain ? 'object-contain' : 'object-cover'} object-center`}
-                src={item.url}
+                src={getStrapiImageUrl(item.url)}
                 width={length > 1 ? 700 : 1400}
                 height={1000}
                 fill={!contain}

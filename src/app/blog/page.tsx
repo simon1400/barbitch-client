@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { getAllPost, getBlogPage } from 'fetch/blog'
 import { getLinkToReserve } from 'fetch/contact'
 import { getBlogPageMeta } from 'fetch/getMeta'
+import { getStrapiImageUrl } from 'lib/image-utils'
 import Posts from 'sections/Posts'
 import { Top } from 'sections/Top/Top'
 
@@ -18,7 +19,7 @@ export async function generateMetadata(): Promise<Metadata> {
       title: metaData.title || 'B.B.Blog',
       description: metaData.description || '',
       siteName: 'Barbitch',
-      images: [metaData.image ? metaData.image.url : 'https://barbitch.cz/assets/bigBaner.jpg'],
+      images: [getStrapiImageUrl(metaData.image?.url)],
       url: `https://barbitch.cz/blog`,
       type: 'article',
     },
@@ -26,7 +27,7 @@ export async function generateMetadata(): Promise<Metadata> {
       card: 'summary_large_image',
       title: metaData.title || 'B.B.Blog',
       description: metaData.description || '',
-      images: [metaData.image ? metaData.image.url : 'https://barbitch.cz/assets/bigBaner.jpg'],
+      images: [getStrapiImageUrl(metaData.image?.url)],
     },
     keywords: ['barbitch', 'bar.bitch', 'bar bitch', 'Brno', 'Blog', 'Nehty', 'B.B.Blog'],
     alternates: {

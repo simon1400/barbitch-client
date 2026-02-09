@@ -1,5 +1,6 @@
 import Button from 'components/Button'
 import { Container } from 'components/Container'
+import { getStrapiImageUrl } from 'lib/image-utils'
 import Image from 'next/image'
 
 export const Banner = ({
@@ -28,7 +29,7 @@ export const Banner = ({
             >
               <Image
                 className={'object-cover object-center opacity-60 grayscale'}
-                src={data.image.url}
+                src={getStrapiImageUrl(data.image.url)}
                 fill
                 alt={data.image.alternativeText || ''}
                 loading="lazy"

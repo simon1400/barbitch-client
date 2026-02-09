@@ -4,6 +4,7 @@ import { DynamicContent } from 'components/DynamicContent'
 import { getArticle, getArticleMeta } from 'fetch/article'
 import { getLinkToReserve } from 'fetch/contact'
 import { Axios } from 'lib/api'
+import { getStrapiImageUrl } from 'lib/image-utils'
 import { notFound } from 'next/navigation'
 import { Top } from 'sections/Top/Top'
 
@@ -32,7 +33,7 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
       title: metaData?.title || title,
       description: metaData?.description || '',
       siteName: 'Barbitch',
-      images: [metaData?.image ? metaData.image.url : 'https://barbitch.cz/assets/bigBaner.jpg'],
+      images: [getStrapiImageUrl(metaData?.image?.url)],
       url: `https://barbitch.cz/${article}`,
       type: 'article',
     },
@@ -40,7 +41,7 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
       card: 'summary_large_image',
       title: metaData?.title || title,
       description: metaData?.description || '',
-      images: [metaData?.image ? metaData.image.url : 'https://barbitch.cz/assets/bigBaner.jpg'],
+      images: [getStrapiImageUrl(metaData?.image?.url)],
     },
     keywords: ['barbitch', 'bar.bitch', 'bar bitch', 'Brno', 'Nehty', title],
     alternates: {

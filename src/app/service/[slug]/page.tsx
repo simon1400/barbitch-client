@@ -5,6 +5,7 @@ import { getLinkToReserve } from 'fetch/contact'
 import { getFullServiceMeta } from 'fetch/getMeta'
 import { getFullService } from 'fetch/service'
 import { Axios } from 'lib/api'
+import { getStrapiImageUrl } from 'lib/image-utils'
 import { BreadcrumbSchema } from 'schemasOrg/breadcrumb'
 import { SchemaJsonManikura } from 'schemasOrg/manikura'
 import { SchemaJsonOboci } from 'schemasOrg/oboci'
@@ -37,9 +38,7 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
       title: meta.metaData.title || meta.title,
       description: meta.metaData.description || '',
       siteName: 'Barbitch',
-      images: [
-        meta.metaData.image ? meta.metaData.image.url : 'https://barbitch.cz/assets/bigBaner.jpg',
-      ],
+      images: [getStrapiImageUrl(meta.metaData.image?.url)],
       url: `https://barbitch.cz/service/${slug}`,
       type: 'article',
     },
@@ -47,9 +46,7 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
       card: 'summary_large_image',
       title: meta.metaData.title || meta.title,
       description: meta.metaData.description || '',
-      images: [
-        meta.metaData.image ? meta.metaData.image.url : 'https://barbitch.cz/assets/bigBaner.jpg',
-      ],
+      images: [getStrapiImageUrl(meta.metaData.image?.url)],
     },
     keywords: [
       'barbitch',

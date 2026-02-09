@@ -1,3 +1,17 @@
+const STRAPI_URL =
+  process.env.NEXT_PUBLIC_APP_API || process.env.APP_API || 'https://strapi.barbitch.cz'
+
+/**
+ * Normalizes image URL from Strapi.
+ * If the URL is a relative path (e.g. /uploads/...), prepends the Strapi API URL.
+ * If it's already a full URL, returns it as-is.
+ */
+export function getStrapiImageUrl(url: string | undefined | null): string {
+  if (!url) return '/assets/bigBaner.jpg'
+  if (url.startsWith('http')) return url
+  return `${STRAPI_URL}${url}`
+}
+
 /**
  * Neutral gray blur placeholder for images
  * Prevents green tint and provides smooth loading experience

@@ -5,6 +5,7 @@ import { getLinkToReserve } from 'fetch/contact'
 import { getHomeMeta } from 'fetch/getMeta'
 import { getHomepage } from 'fetch/homepage'
 import { getServiceHomepage } from 'fetch/service'
+import { getStrapiImageUrl } from 'lib/image-utils'
 import { SchemaJsonHomepage } from 'schemasOrg/homepage'
 import About from 'sections/About'
 import Galery from 'sections/Galery'
@@ -28,11 +29,7 @@ export async function generateMetadata(): Promise<Metadata> {
       siteName: 'Barbitch',
       locale: 'cs',
       description: homepageMeta.metaData.description,
-      images: [
-        homepageMeta.metaData.image
-          ? homepageMeta.metaData.image.url
-          : 'https://barbitch.cz/assets/bigBaner.jpg',
-      ],
+      images: [getStrapiImageUrl(homepageMeta.metaData.image?.url)],
       url: 'https://barbitch.cz',
       type: 'website',
     },
@@ -40,11 +37,7 @@ export async function generateMetadata(): Promise<Metadata> {
       card: 'summary_large_image',
       title: homepageMeta.metaData.title,
       description: homepageMeta.metaData.description,
-      images: [
-        homepageMeta.metaData.image
-          ? homepageMeta.metaData.image.url
-          : 'https://barbitch.cz/assets/bigBaner.jpg',
-      ],
+      images: [getStrapiImageUrl(homepageMeta.metaData.image?.url)],
     },
     alternates: {
       canonical: 'https://barbitch.cz',

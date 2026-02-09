@@ -4,6 +4,7 @@ import { Container } from 'components/Container'
 import { getContactContent, getLinkToReserve } from 'fetch/contact'
 import { getContactMeta } from 'fetch/getMeta'
 import parse from 'html-react-parser'
+import { getStrapiImageUrl } from 'lib/image-utils'
 import { Top } from 'sections/Top/Top'
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -16,9 +17,7 @@ export async function generateMetadata(): Promise<Metadata> {
       title: data.metaData.title || 'Kontakt',
       description: data.metaData.description || '',
       siteName: 'Barbitch',
-      images: [
-        data.metaData.image ? data.metaData.image.url : 'https://barbitch.cz/assets/bigBaner.jpg',
-      ],
+      images: [getStrapiImageUrl(data.metaData.image?.url)],
       url: `https://barbitch.cz/kontakt`,
       type: 'article',
     },
@@ -26,9 +25,7 @@ export async function generateMetadata(): Promise<Metadata> {
       card: 'summary_large_image',
       title: data.metaData.title || 'Kontakt',
       description: data.metaData.description || '',
-      images: [
-        data.metaData.image ? data.metaData.image.url : 'https://barbitch.cz/assets/bigBaner.jpg',
-      ],
+      images: [getStrapiImageUrl(data.metaData.image?.url)],
     },
     keywords: [
       'barbitch',

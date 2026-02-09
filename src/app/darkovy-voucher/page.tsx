@@ -4,6 +4,7 @@ import { DynamicContent } from 'components/DynamicContent'
 import { getLinkToReserve } from 'fetch/contact'
 import { getVoucherMeta } from 'fetch/getMeta'
 import { getVoucher } from 'fetch/voucher'
+import { getStrapiImageUrl } from 'lib/image-utils'
 import { Top } from 'sections/Top/Top'
 
 import VoucherForm from './VoucherForm'
@@ -20,7 +21,7 @@ export async function generateMetadata(): Promise<Metadata> {
       title: metaData.title || title,
       description: metaData.description || '',
       siteName: 'Barbitch',
-      images: [metaData.image ? metaData.image.url : 'https://barbitch.cz/assets/bigBaner.jpg'],
+      images: [getStrapiImageUrl(metaData.image?.url)],
       url: `https://barbitch.cz/darkovy-voucher`,
       type: 'article',
     },
@@ -28,7 +29,7 @@ export async function generateMetadata(): Promise<Metadata> {
       card: 'summary_large_image',
       title: metaData.title || title,
       description: metaData.description || '',
-      images: [metaData.image ? metaData.image.url : 'https://barbitch.cz/assets/bigBaner.jpg'],
+      images: [getStrapiImageUrl(metaData.image?.url)],
     },
     alternates: {
       canonical: `https://barbitch.cz/darkovy-voucher`,

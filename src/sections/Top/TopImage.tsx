@@ -1,4 +1,5 @@
 import { Container } from 'components/Container'
+import { getStrapiImageUrl } from 'lib/image-utils'
 import Image from 'next/image'
 
 export const TopImage = ({ title, image }: { title: string; image: IGalery }) => {
@@ -10,7 +11,7 @@ export const TopImage = ({ title, image }: { title: string; image: IGalery }) =>
       <div className={'mix-blend-multiply bg-[#E71E6E] absolute h-full w-full -z-10'}>
         <Image
           className={'object-cover object-center opacity-70 grayscale'}
-          src={image?.url || '/assets/bigBaner.jpg'}
+          src={getStrapiImageUrl(image?.url)}
           fill
           alt={image?.alternativeText || ''}
           priority

@@ -7,6 +7,7 @@ import { getLinkToReserve } from 'fetch/contact'
 import { getPricelistMeta } from 'fetch/getMeta'
 import { getPriceList, getPricelistPage } from 'fetch/pricelist'
 import parse from 'html-react-parser'
+import { getStrapiImageUrl } from 'lib/image-utils'
 import Reviews from 'sections/Reviews'
 import { Top } from 'sections/Top/Top'
 
@@ -22,7 +23,7 @@ export async function generateMetadata(): Promise<Metadata> {
       title: metaData.title || 'Ceník',
       description: metaData.description || '',
       siteName: 'Barbitch',
-      images: [metaData.image ? metaData.image.url : 'https://barbitch.cz/assets/bigBaner.jpg'],
+      images: [getStrapiImageUrl(metaData.image?.url)],
       url: `https://barbitch.cz/cenik`,
       type: 'article',
     },
@@ -30,7 +31,7 @@ export async function generateMetadata(): Promise<Metadata> {
       card: 'summary_large_image',
       title: metaData.title || 'Ceník',
       description: metaData.description || '',
-      images: [metaData.image ? metaData.image.url : 'https://barbitch.cz/assets/bigBaner.jpg'],
+      images: [getStrapiImageUrl(metaData.image?.url)],
     },
     alternates: {
       canonical: `https://barbitch.cz/cenik`,

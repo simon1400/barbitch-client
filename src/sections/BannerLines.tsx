@@ -1,6 +1,7 @@
 'use client'
 import type { IDataBanner } from 'fetch/banner'
 
+import { getStrapiImageUrl } from 'lib/image-utils'
 import { motion } from 'motion/react'
 const duration = 40
 
@@ -11,7 +12,7 @@ const BannerLines = ({ data }: { data: IDataBanner }) => {
         <motion.div
           animate={{ x: '-50%' }}
           transition={{ duration, ease: 'linear', repeat: Infinity }}
-          style={{ backgroundImage: `url(${data.animateLine1.url})` }}
+          style={{ backgroundImage: `url(${getStrapiImageUrl(data.animateLine1.url)})` }}
           className={`w-[200%] h-full bg-contain`}
         />
       </div>
@@ -19,7 +20,7 @@ const BannerLines = ({ data }: { data: IDataBanner }) => {
         <motion.div
           animate={{ x: '-50%' }}
           transition={{ duration, ease: 'linear', repeat: Infinity }}
-          style={{ backgroundImage: `url(${data.animateLine2.url})` }}
+          style={{ backgroundImage: `url(${getStrapiImageUrl(data.animateLine2.url)})` }}
           className={`w-[200%] h-full bg-contain`}
         />
       </div>
@@ -28,7 +29,7 @@ const BannerLines = ({ data }: { data: IDataBanner }) => {
           initial={{ x: '-50%' }}
           animate={{ x: '0' }}
           transition={{ duration, ease: 'linear', repeat: Infinity }}
-          style={{ backgroundImage: `url(${data.animateLine3.url})` }}
+          style={{ backgroundImage: `url(${getStrapiImageUrl(data.animateLine3.url)})` }}
           className={`w-[200%] h-full bg-center bg-contain`}
         />
       </div>

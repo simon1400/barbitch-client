@@ -4,6 +4,7 @@ import { DynamicContent } from 'components/DynamicContent'
 import { getPost } from 'fetch/blog'
 import { getPostMeta } from 'fetch/getMeta'
 import { Axios } from 'lib/api'
+import { getStrapiImageUrl } from 'lib/image-utils'
 import { notFound } from 'next/navigation'
 import { ArticleSchema } from 'schemasOrg/article'
 import { BreadcrumbSchema } from 'schemasOrg/breadcrumb'
@@ -34,7 +35,7 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
       title: metaData.title || title,
       description: metaData.description || '',
       siteName: 'Barbitch',
-      images: [metaData.image ? metaData.image.url : 'https://barbitch.cz/assets/bigBaner.jpg'],
+      images: [getStrapiImageUrl(metaData.image?.url)],
       url: `https://barbitch.cz/blog/${post}`,
       type: 'article',
     },
@@ -42,7 +43,7 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
       card: 'summary_large_image',
       title: metaData.title || title,
       description: metaData.description || '',
-      images: [metaData.image ? metaData.image.url : 'https://barbitch.cz/assets/bigBaner.jpg'],
+      images: [getStrapiImageUrl(metaData.image?.url)],
     },
     keywords: ['barbitch', 'bar.bitch', 'bar bitch', 'Brno', 'Nehty', 'Blog', title],
     alternates: {
@@ -71,7 +72,7 @@ const Post = async ({ params }: any) => {
       <ArticleSchema
         title={data.title}
         description={data.title}
-        image={data.image?.url || 'https://barbitch.cz/assets/bigBaner.jpg'}
+        image={getStrapiImageUrl(data.image?.url)}
         datePublished={data.publishedAt || new Date().toISOString()}
         dateModified={data.updatedAt || new Date().toISOString()}
         url={`https://barbitch.cz/blog/${post}`}

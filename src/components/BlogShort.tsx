@@ -1,6 +1,7 @@
 import type { IDataPostShort } from 'fetch/blog'
 
 import parse from 'html-react-parser'
+import { getStrapiImageUrl } from 'lib/image-utils'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -13,7 +14,7 @@ export const BlogBigShort = ({ data }: { data: IDataPostShort }) => {
             'w-full h-full object-cover object-center duration-300 grayscale group-hover:grayscale-0'
           }
           fill
-          src={data.image?.url || '/assets/bigBaner.jpg'}
+          src={getStrapiImageUrl(data.image?.url)}
           alt={data.image?.alternativeText || ''}
           priority
           quality={75}
@@ -53,7 +54,7 @@ export const BlogShort = ({ data }: { data: IDataPostShort }) => {
           }
           width={500}
           height={500}
-          src={data.image?.url || '/assets/bigBaner.jpg'}
+          src={getStrapiImageUrl(data.image?.url)}
           alt={data.image?.alternativeText || ''}
           loading={'lazy'}
           quality={70}
