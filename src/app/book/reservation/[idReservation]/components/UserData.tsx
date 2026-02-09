@@ -57,6 +57,55 @@ export const UserData = ({
             onChange={(e) => handleChange('comment', e.target.value)}
           />
         )}
+        <div
+          className={'flex gap-3 items-start py-2.5 cursor-pointer'}
+          onClick={() => handleChange('gdprConsent', !userData.gdprConsent)}
+        >
+          <div
+            className={`mt-0.5 h-4 w-4 min-w-[16px] rounded border flex items-center justify-center transition-colors ${
+              userData.gdprConsent
+                ? 'bg-pink-500 border-pink-500'
+                : errorData.gdprConsent
+                  ? 'bg-[#3C3C3B] border-red-500'
+                  : 'bg-[#3C3C3B] border-[#4A4A4A]'
+            }`}
+          >
+            {userData.gdprConsent && (
+              <svg width={'10'} height={'8'} viewBox={'0 0 10 8'} fill={'none'}>
+                <path
+                  d={'M1 4L3.5 6.5L9 1'}
+                  stroke={'white'}
+                  strokeWidth={'1.5'}
+                  strokeLinecap={'round'}
+                  strokeLinejoin={'round'}
+                />
+              </svg>
+            )}
+          </div>
+          <span
+            className={`text-[11px] leading-[15px] ${errorData.gdprConsent ? 'text-red-500' : 'text-[#A0A0A0]'}`}
+          >
+            {'Souhlasím s '}
+            <a
+              href={'https://barbitch.cz/obchodni-podminky'}
+              target={'_blank'}
+              rel={'noopener noreferrer'}
+              className={'text-pink-500 underline'}
+            >
+              {'obchodními podmínkami'}
+            </a>
+            {' a '}
+            <a
+              href={'https://barbitch.cz/zasady-ochrany-osobnich-udaju'}
+              target={'_blank'}
+              rel={'noopener noreferrer'}
+              className={'text-pink-500 underline'}
+            >
+              {'zásadami ochrany osobních údajů'}
+            </a>
+            {'.'}
+          </span>
+        </div>
       </form>
     </div>
   )

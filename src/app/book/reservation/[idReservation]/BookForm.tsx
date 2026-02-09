@@ -16,12 +16,14 @@ export interface IUserData {
   email: string
   checkComent: boolean
   comment: string
+  gdprConsent: boolean
 }
 
 export interface IErrorUserData {
   name: boolean
   phone: boolean
   email: boolean
+  gdprConsent: boolean
 }
 
 interface Props {
@@ -37,12 +39,14 @@ const BookForm = ({ idReservation }: Props) => {
     email: '',
     checkComent: false,
     comment: '',
+    gdprConsent: false,
   })
 
   const [errorData, setErrorData] = useState<IErrorUserData>({
     name: false,
     phone: false,
     email: false,
+    gdprConsent: false,
   })
 
   useOnMountUnsafe(() => {
@@ -72,6 +76,7 @@ const BookForm = ({ idReservation }: Props) => {
     if (!userData.name.length) errors.name = true
     if (userData.phone.length < 9) errors.phone = true
     if (!userData.email.includes('@')) errors.email = true
+    if (!userData.gdprConsent) errors.gdprConsent = true
 
     if (Object.keys(errors).length) {
       setErrorData((prev) => ({ ...prev, ...errors }))

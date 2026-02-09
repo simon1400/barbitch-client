@@ -18,12 +18,14 @@ export interface IUserData {
   email: string
   checkComent: boolean
   comment: string
+  gdprConsent: boolean
 }
 
 export interface IErrorUserData {
   name: boolean
   phone: boolean
   email: boolean
+  gdprConsent: boolean
 }
 
 const ComboBookForm = () => {
@@ -35,12 +37,14 @@ const ComboBookForm = () => {
     email: '',
     checkComent: false,
     comment: '',
+    gdprConsent: false,
   })
 
   const [errorData, setErrorData] = useState<IErrorUserData>({
     name: false,
     phone: false,
     email: false,
+    gdprConsent: false,
   })
 
   const [reservationIds, setReservationIds] = useState<string[]>([])
@@ -103,6 +107,7 @@ const ComboBookForm = () => {
     if (!userData.name.length) errors.name = true
     if (userData.phone.length < 9) errors.phone = true
     if (!userData.email.includes('@')) errors.email = true
+    if (!userData.gdprConsent) errors.gdprConsent = true
 
     if (Object.keys(errors).length) {
       setErrorData((prev) => ({ ...prev, ...errors }))
