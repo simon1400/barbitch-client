@@ -2,10 +2,10 @@ import qs from 'qs'
 
 import { Axios } from '../lib/api'
 
-export interface IDataBitchCard {
+export interface IDataArticle {
   title: string
   slug: string
-  content: string
+  dynamicContent: any[]
 }
 
 export const getArticle = async (slug: string) => {
@@ -16,15 +16,47 @@ export const getArticle = async (slug: string) => {
           $eq: slug,
         },
       },
-      fields: ['title', 'content'],
+      fields: ['title'],
+      populate: {
+        dynamicContent: {
+          on: {
+            'content.text': {
+              populate: '*',
+            },
+            'content.content-baner': {
+              populate: {
+                cta: {
+                  fields: ['title', 'link'],
+                },
+                image: {
+                  fields: ['url', 'alternativeText'],
+                },
+              },
+            },
+            'content.galery': {
+              populate: {
+                image: {
+                  fields: ['url', 'alternativeText'],
+                },
+              },
+            },
+            'content.faq': {
+              populate: '*',
+            },
+            'content.price-list': {
+              populate: '*',
+            },
+          },
+        },
+      },
     },
     {
       encodeValuesOnly: true, // prettify URL
     },
   )
 
-  const dataContact: IDataBitchCard[] = await Axios.get(`/api/articles?${query}`)
-  return dataContact[0]
+  const data: IDataArticle[] = await Axios.get(`/api/articles?${query}`)
+  return data[0]
 }
 
 export const getArticleMeta = async (slug: string) => {
