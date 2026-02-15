@@ -34,12 +34,12 @@ export const NextJsImage = ({ slide, offset, rect }: NextJsImageProps) => {
   const hasSize = typeof slide.width === 'number' && typeof slide.height === 'number'
 
   const width =
-    !cover && hasSize
+    !cover && hasSize && slide.height && slide.width
       ? Math.round(Math.min(rect.width, (rect.height / slide.height) * slide.width))
       : rect.width
 
   const height =
-    !cover && hasSize
+    !cover && hasSize && slide.width && slide.height
       ? Math.round(Math.min(rect.height, (rect.width / slide.width) * slide.height))
       : rect.height
 
