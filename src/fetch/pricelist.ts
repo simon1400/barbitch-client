@@ -5,6 +5,7 @@ import { Axios } from '../lib/api'
 export interface IDataPriceList {
   title: string
   table: {
+    sectionTitle?: string
     title: string
     item: {
       title: string
