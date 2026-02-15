@@ -75,7 +75,7 @@ export const getPost = async (slug: string) => {
 export const getAllPost = async () => {
   const query = qs.stringify(
     {
-      fields: ['title', 'slug', 'contentText'],
+      fields: ['title', 'slug'],
       populate: {
         image: {
           fields: ['url', 'alternativeText'],

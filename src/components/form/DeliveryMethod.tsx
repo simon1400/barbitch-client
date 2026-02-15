@@ -17,16 +17,16 @@ export const DeliveryMethod = ({
       label: 'E-mail (voucher v PDF)',
       description: 'Voucher přijde ihned na e-mail',
     },
-    {
-      value: 'mail',
-      label: 'Česká Pošta (vytištěný voucher na tvrdém papíře)',
-      description: '+100 Kč',
-    },
-    {
-      value: 'pickup',
-      label: 'Osobní vyzvednutí (vytištěný voucher na tvrdém papíře)',
-      description: '+50 Kč',
-    },
+    // {
+    //   value: 'mail',
+    //   label: 'Česká Pošta (vytištěný voucher na tvrdém papíře)',
+    //   description: '+100 Kč',
+    // },
+    // {
+    //   value: 'pickup',
+    //   label: 'Osobní vyzvednutí (vytištěný voucher na tvrdém papíře)',
+    //   description: '+50 Kč',
+    // },
   ]
 
   return (

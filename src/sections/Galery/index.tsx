@@ -3,8 +3,6 @@ import { IKImage } from 'imagekitio-next'
 import dynamic from 'next/dynamic'
 import { useState } from 'react'
 
-import { NextJsImage } from './ImageGalery'
-
 import 'yet-another-react-lightbox/styles.css'
 
 const Lightbox = dynamic(() => import('yet-another-react-lightbox'), { ssr: false })
@@ -48,11 +46,11 @@ const Galery = ({ data }: { data: IGalery[] }) => {
           index={index}
           open={index >= 0}
           close={() => setIndex(-1)}
+          carousel={{ preload: 2 }}
           slides={data.map((item) => ({
-            src: `${imagekitUrl}/${item.hash}`,
+            src: item.url,
             alt: item.alternativeText || '',
           }))}
-          render={{ slide: NextJsImage }}
         />
       )}
     </section>

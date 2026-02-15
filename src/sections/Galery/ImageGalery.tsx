@@ -16,12 +16,7 @@ interface NextJsImageProps {
 }
 
 const isNextJsImage = (slide: Slide): slide is SlideImage & { src: string } => {
-  return (
-    isImageSlide(slide) &&
-    typeof slide.width === 'number' &&
-    typeof slide.height === 'number' &&
-    typeof slide.src === 'string'
-  )
+  return isImageSlide(slide) && typeof slide.src === 'string'
 }
 
 export const NextJsImage = ({ slide, offset, rect }: NextJsImageProps) => {
@@ -36,13 +31,17 @@ export const NextJsImage = ({ slide, offset, rect }: NextJsImageProps) => {
 
   const cover = isImageFitCover(slide, imageFit)
 
-  const width = !cover
-    ? Math.round(Math.min(rect.width, (rect.height / (slide.height || 1)) * (slide.width || 1)))
-    : rect.width
+  const hasSize = typeof slide.width === 'number' && typeof slide.height === 'number'
 
-  const height = !cover
-    ? Math.round(Math.min(rect.height, (rect.width / (slide.width || 1)) * (slide.height || 1)))
-    : rect.height
+  const width =
+    !cover && hasSize
+      ? Math.round(Math.min(rect.width, (rect.height / slide.height) * slide.width))
+      : rect.width
+
+  const height =
+    !cover && hasSize
+      ? Math.round(Math.min(rect.height, (rect.width / slide.width) * slide.height))
+      : rect.height
 
   const styles: CSSProperties = {
     objectFit: cover ? 'cover' : 'contain',
@@ -54,8 +53,7 @@ export const NextJsImage = ({ slide, offset, rect }: NextJsImageProps) => {
       <Image
         src={slide.src}
         alt={slide.alt || ''}
-        width={width}
-        height={height}
+        {...(hasSize ? { width, height } : { fill: true })}
         style={styles}
         sizes={'(max-width: 768px) 90vw, (max-width: 1200px) 50vw, 30vw'}
         priority={offset === 0}

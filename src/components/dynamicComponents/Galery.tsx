@@ -4,8 +4,6 @@ import { getStrapiImageUrl } from 'lib/image-utils'
 import dynamic from 'next/dynamic'
 import Image from 'next/image'
 import { useState } from 'react'
-import { NextJsImage } from 'sections/Galery/ImageGalery'
-
 import 'yet-another-react-lightbox/styles.css'
 
 const Lightbox = dynamic(() => import('yet-another-react-lightbox'), { ssr: false })
@@ -74,8 +72,8 @@ export const Galery = ({
             index={index}
             open={index >= 0}
             close={() => setIndex(-1)}
+            carousel={{ preload: 2 }}
             slides={data.image.map((item) => ({ src: getStrapiImageUrl(item.url) }))}
-            render={{ slide: NextJsImage }}
           />
         )}
       </section>
