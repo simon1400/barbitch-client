@@ -60,7 +60,7 @@ export const PriceTable = ({
                       <thead>
                         <tr className={BORDER}>
                           <th
-                            className={`text-left font-bold py-2 md:py-3.5 pr-2 md:pr-3.5 w-full ${sectionTitle ? 'text-xs1 md:text-sm' : 'text-sm11 md:text-sm1'}`}
+                            className={`text-left font-bold py-2 md:py-3.5 pr-2 md:pr-3.5 w-full ${sectionTitle ? 'text-xs1 md:text-sm pt-0' : 'text-sm11 md:text-sm1'}`}
                             colSpan={2}
                           >
                             {tableTitle}
