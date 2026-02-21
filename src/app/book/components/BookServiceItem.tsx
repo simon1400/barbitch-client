@@ -35,7 +35,7 @@ export const BookServiceItem = ({ service, category, isSelected }: BookServiceIt
     <li className={'border-t-2 border-[#3C3C3C] border-dotted'}>
       <Link
         className={`block hover:bg-[#3C3C3C] duration-200 ${isSelected ? 'bg-[#3C3C3C]' : ''}`}
-        href={`/book/${service.id}`}
+        href={`/book/${service.id}/extras`}
         onClick={handleClick}
       >
         <div className={'flex py-3.5 px-1 items-center gap-4'}>

@@ -12,7 +12,16 @@ import {
 } from '@/components/ui/accordion'
 
 import { BookServiceItem } from './components/BookServiceItem'
+import { getHiddenServiceIds } from './fetch/addonGroupService'
 import { getBookService } from './fetch/bookService'
+
+const filterGroups = (groups: IBookServiceGroup[], hiddenIds: Set<string>): IBookServiceGroup[] =>
+  groups
+    .map((group) => ({
+      ...group,
+      group_event_types: group.group_event_types.filter((s) => !hiddenIds.has(s.id.toString())),
+    }))
+    .filter((group) => group.group_event_types.length > 0)
 
 const BookServicePage = () => {
   const [data, setData] = useState<IBookServiceGroup[]>([])
@@ -21,8 +30,11 @@ const BookServicePage = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const servicesData = await getBookService()
-      setData(servicesData)
+      const [servicesData, hiddenIds] = await Promise.all([getBookService(), getHiddenServiceIds()])
+
+      const filtered = filterGroups(servicesData, hiddenIds)
+
+      setData(filtered)
 
       const savedState = sessionStorage.getItem('lastBookingState')
       if (savedState) {

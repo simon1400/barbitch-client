@@ -1,17 +1,18 @@
 'use client'
 
 import { addMinutes } from 'date-fns'
-import { useParams, useRouter } from 'next/navigation'
+import { useParams, usePathname, useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import { useTimer } from 'react-timer-hook'
 
-type Step = 'service' | 'personal' | 'reservation' | 'home'
+type Step = 'service' | 'personal' | 'reservation' | 'home' | 'extras'
 
 const backTextMap: Record<Step, string> = {
   service: 'zpět na výběr služby',
   personal: 'zpět na výběr obsluhy',
   reservation: 'zpět na výběr datumu',
   home: 'zpět na úvodní stránku',
+  extras: 'zpět na výběr služby',
 }
 
 const headerTextMap: Record<Step, string> = {
@@ -19,10 +20,12 @@ const headerTextMap: Record<Step, string> = {
   personal: 'Vyberte si datum a čas',
   reservation: 'Objednávka',
   home: 'Vyberte službu',
+  extras: 'Vyberte variantu',
 }
 
 export const BookHeader = () => {
   const params = useParams()
+  const pathname = usePathname()
   const router = useRouter()
 
   const handleBack = (e: React.MouseEvent<HTMLAnchorElement>) => {
@@ -43,13 +46,15 @@ export const BookHeader = () => {
     }
   }, [params])
 
-  const step: Step = params?.personalId
-    ? 'personal'
-    : params?.serviceId
-      ? 'service'
-      : params?.idReservation
-        ? 'reservation'
-        : 'home'
+  const step: Step = pathname?.endsWith('/extras')
+    ? 'extras'
+    : params?.personalId
+      ? 'personal'
+      : params?.serviceId
+        ? 'service'
+        : params?.idReservation
+          ? 'reservation'
+          : 'home'
 
   const backText = backTextMap[step]
   const headerText = headerTextMap[step]
