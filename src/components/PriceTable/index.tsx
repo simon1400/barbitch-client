@@ -26,7 +26,9 @@ export const PriceTable = ({
 
   return (
     <Container size={'lg'}>
-      {data.map(({ title: categoryTitle, table }) => {
+      {data.map((categoryData) => {
+        if (!categoryData) return null
+        const { title: categoryTitle, table } = categoryData
         if (!table || !Array.isArray(table) || table.length === 0) {
           return null
         }
