@@ -1,10 +1,12 @@
+/* eslint-disable import/order */
+/* eslint-disable perfectionist/sort-imports */
 import type { NextRequest } from 'next/server'
 
-import fs from 'node:fs'
 import path from 'node:path'
 import fontkit from '@pdf-lib/fontkit'
 import { addMonths, format } from 'date-fns'
 import { NextResponse } from 'next/server'
+import fs from 'node:fs'
 import { PDFDocument, rgb, StandardFonts } from 'pdf-lib'
 import { Resend } from 'resend'
 
@@ -14,8 +16,19 @@ const resend = new Resend(process.env.RESEND_API_KEY!)
 
 export async function POST(req: NextRequest) {
   try {
-    const { email, name, sum, idVoucher, voucher, recipientName, deliveryMethod, street, city, postalCode, country } =
-      await req.json()
+    const {
+      email,
+      name,
+      sum,
+      idVoucher,
+      voucher,
+      recipientName,
+      deliveryMethod,
+      street,
+      city,
+      postalCode,
+      country,
+    } = await req.json()
 
     if (!email) {
       return NextResponse.json({ error: 'Missing required field: email' }, { status: 400 })

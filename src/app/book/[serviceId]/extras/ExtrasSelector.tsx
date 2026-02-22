@@ -224,6 +224,7 @@ export const ExtrasSelector = ({ serviceId, group }: ExtrasSelectorProps) => {
         </div>
         <button
           onClick={() => router.push(href)}
+          type={'button'}
           disabled={!hasOverride}
           className={`w-full transition-colors duration-150 text-white font-semibold text-xs1 py-3.5 rounded-special-small ${
             hasOverride

@@ -1,4 +1,5 @@
-/* eslint-disable sonarjs/no-ignored-exceptions */
+/* eslint-disable import/order */
+
 import type { NextRequest } from 'next/server'
 
 import fs from 'node:fs'
@@ -55,7 +56,7 @@ export async function POST(req: NextRequest) {
 
     try {
       htmlTemplate = fs.readFileSync(templatePath, 'utf-8')
-    } catch (error) {
+    } catch {
       return NextResponse.json(
         { error: `Template "${template}" not found` },
         { status: 404, headers: corsHeaders },

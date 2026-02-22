@@ -44,9 +44,7 @@ export const getAddonGroup = async (serviceId: string): Promise<IAddonGroup | nu
 
 export const getHiddenServiceIds = async (): Promise<Set<string>> => {
   try {
-    const data = await Axios.get(
-      `/api/booking-addon-groups?${DEEP_POPULATE}`,
-    )
+    const data = await Axios.get(`/api/booking-addon-groups?${DEEP_POPULATE}`)
     if (!data || !Array.isArray(data)) return new Set()
     const ids = new Set<string>()
     for (const group of data as IAddonGroup[]) {

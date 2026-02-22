@@ -34,7 +34,14 @@ export async function generateMetadata(): Promise<Metadata> {
       description: metaDescription,
       siteName: 'Barbitch',
       locale: 'cs_CZ',
-      images: [{ url: metaImage, width: 1200, height: 630, alt: 'Barbitch Beauty Studio Brno – online rezervace' }],
+      images: [
+        {
+          url: metaImage,
+          width: 1200,
+          height: 630,
+          alt: 'Barbitch Beauty Studio Brno – online rezervace',
+        },
+      ],
       url: metaUrl,
       type: 'website',
     },
@@ -57,14 +64,14 @@ export default async function BookLayout({
 }>) {
   return (
     <>
-    <style>{`html, body { background-color: #161615; }`}</style>
-    <main className={'min-h-screen pb-[100px] pt-[112px] dark-tm'}>
-      <Container size={'sm'}>
-        <BookHeader />
-        {children}
-        <HideSmartsupp />
-      </Container>
-    </main>
+      <style>{`html, body { background-color: #161615; }`}</style>
+      <main className={'min-h-screen pb-[100px] pt-[112px] dark-tm'}>
+        <Container size={'sm'}>
+          <BookHeader />
+          {children}
+          <HideSmartsupp />
+        </Container>
+      </main>
     </>
   )
 }

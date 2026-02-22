@@ -44,6 +44,7 @@ export const BookHeader = () => {
     if (params?.idReservation) {
       start()
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [params])
 
   const step: Step = pathname?.endsWith('/extras')
