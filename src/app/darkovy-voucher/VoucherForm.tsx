@@ -97,10 +97,12 @@ const VoucherForm = () => {
       phone: data.phone,
       comentUser: data.comment,
       deliveryMethod: data.deliveryMethod,
-      street: data.deliveryMethod === 'mail' ? data.street : '',
-      city: data.deliveryMethod === 'mail' ? data.city : '',
-      postalCode: data.deliveryMethod === 'mail' ? data.postalCode : '',
-      country: data.deliveryMethod === 'mail' ? data.country : '',
+      ...(data.deliveryMethod === 'mail' && {
+        street: data.street,
+        city: data.city,
+        postalCode: data.postalCode,
+        country: data.country,
+      }),
       // eslint-disable-next-line sonarjs/pseudo-random
       idVoucher: `${Math.floor(10000000 + Math.random() * 90000000)}`,
       publishedAt: null,
