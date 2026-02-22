@@ -1,4 +1,12 @@
+import type { Metadata } from 'next'
+
 import { formatInTimeZone } from 'date-fns-tz'
+
+export const metadata: Metadata = {
+  title: 'Dokončení rezervace | Barbitch Beauty Studio Brno',
+  description: 'Zadejte své kontaktní údaje a dokončete rezervaci v Barbitch Beauty Studiu v Brně.',
+  robots: { index: false, follow: false },
+}
 
 import { getSlotReservation } from '../../fetch/slotReservation'
 

@@ -1,9 +1,16 @@
+import type { Metadata } from 'next'
 import type { IPersonalService } from '../fetch/personalService'
 
 import { MasterIcon } from 'icons/Master'
 import Link from 'next/link'
 
 import { getPersonalService } from '../fetch/personalService'
+
+export const metadata: Metadata = {
+  title: 'Výběr specialistky | Rezervace – Barbitch Beauty Studio Brno',
+  description: 'Vyberte si specialistku pro vaši rezervaci v Barbitch Beauty Studiu v Brně.',
+  robots: { index: false, follow: false },
+}
 
 const ProfileImage = ({ src, className }: { src: string; className?: string }) => (
   <span

@@ -90,7 +90,8 @@
         font-size: 12px;
         line-height: 17px;
         width: 38px;
-        color: #A0A0A0;
+        color: #A0A0A0 !important;
+        -webkit-text-fill-color: #A0A0A0 !important;
         margin: 0;
       }
     }

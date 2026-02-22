@@ -1,4 +1,12 @@
+import type { Metadata } from 'next'
+
 import { redirect } from 'next/navigation'
+
+export const metadata: Metadata = {
+  title: 'Doplňkové služby | Rezervace – Barbitch Beauty Studio Brno',
+  description: 'Přidejte doplňkové služby ke své rezervaci v Barbitch Beauty Studiu v Brně.',
+  robots: { index: false, follow: false },
+}
 
 import { getAddonGroup } from '../../fetch/addonGroupService'
 
