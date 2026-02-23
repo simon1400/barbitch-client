@@ -135,7 +135,7 @@ export const ExtrasSelector = ({ serviceId, group }: ExtrasSelectorProps) => {
                 <span className={'block text-xs1 leading-snug'}>{option.label}</span>
               </span>
 
-              {option.priceDiff > 0 ? (
+              {option.priceDiff > 0 && (
                 <span
                   className={
                     'shrink-0 text-xss font-semibold text-[#E71E6E] bg-[#E71E6E1A] border border-[#E71E6E40] rounded-xl px-2 py-1 whitespace-nowrap'
@@ -143,8 +143,6 @@ export const ExtrasSelector = ({ serviceId, group }: ExtrasSelectorProps) => {
                 >
                   {`+${option.priceDiff} Kč`}
                 </span>
-              ) : (
-                <span className={'shrink-0 text-xss text-[#A0A0A0] whitespace-nowrap'}>{'—'}</span>
               )}
             </div>
           )
