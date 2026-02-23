@@ -23,10 +23,19 @@ const filterGroups = (groups: IBookServiceGroup[], hiddenIds: Set<string>): IBoo
     }))
     .filter((group) => group.group_event_types.length > 0)
 
+const BookServiceSkeleton = () => (
+  <div className={'animate-pulse space-y-2.5'}>
+    {[1, 2, 3, 4].map((i) => (
+      <div key={i} className={'bg-[#252523] rounded-special-small h-[60px]'} />
+    ))}
+  </div>
+)
+
 const BookServicePage = () => {
   const [data, setData] = useState<IBookServiceGroup[]>([])
   const [accordionValue, setAccordionValue] = useState<string>('')
   const [selectedServiceId, setSelectedServiceId] = useState<string>('')
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     const fetchData = async () => {
@@ -43,10 +52,14 @@ const BookServicePage = () => {
         setSelectedServiceId(parsed.serviceId)
         sessionStorage.removeItem('lastBookingState')
       }
+
+      setIsLoading(false)
     }
 
     fetchData()
   }, [])
+
+  if (isLoading) return <BookServiceSkeleton />
 
   return (
     <Accordion type={'single'} collapsible value={accordionValue} onValueChange={setAccordionValue}>
