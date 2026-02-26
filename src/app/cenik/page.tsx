@@ -1,17 +1,16 @@
 import type { Metadata } from 'next'
 
+import { CenikTable } from 'components/CenikTable'
 import { Container } from 'components/Container'
 import { DynamicContent } from 'components/DynamicContent'
-import { PriceTable } from 'components/PriceTable'
+import { getBookingPricelist } from 'fetch/bookingPricelist'
 import { getLinkToReserve } from 'fetch/contact'
 import { getPricelistMeta } from 'fetch/getMeta'
-import { getPriceList, getPricelistPage } from 'fetch/pricelist'
+import { getPricelistPage } from 'fetch/pricelist'
 import parse from 'html-react-parser'
 import { getStrapiImageUrl } from 'lib/image-utils'
 import Reviews from 'sections/Reviews'
 import { Top } from 'sections/Top/Top'
-
-export const dynamic = 'force-static'
 
 export async function generateMetadata(): Promise<Metadata> {
   const { metaData } = await getPricelistMeta()
@@ -40,8 +39,8 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 const PriceList = async () => {
-  const [data, dataPage, dataLink] = await Promise.all([
-    getPriceList(),
+  const [groups, dataPage, dataLink] = await Promise.all([
+    getBookingPricelist(),
     getPricelistPage(),
     getLinkToReserve(),
   ])
@@ -56,7 +55,7 @@ const PriceList = async () => {
           </div>
         )}
       </Container>
-      <PriceTable data={data} showTitle />
+      <CenikTable groups={groups} />
       <DynamicContent data={dataPage.dynamicContent} />
       <Reviews />
     </main>
