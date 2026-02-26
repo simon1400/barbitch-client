@@ -58,7 +58,7 @@ export const CenikTable = ({ groups }: { groups: IPricelistGroup[] }) => {
       <div className={'mb-10 space-y-14'}>
         {groups.map((group) => (
           <div key={group.title}>
-            <h2 className={'text-sm1 md:text-md1 pb-3 mb-4'}>{group.title}</h2>
+            <div className={'text-sm1 md:text-md1 pb-3 mb-4 font-bold'}>{group.title}</div>
 
             <div>
               {group.services.map((service) => {
@@ -120,13 +120,13 @@ export const CenikTable = ({ groups }: { groups: IPricelistGroup[] }) => {
 
                         {hasModifiers && (
                           <div className={'pt-2'}>
-                            <p
+                            <div
                               className={
-                                'pl-5 pb-1.5 text-xss tracking-wider uppercase text-[#555] font-semibold'
+                                'pl-5 pb-1.5 pt-5 text-xss tracking-wider uppercase text-[#555] font-semibold'
                               }
                             >
                               {'Doplňky'}
-                            </p>
+                            </div>
                             {modifiers.map((mod) => (
                               <div key={mod.key} className={'flex items-center gap-3 py-2 pl-5'}>
                                 <span className={'text-xs1 text-[#444] flex-1 min-w-0'}>

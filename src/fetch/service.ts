@@ -70,15 +70,7 @@ export const getFullService = async (slug: string) => {
                   fields: ['title', 'link'],
                 },
                 pricelistTable: {
-                  populate: {
-                    table: {
-                      populate: {
-                        item: {
-                          fields: ['*'],
-                        },
-                      },
-                    },
-                  },
+                  fields: ['title'],
                 },
               },
             },
