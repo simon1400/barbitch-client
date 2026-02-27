@@ -212,30 +212,28 @@ export const ExtrasSelector = ({ serviceId, group }: ExtrasSelectorProps) => {
 
       {/* Фиксированный блок внизу: цена + кнопка */}
       <div
-        className={'fixed bottom-0 left-0 w-full pt-3 pb-5'}
+        className={'w-full pt-3 pb-5'}
         style={{ backgroundImage: 'linear-gradient(180deg, #16161500 0%, #161615 70%)' }}
       >
-        <div className={'mx-auto w-full max-w-[600px] md:px-4 px-2'}>
-          <div className={'bg-[#252523] rounded-special-small px-4 py-4'}>
-            <div className={'flex items-center justify-between mb-4'}>
-              <span className={'text-[#A0A0A0] text-xs1'}>{'Celkem'}</span>
-              <span
-                className={'text-primary font-bold text-resMd1 tabular-nums'}
-              >{`${total} Kč`}</span>
-            </div>
-            <button
-              onClick={() => router.push(href)}
-              type={'button'}
-              disabled={!hasOverride}
-              className={`w-full transition-colors duration-150 text-white font-semibold text-xs1 py-3.5 rounded-special-small ${
-                hasOverride
-                  ? 'bg-[#E71E6E] hover:bg-[#c9195f] active:bg-[#b01555]'
-                  : 'bg-[#5a5a5a] cursor-not-allowed'
-              }`}
-            >
-              {'Pokračovat'}
-            </button>
+        <div className={'bg-[#252523] rounded-special-small px-4 py-4'}>
+          <div className={'flex items-center justify-between mb-4'}>
+            <span className={'text-[#A0A0A0] text-xs1'}>{'Celkem'}</span>
+            <span
+              className={'text-primary font-bold text-resMd1 tabular-nums'}
+            >{`${total} Kč`}</span>
           </div>
+          <button
+            onClick={() => router.push(href)}
+            type={'button'}
+            disabled={!hasOverride}
+            className={`w-full transition-colors duration-150 text-white font-semibold text-xs1 py-3.5 rounded-special-small ${
+              hasOverride
+                ? 'bg-[#E71E6E] hover:bg-[#c9195f] active:bg-[#b01555]'
+                : 'bg-[#5a5a5a] cursor-not-allowed'
+            }`}
+          >
+            {'Pokračovat'}
+          </button>
         </div>
       </div>
     </div>
