@@ -1,10 +1,8 @@
 'use client'
 import { format } from 'date-fns'
 import { cs } from 'date-fns/locale/cs'
-import DatePicker, { registerLocale } from 'react-datepicker'
+import DatePicker from 'react-datepicker'
 import './calendar.scss'
-
-registerLocale('cs', cs)
 
 const BookDatePicker = ({
   data,
@@ -20,7 +18,7 @@ const BookDatePicker = ({
       <DatePicker
         calendarClassName={`book-calendar-wrap mb-5`}
         selected={selected}
-        locale={'cs'}
+        locale={cs}
         onChange={(date) => selectDate(date as Date)}
         minDate={new Date()}
         excludeDates={data}
