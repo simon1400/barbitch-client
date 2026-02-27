@@ -11,12 +11,12 @@ const About = ({ text }: { text: string }) => {
           <BigLogoIcon className={'w-full'} />
         </div>
 
-        <div className={'lg:flex items-center gap-23'}>
-          <div className={'w-full mb-5 lg:mb-0'}>
-            <div className={'text-xs1 lg:text-base'}>{parse(text)}</div>
+        <div className={'items-center gap-23'}>
+          <div className={'w-full mb-5 content'}>
+            <div className={'content'}>{parse(text)}</div>
           </div>
           <div className={'text-center lg:text-left'}>
-            <Button text={'vice o nas'} href={'/o-nas'} id={'about-us-btn'} />
+            <Button text={'Poznejte náš salon'} href={'/o-nas'} id={'about-us-btn'} />
           </div>
         </div>
       </Container>
