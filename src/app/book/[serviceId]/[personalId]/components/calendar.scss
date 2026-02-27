@@ -85,12 +85,12 @@
       margin-bottom: 0;
 
       .react-datepicker__day-name {
-        font-size: 12px;
-        line-height: 17px;
-        width: 38px;
+        font-size: 12px!important;
+        line-height: 17px!important;
+        width: 38px!important;
         color: #A0A0A0 !important;
         -webkit-text-fill-color: #A0A0A0 !important;
-        margin: 0;
+        margin: 0!important;
       }
     }
   }
