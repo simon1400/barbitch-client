@@ -1,18 +1,9 @@
-@use 'swiper/css';
-@use 'swiper/css/navigation';
-@use 'swiper/css/pagination';
-
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
 $primary: #e71e6e;
 $accent: #161615;
-
-:root {
-  --primary: #e71e6e;
-  --accent: #161615;
-}
 
 html {
   overflow-x: hidden;

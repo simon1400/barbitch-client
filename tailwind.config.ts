@@ -1,8 +1,8 @@
 import type { Config } from 'tailwindcss'
 
 const mainPalette = {
-  accent: 'var(--accent)',
-  primary: 'var(--primary)',
+  accent: '#161615',
+  primary: '#e71e6e',
 }
 
 const config: Config = {

@@ -1,4 +1,4 @@
-'use cleint'
+'use client'
 import { motion, useMotionValue } from 'motion/react'
 import { useRef } from 'react'
 

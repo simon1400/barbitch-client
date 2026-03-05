@@ -17,7 +17,7 @@ export interface IDataPriceList {
   }[]
 }
 
-export const getPriceList = async () => {
+export const getPriceList = async (): Promise<IDataPriceList[]> => {
   const query = qs.stringify(
     {
       fields: ['title'],
@@ -29,12 +29,17 @@ export const getPriceList = async () => {
       },
     },
     {
-      encodeValuesOnly: true, // prettify URL
+      encodeValuesOnly: true,
     },
   )
 
-  const data: IDataPriceList[] = await Axios.get(`/api/pricelists?${query}`)
-  return data
+  try {
+    const data: IDataPriceList[] = await Axios.get(`/api/pricelists?${query}`)
+    return data
+  } catch (error) {
+    console.error('Failed to fetch pricelist:', error)
+    return []
+  }
 }
 
 interface IDataPricelistPage {
@@ -43,7 +48,7 @@ interface IDataPricelistPage {
   dynamicContent: any[]
 }
 
-export const getPricelistPage = async () => {
+export const getPricelistPage = async (): Promise<IDataPricelistPage> => {
   const queryPage = qs.stringify(
     {
       fields: ['title', 'contentText'],
@@ -78,16 +83,20 @@ export const getPricelistPage = async () => {
       },
     },
     {
-      encodeValuesOnly: true, // prettify URL
+      encodeValuesOnly: true,
     },
   )
 
-  const data: IDataPricelistPage = await Axios.get(`/api/pricelist-page?${queryPage}`)
-
-  return data
+  try {
+    const data: IDataPricelistPage = await Axios.get(`/api/pricelist-page?${queryPage}`)
+    return data
+  } catch (error) {
+    console.error('Failed to fetch pricelist page:', error)
+    return { title: '', contentText: '', dynamicContent: [] }
+  }
 }
 
-export const getCurrentPriceList = async (name: string) => {
+export const getCurrentPriceList = async (name: string): Promise<IDataPriceList[]> => {
   const query = qs.stringify(
     {
       filters: {
@@ -102,10 +111,15 @@ export const getCurrentPriceList = async (name: string) => {
       },
     },
     {
-      encodeValuesOnly: true, // prettify URL
+      encodeValuesOnly: true,
     },
   )
 
-  const data: IDataPriceList[] = await Axios.get(`/api/pricelists?${query}`)
-  return data
+  try {
+    const data: IDataPriceList[] = await Axios.get(`/api/pricelists?${query}`)
+    return data
+  } catch (error) {
+    console.error('Failed to fetch current pricelist:', error)
+    return []
+  }
 }

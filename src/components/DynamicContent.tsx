@@ -1,3 +1,5 @@
+import { Suspense } from 'react'
+
 import { Banner } from './dynamicComponents/Banner'
 import { Faq } from './dynamicComponents/Faq'
 import { Galery } from './dynamicComponents/Galery'
@@ -21,7 +23,11 @@ export const DynamicContent = ({ data, variant = 'default' }: DynamicContentProp
     ),
     'content.text': (item, idx) => <Text key={item.__component + idx} data={item} />,
     'content.faq': (item, idx) => <Faq key={item.__component + idx} data={item} />,
-    'content.price-list': (item, idx) => <PriceList key={item.__component + idx} data={item} />,
+    'content.price-list': (item, idx) => (
+      <Suspense key={item.__component + idx}>
+        <PriceList data={item} />
+      </Suspense>
+    ),
   }
 
   return (

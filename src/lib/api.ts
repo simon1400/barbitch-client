@@ -5,10 +5,12 @@ const apiUrl =
 
 export const Axios = axios.create({
   baseURL: apiUrl,
+  timeout: 15000,
 })
 
 export const Noona = axios.create({
   baseURL: 'https://api.noona.is/v1/marketplace',
+  timeout: 15000,
 })
 
 Noona.interceptors.request.use(
@@ -23,6 +25,7 @@ Noona.interceptors.request.use(
 
 export const NoonaHQ = axios.create({
   baseURL: 'https://api.noona.is/v1/hq/companies',
+  timeout: 15000,
 })
 
 NoonaHQ.interceptors.request.use(

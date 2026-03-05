@@ -6,6 +6,7 @@ import { Header } from 'components/Header'
 import { AppProvider } from 'context/AppContext'
 import { Montserrat } from 'next/font/google'
 import Script from 'next/script'
+import { Suspense } from 'react'
 import Banner from 'sections/Banner'
 import './globals.scss'
 
@@ -61,11 +62,6 @@ export default async function RootLayout({
         <link rel={'apple-touch-icon'} sizes={'180x180'} href={'/favicon/apple-touch-icon.png'} />
         <link rel={'manifest'} href={'/favicon/site.webmanifest'} />
       </head>
-      <Script
-        id={'gtm-script'}
-        strategy={'lazyOnload'}
-        src={'https://www.googletagmanager.com/gtm.js?id=GTM-5SP5MPTB'}
-      />
       <Script id={'gtm-init'} strategy={'lazyOnload'}>
         {`
           window.dataLayer = window.dataLayer || [];
@@ -73,18 +69,27 @@ export default async function RootLayout({
             'gtm.start': new Date().getTime(),
             event: 'gtm.js',
           });
+          var s=document.createElement('script');
+          s.async=true;
+          s.src='https://www.googletagmanager.com/gtm.js?id=GTM-5SP5MPTB';
+          document.head.appendChild(s);
         `}
       </Script>
       <body className={`bg-base antialiased overflow-x-hidden ${montserat.className}`}>
         <AppProvider>
           <FacebookPageView />
-          <Header />
+          <Suspense>
+            <Header />
+          </Suspense>
           {children}
-          <Banner />
-          <Footer />
+          <Suspense>
+            <Banner />
+          </Suspense>
+          <Suspense>
+            <Footer />
+          </Suspense>
         </AppProvider>
-        {/* <!--Start of Tawk.to Script--> */}
-        <Script>
+        <Script id={'tawk-to'} strategy={'lazyOnload'}>
           {`var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
             (function(){
             var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
@@ -95,7 +100,6 @@ export default async function RootLayout({
             s0.parentNode.insertBefore(s1,s0);
             })();`}
         </Script>
-        {/* <!--End of Tawk.to Script--> */}
       </body>
     </html>
   )

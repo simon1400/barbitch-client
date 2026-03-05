@@ -21,7 +21,7 @@ interface IDataBlogPage {
   title: string
 }
 
-export const getPost = async (slug: string) => {
+export const getPost = async (slug: string): Promise<IDataPost | undefined> => {
   const query = qs.stringify(
     {
       filters: {
@@ -64,15 +64,20 @@ export const getPost = async (slug: string) => {
       },
     },
     {
-      encodeValuesOnly: true, // prettify URL
+      encodeValuesOnly: true,
     },
   )
 
-  const data: IDataPost[] = await Axios.get(`/api/blogs?${query}`)
-  return data[0]
+  try {
+    const data: IDataPost[] = await Axios.get(`/api/blogs?${query}`)
+    return data[0]
+  } catch (error) {
+    console.error('Failed to fetch post:', error)
+    return undefined
+  }
 }
 
-export const getAllPost = async () => {
+export const getAllPost = async (): Promise<IDataPostShort[]> => {
   const query = qs.stringify(
     {
       fields: ['title', 'slug'],
@@ -83,15 +88,20 @@ export const getAllPost = async () => {
       },
     },
     {
-      encodeValuesOnly: true, // prettify URL
+      encodeValuesOnly: true,
     },
   )
 
-  const data: IDataPostShort[] = await Axios.get(`/api/blogs?${query}`)
-  return data
+  try {
+    const data: IDataPostShort[] = await Axios.get(`/api/blogs?${query}`)
+    return data
+  } catch (error) {
+    console.error('Failed to fetch all posts:', error)
+    return []
+  }
 }
 
-export const getRandomPost = async () => {
+export const getRandomPost = async (): Promise<IDataPostShort[]> => {
   const query = qs.stringify(
     {
       fields: ['title', 'slug'],
@@ -107,24 +117,34 @@ export const getRandomPost = async () => {
       },
     },
     {
-      encodeValuesOnly: true, // prettify URL
+      encodeValuesOnly: true,
     },
   )
 
-  const data: IDataPostShort[] = await Axios.get(`/api/blogs?${query}`)
-  return data
+  try {
+    const data: IDataPostShort[] = await Axios.get(`/api/blogs?${query}`)
+    return data
+  } catch (error) {
+    console.error('Failed to fetch random posts:', error)
+    return []
+  }
 }
 
-export const getBlogPage = async () => {
+export const getBlogPage = async (): Promise<IDataBlogPage> => {
   const queryPage = qs.stringify(
     {
       fields: ['title'],
     },
     {
-      encodeValuesOnly: true, // prettify URL
+      encodeValuesOnly: true,
     },
   )
-  const data: IDataBlogPage = await Axios.get(`/api/blog-page?${queryPage}`)
 
-  return data
+  try {
+    const data: IDataBlogPage = await Axios.get(`/api/blog-page?${queryPage}`)
+    return data
+  } catch (error) {
+    console.error('Failed to fetch blog page:', error)
+    return { title: '' }
+  }
 }

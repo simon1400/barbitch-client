@@ -17,18 +17,23 @@ const queryServiceHomepage = qs.stringify(
     fields: ['shortTitle', 'slug'],
   },
   {
-    encodeValuesOnly: true, // prettify URL
+    encodeValuesOnly: true,
   },
 )
 
-export const getServiceHomepage = async () => {
-  const dataService: IDataHomepageService[] = await Axios.get(
-    `/api/services?${queryServiceHomepage}`,
-  )
-  return dataService
+export const getServiceHomepage = async (): Promise<IDataHomepageService[]> => {
+  try {
+    const dataService: IDataHomepageService[] = await Axios.get(
+      `/api/services?${queryServiceHomepage}`,
+    )
+    return dataService
+  } catch (error) {
+    console.error('Failed to fetch homepage services:', error)
+    return []
+  }
 }
 
-export const getFullService = async (slug: string) => {
+export const getFullService = async (slug: string): Promise<IDataFullService> => {
   const query = qs.stringify(
     {
       filters: {
@@ -83,11 +88,14 @@ export const getFullService = async (slug: string) => {
     },
   )
 
-  const dataContact: IDataFullService[] = await Axios.get(`/api/services?${query}`)
-
-  if (!dataContact || dataContact.length === 0) {
-    throw new Error(`Service not found: ${slug}`)
+  try {
+    const data: IDataFullService[] = await Axios.get(`/api/services?${query}`)
+    if (!data || data.length === 0) {
+      throw new Error(`Service not found: ${slug}`)
+    }
+    return data[0]
+  } catch (error) {
+    console.error('Failed to fetch full service:', error)
+    throw error
   }
-
-  return dataContact[0]
 }

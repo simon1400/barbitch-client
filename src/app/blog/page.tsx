@@ -7,7 +7,7 @@ import { getStrapiImageUrl } from 'lib/image-utils'
 import Posts from 'sections/Posts'
 import { Top } from 'sections/Top/Top'
 
-export const dynamic = 'force-static'
+export const revalidate = 3600
 
 export async function generateMetadata(): Promise<Metadata> {
   const { metaData } = await getBlogPageMeta()

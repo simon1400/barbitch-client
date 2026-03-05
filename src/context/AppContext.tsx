@@ -1,9 +1,8 @@
-/* eslint-disable react/no-unstable-context-value */
 'use client'
 
 import type { ReactNode } from 'react'
 
-import { createContext, useContext, useState } from 'react'
+import { createContext, useCallback, useContext, useMemo, useState } from 'react'
 
 interface AppContextType {
   menu: boolean
@@ -15,12 +14,19 @@ const AppContext = createContext<AppContextType | undefined>(undefined)
 export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [menu, setMenu] = useState<boolean>(false)
 
-  const adminValues = {
-    menu,
-    setMenu,
-  }
+  const stableSetMenu = useCallback((value: boolean) => {
+    setMenu(value)
+  }, [])
 
-  return <AppContext value={adminValues}>{children}</AppContext>
+  const contextValue = useMemo(
+    () => ({
+      menu,
+      setMenu: stableSetMenu,
+    }),
+    [menu, stableSetMenu],
+  )
+
+  return <AppContext value={contextValue}>{children}</AppContext>
 }
 
 export const useAppContext = () => {

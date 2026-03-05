@@ -25,7 +25,7 @@ const nextConfig: NextConfig = {
       transform: 'date-fns/{{member}}',
     },
   },
-  productionBrowserSourceMaps: true,
+  productionBrowserSourceMaps: false,
   poweredByHeader: false,
   images: {
     remotePatterns: [

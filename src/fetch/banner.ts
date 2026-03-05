@@ -13,7 +13,6 @@ export interface IDataBanner {
 const query = qs.stringify(
   {
     fields: ['title'],
-    // populate: ['cta', 'animateLine1', 'animateLine2', 'animateLine3'],
     populate: {
       cta: {
         fields: ['link', 'title'],
@@ -30,11 +29,16 @@ const query = qs.stringify(
     },
   },
   {
-    encodeValuesOnly: true, // prettify URL
+    encodeValuesOnly: true,
   },
 )
 
-export const getBanner = async () => {
-  const data: IDataBanner = await Axios.get(`/api/banner?${query}`)
-  return data
+export const getBanner = async (): Promise<IDataBanner> => {
+  try {
+    const data: IDataBanner = await Axios.get(`/api/banner?${query}`)
+    return data
+  } catch (error) {
+    console.error('Failed to fetch banner:', error)
+    return {} as IDataBanner
+  }
 }

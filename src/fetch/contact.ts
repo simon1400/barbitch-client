@@ -24,43 +24,39 @@ export interface IDataLinkToReserve {
 
 const query = qs.stringify(
   {
-    fields: ['phone', 'email', 'openHours', 'address', 'linkToMap', 'linkToReserve'],
+    fields: ['phone', 'email', 'openHours', 'address', 'linkToMap', 'linkToReserve', 'content'],
     populate: ['socItems'],
   },
   {
-    encodeValuesOnly: true, // prettify URL
+    encodeValuesOnly: true,
   },
 )
 
-export const getContact = async () => {
-  const dataContact: IDataContact = await Axios.get(`/api/contact?${query}`)
-  return dataContact
+let cachedContact: IDataContact | null = null
+let cacheTime = 0
+const CACHE_TTL = 60_000
+
+export const getContact = async (): Promise<IDataContact> => {
+  const now = Date.now()
+  if (cachedContact && now - cacheTime < CACHE_TTL) {
+    return cachedContact
+  }
+  try {
+    const data: IDataContact = await Axios.get(`/api/contact?${query}`)
+    cachedContact = data
+    cacheTime = now
+    return data
+  } catch (error) {
+    console.error('Failed to fetch contact:', error)
+    return cachedContact || ({} as IDataContact)
+  }
 }
 
-const queryContactContent = qs.stringify(
-  {
-    fields: ['content'],
-  },
-  {
-    encodeValuesOnly: true, // prettify URL
-  },
-)
-
-export const getContactContent = async () => {
-  const dataContact: IDataContact = await Axios.get(`/api/contact?${queryContactContent}`)
-  return dataContact
+export const getContactContent = async (): Promise<IDataContact> => {
+  return getContact()
 }
 
-const queryLink = qs.stringify(
-  {
-    fields: ['linkToReserve'],
-  },
-  {
-    encodeValuesOnly: true, // prettify URL
-  },
-)
-
-export const getLinkToReserve = async () => {
-  const data: IDataLinkToReserve = await Axios.get(`/api/contact?${queryLink}`)
-  return data
+export const getLinkToReserve = async (): Promise<IDataLinkToReserve> => {
+  const data = await getContact()
+  return { linkToReserve: data.linkToReserve }
 }

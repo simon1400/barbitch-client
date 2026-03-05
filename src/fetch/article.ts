@@ -8,7 +8,7 @@ export interface IDataArticle {
   dynamicContent: any[]
 }
 
-export const getArticle = async (slug: string) => {
+export const getArticle = async (slug: string): Promise<IDataArticle | undefined> => {
   const query = qs.stringify(
     {
       filters: {
@@ -51,15 +51,20 @@ export const getArticle = async (slug: string) => {
       },
     },
     {
-      encodeValuesOnly: true, // prettify URL
+      encodeValuesOnly: true,
     },
   )
 
-  const data: IDataArticle[] = await Axios.get(`/api/articles?${query}`)
-  return data[0]
+  try {
+    const data: IDataArticle[] = await Axios.get(`/api/articles?${query}`)
+    return data[0]
+  } catch (error) {
+    console.error('Failed to fetch article:', error)
+    return undefined
+  }
 }
 
-export const getArticleMeta = async (slug: string) => {
+export const getArticleMeta = async (slug: string): Promise<IDataMetaWrap | undefined> => {
   const query = qs.stringify(
     {
       filters: {
@@ -71,10 +76,15 @@ export const getArticleMeta = async (slug: string) => {
       populate: ['metaData'],
     },
     {
-      encodeValuesOnly: true, // prettify URL
+      encodeValuesOnly: true,
     },
   )
 
-  const data: IDataMetaWrap[] = await Axios.get(`/api/articles?${query}`)
-  return data[0]
+  try {
+    const data: IDataMetaWrap[] = await Axios.get(`/api/articles?${query}`)
+    return data[0]
+  } catch (error) {
+    console.error('Failed to fetch article meta:', error)
+    return undefined
+  }
 }

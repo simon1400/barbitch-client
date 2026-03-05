@@ -16,12 +16,16 @@ const query = qs.stringify(
     populate: ['leftNav', 'rightNav'],
   },
   {
-    encodeValuesOnly: true, // prettify URL
+    encodeValuesOnly: true,
   },
 )
 
-export const getNav = async () => {
-  const dataNav: IDataNav = await Axios.get(`/api/navigation?${query}`)
-
-  return dataNav
+export const getNav = async (): Promise<IDataNav> => {
+  try {
+    const dataNav: IDataNav = await Axios.get(`/api/navigation?${query}`)
+    return dataNav
+  } catch (error) {
+    console.error('Failed to fetch navigation:', error)
+    return { leftNav: [], rightNav: [] }
+  }
 }

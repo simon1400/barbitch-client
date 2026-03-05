@@ -8,6 +8,10 @@ import React from 'react'
 import { Autoplay } from 'swiper/modules'
 import { SwiperSlide } from 'swiper/react'
 
+import 'swiper/css'
+import 'swiper/css/navigation'
+import 'swiper/css/pagination'
+
 const featurableWidgetId = process.env.FEATURABLE_WIDGET_ID || ''
 
 const ReactGoogleReviews = dynamic(
