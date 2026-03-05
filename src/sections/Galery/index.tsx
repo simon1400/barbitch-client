@@ -25,7 +25,12 @@ const Galery = ({ data }: { data: IGalery[] }) => {
             className={'relative w-full overflow-hidden cursor-pointer hover:scale-95 duration-200'}
             onClick={() => setIndex(i)}
           >
-            <div className={'relative w-full'} style={{ aspectRatio: '1 / 1' }}>
+            <div
+              className={'relative w-full'}
+              style={{ aspectRatio: '1 / 1' }}
+              role={'img'}
+              aria-label={item.alternativeText || `Obrázek ${i + 1} z galerie Barbitch`}
+            >
               <IKImage
                 urlEndpoint={imagekitUrl}
                 src={item.url}

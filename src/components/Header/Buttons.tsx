@@ -47,9 +47,7 @@ const Buttons = ({ linkToReserve }: { linkToReserve: string }) => {
         size={48}
         duration={0.3}
         distance={'sm'}
-        aria-label={'Открыть или закрыть меню'}
-        aria-expanded={menu}
-        aria-controls={'main-menu'}
+        label={'Otevřít nebo zavřít menu'}
       />
     </div>
   )

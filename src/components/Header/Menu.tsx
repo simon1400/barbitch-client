@@ -17,8 +17,8 @@ const Menu = ({ nav }: { nav: IDataNav }) => {
         open ? 'opacity-1 h-screen' : 'opacity-0 h-0'
       }`}
       role={'menu'}
-      aria-hidden={!open}
       aria-label={'Hlavní menu'}
+      inert={!open ? true : undefined}
     >
       <Container size={'xl'}>
         <div className={'text-right lg:text-left'}>
