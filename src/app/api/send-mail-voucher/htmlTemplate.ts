@@ -70,7 +70,7 @@ export const htmlTemplate = `<!DOCTYPE html>
                       <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
                         <tr>
                           <td style="font-family:Arial,Helvetica,sans-serif;font-size:15px;color:#bdbdbd;padding:4px 0;">
-                            <strong style="color:#ffffff;">Číslo účtu:</strong> 6801421339 / 0800
+                            <strong style="color:#ffffff;">Číslo účtu:</strong> 117407613 / 5500
                           </td>
                         </tr>
                         <tr>
