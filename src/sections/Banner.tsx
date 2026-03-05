@@ -2,7 +2,6 @@ import type { IDataBanner } from 'fetch/banner'
 
 import { Container } from 'components/Container'
 import { getBanner } from 'fetch/banner'
-import { withHiddenRoutes } from 'helpers/withHiddenRoutes'
 import dynamic from 'next/dynamic'
 import Image from 'next/image'
 
@@ -58,4 +57,4 @@ const Banner = async () => {
   )
 }
 
-export default withHiddenRoutes(Banner, ['/book', '/kontakt'])
+export default Banner

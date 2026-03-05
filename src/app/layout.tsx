@@ -4,6 +4,7 @@ import FacebookPageView from 'components/FacebookPageView'
 import Footer from 'components/Footer'
 import { Header } from 'components/Header'
 import { AppProvider } from 'context/AppContext'
+import { HideOnRoutes } from 'helpers/HideOnRoutes'
 import { Montserrat } from 'next/font/google'
 import Script from 'next/script'
 import { Suspense } from 'react'
@@ -93,12 +94,16 @@ export default async function RootLayout({
             <Header />
           </Suspense>
           {children}
-          <Suspense>
-            <Banner />
-          </Suspense>
-          <Suspense>
-            <Footer />
-          </Suspense>
+          <HideOnRoutes routes={['/book', '/kontakt']}>
+            <Suspense>
+              <Banner />
+            </Suspense>
+          </HideOnRoutes>
+          <HideOnRoutes routes={['/book']}>
+            <Suspense>
+              <Footer />
+            </Suspense>
+          </HideOnRoutes>
         </AppProvider>
         <Script id={'tawk-to'} strategy={'lazyOnload'}>
           {`var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();

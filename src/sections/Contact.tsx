@@ -4,21 +4,17 @@ import { Container } from 'components/Container'
 import { SocNav } from 'components/SocNav'
 import { getContact } from 'fetch/contact'
 import { parseHtml } from 'lib/parseHtml'
-import { headers } from 'next/headers'
 import Link from 'next/link'
 
-const Contact = async () => {
-  const headersList = await headers()
-  const pathname = headersList.get('x-next-pathname') || ''
+import { ContactHandIcon, ContactHeading } from './ContactExtras'
 
+const Contact = async () => {
   const contact: IDataContact = await getContact()
 
   return (
     <section className={'pb-23 lg:pb-27'}>
       <Container size={'xl'}>
-        {pathname !== '/kontakt' && (
-          <h2 className={'text-md lg:text-big text-center mb-5 lg:mb-11.5'}>{'KONTAKT'}</h2>
-        )}
+        <ContactHeading />
         <div className={'flex justify-center mb-5 lg:mb-16'}>
           <SocNav items={contact.socItems} />
         </div>
@@ -57,13 +53,7 @@ const Contact = async () => {
             </Link>
           </div>
         </div>
-        {pathname === '/kontakt' && (
-          <section className={'hidden lg:block py-11.5'}>
-            <Container size={'sm'} className={'px-11'}>
-              <img src={'/assets/icons/smallHand.svg'} alt={'Small hand Barbitch logo icon'} />
-            </Container>
-          </section>
-        )}
+        <ContactHandIcon />
       </Container>
     </section>
   )

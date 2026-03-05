@@ -1,4 +1,3 @@
-import { withHiddenRoutes } from 'helpers/withHiddenRoutes'
 // import dynamic from 'next/dynamic'
 
 import Contact from '../sections/Contact'
@@ -16,4 +15,4 @@ const Footer = async () => {
   )
 }
 
-export default withHiddenRoutes(Footer, ['/book'])
+export default Footer
