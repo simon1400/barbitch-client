@@ -1,4 +1,3 @@
-/* eslint-disable perfectionist/sort-imports */
 import type { VariantProps } from 'class-variance-authority'
 
 import { Slot } from '@radix-ui/react-slot'

@@ -1,6 +1,8 @@
-import crypto from 'node:crypto'
+import type { NextRequest } from 'next/server'
 
-import { type NextRequest, NextResponse } from 'next/server'
+import crypto from 'node:crypto'
+// eslint-disable-next-line import/order
+import { NextResponse } from 'next/server'
 
 const PIXEL_ID = process.env.PIXEL_ID
 const ACCESS_TOKEN = process.env.PIXEL_ACCESS_TOKEN
@@ -27,7 +29,16 @@ interface CAPIRequestBody {
 export async function POST(req: NextRequest) {
   try {
     const body: CAPIRequestBody = await req.json()
-    const { event_name, event_source_url, event_id, user_data, custom_data, fbp, fbc, external_id } = body
+    const {
+      event_name,
+      event_source_url,
+      event_id,
+      user_data,
+      custom_data,
+      fbp,
+      fbc,
+      external_id,
+    } = body
 
     if (!event_name || !event_id) {
       return NextResponse.json({ error: 'event_name and event_id are required' }, { status: 400 })

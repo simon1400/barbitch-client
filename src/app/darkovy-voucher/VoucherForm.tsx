@@ -111,13 +111,17 @@ const VoucherForm = () => {
     createVoucher(combineData)
       .then(() => {
         // Send Purchase event to FB CAPI
-        sendCAPIEvent('Purchase', {
-          email: data.email,
-          phone: data.phone,
-        }, {
-          currency: 'CZK',
-          value: data.voucher,
-        })
+        sendCAPIEvent(
+          'Purchase',
+          {
+            email: data.email,
+            phone: data.phone,
+          },
+          {
+            currency: 'CZK',
+            value: data.voucher,
+          },
+        )
 
         axios
           .post('/api/send-mail-voucher', {

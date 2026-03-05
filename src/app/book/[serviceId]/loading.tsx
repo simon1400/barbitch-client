@@ -15,7 +15,9 @@ const BookPersonalLoading = () => {
         {[1, 2].map((i) => (
           <li
             key={i}
-            className={'border-t-2 border-[#3C3C3C] border-dotted flex items-center py-4 px-1 gap-4'}
+            className={
+              'border-t-2 border-[#3C3C3C] border-dotted flex items-center py-4 px-1 gap-4'
+            }
           >
             <span className={'min-w-10 w-10 h-10 rounded-full bg-[#3C3C3C] shrink-0 block'} />
             <span className={'h-3 bg-[#3C3C3C] rounded w-28 flex-1 block'} />

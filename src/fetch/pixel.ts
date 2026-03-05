@@ -1,14 +1,13 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import axios from 'axios'
+
 declare global {
   interface Window {
     dataLayer?: Record<string, any>[]
   }
 }
 
-import axios from 'axios'
-
 function generateEventId(): string {
-  return `${Date.now()}-${Math.random().toString(36).slice(2, 11)}`
+  return `${Date.now()}-${crypto.randomUUID().slice(0, 8)}`
 }
 
 function getCookie(name: string): string | undefined {
@@ -21,7 +20,7 @@ function getOrCreateExternalId(): string {
   if (typeof localStorage === 'undefined') return ''
   let id = localStorage.getItem('fb_external_id')
   if (!id) {
-    id = `ext_${Date.now()}_${Math.random().toString(36).slice(2, 11)}`
+    id = `ext_${Date.now()}_${crypto.randomUUID().slice(0, 8)}`
     localStorage.setItem('fb_external_id', id)
   }
   return id
@@ -66,7 +65,8 @@ export const sendCAPIEvent = async (
     await axios.post('/api/fb-capi', {
       event_name: eventName,
       event_id: eventId,
-      event_source_url: typeof window !== 'undefined' ? window.location.href : 'https://barbitch.cz',
+      event_source_url:
+        typeof window !== 'undefined' ? window.location.href : 'https://barbitch.cz',
       user_data: userData,
       custom_data: customData,
       fbp,
