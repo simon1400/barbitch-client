@@ -7,6 +7,7 @@ import { Text } from 'components/dynamicComponents/Text'
 import { DeliveryMethod } from 'components/form/DeliveryMethod'
 import { Radio } from 'components/form/Radio'
 import { Textarea } from 'components/form/Textarea'
+import { sendCAPIEvent } from 'fetch/pixel'
 import { createVoucher } from 'fetch/voucher'
 import { useState } from 'react'
 
@@ -109,6 +110,15 @@ const VoucherForm = () => {
     }
     createVoucher(combineData)
       .then(() => {
+        // Send Purchase event to FB CAPI
+        sendCAPIEvent('Purchase', {
+          email: data.email,
+          phone: data.phone,
+        }, {
+          currency: 'CZK',
+          value: data.voucher,
+        })
+
         axios
           .post('/api/send-mail-voucher', {
             ...combineData,

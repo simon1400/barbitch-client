@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 
+import FacebookPageView from 'components/FacebookPageView'
 import Footer from 'components/Footer'
 import { Header } from 'components/Header'
 import { AppProvider } from 'context/AppContext'
@@ -9,8 +10,26 @@ import Banner from 'sections/Banner'
 import './globals.scss'
 
 export const metadata: Metadata = {
-  title: 'Bar.bitch',
-  description: 'Beauty salon in Brno',
+  metadataBase: new URL('https://barbitch.cz'),
+  title: {
+    default: 'Barbitch – Manikúra, řasy a obočí v Brně',
+    template: '%s | Barbitch',
+  },
+  description:
+    'Objevte moderní beauty studio Bar.bitch v Brně. Profesionální manikúra, trendy obočí a dokonalé řasy. Individuální přístup a relaxace s kvalitními materiály. Rezervujte si termín ještě dnes!',
+  openGraph: {
+    title: 'Barbitch – Manikúra, řasy a obočí v Brně',
+    description:
+      'Objevte moderní beauty studio Bar.bitch v Brně. Profesionální manikúra, trendy obočí a dokonalé řasy. Individuální přístup a relaxace s kvalitními materiály. Rezervujte si termín ještě dnes!',
+    url: 'https://barbitch.cz',
+    siteName: 'Barbitch',
+    locale: 'cs_CZ',
+    type: 'website',
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
 }
 
 const montserat = Montserrat({
@@ -58,6 +77,7 @@ export default async function RootLayout({
       </Script>
       <body className={`bg-base antialiased overflow-x-hidden ${montserat.className}`}>
         <AppProvider>
+          <FacebookPageView />
           <Header />
           {children}
           <Banner />

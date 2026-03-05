@@ -1,6 +1,7 @@
 'use client'
 import Button from 'components/Button'
 import { Container } from 'components/Container'
+import { sendCAPIEvent } from 'fetch/pixel'
 import { useOnMountUnsafe } from 'helpers/useOnMountUnsaf'
 import { useRouter } from 'next/navigation'
 import { useCallback, useMemo, useState } from 'react'
@@ -112,6 +113,12 @@ const BookForm = ({ idReservation }: Props) => {
         router.push('/blocked')
         return
       }
+
+      // Send Lead event to FB CAPI
+      sendCAPIEvent('Lead', {
+        email: userData.email,
+        phone: userData.phone,
+      })
 
       router.push('/thank-you')
     } catch (err) {
