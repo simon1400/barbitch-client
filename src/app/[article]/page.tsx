@@ -1,7 +1,7 @@
 import type { Metadata } from 'next'
 
 import { DynamicContent } from 'components/DynamicContent'
-import { getArticle, getArticleMeta } from 'fetch/article'
+import { getArticle } from 'fetch/article'
 import { getLinkToReserve } from 'fetch/contact'
 import { Axios } from 'lib/api'
 import { getStrapiImageUrl } from 'lib/image-utils'
@@ -23,7 +23,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: any): Promise<Metadata> {
   const { article } = await params
-  const data = await getArticleMeta(article)
+  const data = await getArticle(article)
 
   if (!data) {
     return {
@@ -60,11 +60,7 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
 
 const Article = async ({ params }: any) => {
   const { article } = await params
-  const [data, dataLink, metaData] = await Promise.all([
-    getArticle(article),
-    getLinkToReserve(),
-    getArticleMeta(article),
-  ])
+  const [data, dataLink] = await Promise.all([getArticle(article), getLinkToReserve()])
 
   if (!data) {
     return notFound()
@@ -80,8 +76,8 @@ const Article = async ({ params }: any) => {
       />
       <ArticleSchema
         title={data.title}
-        description={metaData?.metaData?.description || data.title}
-        image={getStrapiImageUrl(metaData?.metaData?.image?.url)}
+        description={data.metaData?.description || data.title}
+        image={getStrapiImageUrl(data.metaData?.image?.url)}
         datePublished={data.publishedAt || new Date().toISOString()}
         dateModified={data.updatedAt || new Date().toISOString()}
         url={`https://barbitch.cz/${article}`}

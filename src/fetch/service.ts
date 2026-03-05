@@ -10,6 +10,11 @@ export interface IDataHomepageService {
 export interface IDataFullService {
   title: string
   dynamicContent: any[]
+  metaData?: {
+    title?: string
+    description?: string
+    image?: IGalery
+  }
 }
 
 const queryServiceHomepage = qs.stringify(
@@ -43,6 +48,9 @@ export const getFullService = async (slug: string): Promise<IDataFullService> =>
       },
       fields: ['title'],
       populate: {
+        metaData: {
+          populate: ['image'],
+        },
         dynamicContent: {
           on: {
             'content.text': {

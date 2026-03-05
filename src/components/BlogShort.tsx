@@ -16,7 +16,7 @@ export const BlogBigShort = ({ data }: { data: IDataPostShort }) => {
           fill
           src={getStrapiImageUrl(data.image?.url)}
           alt={data.image?.alternativeText || 'Článek Barbitch blogu'}
-          priority
+          loading={'eager'}
           quality={75}
           sizes={'(max-width: 768px) 100vw, 954px'}
           placeholder={'blur'}

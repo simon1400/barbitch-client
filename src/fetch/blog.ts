@@ -8,6 +8,11 @@ export interface IDataPost {
   dynamicContent: any[]
   publishedAt?: string
   updatedAt?: string
+  metaData?: {
+    title?: string
+    description?: string
+    image?: IGalery
+  }
 }
 
 export interface IDataPostShort {
@@ -33,6 +38,9 @@ export const getPost = async (slug: string): Promise<IDataPost | undefined> => {
       populate: {
         image: {
           fields: ['url', 'alternativeText'],
+        },
+        metaData: {
+          populate: ['image'],
         },
         dynamicContent: {
           on: {

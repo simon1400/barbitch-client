@@ -11,6 +11,8 @@ import { Top } from 'sections/Top/Top'
 
 import VoucherForm from './VoucherForm'
 
+export const revalidate = 3600
+
 export async function generateMetadata(): Promise<Metadata> {
   const data = await getVoucherMeta()
 
@@ -50,8 +52,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 const Voucher = async () => {
-  const data = await getVoucher()
-  const dataLink = await getLinkToReserve()
+  const [data, dataLink] = await Promise.all([getVoucher(), getLinkToReserve()])
 
   return (
     <main>

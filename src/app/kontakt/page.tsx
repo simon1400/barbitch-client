@@ -9,6 +9,8 @@ import { BreadcrumbSchema } from 'schemasOrg/breadcrumb'
 import { ContactSchema } from 'schemasOrg/contact'
 import { Top } from 'sections/Top/Top'
 
+export const revalidate = 3600
+
 export async function generateMetadata(): Promise<Metadata> {
   const data = await getContactMeta()
 
@@ -46,8 +48,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 const Contact = async () => {
-  const dataLink = await getLinkToReserve()
-  const dataContent = await getContactContent()
+  const [dataLink, dataContent] = await Promise.all([getLinkToReserve(), getContactContent()])
   return (
     <main>
       <BreadcrumbSchema

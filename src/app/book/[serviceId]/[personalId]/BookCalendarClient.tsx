@@ -44,7 +44,7 @@ export default function BookCalendarClient({ initialData }: BookCalendarClientPr
   useEffect(() => {
     const idReservation = localStorage.getItem('idSlotReservation') || null
     if (idReservation) {
-      deleteSlotReservation(idReservation)
+      deleteSlotReservation(idReservation).catch(() => {})
       localStorage.removeItem('idSlotReservation')
     }
   }, [])

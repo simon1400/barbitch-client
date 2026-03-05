@@ -2,7 +2,6 @@
 import Button from 'components/Button'
 import { Stars } from 'components/Review'
 import dynamic from 'next/dynamic'
-import { Montserrat } from 'next/font/google'
 import Image from 'next/image'
 import React from 'react'
 import { Autoplay } from 'swiper/modules'
@@ -21,12 +20,6 @@ const ReactGoogleReviews = dynamic(
 
 const Swiper = dynamic(() => import('swiper/react').then((mod) => mod.Swiper), { ssr: false })
 const Review = dynamic(() => import('components/Review'))
-
-const montserat = Montserrat({
-  subsets: ['latin'],
-  weight: ['400', '700'],
-  display: 'swap',
-})
 
 const CtaReview = () => {
   return (
@@ -69,7 +62,6 @@ const Reviews = () => {
             <Swiper
               spaceBetween={40}
               slidesPerView={1}
-              className={montserat.className}
               loop
               modules={[Autoplay]}
               autoplay={{

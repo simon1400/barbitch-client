@@ -2,7 +2,6 @@ import type { Metadata } from 'next'
 
 import { DynamicContent } from 'components/DynamicContent'
 import { getLinkToReserve } from 'fetch/contact'
-import { getFullServiceMeta } from 'fetch/getMeta'
 import { getFullService } from 'fetch/service'
 import { Axios } from 'lib/api'
 import { getStrapiImageUrl } from 'lib/image-utils'
@@ -23,9 +22,9 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: any): Promise<Metadata> {
   const { slug } = await params
-  const meta = await getFullServiceMeta(slug)
+  const data = await getFullService(slug)
 
-  if (!meta || !meta.metaData) {
+  if (!data || !data.metaData) {
     return {
       title: 'Service Not Found',
       description: '',
@@ -33,21 +32,21 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
   }
 
   return {
-    title: meta.metaData.title || meta.title,
-    description: meta.metaData.description || '',
+    title: data.metaData.title || data.title,
+    description: data.metaData.description || '',
     openGraph: {
-      title: meta.metaData.title || meta.title,
-      description: meta.metaData.description || '',
+      title: data.metaData.title || data.title,
+      description: data.metaData.description || '',
       siteName: 'Barbitch',
-      images: [getStrapiImageUrl(meta.metaData.image?.url)],
+      images: [getStrapiImageUrl(data.metaData.image?.url)],
       url: `https://barbitch.cz/service/${slug}`,
       type: 'article',
     },
     twitter: {
       card: 'summary_large_image',
-      title: meta.metaData.title || meta.title,
-      description: meta.metaData.description || '',
-      images: [getStrapiImageUrl(meta.metaData.image?.url)],
+      title: data.metaData.title || data.title,
+      description: data.metaData.description || '',
+      images: [getStrapiImageUrl(data.metaData.image?.url)],
     },
     keywords: [
       'barbitch',
@@ -85,7 +84,7 @@ const Service = async ({ params }: any) => {
         <ServiceSchema name={data.title} url={`https://barbitch.cz/service/${slug}`} />
       )}
       <Top title={data.title} small linkToReserve={dataLink.linkToReserve} />
-      <DynamicContent data={data.dynamicContent} variant="service" />
+      <DynamicContent data={data.dynamicContent} variant={'service'} />
     </main>
   )
 }

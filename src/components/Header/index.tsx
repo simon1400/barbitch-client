@@ -11,8 +11,10 @@ import LogoWrap from './LogoWrap'
 import Menu from './Menu'
 
 export const Header = async () => {
-  const dataLinkReserve: IDataLinkToReserve = await getLinkToReserve()
-  const dataNav: IDataNav = await getNav()
+  const [dataLinkReserve, dataNav]: [IDataLinkToReserve, IDataNav] = await Promise.all([
+    getLinkToReserve(),
+    getNav(),
+  ])
 
   return (
     <>

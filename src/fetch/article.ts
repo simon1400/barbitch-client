@@ -8,6 +8,11 @@ export interface IDataArticle {
   dynamicContent: any[]
   publishedAt?: string
   updatedAt?: string
+  metaData?: {
+    title?: string
+    description?: string
+    image?: IGalery
+  }
 }
 
 export const getArticle = async (slug: string): Promise<IDataArticle | undefined> => {
@@ -20,6 +25,9 @@ export const getArticle = async (slug: string): Promise<IDataArticle | undefined
       },
       fields: ['title', 'publishedAt', 'updatedAt'],
       populate: {
+        metaData: {
+          populate: ['image'],
+        },
         dynamicContent: {
           on: {
             'content.text': {
@@ -62,31 +70,6 @@ export const getArticle = async (slug: string): Promise<IDataArticle | undefined
     return data[0]
   } catch (error) {
     console.error('Failed to fetch article:', error)
-    return undefined
-  }
-}
-
-export const getArticleMeta = async (slug: string): Promise<IDataMetaWrap | undefined> => {
-  const query = qs.stringify(
-    {
-      filters: {
-        slug: {
-          $eq: slug,
-        },
-      },
-      fields: ['title'],
-      populate: ['metaData'],
-    },
-    {
-      encodeValuesOnly: true,
-    },
-  )
-
-  try {
-    const data: IDataMetaWrap[] = await Axios.get(`/api/articles?${query}`)
-    return data[0]
-  } catch (error) {
-    console.error('Failed to fetch article meta:', error)
     return undefined
   }
 }

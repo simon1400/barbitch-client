@@ -31,7 +31,7 @@ const Banner = async () => {
           alt={
             'Proces manikúry v salonu: nehtová specialistka v růžových rukavicích upravuje nehty zákaznice pomocí přístroje s růžovým povrchem'
           }
-          priority
+          loading={'lazy'}
           quality={75}
           sizes={'100vw'}
           placeholder={'blur'}

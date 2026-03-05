@@ -78,7 +78,18 @@ export default async function RootLayout({
       <body className={`bg-base antialiased overflow-x-hidden ${montserat.className}`}>
         <AppProvider>
           <FacebookPageView />
-          <Suspense>
+          <Suspense
+            fallback={
+              <header className={'absolute w-full z-50'}>
+                <div className={'max-w-[1280px] mx-auto px-4'}>
+                  <div className={'flex justify-between py-3 lg:py-8 items-center'}>
+                    <div className={'w-[120px] h-[40px]'} />
+                    <div className={'w-[180px] h-[40px]'} />
+                  </div>
+                </div>
+              </header>
+            }
+          >
             <Header />
           </Suspense>
           {children}

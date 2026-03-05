@@ -13,6 +13,8 @@ import { BreadcrumbSchema } from 'schemasOrg/breadcrumb'
 import Reviews from 'sections/Reviews'
 import { Top } from 'sections/Top/Top'
 
+export const revalidate = 3600
+
 export async function generateMetadata(): Promise<Metadata> {
   const { metaData } = await getPricelistMeta()
 

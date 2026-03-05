@@ -2,7 +2,6 @@ import type { Metadata } from 'next'
 
 import { DynamicContent } from 'components/DynamicContent'
 import { getPost } from 'fetch/blog'
-import { getPostMeta } from 'fetch/getMeta'
 import { Axios } from 'lib/api'
 import { getStrapiImageUrl } from 'lib/image-utils'
 import { notFound } from 'next/navigation'
@@ -20,7 +19,7 @@ export async function generateStaticParams() {
 
 export async function generateMetadata({ params }: any): Promise<Metadata> {
   const { post } = await params
-  const data = await getPostMeta(post)
+  const data = await getPost(post)
 
   if (!data) {
     return {
@@ -35,18 +34,18 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
     title: metaData?.title || title,
     description: metaData?.description,
     openGraph: {
-      title: metaData.title || title,
-      description: metaData.description || '',
+      title: metaData?.title || title,
+      description: metaData?.description || '',
       siteName: 'Barbitch',
-      images: [getStrapiImageUrl(metaData.image?.url)],
+      images: [getStrapiImageUrl(metaData?.image?.url)],
       url: `https://barbitch.cz/blog/${post}`,
       type: 'article',
     },
     twitter: {
       card: 'summary_large_image',
-      title: metaData.title || title,
-      description: metaData.description || '',
-      images: [getStrapiImageUrl(metaData.image?.url)],
+      title: metaData?.title || title,
+      description: metaData?.description || '',
+      images: [getStrapiImageUrl(metaData?.image?.url)],
     },
     keywords: ['barbitch', 'bar.bitch', 'bar bitch', 'Brno', 'Nehty', 'Blog', title],
     alternates: {
@@ -74,7 +73,7 @@ const Post = async ({ params }: any) => {
       />
       <ArticleSchema
         title={data.title}
-        description={data.title}
+        description={data.metaData?.description || data.title}
         image={getStrapiImageUrl(data.image?.url)}
         datePublished={data.publishedAt || new Date().toISOString()}
         dateModified={data.updatedAt || new Date().toISOString()}

@@ -16,7 +16,7 @@ export const TopImage = ({ title, image }: { title: string; image: IGalery }) =>
           alt={image?.alternativeText || 'Barbitch Beauty Studio'}
           priority
           quality={75}
-          sizes={'100vw'}
+          sizes={'(max-width: 640px) 100vw, (max-width: 1200px) 100vw, 1920px'}
           placeholder={'blur'}
           blurDataURL={
             'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mN8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=='
