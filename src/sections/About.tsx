@@ -1,7 +1,7 @@
 import Button from 'components/Button'
 import { Container } from 'components/Container'
-import { parseHtml } from 'lib/parseHtml'
 import { BigLogoIcon } from 'icons/BigLogo'
+import { parseHtml } from 'lib/parseHtml'
 
 const About = ({ text }: { text: string }) => {
   return (

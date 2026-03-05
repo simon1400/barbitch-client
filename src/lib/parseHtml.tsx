@@ -1,4 +1,6 @@
-import parse, { type DOMNode, domToReact, Element } from 'html-react-parser'
+import type { DOMNode } from 'html-react-parser'
+
+import parse, { Element } from 'html-react-parser'
 
 const INTERNAL_HOSTS = ['barbitch.cz', 'www.barbitch.cz']
 

@@ -1,7 +1,7 @@
 import type { IDataPostShort } from 'fetch/blog'
 
-import { parseHtml } from 'lib/parseHtml'
 import { getStrapiImageUrl } from 'lib/image-utils'
+import { parseHtml } from 'lib/parseHtml'
 import Image from 'next/image'
 import Link from 'next/link'
 
