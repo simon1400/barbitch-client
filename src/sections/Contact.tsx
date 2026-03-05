@@ -3,7 +3,7 @@ import type { IDataContact } from 'fetch/contact'
 import { Container } from 'components/Container'
 import { SocNav } from 'components/SocNav'
 import { getContact } from 'fetch/contact'
-import parse from 'html-react-parser'
+import { parseHtml } from 'lib/parseHtml'
 import { headers } from 'next/headers'
 import Link from 'next/link'
 
@@ -42,10 +42,10 @@ const Contact = async () => {
             </Link>
           </div>
           <div className={'w-full text-center text-nowrap mb-5 lg:mb-0'}>
-            {parse(contact.openHours || '')}
+            {parseHtml(contact.openHours || '', false)}
           </div>
           <div className={'lg:text-right text-nowrap'}>
-            {parse(contact.address || '')}
+            {parseHtml(contact.address || '', false)}
             <Link
               className={
                 'block text-primary underline duration-300 underline-offset-2 hover:underline-offset-4'

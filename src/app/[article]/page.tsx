@@ -6,14 +6,19 @@ import { getLinkToReserve } from 'fetch/contact'
 import { Axios } from 'lib/api'
 import { getStrapiImageUrl } from 'lib/image-utils'
 import { notFound } from 'next/navigation'
+import { ArticleSchema } from 'schemasOrg/article'
+import { BreadcrumbSchema } from 'schemasOrg/breadcrumb'
 import { Top } from 'sections/Top/Top'
 
 export async function generateStaticParams() {
-  const articles = (await Axios.get('/api/articles?fields[0]=slug')) as { slug: string }[]
-
-  return articles.map((article) => ({
-    article: article.slug,
-  }))
+  try {
+    const articles = (await Axios.get('/api/articles?fields[0]=slug')) as { slug: string }[]
+    return articles.map((article) => ({
+      article: article.slug,
+    }))
+  } catch {
+    return []
+  }
 }
 
 export async function generateMetadata({ params }: any): Promise<Metadata> {
@@ -21,7 +26,10 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
   const data = await getArticleMeta(article)
 
   if (!data) {
-    return notFound()
+    return {
+      title: 'Stránka nenalezena',
+      description: '',
+    }
   }
 
   const { title, metaData } = data
@@ -52,8 +60,11 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
 
 const Article = async ({ params }: any) => {
   const { article } = await params
-  const data = await getArticle(article)
-  const dataLink = await getLinkToReserve()
+  const [data, dataLink, metaData] = await Promise.all([
+    getArticle(article),
+    getLinkToReserve(),
+    getArticleMeta(article),
+  ])
 
   if (!data) {
     return notFound()
@@ -61,8 +72,24 @@ const Article = async ({ params }: any) => {
 
   return (
     <main>
-      <Top title={data.title} small linkToReserve={dataLink.linkToReserve} />
-      <DynamicContent data={data.dynamicContent} />
+      <BreadcrumbSchema
+        items={[
+          { name: 'Hlavní strana', url: 'https://barbitch.cz' },
+          { name: data.title, url: `https://barbitch.cz/${article}` },
+        ]}
+      />
+      <ArticleSchema
+        title={data.title}
+        description={metaData?.metaData?.description || data.title}
+        image={getStrapiImageUrl(metaData?.metaData?.image?.url)}
+        datePublished={data.publishedAt || new Date().toISOString()}
+        dateModified={data.updatedAt || new Date().toISOString()}
+        url={`https://barbitch.cz/${article}`}
+      />
+      <article>
+        <Top title={data.title} small linkToReserve={dataLink.linkToReserve} />
+        <DynamicContent data={data.dynamicContent} />
+      </article>
     </main>
   )
 }

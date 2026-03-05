@@ -2,7 +2,7 @@ import Button from 'components/Button'
 import { CenikTable } from 'components/CenikTable'
 import { Container } from 'components/Container'
 import { getBookingPricelist } from 'fetch/bookingPricelist'
-import parse from 'html-react-parser'
+import { parseHtml } from 'lib/parseHtml'
 
 export const PriceList = async ({ data }: { data: any }) => {
   const allGroups = await getBookingPricelist()
@@ -27,7 +27,7 @@ export const PriceList = async ({ data }: { data: any }) => {
       <section>
         <Container size={'lg'}>
           {data.title && <h2>{data.title}</h2>}
-          {data.contentBefore && <div>{parse(data.contentBefore, { trim: true })}</div>}
+          {data.contentBefore && <div>{parseHtml(data.contentBefore)}</div>}
         </Container>
       </section>
 
@@ -35,7 +35,7 @@ export const PriceList = async ({ data }: { data: any }) => {
 
       <section>
         <Container size={'lg'}>
-          {!!data.contentAfter && <div>{parse(data.contentAfter, { trim: true })}</div>}
+          {!!data.contentAfter && <div>{parseHtml(data.contentAfter)}</div>}
           {data.cta && (
             <div className={'mb-17 mt-10'}>
               <Button text={data.cta.title} href={data.cta.link} />

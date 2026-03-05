@@ -18,13 +18,13 @@ const Menu = ({ nav }: { nav: IDataNav }) => {
       }`}
       role={'menu'}
       aria-hidden={!open}
-      aria-label={'Основное меню'}
+      aria-label={'Hlavní menu'}
     >
       <Container size={'xl'}>
         <div className={'text-right lg:text-left'}>
           <nav className={'lg:flex items-center justify-between w-full pb-20'}>
             <div>
-              <ul className={'mb-2.5 lg:mb-0 block'} aria-label={'Основная навигация'}>
+              <ul className={'mb-2.5 lg:mb-0 block'} aria-label={'Hlavní navigace'}>
                 {nav.leftNav?.length &&
                   nav.leftNav.map((item: INavItem) => (
                     <li key={`leftMenu_${item.title}`}>
@@ -38,7 +38,7 @@ const Menu = ({ nav }: { nav: IDataNav }) => {
               </ul>
             </div>
             <div>
-              <ul className={'block text-right'} aria-label={'Дополнительная навигация'}>
+              <ul className={'block text-right'} aria-label={'Doplňková navigace'}>
                 {nav.rightNav?.length &&
                   nav.rightNav.map((item: INavItem) => (
                     <li className={'mt-2 lg:mt-2.5 text-right'} key={`rightMenu_${item.title}`}>

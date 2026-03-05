@@ -10,6 +10,7 @@ import { BreadcrumbSchema } from 'schemasOrg/breadcrumb'
 import { SchemaJsonManikura } from 'schemasOrg/manikura'
 import { SchemaJsonOboci } from 'schemasOrg/oboci'
 import { SchemaJsonRasy } from 'schemasOrg/rasy'
+import { ServiceSchema } from 'schemasOrg/service'
 import { Top } from 'sections/Top/Top'
 
 export async function generateStaticParams() {
@@ -80,6 +81,9 @@ const Service = async ({ params }: any) => {
       {slug === 'oboci' && <SchemaJsonOboci />}
       {slug === 'rasy' && <SchemaJsonRasy />}
       {slug === 'manikura' && <SchemaJsonManikura />}
+      {slug !== 'oboci' && slug !== 'rasy' && slug !== 'manikura' && (
+        <ServiceSchema name={data.title} url={`https://barbitch.cz/service/${slug}`} />
+      )}
       <Top title={data.title} small linkToReserve={dataLink.linkToReserve} />
       <DynamicContent data={data.dynamicContent} variant="service" />
     </main>

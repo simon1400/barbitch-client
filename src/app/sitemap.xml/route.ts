@@ -6,23 +6,15 @@ export async function GET() {
 
   const routes = await getSitemapSlugs()
 
+  const now = new Date().toISOString()
+
   const staticRoutes = [
-    { update: '2025-05-17T20:30:30.002Z', slug: ``, priority: '1.0', changefreq: 'weekly' },
-    { update: '2025-05-17T20:30:30.002Z', slug: '/blog', priority: '0.9', changefreq: 'weekly' },
-    {
-      update: '2025-06-22T10:30:30.002Z',
-      slug: '/darkovy-voucher',
-      priority: '0.8',
-      changefreq: 'monthly',
-    },
-    {
-      update: '2025-05-17T20:30:30.002Z',
-      slug: '/kontakt',
-      priority: '0.8',
-      changefreq: 'monthly',
-    },
-    { update: '2025-05-17T20:30:30.002Z', slug: '/cenik', priority: '0.8', changefreq: 'monthly' },
-    { update: '2025-05-17T20:30:30.002Z', slug: '/book', priority: '0.8', changefreq: 'monthly' },
+    { update: now, slug: ``, priority: '1.0', changefreq: 'weekly' },
+    { update: now, slug: '/blog', priority: '0.9', changefreq: 'weekly' },
+    { update: now, slug: '/darkovy-voucher', priority: '0.8', changefreq: 'monthly' },
+    { update: now, slug: '/kontakt', priority: '0.8', changefreq: 'monthly' },
+    { update: now, slug: '/cenik', priority: '0.8', changefreq: 'monthly' },
+    { update: now, slug: '/book', priority: '0.8', changefreq: 'monthly' },
   ]
 
   const allRoutes = [...staticRoutes, ...routes]

@@ -14,7 +14,7 @@ const LogoWrap = () => {
       <a
         href={'/'}
         className={'block max-w-[205px] lg:max-w-[290px]'}
-        aria-label={'Перейти на главную страницу'}
+        aria-label={'Přejít na domovskou stránku'}
       >
         <LogoIcon className={`w-full ${fill}`} />
       </a>

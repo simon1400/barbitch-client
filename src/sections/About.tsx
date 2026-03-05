@@ -1,6 +1,6 @@
 import Button from 'components/Button'
 import { Container } from 'components/Container'
-import parse from 'html-react-parser'
+import { parseHtml } from 'lib/parseHtml'
 import { BigLogoIcon } from 'icons/BigLogo'
 
 const About = ({ text }: { text: string }) => {
@@ -13,7 +13,7 @@ const About = ({ text }: { text: string }) => {
 
         <div className={'items-center gap-23'}>
           <div className={'w-full mb-5 content'}>
-            <div className={'content'}>{parse(text)}</div>
+            <div className={'content'}>{parseHtml(text)}</div>
           </div>
           <div className={'text-center lg:text-left'}>
             <Button text={'Poznejte náš salon'} href={'/o-nas'} id={'about-us-btn'} />

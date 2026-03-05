@@ -31,12 +31,14 @@ export const Banner = ({
                 className={'object-cover object-center opacity-60 grayscale'}
                 src={getStrapiImageUrl(data.image.url)}
                 fill
-                alt={data.image.alternativeText || ''}
-                loading="lazy"
+                alt={data.image.alternativeText || 'Obrázek salonu Barbitch'}
+                loading={'lazy'}
                 quality={70}
-                sizes="(max-width: 1200px) 100vw, 1200px"
-                placeholder="blur"
-                blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mN8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=="
+                sizes={'(max-width: 1200px) 100vw, 1200px'}
+                placeholder={'blur'}
+                blurDataURL={
+                  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mN8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=='
+                }
               />
             </div>
           )}

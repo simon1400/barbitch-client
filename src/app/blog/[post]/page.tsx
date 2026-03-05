@@ -23,7 +23,10 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
   const data = await getPostMeta(post)
 
   if (!data) {
-    return notFound()
+    return {
+      title: 'Příspěvek nenalezen',
+      description: '',
+    }
   }
 
   const { title, metaData } = data
@@ -77,8 +80,10 @@ const Post = async ({ params }: any) => {
         dateModified={data.updatedAt || new Date().toISOString()}
         url={`https://barbitch.cz/blog/${post}`}
       />
-      <TopImage title={data.title} image={data.image} />
-      <DynamicContent data={data.dynamicContent} />
+      <article>
+        <TopImage title={data.title} image={data.image} />
+        <DynamicContent data={data.dynamicContent} />
+      </article>
     </main>
   )
 }

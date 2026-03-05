@@ -1,6 +1,6 @@
 import Button from 'components/Button'
 import { Container } from 'components/Container'
-import parse from 'html-react-parser'
+import { parseHtml } from 'lib/parseHtml'
 
 export const Text = ({
   data,
@@ -12,7 +12,7 @@ export const Text = ({
       <Container size={'lg'}>
         <div>
           {data.title && <h2>{data.title}</h2>}
-          <div>{parse(data.contentText, { trim: true })}</div>
+          <div>{parseHtml(data.contentText)}</div>
           {data.cta && (
             <div className={'mb-17 mt-10'}>
               <Button text={data.cta.title} href={data.cta.link} />

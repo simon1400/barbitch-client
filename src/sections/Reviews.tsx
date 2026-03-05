@@ -37,13 +37,13 @@ const CtaReview = () => {
         width={63}
         height={63}
         alt={'google icon'}
-        loading="lazy"
+        loading={'lazy'}
         quality={80}
       />
       <div className={'mx-auto mb-5'}>
         <Stars star={5} />
       </div>
-      <h5 className={'text-resMd1 md:text-h5 mb-7'}>{'Budeme rádi za vaše hodnocení!'}</h5>
+      <p className={'text-resMd1 md:text-h5 mb-7 font-bold'}>{'Budeme rádi za vaše hodnocení!'}</p>
       <Button
         text={'NAPSAT RECENZI'}
         small

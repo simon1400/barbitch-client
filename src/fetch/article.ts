@@ -6,6 +6,8 @@ export interface IDataArticle {
   title: string
   slug: string
   dynamicContent: any[]
+  publishedAt?: string
+  updatedAt?: string
 }
 
 export const getArticle = async (slug: string): Promise<IDataArticle | undefined> => {
@@ -16,7 +18,7 @@ export const getArticle = async (slug: string): Promise<IDataArticle | undefined
           $eq: slug,
         },
       },
-      fields: ['title'],
+      fields: ['title', 'publishedAt', 'updatedAt'],
       populate: {
         dynamicContent: {
           on: {

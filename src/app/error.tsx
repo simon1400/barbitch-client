@@ -5,7 +5,7 @@ import Button from 'components/Button'
 
 export default function Error({ error, reset }: { error: Error; reset: () => void }) {
   return (
-    <section
+    <main
       className={'min-h-[600px] md:min-h-[700px] h-screen flex'}
       style={{
         backgroundImage: 'linear-gradient(0deg, rgba(231,30,110,1) 0%, rgba(255,0,101,0.5) 100%)',
@@ -27,6 +27,6 @@ export default function Error({ error, reset }: { error: Error; reset: () => voi
           }}
         />
       </div>
-    </section>
+    </main>
   )
 }

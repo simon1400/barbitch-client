@@ -3,8 +3,10 @@ import type { Metadata } from 'next'
 import { Container } from 'components/Container'
 import { getContactContent, getLinkToReserve } from 'fetch/contact'
 import { getContactMeta } from 'fetch/getMeta'
-import parse from 'html-react-parser'
+import { parseHtml } from 'lib/parseHtml'
 import { getStrapiImageUrl } from 'lib/image-utils'
+import { BreadcrumbSchema } from 'schemasOrg/breadcrumb'
+import { ContactSchema } from 'schemasOrg/contact'
 import { Top } from 'sections/Top/Top'
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -48,9 +50,16 @@ const Contact = async () => {
   const dataContent = await getContactContent()
   return (
     <main>
+      <BreadcrumbSchema
+        items={[
+          { name: 'Hlavní strana', url: 'https://barbitch.cz' },
+          { name: 'Kontakt', url: 'https://barbitch.cz/kontakt' },
+        ]}
+      />
+      <ContactSchema />
       <Top title={'Kontakt'} small linkToReserve={dataLink.linkToReserve} />
       <Container size={'md'}>
-        <div className={'content'}>{parse(dataContent.content, { trim: true })}</div>
+        <div className={'content'}>{parseHtml(dataContent.content)}</div>
       </Container>
     </main>
   )

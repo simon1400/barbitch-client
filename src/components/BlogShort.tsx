@@ -1,6 +1,6 @@
 import type { IDataPostShort } from 'fetch/blog'
 
-import parse from 'html-react-parser'
+import { parseHtml } from 'lib/parseHtml'
 import { getStrapiImageUrl } from 'lib/image-utils'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -15,7 +15,7 @@ export const BlogBigShort = ({ data }: { data: IDataPostShort }) => {
           }
           fill
           src={getStrapiImageUrl(data.image?.url)}
-          alt={data.image?.alternativeText || ''}
+          alt={data.image?.alternativeText || 'Článek Barbitch blogu'}
           priority
           quality={75}
           sizes={'(max-width: 768px) 100vw, 954px'}
@@ -37,7 +37,7 @@ export const BlogBigShort = ({ data }: { data: IDataPostShort }) => {
           </span>
         </h2>
         <div className={'hidden md:visible text-baseSm md:text-baseText'}>
-          {parse(data?.contentText || '', { trim: true })}
+          {parseHtml(data?.contentText || '')}
         </div>
       </div>
     </Link>
@@ -55,7 +55,7 @@ export const BlogShort = ({ data }: { data: IDataPostShort }) => {
           width={500}
           height={500}
           src={getStrapiImageUrl(data.image?.url)}
-          alt={data.image?.alternativeText || ''}
+          alt={data.image?.alternativeText || 'Článek Barbitch blogu'}
           loading={'lazy'}
           quality={70}
           sizes={'(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 500px'}

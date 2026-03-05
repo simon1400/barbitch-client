@@ -1,95 +1,29 @@
 import Image from 'next/image'
 
+const StarIcon = ({ solid }: { solid: boolean }) => (
+  <span className={'w-4'} aria-hidden={'true'}>
+    <Image
+      src={solid ? '/assets/icons/starSolid.svg' : '/assets/icons/starEmpty.svg'}
+      alt={''}
+      width={16}
+      height={14}
+      className={'w-full h-auto'}
+    />
+  </span>
+)
+
 export const Stars = ({ star, align }: { star: number; align?: 'right' | 'center' }) => {
   return (
     <div
       className={`flex items-center gap-0.5 ${align === 'right' ? 'md:justify-end' : 'justify-center'}`}
+      role={'img'}
+      aria-label={`Hodnocení ${star} z 5`}
     >
-      <span className={'w-4'}>
-        <Image
-          src={'/assets/icons/starSolid.svg'}
-          alt={'Review star solid icons'}
-          width={16}
-          height={14}
-          className={'w-full h-auto'}
-        />
-      </span>
-      <span className={'w-4'}>
-        {star >= 2 ? (
-          <Image
-            src={'/assets/icons/starSolid.svg'}
-            alt={'Review star solid icons'}
-            width={16}
-            height={14}
-            className={'w-full h-auto'}
-          />
-        ) : (
-          <Image
-            src={'/assets/icons/starEmpty.svg'}
-            alt={'Review star empty icons'}
-            width={16}
-            height={14}
-            className={'w-full h-auto'}
-          />
-        )}
-      </span>
-      <span className={'w-4'}>
-        {star >= 3 ? (
-          <Image
-            src={'/assets/icons/starSolid.svg'}
-            alt={'Review star solid icons'}
-            width={16}
-            height={14}
-            className={'w-full h-auto'}
-          />
-        ) : (
-          <Image
-            src={'/assets/icons/starEmpty.svg'}
-            alt={'Review star empty icons'}
-            width={16}
-            height={14}
-            className={'w-full h-auto'}
-          />
-        )}
-      </span>
-      <span className={'w-4'}>
-        {star >= 4 ? (
-          <Image
-            src={'/assets/icons/starSolid.svg'}
-            alt={'Review star solid icons'}
-            width={16}
-            height={14}
-            className={'w-full h-auto'}
-          />
-        ) : (
-          <Image
-            src={'/assets/icons/starEmpty.svg'}
-            alt={'Review star empty icons'}
-            width={16}
-            height={14}
-            className={'w-full h-auto'}
-          />
-        )}
-      </span>
-      <span className={'w-4'}>
-        {star === 5 ? (
-          <Image
-            src={'/assets/icons/starSolid.svg'}
-            alt={'Review star solid icons'}
-            width={16}
-            height={14}
-            className={'w-full h-auto'}
-          />
-        ) : (
-          <Image
-            src={'/assets/icons/starEmpty.svg'}
-            alt={'Review star empty icons'}
-            width={16}
-            height={14}
-            className={'w-full h-auto'}
-          />
-        )}
-      </span>
+      <StarIcon solid />
+      <StarIcon solid={star >= 2} />
+      <StarIcon solid={star >= 3} />
+      <StarIcon solid={star >= 4} />
+      <StarIcon solid={star === 5} />
     </div>
   )
 }
@@ -116,12 +50,12 @@ const Review = ({
               src={data.reviewer.profilePhotoUrl}
               fill
               alt={data.reviewer.displayName}
-              loading="lazy"
+              loading={'lazy'}
               quality={70}
-              sizes="52px"
+              sizes={'52px'}
             />
           </div>
-          <h5 className={'uppercase text-sm'}>{data.reviewer.displayName}</h5>
+          <p className={'uppercase text-sm font-bold'}>{data.reviewer.displayName}</p>
         </div>
         <div className={'h-4'}>
           <Stars star={data.starRating} align={'right'} />

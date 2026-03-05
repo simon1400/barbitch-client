@@ -5,8 +5,9 @@ import {
   AccordionTrigger,
 } from '@radix-ui/react-accordion'
 import { Container } from 'components/Container'
-import parse from 'html-react-parser'
+import { parseHtml } from 'lib/parseHtml'
 import { ChevronDown } from 'lucide-react'
+import { FAQSchema } from 'schemasOrg/faq'
 
 export const Faq = ({
   data,
@@ -26,6 +27,12 @@ export const Faq = ({
 
   return (
     <section className={'pb-10 md:pb-15 faq-sec'}>
+      <FAQSchema
+        faqs={data.item.map((item) => ({
+          question: item.title,
+          answer: item.content.replaceAll(/<[a-z/][^<>]*>/gi, ''),
+        }))}
+      />
       <Container size={'lg'}>
         <h2>{'FAQ'}</h2>
         <Accordion type={'single'} defaultValue={defaultValue}>
@@ -52,7 +59,7 @@ export const Faq = ({
                   'px-5 pb-0 overflow-hidden faq-content data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down'
                 }
               >
-                {parse(item.content, { trim: true })}
+                {parseHtml(item.content)}
               </AccordionContent>
             </AccordionItem>
           ))}

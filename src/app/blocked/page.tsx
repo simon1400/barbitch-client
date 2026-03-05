@@ -17,7 +17,7 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       title,
       siteName: 'Barbitch',
-      locale: 'cs',
+      locale: 'cs_CZ',
       description,
       images: ['https://barbitch.cz/assets/bigBaner.jpg'],
       url: 'https://barbitch.cz/blocked',
@@ -38,7 +38,7 @@ export async function generateMetadata(): Promise<Metadata> {
 
 export default function Blocked() {
   return (
-    <section
+    <main
       className={'min-h-[600px] md:min-h-[700px] h-screen flex'}
       style={{
         backgroundImage: 'linear-gradient(0deg, rgba(231,30,110,1) 0%, rgba(255,0,101,0.5) 100%)',
@@ -69,6 +69,6 @@ export default function Blocked() {
           </div>
         </Container>
       </div>
-    </section>
+    </main>
   )
 }

@@ -7,8 +7,9 @@ import { getBookingPricelist } from 'fetch/bookingPricelist'
 import { getLinkToReserve } from 'fetch/contact'
 import { getPricelistMeta } from 'fetch/getMeta'
 import { getPricelistPage } from 'fetch/pricelist'
-import parse from 'html-react-parser'
+import { parseHtml } from 'lib/parseHtml'
 import { getStrapiImageUrl } from 'lib/image-utils'
+import { BreadcrumbSchema } from 'schemasOrg/breadcrumb'
 import Reviews from 'sections/Reviews'
 import { Top } from 'sections/Top/Top'
 
@@ -32,6 +33,16 @@ export async function generateMetadata(): Promise<Metadata> {
       description: metaData.description || '',
       images: [getStrapiImageUrl(metaData.image?.url)],
     },
+    keywords: [
+      'barbitch',
+      'ceník',
+      'ceny',
+      'manikúra cena',
+      'řasy cena',
+      'obočí cena',
+      'Brno',
+      'beauty studio',
+    ],
     alternates: {
       canonical: `https://barbitch.cz/cenik`,
     },
@@ -47,11 +58,17 @@ const PriceList = async () => {
 
   return (
     <main>
+      <BreadcrumbSchema
+        items={[
+          { name: 'Hlavní strana', url: 'https://barbitch.cz' },
+          { name: 'Ceník', url: 'https://barbitch.cz/cenik' },
+        ]}
+      />
       <Top title={dataPage.title} small linkToReserve={dataLink.linkToReserve} />
       <Container size={'lg'}>
         {dataPage.contentText && (
           <div className={'w-full mb-10 text-xs1 lg:text-base content'}>
-            {parse(dataPage.contentText, { trim: true })}
+            {parseHtml(dataPage.contentText)}
           </div>
         )}
       </Container>

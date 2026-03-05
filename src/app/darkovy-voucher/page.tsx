@@ -5,6 +5,8 @@ import { getLinkToReserve } from 'fetch/contact'
 import { getVoucherMeta } from 'fetch/getMeta'
 import { getVoucher } from 'fetch/voucher'
 import { getStrapiImageUrl } from 'lib/image-utils'
+import { BreadcrumbSchema } from 'schemasOrg/breadcrumb'
+import { ProductSchema } from 'schemasOrg/product'
 import { Top } from 'sections/Top/Top'
 
 import VoucherForm from './VoucherForm'
@@ -31,6 +33,16 @@ export async function generateMetadata(): Promise<Metadata> {
       description: metaData.description || '',
       images: [getStrapiImageUrl(metaData.image?.url)],
     },
+    keywords: [
+      'barbitch',
+      'dárkový voucher',
+      'dárkový poukaz',
+      'dárek',
+      'manikúra',
+      'řasy',
+      'obočí',
+      'Brno',
+    ],
     alternates: {
       canonical: `https://barbitch.cz/darkovy-voucher`,
     },
@@ -43,6 +55,19 @@ const Voucher = async () => {
 
   return (
     <main>
+      <BreadcrumbSchema
+        items={[
+          { name: 'Hlavní strana', url: 'https://barbitch.cz' },
+          { name: 'Dárkový voucher', url: 'https://barbitch.cz/darkovy-voucher' },
+        ]}
+      />
+      <ProductSchema
+        name={'Dárkový voucher Barbitch'}
+        description={
+          'Dárkový voucher do Barbitch Beauty Studia v Brně. Ideální dárek pro vaše blízké.'
+        }
+        url={'https://barbitch.cz/darkovy-voucher'}
+      />
       <Top title={data.title} small linkToReserve={dataLink.linkToReserve} />
       <VoucherForm />
       <DynamicContent data={data.dynamicContent} />

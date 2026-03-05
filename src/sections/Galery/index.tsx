@@ -10,6 +10,7 @@ const Lightbox = dynamic(() => import('yet-another-react-lightbox'), { ssr: fals
 const Galery = ({ data }: { data: IGalery[] }) => {
   const [index, setIndex] = useState(-1)
   const imagekitUrl = process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT || ''
+  const validData = data.filter((item) => item.url?.startsWith('http'))
 
   return (
     <section className={'pb-23 lg:pb-20'}>
@@ -18,9 +19,9 @@ const Galery = ({ data }: { data: IGalery[] }) => {
       </h2>
 
       <div className={'grid grid-cols-3 lg:grid-cols-6 grid-rows-2 lg:grid-rows-1 gap-1'}>
-        {data.map((item, i) => (
+        {validData.map((item, i) => (
           <div
-            key={item.alternativeText || `Some_key_${i}`}
+            key={item.alternativeText || `Obrázek ${i + 1} z galerie Barbitch`}
             className={'relative w-full overflow-hidden cursor-pointer hover:scale-95 duration-200'}
             onClick={() => setIndex(i)}
           >
@@ -29,12 +30,11 @@ const Galery = ({ data }: { data: IGalery[] }) => {
                 urlEndpoint={imagekitUrl}
                 src={item.url}
                 className={'object-cover absolute w-full h-full top-0 left-0'}
-                alt={item.alternativeText || `Some_key_${i}`}
+                alt={item.alternativeText || `Obrázek ${i + 1} z galerie Barbitch`}
                 width={400}
                 height={400}
                 transformation={[{ width: '400', height: '400' }]}
-                lqip={{ active: true }}
-                loading={'lazy'}
+                loading={i < 6 ? 'eager' : 'lazy'}
               />
             </div>
           </div>
@@ -47,7 +47,7 @@ const Galery = ({ data }: { data: IGalery[] }) => {
           open={index >= 0}
           close={() => setIndex(-1)}
           carousel={{ preload: 2 }}
-          slides={data.map((item) => ({
+          slides={validData.map((item) => ({
             src: item.url,
             alt: item.alternativeText || '',
           }))}

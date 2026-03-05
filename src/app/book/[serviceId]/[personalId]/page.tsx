@@ -1,8 +1,16 @@
+import type { Metadata } from 'next'
+
 import { Suspense } from 'react'
 
 import { getSlotService } from '../../fetch/slotsService'
 
 import BookCalendarClient from './BookCalendarClient'
+
+export const metadata: Metadata = {
+  title: 'Výběr termínu | Rezervace – Barbitch Beauty Studio Brno',
+  description: 'Vyberte si datum a čas pro vaši rezervaci v Barbitch Beauty Studiu v Brně.',
+  robots: { index: false, follow: false },
+}
 
 const CalendarSkeleton = () => (
   <div className={'bg-[#252523] rounded-special-small px-7.5 py-5'}>
