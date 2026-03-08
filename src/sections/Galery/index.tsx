@@ -36,9 +36,9 @@ const Galery = ({ data }: { data: IGalery[] }) => {
                 src={item.url}
                 className={'object-cover absolute w-full h-full top-0 left-0'}
                 alt={item.alternativeText || `Obrázek ${i + 1} z galerie Barbitch`}
-                width={400}
-                height={400}
-                transformation={[{ width: '400', height: '400' }]}
+                width={300}
+                height={300}
+                transformation={[{ width: '300', height: '300' }]}
                 loading={i < 3 ? 'eager' : 'lazy'}
               />
             </div>
