@@ -1,7 +1,7 @@
 'use client'
 import Button from 'components/Button'
+import Hamburger from 'components/Header/Hamburger'
 import { useAppContext } from 'context/AppContext'
-import { Squash as Hamburger } from 'hamburger-react'
 import { useParams, usePathname } from 'next/navigation'
 import { useEffect } from 'react'
 
@@ -45,8 +45,6 @@ const Buttons = ({ linkToReserve }: { linkToReserve: string }) => {
         onToggle={() => setMenu(!menu)}
         toggled={menu}
         size={48}
-        duration={0.3}
-        distance={'sm'}
         label={'Otevřít nebo zavřít menu'}
       />
     </div>

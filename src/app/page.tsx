@@ -11,7 +11,7 @@ import About from 'sections/About'
 import Galery from 'sections/Galery'
 import HandSec from 'sections/HandSec'
 import Posts from 'sections/Posts'
-import Reviews from 'sections/Reviews'
+import LazyReviews from 'sections/Reviews.lazy'
 import { Top } from 'sections/Top/Top'
 
 export const revalidate = 3600
@@ -61,7 +61,7 @@ const Home = async () => {
       <Galery data={data.galery} />
       <Posts data={posts} />
       <About text={data.aboutUs} />
-      <Reviews />
+      <LazyReviews />
     </main>
   )
 }
