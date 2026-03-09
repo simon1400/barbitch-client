@@ -68,6 +68,9 @@ const Voucher = async () => {
           'Dárkový voucher do Barbitch Beauty Studia v Brně. Ideální dárek pro vaše blízké.'
         }
         url={'https://barbitch.cz/darkovy-voucher'}
+        lowPrice={500}
+        highPrice={2000}
+        offerCount={4}
       />
       <Top title={data.title} small linkToReserve={dataLink.linkToReserve} />
       <VoucherForm />
