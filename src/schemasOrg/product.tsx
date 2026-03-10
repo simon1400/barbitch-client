@@ -7,6 +7,9 @@ interface ProductSchemaProps {
   highPrice: number
   offerCount: number
   priceCurrency?: string
+  ratingValue?: number
+  reviewCount?: number
+  bestRating?: number
 }
 
 export const ProductSchema = ({
@@ -18,6 +21,9 @@ export const ProductSchema = ({
   highPrice,
   offerCount,
   priceCurrency = 'CZK',
+  ratingValue = 4.6,
+  reviewCount = 113,
+  bestRating = 5,
 }: ProductSchemaProps) => {
   const schema = {
     '@context': 'https://schema.org',
@@ -29,6 +35,12 @@ export const ProductSchema = ({
     brand: {
       '@type': 'Brand',
       name: 'Barbitch',
+    },
+    aggregateRating: {
+      '@type': 'AggregateRating',
+      ratingValue,
+      reviewCount,
+      bestRating,
     },
     offers: {
       '@type': 'AggregateOffer',

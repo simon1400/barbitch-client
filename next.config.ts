@@ -3,6 +3,25 @@ import type { NextConfig } from 'next'
 /** @type {import('next').NextConfig} */
 
 const nextConfig: NextConfig = {
+  async redirects() {
+    return [
+      {
+        source: '/oboci',
+        destination: '/service/oboci',
+        permanent: true,
+      },
+      {
+        source: '/blog/co-je-laminace-oboci',
+        destination: '/service/oboci',
+        permanent: true,
+      },
+      {
+        source: '/blog/halloween-beauty-2025',
+        destination: '/blog',
+        permanent: true,
+      },
+    ]
+  },
   env: {
     IG_ACCESS_TOKEN: process.env.IG_ACCESS_TOKEN,
     APP_API: process.env.APP_API,

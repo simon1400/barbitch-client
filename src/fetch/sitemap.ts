@@ -16,9 +16,11 @@ const query = qs.stringify(
 )
 
 export const getSitemapSlugs = async () => {
-  const slugArticles: IDataSlugs[] = await Axios.get(`/api/articles?${query}`)
-  const slugPosts: IDataSlugs[] = await Axios.get(`/api/blogs?${query}`)
-  const slugServices: IDataSlugs[] = await Axios.get(`/api/services?${query}`)
+  const [slugArticles, slugPosts, slugServices] = await Promise.all([
+    Axios.get(`/api/articles?${query}`) as Promise<IDataSlugs[]>,
+    Axios.get(`/api/blogs?${query}`) as Promise<IDataSlugs[]>,
+    Axios.get(`/api/services?${query}`) as Promise<IDataSlugs[]>,
+  ])
   const combile = [
     ...slugServices.map((item) => ({
       update: item.updatedAt,

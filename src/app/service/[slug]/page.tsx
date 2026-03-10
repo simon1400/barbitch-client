@@ -12,6 +12,43 @@ import { SchemaJsonRasy } from 'schemasOrg/rasy'
 import { ServiceSchema } from 'schemasOrg/service'
 import { Top } from 'sections/Top/Top'
 
+const serviceKeywordsMap: Record<string, string[]> = {
+  rasy: [
+    'prodloužení řas Brno',
+    'řasy Brno',
+    'nehty Brno',
+    'rasy brno',
+    'klasické řasy',
+    '2D řasy',
+    '3D řasy',
+    'barvení řas',
+    'beauty studio Brno',
+  ],
+  oboci: [
+    'úprava obočí Brno',
+    'laminace obočí',
+    'obočí Brno',
+    'barvení obočí',
+    'depilace obočí',
+    'beauty studio Brno',
+  ],
+  manikura: [
+    'manikúra Brno',
+    'gelové nehty Brno',
+    'nehty Brno',
+    'gel lak',
+    'klasická manikúra',
+    'japonská manikúra',
+    'beauty studio Brno',
+  ],
+}
+
+const defaultKeywords = ['barbitch', 'beauty studio Brno', 'kosmetické služby Brno']
+
+function getServiceKeywords(slug: string): string[] {
+  return [...(serviceKeywordsMap[slug] || []), ...defaultKeywords]
+}
+
 export async function generateStaticParams() {
   const slugServices = (await Axios.get('/api/services?fields[0]=slug')) as { slug: string }[]
 
@@ -48,16 +85,7 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
       description: data.metaData.description || '',
       images: [getStrapiImageUrl(data.metaData.image?.url)],
     },
-    keywords: [
-      'barbitch',
-      'bar.bitch',
-      'bar bitch',
-      'Brno',
-      'Manikúra',
-      'Nehty',
-      'Prodlužování řas',
-      'Úprava obočí',
-    ],
+    keywords: getServiceKeywords(slug),
     alternates: {
       canonical: `https://barbitch.cz/service/${slug}`,
     },
