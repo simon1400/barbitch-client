@@ -7,7 +7,7 @@ interface ImageLoaderParams {
 }
 
 export default function imageLoader({ src, width, quality }: ImageLoaderParams): string {
-  // Local assets (SVGs, static files in /assets/) — serve as-is, no optimization needed
+  // Local assets (SVGs, static files in /assets/) — serve as-is
   if (src.startsWith('/')) {
     return src
   }
@@ -17,7 +17,12 @@ export default function imageLoader({ src, width, quality }: ImageLoaderParams):
     return `${src}?tr=w-${width},q-${quality || 75},f-auto`
   }
 
-  // External URLs (Strapi, Instagram, Google, Cloudinary, etc.)
-  // ImageKit proxies and optimizes any external URL via web proxy origin
-  return `${IMAGEKIT_ENDPOINT}/tr:w-${width},q-${quality || 75},f-auto/${src}`
+  // Cloudinary — use native URL-based transformations
+  if (src.includes('res.cloudinary.com')) {
+    return src.replace('/upload/', `/upload/w_${width},q_${quality || 75},f_auto/`)
+  }
+
+  // Other external URLs (Strapi, Instagram, Google) — serve as-is
+  // Next.js /_next/image is disabled, so no server-side optimization overhead
+  return src
 }
