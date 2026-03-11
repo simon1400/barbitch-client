@@ -1,8 +1,8 @@
 import type { IDataPostShort } from 'fetch/blog'
 
+import Image from 'components/Image'
 import { getStrapiImageUrl } from 'lib/image-utils'
 import { parseHtml } from 'lib/parseHtml'
-import Image from 'next/image'
 import Link from 'next/link'
 
 export const BlogBigShort = ({ data }: { data: IDataPostShort }) => {

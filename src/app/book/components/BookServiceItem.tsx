@@ -1,7 +1,7 @@
 'use client'
 import type { IBookService } from '../fetch/bookService'
 
-import Image from 'next/image'
+import Image from 'components/Image'
 import Link from 'next/link'
 import { useState } from 'react'
 

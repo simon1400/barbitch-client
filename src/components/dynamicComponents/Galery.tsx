@@ -1,8 +1,8 @@
 'use client'
 import { Container } from 'components/Container'
+import Image from 'components/Image'
 import { getStrapiImageUrl } from 'lib/image-utils'
 import dynamic from 'next/dynamic'
-import Image from 'next/image'
 import { useState } from 'react'
 import 'yet-another-react-lightbox/styles.css'
 

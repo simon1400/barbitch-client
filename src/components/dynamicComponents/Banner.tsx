@@ -1,7 +1,7 @@
 import Button from 'components/Button'
 import { Container } from 'components/Container'
+import Image from 'components/Image'
 import { getStrapiImageUrl } from 'lib/image-utils'
-import Image from 'next/image'
 
 export const Banner = ({
   data,

@@ -1,6 +1,6 @@
 import type { ISocItem } from 'fetch/contact'
 
-import Image from 'next/image'
+import Image from 'components/Image'
 import Link from 'next/link'
 
 export const SocNav = ({ items }: { items?: ISocItem[] }) => {

@@ -2,7 +2,7 @@ import type { IDataHomepageService } from 'fetch/service'
 
 import { Container } from 'components/Container'
 import { Hand } from 'components/Hand'
-import Image from 'next/image'
+import Image from 'components/Image'
 import Link from 'next/link'
 
 const HandSec = ({ service }: { service: IDataHomepageService[] }) => {

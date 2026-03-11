@@ -1,7 +1,7 @@
 import type { CSSProperties } from 'react'
 import type { Slide, SlideImage } from 'yet-another-react-lightbox'
 
-import Image from 'next/image'
+import Image from 'components/Image'
 import {
   isImageFitCover,
   isImageSlide,

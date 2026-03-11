@@ -1,9 +1,9 @@
 import type { IDataBanner } from 'fetch/banner'
 
 import { Container } from 'components/Container'
+import Image from 'components/Image'
 import { getBanner } from 'fetch/banner'
 import dynamic from 'next/dynamic'
-import Image from 'next/image'
 
 import Button from '../components/Button'
 

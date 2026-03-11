@@ -1,4 +1,4 @@
-import Image from 'next/image'
+import Image from 'components/Image'
 
 const StarIcon = ({ solid }: { solid: boolean }) => (
   <span className={'w-4'} aria-hidden={'true'}>
