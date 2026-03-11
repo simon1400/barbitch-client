@@ -24,7 +24,9 @@ const TimeBlock = ({
           key={item.time}
           onClick={() => {
             if (!loadingTimepicker.length) {
-              handleSelect(item.employeeIds[0], item.time)
+              const ids = item.employeeIds
+              // eslint-disable-next-line sonarjs/pseudo-random
+              handleSelect(ids[Math.floor(Math.random() * ids.length)], item.time)
             }
           }}
           className={`h-[38px] block w-full rounded-special-small text-white text-[14px]/[38px] duration-200  ${loadingTimepicker === item.time ? 'bg-primary' : 'bg-[#161615]'} ${!loadingTimepicker.length ? 'hover:bg-primary cursor-pointer' : 'cursor-progress'}`}
