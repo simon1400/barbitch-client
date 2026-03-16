@@ -140,38 +140,42 @@ body{
       }
     }
   }
-  figure.table{
+  figure.table,
+  & > section table,
+  & table:not(figure.table table){
     width: 100%;
     overflow-x: auto;
     margin: 0 auto 20px;
     display: block;
-    table{
-      @apply w-full max-w-full border-collapse mb-5;
-      margin: 0 auto;
-      caption{
-        @apply caption-top text-md2 text-left mb-5;
-      }
-      thead {
-        tr{
-          @apply border-b-[1.5px] border-[#1616154D];
+  }
+  figure.table table,
+  & > section table,
+  & table:not(figure.table table){
+    @apply w-full max-w-full border-collapse mb-5;
+    margin: 0 auto;
+    caption{
+      @apply caption-top text-md2 text-left mb-5;
+    }
+    thead {
+      tr{
+        @apply border-b-[1.5px] border-[#1616154D];
 
-          th{
-            &:first-of-type{
-              padding-left: 0;
-            }
-            @apply text-left text-sm11 font-bold md:text-sm1 p-1 md:p-3.5 w-full;
+        th{
+          &:first-of-type{
+            padding-left: 0;
           }
+          @apply text-left text-sm11 font-bold md:text-sm1 p-1 md:p-3.5 w-full;
         }
       }
-      tbody{
-        tr{
-          @apply text-sm font-normal md:text-sm11 border-b-[1.5px] border-[#1616154D];
-          td{
-            &:first-of-type{
-              padding-left: 0;
-            }
-            @apply whitespace-nowrap p-1 md:p-3.5;
+    }
+    tbody{
+      tr{
+        @apply text-sm font-normal md:text-sm11 border-b-[1.5px] border-[#1616154D];
+        td{
+          &:first-of-type{
+            padding-left: 0;
           }
+          @apply whitespace-nowrap p-1 md:p-3.5;
         }
       }
     }

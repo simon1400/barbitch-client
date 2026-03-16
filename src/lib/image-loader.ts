@@ -22,7 +22,6 @@ export default function imageLoader({ src, width, quality }: ImageLoaderParams):
     return src.replace('/upload/', `/upload/w_${width},q_${quality || 75},f_auto/`)
   }
 
-  // Other external URLs (Strapi, Instagram, Google) — serve as-is
-  // Next.js /_next/image is disabled, so no server-side optimization overhead
-  return src
+  // External URLs (Strapi, Instagram, Google) — proxy through ImageKit
+  return `${IMAGEKIT_ENDPOINT}/tr:w-${width},q-${quality || 75},f-auto/${src}`
 }
