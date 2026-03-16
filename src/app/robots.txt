@@ -1,7 +1,5 @@
 User-Agent: *
 Allow: /book$
 Disallow: /book/
-Disallow: /$
-Disallow: /&
 
 Sitemap: https://barbitch.cz/sitemap.xml
