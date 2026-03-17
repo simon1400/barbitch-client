@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 
+import ChatWidget from 'components/ChatWidget'
 import CookieConsent from 'components/CookieConsent'
 import FacebookPageView from 'components/FacebookPageView'
 import Footer from 'components/Footer'
@@ -121,6 +122,7 @@ export default async function RootLayout({
             </Suspense>
           </HideOnRoutes>
 
+          <ChatWidget />
           <CookieConsent />
         </AppProvider>
       </body>

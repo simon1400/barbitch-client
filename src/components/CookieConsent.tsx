@@ -31,17 +31,6 @@ function grantConsent() {
   })
 }
 
-function loadTawkTo() {
-  if (document.getElementById('tawk-script')) return
-  const s = document.createElement('script')
-  s.id = 'tawk-script'
-  s.async = true
-  s.src = 'https://embed.tawk.to/686a45cce82cfa190ecdc718/1ivfi1aam'
-  s.charset = 'UTF-8'
-  s.setAttribute('crossorigin', '*')
-  document.head.appendChild(s)
-}
-
 export default function CookieConsent() {
   const [visible, setVisible] = useState(false)
 
@@ -49,7 +38,6 @@ export default function CookieConsent() {
     const consent = getConsentCookie()
     if (consent === 'accepted') {
       grantConsent()
-      loadTawkTo()
     } else if (!consent) {
       setVisible(true)
     }
@@ -58,7 +46,6 @@ export default function CookieConsent() {
   const handleAccept = () => {
     setConsentCookie('accepted')
     grantConsent()
-    loadTawkTo()
     setVisible(false)
   }
 
