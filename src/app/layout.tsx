@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 
+import CookieConsent from 'components/CookieConsent'
 import FacebookPageView from 'components/FacebookPageView'
 import Footer from 'components/Footer'
 import { Header } from 'components/Header'
@@ -63,14 +64,28 @@ export default async function RootLayout({
         <link rel={'shortcut icon'} href={'/favicon/favicon.ico'} />
         <link rel={'apple-touch-icon'} sizes={'180x180'} href={'/favicon/apple-touch-icon.png'} />
         <link rel={'manifest'} href={'/favicon/site.webmanifest'} />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              window.dataLayer=window.dataLayer||[];
+              function gtag(){dataLayer.push(arguments);}
+              gtag('consent','default',{
+                analytics_storage:'denied',
+                ad_storage:'denied',
+                ad_user_data:'denied',
+                ad_personalization:'denied',
+                functionality_storage:'denied',
+                personalization_storage:'denied',
+                security_storage:'granted'
+              });
+            `,
+          }}
+        />
       </head>
-      <Script id={'gtm-init'} strategy={'lazyOnload'}>
+      <Script id={'gtm-init'} strategy={'afterInteractive'}>
         {`
-          window.dataLayer = window.dataLayer || [];
-          window.dataLayer.push({
-            'gtm.start': new Date().getTime(),
-            event: 'gtm.js',
-          });
+          window.dataLayer=window.dataLayer||[];
+          window.dataLayer.push({'gtm.start':new Date().getTime(),event:'gtm.js'});
           var s=document.createElement('script');
           s.async=true;
           s.src='https://www.googletagmanager.com/gtm.js?id=GTM-5SP5MPTB';
@@ -105,18 +120,9 @@ export default async function RootLayout({
               <Footer />
             </Suspense>
           </HideOnRoutes>
+
+          <CookieConsent />
         </AppProvider>
-        <Script id={'tawk-to'} strategy={'lazyOnload'}>
-          {`var Tawk_API=Tawk_API||{}, Tawk_LoadStart=new Date();
-            (function(){
-            var s1=document.createElement("script"),s0=document.getElementsByTagName("script")[0];
-            s1.async=true;
-            s1.src='https://embed.tawk.to/686a45cce82cfa190ecdc718/1ivfi1aam';
-            s1.charset='UTF-8';
-            s1.setAttribute('crossorigin','*');
-            s0.parentNode.insertBefore(s1,s0);
-            })();`}
-        </Script>
       </body>
     </html>
   )

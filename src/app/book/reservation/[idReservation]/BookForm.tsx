@@ -140,7 +140,7 @@ const BookForm = ({ idReservation }: Props) => {
         <div className={'max-w-[270px] mx-auto'}>
           <h3 className={'text-[#FFFFFFBF] text-[16px] mb-3.5'}>{'Storno podmínky'}</h3>
           <p className={'text-[#FFFFFF99] text-xss font-normal'}>
-            {'Vezměte prosím na vědomí, že schůzky lze zrušit pouze s tříhodinovým předstihem.'}
+            {'Vezměte prosím na vědomí, že rezervace lze zrušit pouze s tříhodinovým předstihem.'}
           </p>
         </div>
       </div>

@@ -37,14 +37,22 @@ interface CustomData {
   [key: string]: unknown
 }
 
+export function hasConsentCookie(): boolean {
+  if (typeof document === 'undefined') return false
+  return document.cookie.includes('cookie_consent=accepted')
+}
+
 /**
  * Send a server-side event via FB Conversions API + push to dataLayer for GTM deduplication.
+ * Respects cookie consent — events are only sent if the user accepted cookies.
  */
 export const sendCAPIEvent = async (
   eventName: string,
   userData?: UserData,
   customData?: CustomData,
 ) => {
+  if (!hasConsentCookie()) return
+
   const eventId = generateEventId()
 
   // Push to dataLayer for GTM deduplication (client-side pixel uses same event_id)
