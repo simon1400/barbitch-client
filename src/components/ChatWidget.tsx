@@ -454,10 +454,13 @@ export default function ChatWidget() {
                 >
                   <ImageIcon />
                 </button>
-                <input
-                  type={'text'}
+                <textarea
                   value={input}
-                  onChange={(e) => setInput(e.target.value)}
+                  onChange={(e) => {
+                    setInput(e.target.value)
+                    e.target.style.height = 'auto'
+                    e.target.style.height = `${Math.min(e.target.scrollHeight, 120)}px`
+                  }}
                   onKeyDown={(e) => {
                     if (e.key === 'Enter' && !e.shiftKey) {
                       e.preventDefault()
@@ -465,8 +468,9 @@ export default function ChatWidget() {
                     }
                   }}
                   placeholder={'Napište zprávu...'}
+                  rows={1}
                   className={
-                    'flex-1 bg-white/10 text-white px-3 py-2 text-sm outline-none placeholder:text-white/40 border border-white/10 focus:border-primary/50 transition-colors min-w-0'
+                    'flex-1 bg-white/10 text-white px-3 py-2 text-sm outline-none placeholder:text-white/40 border border-white/10 focus:border-primary/50 transition-colors min-w-0 resize-none overflow-y-auto'
                   }
                   disabled={sending}
                 />
