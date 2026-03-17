@@ -93,6 +93,10 @@ function ImageIcon() {
   )
 }
 
+/* ─── Hide scrollbars ─── */
+const hideScrollbar =
+  '[&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]'
+
 /* ─── Component ─── */
 
 export default function ChatWidget() {
@@ -201,8 +205,12 @@ export default function ChatWidget() {
   }, [open, sessionId])
 
   /* ─── Auto-scroll on new messages ─── */
+  const isFirstLoad = useRef(true)
   useEffect(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+    if (messages.length === 0) return
+    // Instant scroll on first load, smooth on new messages
+    messagesEndRef.current?.scrollIntoView({ behavior: isFirstLoad.current ? 'instant' : 'smooth' })
+    isFirstLoad.current = false
   }, [messages])
 
   /* ─── Actions ─── */
@@ -365,7 +373,7 @@ export default function ChatWidget() {
           ) : (
             <>
               {/* ─── Messages ─── */}
-              <div className={'flex-1 overflow-y-auto p-4 space-y-3'}>
+              <div className={`flex-1 overflow-y-auto p-4 space-y-3 ${hideScrollbar}`}>
                 {messages.length === 0 && !sending && (
                   <div className={'text-center py-8'}>
                     <p className={'text-white/30 text-sm'}>{'Napište nám zprávu'}</p>
@@ -469,9 +477,7 @@ export default function ChatWidget() {
                   }}
                   placeholder={'Napište zprávu...'}
                   rows={1}
-                  className={
-                    'flex-1 bg-white/10 text-white px-3 py-2 text-sm outline-none placeholder:text-white/40 border border-white/10 focus:border-primary/50 transition-colors min-w-0 resize-none overflow-y-auto'
-                  }
+                  className={`flex-1 bg-white/10 text-white px-3 py-2 text-sm outline-none placeholder:text-white/40 border border-white/10 focus:border-primary/50 transition-colors min-w-0 resize-none overflow-y-auto ${hideScrollbar}`}
                   disabled={sending}
                 />
                 <button
