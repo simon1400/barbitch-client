@@ -204,6 +204,18 @@ export default function ChatWidget() {
     return () => clearInterval(interval)
   }, [open, sessionId])
 
+  /* ─── Lock body scroll when chat is open on mobile ─── */
+  useEffect(() => {
+    if (open) {
+      document.body.style.overflow = 'hidden'
+    } else {
+      document.body.style.overflow = ''
+    }
+    return () => {
+      document.body.style.overflow = ''
+    }
+  }, [open])
+
   /* ─── Auto-scroll on new messages ─── */
   const isFirstLoad = useRef(true)
   useEffect(() => {
@@ -322,7 +334,7 @@ export default function ChatWidget() {
       {open && (
         <div
           className={
-            'fixed bottom-0 right-0 sm:bottom-24 sm:right-6 z-[9998] w-full sm:w-[380px] h-[85dvh] sm:h-[500px] bg-accent border border-white/10 shadow-2xl flex flex-col'
+            'fixed inset-0 sm:inset-auto sm:bottom-24 sm:right-6 z-[9998] sm:w-[380px] sm:h-[500px] bg-accent border border-white/10 shadow-2xl flex flex-col'
           }
         >
           {/* Header */}
