@@ -230,6 +230,16 @@ export default function ChatWidget() {
     sessionStorage.setItem('barbitch_chat_teaser_dismissed', '1')
   }
 
+  const fetchNewMessages = async (sid: string) => {
+    const afterParam = lastIdRef.current ? `&after=${lastIdRef.current}` : ''
+    const res = await fetch(`${API}/api/chat/messages?sessionId=${sid}${afterParam}`)
+    if (!res.ok) return
+    const data = await res.json()
+    if (!Array.isArray(data) || data.length === 0) return
+    setMessages(lastIdRef.current === 0 ? data : (prev) => [...prev, ...data])
+    lastIdRef.current = data[data.length - 1].id
+  }
+
   const sendMessage = async () => {
     if ((!input.trim() && imageFiles.length === 0) || !sessionId || sending) return
     setSending(true)
@@ -242,14 +252,13 @@ export default function ChatWidget() {
     if (fileInputRef.current) fileInputRef.current.value = ''
 
     try {
-      // Send each image as a separate message (first one gets the text caption)
       if (filesToSend.length > 0) {
-        for (let i = 0; i < filesToSend.length; i++) {
+        for (const [i, file] of filesToSend.entries()) {
           const formData = new FormData()
           formData.append('sessionId', sessionId)
           formData.append('text', i === 0 ? text : '')
           formData.append('visitorName', name)
-          formData.append('image', filesToSend[i])
+          formData.append('image', file)
           await fetch(`${API}/api/chat/send`, { method: 'POST', body: formData })
         }
       } else {
@@ -259,21 +268,7 @@ export default function ChatWidget() {
           body: JSON.stringify({ sessionId, text, visitorName: name }),
         })
       }
-
-      // Fetch new messages immediately after sending
-      const afterParam = lastIdRef.current ? `&after=${lastIdRef.current}` : ''
-      const res = await fetch(`${API}/api/chat/messages?sessionId=${sessionId}${afterParam}`)
-      if (res.ok) {
-        const data = await res.json()
-        if (Array.isArray(data) && data.length > 0) {
-          if (lastIdRef.current === 0) {
-            setMessages(data)
-          } else {
-            setMessages((prev) => [...prev, ...data])
-          }
-          lastIdRef.current = data[data.length - 1].id
-        }
-      }
+      await fetchNewMessages(sessionId)
     } catch {
       /* silent */
     }
@@ -281,24 +276,21 @@ export default function ChatWidget() {
     setSending(false)
   }
 
-  const handleImageSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files
-    if (!files) return
-    const newFiles: File[] = []
-    const newPreviews: string[] = []
-    Array.from(files).forEach((file) => {
-      if (file.size > 10 * 1024 * 1024) return // 10MB limit per file
-      newFiles.push(file)
+  const readFileAsDataUrl = (file: File): Promise<string> =>
+    new Promise((resolve) => {
       const reader = new FileReader()
-      reader.onload = () => {
-        newPreviews.push(reader.result as string)
-        if (newPreviews.length === newFiles.length) {
-          setImageFiles((prev) => [...prev, ...newFiles])
-          setImagePreviews((prev) => [...prev, ...newPreviews])
-        }
-      }
+      reader.onload = () => resolve(reader.result as string)
       reader.readAsDataURL(file)
     })
+
+  const handleImageSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files
+    if (!files) return
+    const validFiles = Array.from(files).filter((f) => f.size <= 10 * 1024 * 1024)
+    if (validFiles.length === 0) return
+    const previews = await Promise.all(validFiles.map(readFileAsDataUrl))
+    setImageFiles((prev) => [...prev, ...validFiles])
+    setImagePreviews((prev) => [...prev, ...previews])
   }
 
   const removeImage = (index: number) => {
