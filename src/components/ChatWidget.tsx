@@ -322,7 +322,7 @@ export default function ChatWidget() {
       {open && (
         <div
           className={
-            'fixed bottom-0 right-0 sm:bottom-24 sm:right-6 z-[9998] w-full sm:w-[380px] h-[85vh] sm:h-[500px] bg-accent border border-white/10 shadow-2xl flex flex-col'
+            'fixed bottom-0 right-0 sm:bottom-24 sm:right-6 z-[9998] w-full sm:w-[380px] h-[85dvh] sm:h-[500px] bg-accent border border-white/10 shadow-2xl flex flex-col'
           }
         >
           {/* Header */}
