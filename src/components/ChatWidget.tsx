@@ -502,7 +502,7 @@ export default function ChatWidget() {
                     e.target.style.height = `${Math.min(e.target.scrollHeight, 120)}px`
                   }}
                   onKeyDown={(e) => {
-                    if (e.key === 'Enter' && !e.shiftKey) {
+                    if (e.key === 'Enter' && !e.shiftKey && !('ontouchstart' in window)) {
                       e.preventDefault()
                       sendMessage()
                     }
