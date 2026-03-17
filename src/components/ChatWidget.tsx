@@ -207,12 +207,32 @@ export default function ChatWidget() {
   /* ─── Lock body scroll when chat is open on mobile ─── */
   useEffect(() => {
     if (open) {
+      const scrollY = window.scrollY
+      document.body.style.position = 'fixed'
+      document.body.style.top = `-${scrollY}px`
+      document.body.style.left = '0'
+      document.body.style.right = '0'
       document.body.style.overflow = 'hidden'
+      document.documentElement.style.overflow = 'hidden'
     } else {
+      const top = document.body.style.top
+      document.body.style.position = ''
+      document.body.style.top = ''
+      document.body.style.left = ''
+      document.body.style.right = ''
       document.body.style.overflow = ''
+      document.documentElement.style.overflow = ''
+      if (top) window.scrollTo(0, parseInt(top, 10) * -1)
     }
     return () => {
+      const top = document.body.style.top
+      document.body.style.position = ''
+      document.body.style.top = ''
+      document.body.style.left = ''
+      document.body.style.right = ''
       document.body.style.overflow = ''
+      document.documentElement.style.overflow = ''
+      if (top) window.scrollTo(0, parseInt(top, 10) * -1)
     }
   }, [open])
 
