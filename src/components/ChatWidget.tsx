@@ -222,7 +222,7 @@ export default function ChatWidget() {
       document.body.style.right = ''
       document.body.style.overflow = ''
       document.documentElement.style.overflow = ''
-      if (top) window.scrollTo(0, parseInt(top, 10) * -1)
+      if (top) window.scrollTo(0, Number.parseInt(top, 10) * -1)
     }
     return () => {
       const top = document.body.style.top
@@ -232,7 +232,7 @@ export default function ChatWidget() {
       document.body.style.right = ''
       document.body.style.overflow = ''
       document.documentElement.style.overflow = ''
-      if (top) window.scrollTo(0, parseInt(top, 10) * -1)
+      if (top) window.scrollTo(0, Number.parseInt(top, 10) * -1)
     }
   }, [open])
 
