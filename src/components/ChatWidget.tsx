@@ -204,8 +204,11 @@ export default function ChatWidget() {
     return () => clearInterval(interval)
   }, [open, sessionId])
 
-  /* ─── Lock body scroll when chat is open on mobile ─── */
+  /* ─── Lock body scroll when chat is open on mobile only ─── */
   useEffect(() => {
+    const isMobile = window.innerWidth < 768
+    if (!isMobile) return
+
     if (open) {
       const scrollY = window.scrollY
       document.body.style.position = 'fixed'
