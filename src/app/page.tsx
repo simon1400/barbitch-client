@@ -4,6 +4,7 @@ import { getRandomPost } from 'fetch/blog'
 import { getLinkToReserve } from 'fetch/contact'
 import { getHomeMeta } from 'fetch/getMeta'
 import { getHomepage } from 'fetch/homepage'
+import { getReviews } from 'fetch/reviews'
 import { getServiceHomepage } from 'fetch/service'
 import { getStrapiImageUrl } from 'lib/image-utils'
 import { SchemaJsonHomepage } from 'schemasOrg/homepage'
@@ -46,11 +47,12 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 const Home = async () => {
-  const [dataService, data, posts, dataLink] = await Promise.all([
+  const [dataService, data, posts, dataLink, reviews] = await Promise.all([
     getServiceHomepage(),
     getHomepage(),
     getRandomPost(),
     getLinkToReserve(),
+    getReviews(),
   ])
 
   return (
@@ -61,7 +63,7 @@ const Home = async () => {
       <Galery data={data.galery} />
       <Posts data={posts} />
       <About text={data.aboutUs} />
-      <LazyReviews />
+      <LazyReviews reviews={reviews} />
     </main>
   )
 }

@@ -463,6 +463,7 @@ export default function ChatWidget() {
               {imagePreviews.length > 0 && (
                 <div className={'px-4 pb-2 flex gap-2 flex-wrap'}>
                   {imagePreviews.map((preview, i) => (
+                    // eslint-disable-next-line react/no-array-index-key
                     <div key={i} className={'relative inline-block'}>
                       <img src={preview} alt={''} className={'h-16 object-cover'} />
                       <button

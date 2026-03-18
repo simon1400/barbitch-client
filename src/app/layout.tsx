@@ -1,3 +1,4 @@
+/* eslint-disable react-dom/no-dangerously-set-innerhtml */
 import type { Metadata } from 'next'
 
 import LazyChatWidget from 'components/ChatWidget.lazy'
@@ -58,7 +59,6 @@ export default async function RootLayout({
         <meta name={'yandex-verification'} content={'93178409d4f4b109'} />
         <link rel={'preconnect'} href={'https://ik.imagekit.io'} />
         <link rel={'preconnect'} href={'https://strapi.barbitch.cz'} />
-        <link rel={'preconnect'} href={'https://featurable.com'} />
         <link rel={'dns-prefetch'} href={'https://lh3.googleusercontent.com'} />
         <link rel={'icon'} type={'image/png'} href={'/favicon/favicon-96x96.png'} sizes={'96x96'} />
         <link rel={'icon'} type={'image/svg+xml'} href={'/favicon/favicon.svg'} />

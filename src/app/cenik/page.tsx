@@ -7,6 +7,7 @@ import { getBookingPricelist } from 'fetch/bookingPricelist'
 import { getLinkToReserve } from 'fetch/contact'
 import { getPricelistMeta } from 'fetch/getMeta'
 import { getPricelistPage } from 'fetch/pricelist'
+import { getReviews } from 'fetch/reviews'
 import { getStrapiImageUrl } from 'lib/image-utils'
 import { parseHtml } from 'lib/parseHtml'
 import { BreadcrumbSchema } from 'schemasOrg/breadcrumb'
@@ -52,10 +53,11 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 const PriceList = async () => {
-  const [groups, dataPage, dataLink] = await Promise.all([
+  const [groups, dataPage, dataLink, reviews] = await Promise.all([
     getBookingPricelist(),
     getPricelistPage(),
     getLinkToReserve(),
+    getReviews(),
   ])
 
   return (
@@ -76,7 +78,7 @@ const PriceList = async () => {
       </Container>
       <CenikTable groups={groups} />
       <DynamicContent data={dataPage.dynamicContent} />
-      <Reviews />
+      <Reviews reviews={reviews} />
     </main>
   )
 }
