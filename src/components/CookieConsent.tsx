@@ -47,11 +47,13 @@ export default function CookieConsent() {
     setConsentCookie('accepted')
     grantConsent()
     setVisible(false)
+    window.dispatchEvent(new Event('cookie-consent-changed'))
   }
 
   const handleReject = () => {
     setConsentCookie('rejected')
     setVisible(false)
+    window.dispatchEvent(new Event('cookie-consent-changed'))
   }
 
   if (!visible) return null

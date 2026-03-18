@@ -39,7 +39,7 @@ const Galery = ({ data }: { data: IGalery[] }) => {
                 width={300}
                 height={300}
                 transformation={[{ width: '300', height: '300' }]}
-                loading={i < 3 ? 'eager' : 'lazy'}
+                loading={'lazy'}
               />
             </div>
           </div>

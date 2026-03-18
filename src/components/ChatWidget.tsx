@@ -117,16 +117,17 @@ export default function ChatWidget() {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const lastIdRef = useRef(0)
 
-  /* ─── Check cookie consent ─── */
+  /* ─── Check cookie consent (event-driven, no polling) ─── */
   useEffect(() => {
     const check = () => {
       const match = document.cookie.match(/(?:^|; )cookie_consent=([^;]*)/)
       setConsented(match?.[1] === 'accepted')
     }
     check()
-    // Re-check when cookie consent banner is clicked
-    const interval = setInterval(check, 2000)
-    return () => clearInterval(interval)
+    // Listen for consent change instead of polling every 2s
+    const handler = () => check()
+    window.addEventListener('cookie-consent-changed', handler)
+    return () => window.removeEventListener('cookie-consent-changed', handler)
   }, [])
 
   /* ─── Init: load session from localStorage ─── */

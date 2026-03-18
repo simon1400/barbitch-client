@@ -1,6 +1,6 @@
 import type { Metadata } from 'next'
 
-import ChatWidget from 'components/ChatWidget'
+import LazyChatWidget from 'components/ChatWidget.lazy'
 import CookieConsent from 'components/CookieConsent'
 import FacebookPageView from 'components/FacebookPageView'
 import Footer from 'components/Footer'
@@ -67,23 +67,11 @@ export default async function RootLayout({
         <link rel={'manifest'} href={'/favicon/site.webmanifest'} />
         <script
           dangerouslySetInnerHTML={{
-            __html: `
-              window.dataLayer=window.dataLayer||[];
-              function gtag(){dataLayer.push(arguments);}
-              gtag('consent','default',{
-                analytics_storage:'denied',
-                ad_storage:'denied',
-                ad_user_data:'denied',
-                ad_personalization:'denied',
-                functionality_storage:'denied',
-                personalization_storage:'denied',
-                security_storage:'granted'
-              });
-            `,
+            __html: `window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('consent','default',{analytics_storage:'denied',ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',functionality_storage:'denied',personalization_storage:'denied',security_storage:'granted'});`,
           }}
         />
       </head>
-      <Script id={'gtm-init'} strategy={'afterInteractive'}>
+      <Script id={'gtm-init'} strategy={'lazyOnload'}>
         {`
           window.dataLayer=window.dataLayer||[];
           window.dataLayer.push({'gtm.start':new Date().getTime(),event:'gtm.js'});
@@ -122,7 +110,7 @@ export default async function RootLayout({
             </Suspense>
           </HideOnRoutes>
 
-          <ChatWidget />
+          <LazyChatWidget />
           <CookieConsent />
         </AppProvider>
       </body>
