@@ -14,7 +14,8 @@ export default function imageLoader({ src, width, quality }: ImageLoaderParams):
 
   // Already an ImageKit URL — add transformations directly
   if (src.startsWith(IMAGEKIT_ENDPOINT)) {
-    return `${src}?tr=w-${width},q-${quality || 75},f-auto`
+    const separator = src.includes('?') ? '&' : '?'
+    return `${src}${separator}tr=w-${width},q-${quality || 75},f-auto`
   }
 
   // Cloudinary — use native URL-based transformations
@@ -22,6 +23,7 @@ export default function imageLoader({ src, width, quality }: ImageLoaderParams):
     return src.replace('/upload/', `/upload/w_${width},q_${quality || 75},f_auto/`)
   }
 
-  // External URLs (Strapi, Instagram, Google) — proxy through ImageKit
-  return `${IMAGEKIT_ENDPOINT}/tr:w-${width},q-${quality || 75},f-auto/${src}`
+  // External URLs (Strapi, Instagram, Google) — serve as-is
+  // ImageKit proxy requires Web Proxy origin configured in dashboard
+  return src
 }
