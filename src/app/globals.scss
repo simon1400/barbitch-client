@@ -140,6 +140,17 @@ body{
       }
     }
   }
+  figure.content-image {
+    @apply my-8 mx-auto;
+    max-width: 720px;
+    img {
+      @apply w-full h-auto rounded-lg;
+    }
+    figcaption {
+      @apply text-center text-baseSm mt-3 opacity-60;
+      font-style: italic;
+    }
+  }
   figure.table,
   & > section table,
   & table:not(figure.table table){
@@ -216,6 +227,12 @@ body{
           left: -22px;
           top: 15px;
         }
+      }
+    }
+    figure.content-image {
+      @apply my-5;
+      figcaption {
+        @apply text-sm;
       }
     }
   }
