@@ -2,8 +2,7 @@ module.exports = {
   apps: [
     {
       name: 'barbitch-client',
-      script: 'node_modules/next/dist/bin/next',
-      args: 'start',
+      script: '.next/standalone/server.js',
       cwd: '/opt/barbitch-client',
       instances: 1,
       exec_mode: 'fork',
@@ -14,6 +13,7 @@ module.exports = {
       env: {
         NODE_ENV: 'production',
         PORT: 3000,
+        HOSTNAME: '0.0.0.0',
       },
       error_file: '/var/log/pm2/barbitch-client-error.log',
       out_file: '/var/log/pm2/barbitch-client-out.log',

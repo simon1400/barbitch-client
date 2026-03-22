@@ -26,6 +26,8 @@ jobs:
             git pull origin main
             npm ci
             npm run build
+            cp -r public .next/standalone/
+            cp -r .next/static .next/standalone/.next/
             pm2 restart barbitch-client || pm2 start ecosystem.config.js
             pm2 save
             echo "✅ Deployment completed successfully!"
