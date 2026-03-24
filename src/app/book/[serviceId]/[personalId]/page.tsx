@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 
 import { Suspense } from 'react'
 
+import { getMasterPriorities } from '../../fetch/masterPriority'
 import { getSlotService } from '../../fetch/slotsService'
 
 import BookCalendarClient from './BookCalendarClient'
@@ -49,7 +50,10 @@ async function BookCalendarContent({
   serviceId: string
   personalId: string
 }) {
-  const data = await getSlotService(serviceId, personalId)
+  const [data, masterPriorities] = await Promise.all([
+    getSlotService(serviceId, personalId),
+    personalId === 'any' ? getMasterPriorities() : Promise.resolve([]),
+  ])
 
   const executeDateStrings = data.executeDate.map((d) => d.toISOString())
 
@@ -58,6 +62,7 @@ async function BookCalendarContent({
       initialData={{
         executeDateStrings,
         filteredData: data.filteredData,
+        masterPriorities,
       }}
     />
   )

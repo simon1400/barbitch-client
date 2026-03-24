@@ -1,4 +1,8 @@
+import type { IMasterPriority } from '../../../fetch/masterPriority'
+
 import { LoaderCircle } from 'lucide-react'
+
+import { selectMasterByPriority } from '../../../fetch/masterPriority'
 
 export interface IBlockSlots {
   time: string
@@ -10,11 +14,13 @@ const TimeBlock = ({
   blockSlots,
   handleSelect,
   loadingTimepicker,
+  masterPriorities,
 }: {
   head: string
   blockSlots: IBlockSlots[]
   handleSelect: (employeeIds: string, time: string) => void
   loadingTimepicker: string
+  masterPriorities: IMasterPriority[]
 }) => {
   return (
     <div className={'flex flex-col gap-2.5 w-full'}>
@@ -24,9 +30,8 @@ const TimeBlock = ({
           key={item.time}
           onClick={() => {
             if (!loadingTimepicker.length) {
-              const ids = item.employeeIds
-              // eslint-disable-next-line sonarjs/pseudo-random
-              handleSelect(ids[Math.floor(Math.random() * ids.length)], item.time)
+              const selectedId = selectMasterByPriority(item.employeeIds, masterPriorities)
+              handleSelect(selectedId, item.time)
             }
           }}
           className={`h-[38px] block w-full rounded-special-small text-white text-[14px]/[38px] duration-200  ${loadingTimepicker === item.time ? 'bg-primary' : 'bg-[#161615]'} ${!loadingTimepicker.length ? 'hover:bg-primary cursor-pointer' : 'cursor-progress'}`}

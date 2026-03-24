@@ -1,4 +1,5 @@
 'use client'
+import type { IMasterPriority } from '../../fetch/masterPriority'
 import type { ISlotService } from '../../fetch/slotsService'
 
 import { format, formatISO, parseISO } from 'date-fns'
@@ -21,6 +22,7 @@ interface BookCalendarClientProps {
   initialData: {
     executeDateStrings: string[]
     filteredData: ISlotService[]
+    masterPriorities: IMasterPriority[]
   }
 }
 
@@ -92,6 +94,7 @@ export default function BookCalendarClient({ initialData }: BookCalendarClientPr
           slots={slots}
           handleSelect={handleSelect}
           loadingTimepicker={loadingTimepicker}
+          masterPriorities={initialData.masterPriorities}
         />
       ) : (
         <EmptyAlert />
