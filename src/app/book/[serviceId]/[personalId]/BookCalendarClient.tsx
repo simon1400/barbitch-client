@@ -9,9 +9,11 @@ import { useEffect, useMemo, useState } from 'react'
 
 import { createSlotReservation, deleteSlotReservation } from '../../fetch/slotReservation'
 
+import { CalendarSkeletonInner } from './components/CalendarSkeleton'
+
 const BookDatePicker = dynamic(() => import('./components/DatePicker'), {
   ssr: false,
-  loading: () => <p className={'text-center'}>{'Loading calendar...'}</p>,
+  loading: () => <CalendarSkeletonInner />,
 })
 const EmptyAlert = dynamic(() => import('./components/EmptyAlert'), { ssr: false })
 const TimePicker = dynamic(() => import('./components/TimePicker'), { ssr: false })

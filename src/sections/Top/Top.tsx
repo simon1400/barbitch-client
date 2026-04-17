@@ -1,6 +1,8 @@
 import Button from 'components/Button'
 import { Container } from 'components/Container'
 
+import HeroBackground from './HeroBackground'
+
 export const Top = ({
   title,
   small = false,
@@ -15,13 +17,13 @@ export const Top = ({
   return (
     <section
       aria-labelledby={'top-title'}
-      className={`${
-        small ? 'h-[545px]' : 'h-screen md:min-h-[800px]'
-      } mix-blend-multiply flex items-end relative z-10 mb-13.5 bg-gradient-to-t from-[rgba(231,30,110,1)] to-[rgba(255,0,101,0.5)]`}
+      className={`${small ? 'h-[545px]' : 'h-screen md:min-h-[800px]'} flex items-end relative z-10 mb-13.5`}
     >
+      <HeroBackground />
+
       <Container size={'xl'} className={small ? '' : 'md:min-h-[500px]'}>
-        <div className={`${small ? 'pb-10' : 'pb-23'} md:pb-15 max-w-[650px]`}>
-          <h1 id={'top-title'} className={`text-md2 lg:text-top pb-4 uppercase`}>
+        <div className={`${small ? 'pb-10' : 'pb-23'} md:pb-15 max-w-[650px] relative z-10`}>
+          <h1 id={'top-title'} className={'text-md2 lg:text-top pb-4 uppercase'}>
             {title}
           </h1>
 
