@@ -27,6 +27,7 @@ export const getSlotReservation = async (id: string) => {
   const queryParams = {
     expand: 'employee',
     select: [
+      'event_types.id',
       'event_types.minutes',
       'event_types.title',
       'event_types.payments.total_payment',

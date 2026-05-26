@@ -14,6 +14,7 @@ import {
 import { BookServiceItem } from './components/BookServiceItem'
 import { getHiddenServiceIds } from './fetch/addonGroupService'
 import { getBookService } from './fetch/bookService'
+import { getJuniorNoonaIds } from './fetch/juniorMap'
 
 const filterGroups = (groups: IBookServiceGroup[], hiddenIds: Set<string>): IBookServiceGroup[] =>
   groups
@@ -39,9 +40,14 @@ const BookServicePage = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const [servicesData, hiddenIds] = await Promise.all([getBookService(), getHiddenServiceIds()])
+      const [servicesData, hiddenIds, juniorIds] = await Promise.all([
+        getBookService(),
+        getHiddenServiceIds(),
+        getJuniorNoonaIds(),
+      ])
 
-      const filtered = filterGroups(servicesData, hiddenIds)
+      const allHiddenIds = new Set([...hiddenIds, ...juniorIds])
+      const filtered = filterGroups(servicesData, allHiddenIds)
 
       setData(filtered)
 
