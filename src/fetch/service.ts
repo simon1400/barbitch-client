@@ -77,13 +77,10 @@ export const getFullService = async (slug: string): Promise<IDataFullService> =>
               populate: '*',
             },
             'content.price-list': {
-              fields: ['title', 'contentBefore', 'contentAfter'],
+              fields: ['title', 'contentBefore', 'contentAfter', 'pricelistFilter'],
               populate: {
                 cta: {
                   fields: ['title', 'link'],
-                },
-                pricelistTable: {
-                  fields: ['title'],
                 },
               },
             },

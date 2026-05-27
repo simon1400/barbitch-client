@@ -10,7 +10,7 @@ export const PriceList = async ({ data }: { data: any }) => {
   // Filter by linked pricelist title — fuzzy match handles:
   // • emojis in Noona names ("Nehty 💅💅💅" matches "Nehty")
   // • inflected Czech forms ("Prodlužování řas" matches "Řasy" via stem "řas")
-  const strapiTitle: string | undefined = data.pricelistTable?.title
+  const strapiTitle: string | undefined = data.pricelistFilter
   const matchTitle = (noonaTitle: string, filter: string): boolean => {
     const n = noonaTitle.toLowerCase()
     const f = filter.toLowerCase()

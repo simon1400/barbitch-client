@@ -1,5 +1,6 @@
 import type { IAddonGroup } from 'app/book/fetch/addonGroupService'
 
+import { getJuniorNoonaIds } from 'app/book/fetch/juniorMap'
 import { Axios, Noona } from 'lib/api'
 
 const NOONA_COMPANY_ID = process.env.NOONA_COMPANY_ID || ''
@@ -71,17 +72,22 @@ const buildServices = (
 export const getBookingPricelist = async (): Promise<IPricelistGroup[]> => {
   const queryString = 'select=title&select=group_event_types&select=description'
 
-  const [noonaResponse, addonGroups] = await Promise.all([
+  const [noonaResponse, addonGroups, juniorIds] = await Promise.all([
     Noona.get(`/companies/${NOONA_COMPANY_ID}/event_types/expanded?${queryString}`).catch(() => ({
       data: [],
     })),
     (Axios.get(`/api/booking-addon-groups?${DEEP_POPULATE}`) as Promise<IAddonGroup[]>).catch(
       () => [] as IAddonGroup[],
     ),
+    getJuniorNoonaIds(),
   ])
 
   const noonaData: { title: string; group_event_types: any[] }[] = noonaResponse.data ?? []
   const { addonGroupMap, hiddenIds } = buildAddonMaps(Array.isArray(addonGroups) ? addonGroups : [])
+
+  // junior-копии услуг должны быть видны только на странице резервации (через подмену
+  // event_type при выборе junior-мастера), но не в публичном прайс-листе на /cenik и /service/*
+  for (const id of juniorIds) hiddenIds.add(id)
 
   const result: IPricelistGroup[] = []
   for (const group of noonaData) {
