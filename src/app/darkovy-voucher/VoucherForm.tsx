@@ -7,6 +7,7 @@ import { Text } from 'components/dynamicComponents/Text'
 import { DeliveryMethod } from 'components/form/DeliveryMethod'
 import { Radio } from 'components/form/Radio'
 import { Textarea } from 'components/form/Textarea'
+import { sendGoogleAdsConversion } from 'fetch/googleAds'
 import { sendCAPIEvent } from 'fetch/pixel'
 import { createVoucher } from 'fetch/voucher'
 import { useState } from 'react'
@@ -112,6 +113,19 @@ const VoucherForm = () => {
       .then(() => {
         // Send Purchase event to FB CAPI
         sendCAPIEvent(
+          'Purchase',
+          {
+            email: data.email,
+            phone: data.phone,
+          },
+          {
+            currency: 'CZK',
+            value: data.voucher,
+          },
+        )
+
+        // Send Purchase conversion to Google Ads (Data Manager API)
+        sendGoogleAdsConversion(
           'Purchase',
           {
             email: data.email,

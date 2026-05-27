@@ -5,6 +5,7 @@ import LazyChatWidget from 'components/ChatWidget.lazy'
 import CookieConsent from 'components/CookieConsent'
 import FacebookPageView from 'components/FacebookPageView'
 import Footer from 'components/Footer'
+import GoogleAdsClickId from 'components/GoogleAdsClickId'
 import { Header } from 'components/Header'
 import { AppProvider } from 'context/AppContext'
 import { HideOnRoutes } from 'helpers/HideOnRoutes'
@@ -84,6 +85,7 @@ export default async function RootLayout({
       <body className={`bg-base antialiased overflow-x-hidden ${montserat.className}`}>
         <AppProvider>
           <FacebookPageView />
+          <GoogleAdsClickId />
           <Suspense
             fallback={
               <header className={'absolute w-full z-50'}>

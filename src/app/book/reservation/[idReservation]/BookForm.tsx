@@ -1,6 +1,7 @@
 'use client'
 import Button from 'components/Button'
 import { Container } from 'components/Container'
+import { sendGoogleAdsConversion } from 'fetch/googleAds'
 import { sendCAPIEvent } from 'fetch/pixel'
 import { useOnMountUnsafe } from 'helpers/useOnMountUnsaf'
 import { useRouter } from 'next/navigation'
@@ -116,6 +117,12 @@ const BookForm = ({ idReservation }: Props) => {
 
       // Send Lead event to FB CAPI
       sendCAPIEvent('Lead', {
+        email: userData.email,
+        phone: userData.phone,
+      })
+
+      // Send Lead conversion to Google Ads (Data Manager API)
+      sendGoogleAdsConversion('Lead', {
         email: userData.email,
         phone: userData.phone,
       })
