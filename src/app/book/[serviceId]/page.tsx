@@ -1,14 +1,13 @@
 /* eslint-disable import/order */
 import type { Metadata } from 'next'
 import type { IPersonalService } from '../fetch/personalService'
-import type { IJuniorMap, IJuniorPersonal } from '../fetch/juniorMap'
 
 import { MasterIcon } from 'icons/Master'
+import { JUNIOR_DISCOUNT_PERCENT } from 'lib/junior'
 import Link from 'next/link'
 
-import { getPersonalService } from '../fetch/personalService'
 import { getJuniorMapForSenior, getJuniorPersonals } from '../fetch/juniorMap'
-import { JUNIOR_DISCOUNT_PERCENT } from 'constants/junior'
+import { getPersonalService } from '../fetch/personalService'
 
 export const metadata: Metadata = {
   title: 'Výběr specialistky | Rezervace – Barbitch Beauty Studio Brno',

@@ -1,8 +1,7 @@
 import type { Metadata } from 'next'
 
 import { formatInTimeZone } from 'date-fns-tz'
-
-import { JUNIOR_DISCOUNT_PERCENT } from 'constants/junior'
+import { JUNIOR_DISCOUNT_PERCENT } from 'lib/junior'
 
 import { getJuniorMapByJuniorId } from '../../fetch/juniorMap'
 import { getSlotReservation } from '../../fetch/slotReservation'
