@@ -38,7 +38,7 @@ function getSessionId(): string {
   }
   let id = localStorage.getItem('barbitch_error_session')
   if (!id) {
-    id = `err_${Date.now().toString(36)}_${Math.random().toString(36).slice(2, 8)}`
+    id = `err_${Date.now().toString(36)}_${crypto.randomUUID().slice(0, 8)}`
     try {
       localStorage.setItem('barbitch_error_session', id)
     } catch {
