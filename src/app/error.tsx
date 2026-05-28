@@ -2,8 +2,18 @@
 'use client'
 
 import Button from 'components/Button'
+import { reportClientError } from 'lib/errorReporter'
+import { useEffect } from 'react'
 
 export default function Error({ error, reset }: { error: Error; reset: () => void }) {
+  useEffect(() => {
+    reportClientError({
+      message: error.message || 'Route error (no message)',
+      stack: error.stack,
+      source: 'react-error',
+    })
+  }, [error])
+
   return (
     <main
       className={'min-h-[600px] md:min-h-[700px] h-screen flex'}

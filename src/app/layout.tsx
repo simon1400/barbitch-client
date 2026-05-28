@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 
 import LazyChatWidget from 'components/ChatWidget.lazy'
 import CookieConsent from 'components/CookieConsent'
+import ErrorReporter from 'components/ErrorReporter'
 import FacebookPageView from 'components/FacebookPageView'
 import Footer from 'components/Footer'
 import GoogleAdsClickId from 'components/GoogleAdsClickId'
@@ -84,6 +85,7 @@ export default async function RootLayout({
       </Script>
       <body className={`bg-base antialiased overflow-x-hidden ${montserat.className}`}>
         <AppProvider>
+          <ErrorReporter />
           <FacebookPageView />
           <GoogleAdsClickId />
           <Suspense
