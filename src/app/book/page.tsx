@@ -14,10 +14,20 @@ import {
 import { BookServiceItem } from './components/BookServiceItem'
 import { getHiddenServiceIds } from './fetch/addonGroupService'
 import { getBookService } from './fetch/bookService'
-import { getJuniorNoonaIds } from './fetch/juniorMap'
+
+// На /book показываем только эти категории. Сопоставление по вхождению
+// подстроки — устойчиво к эмодзи/пробелам в конце названия группы Noona.
+// Junior-группа («Nehty - Junior», 656 услуг) и пулы вариантов
+// (Gel lak manikúra, Prodloužení nehtů, Sundání, Nano-zpevnění,
+// Hygienická manikúra и т.п.) сюда не попадают и не грузятся в список.
+const VISIBLE_CATEGORY_MATCHERS = ['Nehty 💅', 'Obočí', 'barvení a péče', 'Prodlužování řas']
+
+const isVisibleCategory = (title: string): boolean =>
+  VISIBLE_CATEGORY_MATCHERS.some((m) => title.includes(m))
 
 const filterGroups = (groups: IBookServiceGroup[], hiddenIds: Set<string>): IBookServiceGroup[] =>
   groups
+    .filter((group) => isVisibleCategory(group.title))
     .map((group) => ({
       ...group,
       group_event_types: group.group_event_types.filter((s) => !hiddenIds.has(s.id.toString())),
@@ -40,14 +50,9 @@ const BookServicePage = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      const [servicesData, hiddenIds, juniorIds] = await Promise.all([
-        getBookService(),
-        getHiddenServiceIds(),
-        getJuniorNoonaIds(),
-      ])
+      const [servicesData, hiddenIds] = await Promise.all([getBookService(), getHiddenServiceIds()])
 
-      const allHiddenIds = new Set([...hiddenIds, ...juniorIds])
-      const filtered = filterGroups(servicesData, allHiddenIds)
+      const filtered = filterGroups(servicesData, hiddenIds)
 
       setData(filtered)
 

@@ -70,25 +70,44 @@ export const getJuniorMapByJuniorId = async (
  * junior-копии из основного списка услуг (они должны быть доступны только
  * через подмену event_type при выборе junior-мастера).
  */
-export const getJuniorNoonaIds = async (): Promise<Set<string>> => {
+const JUNIOR_MAP_PAGE_SIZE = 200
+
+const fetchJuniorMapPage = async (page: number): Promise<any[]> => {
   try {
-    const ids = new Set<string>()
-    let page = 1
-    while (true) {
-      const data: any[] = await Axios.get(
-        `/api/service-junior-maps?fields[0]=junior_noona_id&pagination[page]=${page}&pagination[pageSize]=200`,
-      )
-      if (!Array.isArray(data) || data.length === 0) break
+    const data = (await Axios.get(
+      `/api/service-junior-maps?fields[0]=junior_noona_id&pagination[page]=${page}&pagination[pageSize]=${JUNIOR_MAP_PAGE_SIZE}`,
+    )) as unknown as any[]
+    return Array.isArray(data) ? data : []
+  } catch {
+    return []
+  }
+}
+
+export const getJuniorNoonaIds = async (): Promise<Set<string>> => {
+  // Страниц junior-маппингов сейчас ~4 (656 записей). Раньше грузились
+  // последовательно (await в цикле) → ~5с к Supabase pooler. Грузим батчами
+  // параллельно: один батч = ~1.3с вместо 4×1.3с. Батч из 5 страниц покрывает
+  // до 1000 записей за один заход; если данных больше — берём следующий батч.
+  const BATCH = 5
+  const ids = new Set<string>()
+  let start = 1
+
+  while (true) {
+    const pages = Array.from({ length: BATCH }, (_, i) => start + i)
+    const results = await Promise.all(pages.map(fetchJuniorMapPage))
+
+    for (const data of results) {
       for (const item of data) {
         if (item.junior_noona_id) ids.add(item.junior_noona_id)
       }
-      if (data.length < 200) break
-      page++
     }
-    return ids
-  } catch {
-    return new Set()
+
+    // Если последняя страница батча не заполнена — данных за этим батчем нет.
+    if (results[results.length - 1].length < JUNIOR_MAP_PAGE_SIZE) break
+    start += BATCH
   }
+
+  return ids
 }
 
 /**
