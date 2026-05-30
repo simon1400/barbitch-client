@@ -55,11 +55,19 @@ export const ExtrasSelector = ({ serviceId, group }: ExtrasSelectorProps) => {
   }
 
   const toggleModifier = (key: string) => {
+    const modifiers = group.modifiers ?? []
+    const grp = modifiers.find((m) => m.key === key)?.group?.trim()
     setCheckedModifiers((prev) => {
       const next = new Set(prev)
       if (next.has(key)) {
         next.delete(key)
       } else {
+        // Mutually-exclusive group: deselect any other checked modifier sharing it
+        if (grp) {
+          for (const other of modifiers) {
+            if (other.key !== key && other.group?.trim() === grp) next.delete(other.key)
+          }
+        }
         next.add(key)
       }
       return next
