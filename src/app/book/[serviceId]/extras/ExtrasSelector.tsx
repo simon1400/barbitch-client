@@ -39,6 +39,8 @@ export const ExtrasSelector = ({ serviceId, group }: ExtrasSelectorProps) => {
   const router = useRouter()
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [checkedModifiers, setCheckedModifiers] = useState<Set<string>>(new Set())
+  // Which rows have their "info" description expanded (id: `addon:<label>` / `mod:<key>`)
+  const [openInfo, setOpenInfo] = useState<Set<string>>(new Set())
 
   const handleSelectIndex = (idx: number) => {
     const available = getAvailableModifierKeys(idx, group)
@@ -105,11 +107,13 @@ export const ExtrasSelector = ({ serviceId, group }: ExtrasSelectorProps) => {
   const { href, total, hasOverride } = getResult()
   const availableModifierKeys = getAvailableModifierKeys(selectedIndex, group)
 
-  const options = [
-    { label: 'Základní varianta', priceDiff: 0 },
+  const options: Array<{ id: string; label: string; priceDiff: number; description?: string }> = [
+    { id: 'base', label: 'Základní varianta', priceDiff: 0 },
     ...group.addons.map((addon) => ({
+      id: `addon:${addon.label}`,
       label: addon.label,
       priceDiff: addon.price_diff,
+      description: addon.description,
     })),
   ]
 
@@ -133,6 +137,31 @@ export const ExtrasSelector = ({ serviceId, group }: ExtrasSelectorProps) => {
 
   const capitalize = (s: string) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : s)
 
+  const toggleInfo = (id: string) =>
+    setOpenInfo((prev) => {
+      const next = new Set(prev)
+      if (next.has(id)) next.delete(id)
+      else next.add(id)
+      return next
+    })
+
+  // Small grey "info" badge (same style as the main service list). stopPropagation
+  // so tapping it expands the description instead of selecting/toggling the row.
+  const renderInfoBadge = (id: string) => (
+    <span
+      role={'button'}
+      onClick={(e) => {
+        e.stopPropagation()
+        toggleInfo(id)
+      }}
+      className={
+        'inline-block ml-2 align-middle text-[11px] text-accent font-light bg-[#A0A0A0] leading-none py-0.5 px-2 rounded-xl'
+      }
+    >
+      {'info'}
+    </span>
+  )
+
   // Одна строка модификатора. radio=true → круглый индикатор (взаимоисключающая
   // группа), иначе квадратный чекбокс. Поведение клика одинаковое (toggleModifier
   // сам снимает другие в группе и позволяет снять выбор повторным кликом).
@@ -140,60 +169,69 @@ export const ExtrasSelector = ({ serviceId, group }: ExtrasSelectorProps) => {
     const isChecked = checkedModifiers.has(modifier.key)
     const isDisabled = !availableModifierKeys.has(modifier.key)
     const active = isChecked && !isDisabled
+    const infoId = `mod:${modifier.key}`
+    const showInfo = openInfo.has(infoId)
     return (
-      <div
-        key={modifier.key}
-        role={'button'}
-        onClick={() => !isDisabled && toggleModifier(modifier.key)}
-        className={`flex items-center gap-4 px-4 py-3.5 transition-colors duration-150 border-t-2 border-[#3C3C3C] border-dotted ${
-          isDisabled
-            ? 'opacity-35 cursor-not-allowed'
-            : isChecked
-              ? 'bg-[#3C3C3C] cursor-pointer'
-              : 'hover:bg-[#2e2e2c] cursor-pointer'
-        }`}
-      >
-        {radio ? (
-          <span
-            className={`shrink-0 flex items-center justify-center w-5 h-5 rounded-full border-2 transition-colors duration-150 ${
-              active ? 'border-[#E71E6E]' : 'border-[#A0A0A0]'
-            }`}
-          >
-            {active && <span className={'w-2.5 h-2.5 rounded-full bg-[#E71E6E] block'} />}
-          </span>
-        ) : (
-          <span
-            className={`shrink-0 flex items-center justify-center w-5 h-5 rounded border-2 transition-colors duration-150 ${
-              active ? 'border-[#E71E6E] bg-[#E71E6E]' : 'border-[#A0A0A0]'
-            }`}
-          >
-            {active && (
-              <svg width={'11'} height={'8'} viewBox={'0 0 11 8'} fill={'none'}>
-                <path
-                  d={'M1 3.5L4 6.5L10 1'}
-                  stroke={'white'}
-                  strokeWidth={'1.8'}
-                  strokeLinecap={'round'}
-                  strokeLinejoin={'round'}
-                />
-              </svg>
-            )}
-          </span>
-        )}
-
-        <span className={'flex-1 min-w-0'}>
-          <span className={'block text-xs1 leading-snug'}>{modifier.label}</span>
-        </span>
-
-        <span
-          className={`shrink-0 text-xss font-semibold rounded-xl px-2 py-1 whitespace-nowrap ${
+      <div key={modifier.key} className={'border-t-2 border-[#3C3C3C] border-dotted'}>
+        <div
+          role={'button'}
+          onClick={() => !isDisabled && toggleModifier(modifier.key)}
+          className={`flex items-center gap-4 px-4 py-3.5 transition-colors duration-150 ${
             isDisabled
-              ? 'text-[#A0A0A0] bg-[#A0A0A01A] border border-[#A0A0A040]'
-              : 'text-[#E71E6E] bg-[#E71E6E1A] border border-[#E71E6E40]'
+              ? 'opacity-35 cursor-not-allowed'
+              : isChecked
+                ? 'bg-[#3C3C3C] cursor-pointer'
+                : 'hover:bg-[#2e2e2c] cursor-pointer'
           }`}
         >
-          {`+${modifier.price_diff} Kč`}
-        </span>
+          {radio ? (
+            <span
+              className={`shrink-0 flex items-center justify-center w-5 h-5 rounded-full border-2 transition-colors duration-150 ${
+                active ? 'border-[#E71E6E]' : 'border-[#A0A0A0]'
+              }`}
+            >
+              {active && <span className={'w-2.5 h-2.5 rounded-full bg-[#E71E6E] block'} />}
+            </span>
+          ) : (
+            <span
+              className={`shrink-0 flex items-center justify-center w-5 h-5 rounded border-2 transition-colors duration-150 ${
+                active ? 'border-[#E71E6E] bg-[#E71E6E]' : 'border-[#A0A0A0]'
+              }`}
+            >
+              {active && (
+                <svg width={'11'} height={'8'} viewBox={'0 0 11 8'} fill={'none'}>
+                  <path
+                    d={'M1 3.5L4 6.5L10 1'}
+                    stroke={'white'}
+                    strokeWidth={'1.8'}
+                    strokeLinecap={'round'}
+                    strokeLinejoin={'round'}
+                  />
+                </svg>
+              )}
+            </span>
+          )}
+
+          <span className={'flex-1 min-w-0'}>
+            <span className={'text-xs1 leading-snug'}>{modifier.label}</span>
+            {modifier.description && renderInfoBadge(infoId)}
+          </span>
+
+          <span
+            className={`shrink-0 text-xss font-semibold rounded-xl px-2 py-1 whitespace-nowrap ${
+              isDisabled
+                ? 'text-[#A0A0A0] bg-[#A0A0A01A] border border-[#A0A0A040]'
+                : 'text-[#E71E6E] bg-[#E71E6E1A] border border-[#E71E6E40]'
+            }`}
+          >
+            {`+${modifier.price_diff} Kč`}
+          </span>
+        </div>
+        {showInfo && modifier.description && (
+          <p className={'px-4 pb-3.5 -mt-1 text-[#A0A0A0] text-xss leading-snug'}>
+            {modifier.description}
+          </p>
+        )}
       </div>
     )
   }
@@ -218,35 +256,46 @@ export const ExtrasSelector = ({ serviceId, group }: ExtrasSelectorProps) => {
         {group.title && <p className={'px-4 pt-3.5 pb-1 text-xss text-[#A0A0A0]'}>{group.title}</p>}
         {options.map((option, index) => {
           const isSelected = selectedIndex === index
+          const showInfo = openInfo.has(option.id)
           return (
             <div
-              key={index}
-              role={'button'}
-              onClick={() => handleSelectIndex(index)}
-              className={`flex items-center gap-4 px-4 py-4 cursor-pointer transition-colors duration-150 ${
-                index > 0 ? 'border-t-2 border-[#3C3C3C] border-dotted' : ''
-              } ${isSelected ? 'bg-[#3C3C3C]' : 'hover:bg-[#2e2e2c]'}`}
+              key={option.id}
+              className={index > 0 ? 'border-t-2 border-[#3C3C3C] border-dotted' : ''}
             >
-              <span
-                className={`shrink-0 flex items-center justify-center w-5 h-5 rounded-full border-2 transition-colors duration-150 ${
-                  isSelected ? 'border-[#E71E6E]' : 'border-[#A0A0A0]'
+              <div
+                role={'button'}
+                onClick={() => handleSelectIndex(index)}
+                className={`flex items-center gap-4 px-4 py-4 cursor-pointer transition-colors duration-150 ${
+                  isSelected ? 'bg-[#3C3C3C]' : 'hover:bg-[#2e2e2c]'
                 }`}
               >
-                {isSelected && <span className={'w-2.5 h-2.5 rounded-full bg-[#E71E6E] block'} />}
-              </span>
-
-              <span className={'flex-1 min-w-0'}>
-                <span className={'block text-xs1 leading-snug'}>{option.label}</span>
-              </span>
-
-              {option.priceDiff > 0 && (
                 <span
-                  className={
-                    'shrink-0 text-xss font-semibold text-[#E71E6E] bg-[#E71E6E1A] border border-[#E71E6E40] rounded-xl px-2 py-1 whitespace-nowrap'
-                  }
+                  className={`shrink-0 flex items-center justify-center w-5 h-5 rounded-full border-2 transition-colors duration-150 ${
+                    isSelected ? 'border-[#E71E6E]' : 'border-[#A0A0A0]'
+                  }`}
                 >
-                  {`+${option.priceDiff} Kč`}
+                  {isSelected && <span className={'w-2.5 h-2.5 rounded-full bg-[#E71E6E] block'} />}
                 </span>
+
+                <span className={'flex-1 min-w-0'}>
+                  <span className={'text-xs1 leading-snug'}>{option.label}</span>
+                  {option.description && renderInfoBadge(option.id)}
+                </span>
+
+                {option.priceDiff > 0 && (
+                  <span
+                    className={
+                      'shrink-0 text-xss font-semibold text-[#E71E6E] bg-[#E71E6E1A] border border-[#E71E6E40] rounded-xl px-2 py-1 whitespace-nowrap'
+                    }
+                  >
+                    {`+${option.priceDiff} Kč`}
+                  </span>
+                )}
+              </div>
+              {showInfo && option.description && (
+                <p className={'px-4 pb-3.5 -mt-1 text-[#A0A0A0] text-xss leading-snug'}>
+                  {option.description}
+                </p>
               )}
             </div>
           )

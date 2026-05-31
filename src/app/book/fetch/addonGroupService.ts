@@ -7,6 +7,8 @@ export interface IModifierItem {
   // Mutually-exclusive group. Modifiers sharing the same non-empty group can't
   // be selected together (selecting one auto-deselects the others in the group).
   group?: string
+  // Optional client-facing info text, shown via the "info" toggle.
+  description?: string
 }
 
 export interface IModifierResult {
@@ -18,6 +20,8 @@ export interface IAddonItem {
   label: string
   price_diff: number
   result_noona_id: string
+  // Optional client-facing info text, shown via the "info" toggle.
+  description?: string
   modifier_results: IModifierResult[]
 }
 
