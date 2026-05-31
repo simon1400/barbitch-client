@@ -1,4 +1,5 @@
 import { getSitemapSlugs } from 'fetch/sitemap'
+import { HIRING } from 'lib/hiring'
 import { NextResponse } from 'next/server'
 
 export async function GET() {
@@ -15,6 +16,10 @@ export async function GET() {
     { update: now, slug: '/kontakt', priority: '0.8', changefreq: 'monthly' },
     { update: now, slug: '/cenik', priority: '0.8', changefreq: 'monthly' },
     { update: now, slug: '/book', priority: '0.8', changefreq: 'monthly' },
+    // Inzerát na pozici — jen když běží nábor (HIRING.enabled).
+    ...(HIRING.enabled
+      ? [{ update: now, slug: '/kariera', priority: '0.7', changefreq: 'weekly' }]
+      : []),
   ]
 
   const allRoutes = [...staticRoutes, ...routes]

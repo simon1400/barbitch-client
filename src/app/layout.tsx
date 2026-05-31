@@ -8,8 +8,10 @@ import FacebookPageView from 'components/FacebookPageView'
 import Footer from 'components/Footer'
 import GoogleAdsClickId from 'components/GoogleAdsClickId'
 import { Header } from 'components/Header'
+import HiringBar from 'components/HiringBar'
 import { AppProvider } from 'context/AppContext'
 import { HideOnRoutes } from 'helpers/HideOnRoutes'
+import { HIRING } from 'lib/hiring'
 import { Montserrat } from 'next/font/google'
 import Script from 'next/script'
 import { Suspense } from 'react'
@@ -83,7 +85,10 @@ export default async function RootLayout({
           document.head.appendChild(s);
         `}
       </Script>
-      <body className={`bg-base antialiased overflow-x-hidden ${montserat.className}`}>
+      <body
+        className={`bg-base antialiased overflow-x-hidden ${HIRING.enabled ? 'pt-9 lg:pt-10' : ''} ${montserat.className}`}
+      >
+        <HiringBar />
         <AppProvider>
           <ErrorReporter />
           <FacebookPageView />
