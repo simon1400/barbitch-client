@@ -1,6 +1,6 @@
 'use client'
 
-import type { IAddonGroup, IModifierResult } from '../../fetch/addonGroupService'
+import type { IAddonGroup, IModifierItem, IModifierResult } from '../../fetch/addonGroupService'
 
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
@@ -39,8 +39,6 @@ export const ExtrasSelector = ({ serviceId, group }: ExtrasSelectorProps) => {
   const router = useRouter()
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [checkedModifiers, setCheckedModifiers] = useState<Set<string>>(new Set())
-
-  const hasModifiers = (group.modifiers ?? []).length > 0
 
   const handleSelectIndex = (idx: number) => {
     const available = getAvailableModifierKeys(idx, group)
@@ -115,6 +113,91 @@ export const ExtrasSelector = ({ serviceId, group }: ExtrasSelectorProps) => {
     })),
   ]
 
+  const allModifiers = group.modifiers ?? []
+  // Свободные модификаторы (без группы) → чекбоксы в «Doplňkové služby»
+  const freeModifiers = allModifiers.filter((m) => !m.group?.trim())
+  // Модификаторы с группой → каждая группа в свой блок с радио-выбором (один/ни одного)
+  const modifierGroupOrder: string[] = []
+  const modifierGroups = new Map<string, IModifierItem[]>()
+  for (const m of allModifiers) {
+    const g = m.group?.trim()
+    if (!g) continue
+    const existing = modifierGroups.get(g)
+    if (existing) {
+      existing.push(m)
+    } else {
+      modifierGroups.set(g, [m])
+      modifierGroupOrder.push(g)
+    }
+  }
+
+  const capitalize = (s: string) => (s ? s.charAt(0).toUpperCase() + s.slice(1) : s)
+
+  // Одна строка модификатора. radio=true → круглый индикатор (взаимоисключающая
+  // группа), иначе квадратный чекбокс. Поведение клика одинаковое (toggleModifier
+  // сам снимает другие в группе и позволяет снять выбор повторным кликом).
+  const renderModifierRow = (modifier: IModifierItem, radio: boolean) => {
+    const isChecked = checkedModifiers.has(modifier.key)
+    const isDisabled = !availableModifierKeys.has(modifier.key)
+    const active = isChecked && !isDisabled
+    return (
+      <div
+        key={modifier.key}
+        role={'button'}
+        onClick={() => !isDisabled && toggleModifier(modifier.key)}
+        className={`flex items-center gap-4 px-4 py-3.5 transition-colors duration-150 border-t-2 border-[#3C3C3C] border-dotted ${
+          isDisabled
+            ? 'opacity-35 cursor-not-allowed'
+            : isChecked
+              ? 'bg-[#3C3C3C] cursor-pointer'
+              : 'hover:bg-[#2e2e2c] cursor-pointer'
+        }`}
+      >
+        {radio ? (
+          <span
+            className={`shrink-0 flex items-center justify-center w-5 h-5 rounded-full border-2 transition-colors duration-150 ${
+              active ? 'border-[#E71E6E]' : 'border-[#A0A0A0]'
+            }`}
+          >
+            {active && <span className={'w-2.5 h-2.5 rounded-full bg-[#E71E6E] block'} />}
+          </span>
+        ) : (
+          <span
+            className={`shrink-0 flex items-center justify-center w-5 h-5 rounded border-2 transition-colors duration-150 ${
+              active ? 'border-[#E71E6E] bg-[#E71E6E]' : 'border-[#A0A0A0]'
+            }`}
+          >
+            {active && (
+              <svg width={'11'} height={'8'} viewBox={'0 0 11 8'} fill={'none'}>
+                <path
+                  d={'M1 3.5L4 6.5L10 1'}
+                  stroke={'white'}
+                  strokeWidth={'1.8'}
+                  strokeLinecap={'round'}
+                  strokeLinejoin={'round'}
+                />
+              </svg>
+            )}
+          </span>
+        )}
+
+        <span className={'flex-1 min-w-0'}>
+          <span className={'block text-xs1 leading-snug'}>{modifier.label}</span>
+        </span>
+
+        <span
+          className={`shrink-0 text-xss font-semibold rounded-xl px-2 py-1 whitespace-nowrap ${
+            isDisabled
+              ? 'text-[#A0A0A0] bg-[#A0A0A01A] border border-[#A0A0A040]'
+              : 'text-[#E71E6E] bg-[#E71E6E1A] border border-[#E71E6E40]'
+          }`}
+        >
+          {`+${modifier.price_diff} Kč`}
+        </span>
+      </div>
+    )
+  }
+
   return (
     <div className={'pb-17'}>
       {/* Список основных опций (радиокнопки) */}
@@ -157,64 +240,24 @@ export const ExtrasSelector = ({ serviceId, group }: ExtrasSelectorProps) => {
         })}
       </div>
 
-      {/* Чекбоксы modifiers */}
-      {hasModifiers && (
+      {/* Взаимоисключающие группы дополнений — отдельный блок с радио-выбором */}
+      {modifierGroupOrder.map((groupName) => (
+        <div
+          key={groupName}
+          className={'mt-2.5 bg-[#252523] rounded-special-small overflow-hidden'}
+        >
+          <p className={'px-4 pt-3.5 pb-1 text-xss text-[#A0A0A0]'}>{capitalize(groupName)}</p>
+          {(modifierGroups.get(groupName) ?? []).map((modifier) =>
+            renderModifierRow(modifier, true),
+          )}
+        </div>
+      ))}
+
+      {/* Свободные дополнения — чекбоксы */}
+      {freeModifiers.length > 0 && (
         <div className={'mt-2.5 bg-[#252523] rounded-special-small overflow-hidden'}>
           <p className={'px-4 pt-3.5 pb-1 text-xss text-[#A0A0A0]'}>{'Doplňkové služby'}</p>
-          {(group.modifiers ?? []).map((modifier) => {
-            const isChecked = checkedModifiers.has(modifier.key)
-            const isDisabled = !availableModifierKeys.has(modifier.key)
-            return (
-              <div
-                key={modifier.key}
-                role={'button'}
-                onClick={() => !isDisabled && toggleModifier(modifier.key)}
-                className={`flex items-center gap-4 px-4 py-3.5 transition-colors duration-150 border-t-2 border-[#3C3C3C] border-dotted ${
-                  isDisabled
-                    ? 'opacity-35 cursor-not-allowed'
-                    : isChecked
-                      ? 'bg-[#3C3C3C] cursor-pointer'
-                      : 'hover:bg-[#2e2e2c] cursor-pointer'
-                }`}
-              >
-                <span
-                  className={`shrink-0 flex items-center justify-center w-5 h-5 rounded border-2 transition-colors duration-150 ${
-                    isDisabled
-                      ? 'border-[#A0A0A0]'
-                      : isChecked
-                        ? 'border-[#E71E6E] bg-[#E71E6E]'
-                        : 'border-[#A0A0A0]'
-                  }`}
-                >
-                  {isChecked && !isDisabled && (
-                    <svg width={'11'} height={'8'} viewBox={'0 0 11 8'} fill={'none'}>
-                      <path
-                        d={'M1 3.5L4 6.5L10 1'}
-                        stroke={'white'}
-                        strokeWidth={'1.8'}
-                        strokeLinecap={'round'}
-                        strokeLinejoin={'round'}
-                      />
-                    </svg>
-                  )}
-                </span>
-
-                <span className={'flex-1 min-w-0'}>
-                  <span className={'block text-xs1 leading-snug'}>{modifier.label}</span>
-                </span>
-
-                <span
-                  className={`shrink-0 text-xss font-semibold rounded-xl px-2 py-1 whitespace-nowrap ${
-                    isDisabled
-                      ? 'text-[#A0A0A0] bg-[#A0A0A01A] border border-[#A0A0A040]'
-                      : 'text-[#E71E6E] bg-[#E71E6E1A] border border-[#E71E6E40]'
-                  }`}
-                >
-                  {`+${modifier.price_diff} Kč`}
-                </span>
-              </div>
-            )
-          })}
+          {freeModifiers.map((modifier) => renderModifierRow(modifier, false))}
         </div>
       )}
 
