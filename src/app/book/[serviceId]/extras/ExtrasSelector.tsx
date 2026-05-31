@@ -198,6 +198,19 @@ export const ExtrasSelector = ({ serviceId, group }: ExtrasSelectorProps) => {
     )
   }
 
+  // В группе ничего не выбрано (= активна опция «Bez výběru»)
+  const isGroupEmpty = (groupName: string) =>
+    !(modifierGroups.get(groupName) ?? []).some((m) => checkedModifiers.has(m.key))
+
+  // Снять выбор у всей группы (вернуться к «ничего не выбрано»)
+  const clearGroup = (groupName: string) => {
+    setCheckedModifiers((prev) => {
+      const next = new Set(prev)
+      for (const m of modifierGroups.get(groupName) ?? []) next.delete(m.key)
+      return next
+    })
+  }
+
   return (
     <div className={'pb-17'}>
       {/* Список основных опций (радиокнопки) */}
@@ -241,17 +254,41 @@ export const ExtrasSelector = ({ serviceId, group }: ExtrasSelectorProps) => {
       </div>
 
       {/* Взаимоисключающие группы дополнений — отдельный блок с радио-выбором */}
-      {modifierGroupOrder.map((groupName) => (
-        <div
-          key={groupName}
-          className={'mt-2.5 bg-[#252523] rounded-special-small overflow-hidden'}
-        >
-          <p className={'px-4 pt-3.5 pb-1 text-xss text-[#A0A0A0]'}>{capitalize(groupName)}</p>
-          {(modifierGroups.get(groupName) ?? []).map((modifier) =>
-            renderModifierRow(modifier, true),
-          )}
-        </div>
-      ))}
+      {modifierGroupOrder.map((groupName) => {
+        const noneSelected = isGroupEmpty(groupName)
+        return (
+          <div
+            key={groupName}
+            className={'mt-2.5 bg-[#252523] rounded-special-small overflow-hidden'}
+          >
+            <p className={'px-4 pt-3.5 pb-1 text-xss text-[#A0A0A0]'}>{capitalize(groupName)}</p>
+
+            {/* Опция «ничего не выбрано» — позволяет отменить выбор в группе */}
+            <div
+              role={'button'}
+              onClick={() => clearGroup(groupName)}
+              className={`flex items-center gap-4 px-4 py-3.5 cursor-pointer transition-colors duration-150 ${
+                noneSelected ? 'bg-[#3C3C3C]' : 'hover:bg-[#2e2e2c]'
+              }`}
+            >
+              <span
+                className={`shrink-0 flex items-center justify-center w-5 h-5 rounded-full border-2 transition-colors duration-150 ${
+                  noneSelected ? 'border-[#E71E6E]' : 'border-[#A0A0A0]'
+                }`}
+              >
+                {noneSelected && <span className={'w-2.5 h-2.5 rounded-full bg-[#E71E6E] block'} />}
+              </span>
+              <span className={'flex-1 min-w-0'}>
+                <span className={'block text-xs1 leading-snug text-[#A0A0A0]'}>{'Bez výběru'}</span>
+              </span>
+            </div>
+
+            {(modifierGroups.get(groupName) ?? []).map((modifier) =>
+              renderModifierRow(modifier, true),
+            )}
+          </div>
+        )
+      })}
 
       {/* Свободные дополнения — чекбоксы */}
       {freeModifiers.length > 0 && (
