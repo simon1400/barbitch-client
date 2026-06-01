@@ -25,6 +25,7 @@ interface BookCalendarClientProps {
     executeDateStrings: string[]
     filteredData: ISlotService[]
     masterPriorities: IMasterPriority[]
+    employeeEventTypeMap: Record<string, string>
   }
 }
 
@@ -74,9 +75,13 @@ export default function BookCalendarClient({ initialData }: BookCalendarClientPr
       const [hours, minutes] = time.split(':').map(Number)
       selected.setHours(hours, minutes, 0, 0)
 
+      // Если выбранный мастер — junior, бронируем его junior event_type (−20%),
+      // иначе обычный serviceId из URL.
+      const eventTypeId = initialData.employeeEventTypeMap[employeeId] || serviceId
+
       const slotRezervation = await createSlotReservation({
         company: NOONA_COMPANY_ID,
-        event_types: [serviceId],
+        event_types: [eventTypeId],
         starts_at: formatISO(selected),
         employee: employeeId,
       })

@@ -106,8 +106,6 @@ const BookPersonalPage = async ({ params }: any) => {
     merged.push({ ...m, isJunior: true })
   }
 
-  const hasJuniorOption = juniorMap !== null && juniorMasters.length > 0
-
   const buildHref = (item: MergedPersonal): string => {
     if (item.isJunior && juniorMap) {
       return `/book/${juniorMap.junior_noona_id}/${item.id}`
@@ -118,15 +116,16 @@ const BookPersonalPage = async ({ params }: any) => {
   return (
     <div className={'bg-[#252523] rounded-special-small px-3 pb-0'}>
       <ul>
-        {/* Kdokoliv (senior) */}
-        {seniorMasters.length > 1 && (
+        {/* Kdokoliv — рандом среди ВСЕХ доступных мастеров (senior + junior).
+            Junior бронируется на свой event_type (−20%) на шаге выбора времени. */}
+        {merged.length > 1 && (
           <li>
             <Link
               className={'flex items-center justify-between py-5 px-1 gap-4'}
               href={`/book/${serviceId}/any`}
             >
               <span className={'flex'}>
-                {[seniorMasters[0], seniorMasters[1]].map((item, idx) => (
+                {[merged[0], merged[1]].map((item, idx) => (
                   <ProfileImage
                     key={item.id}
                     src={item.profile.image?.image ? item.profile.image.thumb : undefined}
@@ -140,44 +139,12 @@ const BookPersonalPage = async ({ params }: any) => {
           </li>
         )}
 
-        {/* Kdokoliv (junior) — если есть junior-вариант услуги и хотя бы один junior мастер */}
-        {hasJuniorOption && juniorMasters.length > 1 && (
-          <li className={'border-t-2 border-[#3C3C3C] border-dotted'}>
-            <Link
-              className={'flex items-center py-5 px-1 gap-4'}
-              href={`/book/${juniorMap!.junior_noona_id}/any`}
-            >
-              <span className={'flex'}>
-                {[juniorMasters[0], juniorMasters[1]].map((item, idx) => (
-                  <ProfileImage
-                    key={item.id}
-                    src={item.profile.image?.image ? item.profile.image.thumb : undefined}
-                    className={`min-w-5.5 w-5.5 h-5.5${idx > 0 ? ' -ml-2.5' : ''}`}
-                  />
-                ))}
-              </span>
-              <span className={'flex-1 flex items-center gap-2 min-w-0'}>
-                <h2 className={'text-xs1 leading-none'}>{'Kdokoliv (junior)'}</h2>
-                <JuniorBadge />
-              </span>
-              <JuniorPrice
-                seniorPrice={juniorMap?.senior_price}
-                juniorPrice={juniorMap?.junior_price}
-              />
-              <img src={'/assets/icons/chevronRight.svg'} alt={'Chevron right icon'} />
-            </Link>
-          </li>
-        )}
-
         {merged.map((personal) => (
           <li
             key={personal.id}
             className={'border-t-2 first:border-t-0 border-[#3C3C3C] border-dotted'}
           >
-            <Link
-              className={'flex items-center py-4 px-1 gap-4'}
-              href={buildHref(personal)}
-            >
+            <Link className={'flex items-center py-4 px-1 gap-4'} href={buildHref(personal)}>
               <ProfileImage
                 src={personal.profile.image?.image ? personal.profile.image.thumb : undefined}
                 className={'min-w-10 w-10 h-10'}
