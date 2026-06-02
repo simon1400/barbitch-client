@@ -54,6 +54,7 @@ export const JobPostingSchema = ({
         '@type': 'PostalAddress',
         streetAddress: 'Křenová 294/16',
         addressLocality: 'Brno',
+        addressRegion: 'Jihomoravský kraj',
         postalCode: '602 00',
         addressCountry: 'CZ',
       },
