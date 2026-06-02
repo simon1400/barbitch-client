@@ -36,6 +36,10 @@ let cachedContact: IDataContact | null = null
 let cacheTime = 0
 const CACHE_TTL = 60_000
 
+// Честная заглушка на случай сбоя запроса: пустые строки вместо `{}`, иначе
+// обязательные поля (phone/email) приходят undefined и роняют потребителей.
+const EMPTY_CONTACT: IDataContact = { phone: '', email: '', linkToReserve: '', content: '' }
+
 export const getContact = async (): Promise<IDataContact> => {
   const now = Date.now()
   if (cachedContact && now - cacheTime < CACHE_TTL) {
@@ -48,7 +52,7 @@ export const getContact = async (): Promise<IDataContact> => {
     return data
   } catch (error) {
     console.error('Failed to fetch contact:', error)
-    return cachedContact || ({} as IDataContact)
+    return cachedContact || EMPTY_CONTACT
   }
 }
 

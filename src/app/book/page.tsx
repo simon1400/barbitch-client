@@ -2,7 +2,8 @@
 
 import type { IBookServiceGroup } from './fetch/bookService'
 
-import { useEffect, useState } from 'react'
+import Button from 'components/Button'
+import { useCallback, useEffect, useState } from 'react'
 
 import {
   Accordion,
@@ -47,9 +48,12 @@ const BookServicePage = () => {
   const [accordionValue, setAccordionValue] = useState<string>('')
   const [selectedServiceId, setSelectedServiceId] = useState<string>('')
   const [isLoading, setIsLoading] = useState(true)
+  const [hasError, setHasError] = useState(false)
 
-  useEffect(() => {
-    const fetchData = async () => {
+  const fetchData = useCallback(async () => {
+    setIsLoading(true)
+    setHasError(false)
+    try {
       const [servicesData, hiddenIds] = await Promise.all([getBookService(), getHiddenServiceIds()])
 
       const filtered = filterGroups(servicesData, hiddenIds)
@@ -63,14 +67,40 @@ const BookServicePage = () => {
         setSelectedServiceId(parsed.serviceId)
         sessionStorage.removeItem('lastBookingState')
       }
-
+    } catch {
+      // Obvykle výpadek mobilního připojení — necháme uživatele to zkusit znovu.
+      setHasError(true)
+    } finally {
       setIsLoading(false)
     }
-
-    fetchData()
   }, [])
 
+  useEffect(() => {
+    fetchData()
+  }, [fetchData])
+
   if (isLoading) return <BookServiceSkeleton />
+
+  if (hasError) {
+    return (
+      <div className={'bg-[#252523] rounded-special-small p-6 text-center'}>
+        <p className={'text-white text-resMd1 mb-1'}>{'Nepodařilo se načíst služby'}</p>
+        <p className={'text-[#A0A0A0] text-xss mb-5'}>
+          {'Zkontrolujte připojení k internetu a zkuste to znovu.'}
+        </p>
+        <Button
+          text={'Zkusit znovu'}
+          href={'#'}
+          inverse
+          small
+          onClick={(e) => {
+            e.preventDefault()
+            fetchData()
+          }}
+        />
+      </div>
+    )
+  }
 
   return (
     <Accordion type={'single'} collapsible value={accordionValue} onValueChange={setAccordionValue}>

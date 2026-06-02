@@ -1,11 +1,16 @@
 'use client'
 
+import { attemptChunkReload, isChunkLoadError } from 'lib/chunkRecovery'
 import { reportClientError } from 'lib/errorReporter'
 import { useEffect } from 'react'
 
 export default function ErrorReporter() {
   useEffect(() => {
     const handleError = (event: ErrorEvent) => {
+      if (isChunkLoadError(event.error) || isChunkLoadError(event.message)) {
+        // Stale-deploy chunk failure: reload once to pull the fresh build.
+        if (attemptChunkReload()) return
+      }
       reportClientError({
         message: event.message || event.error?.message || 'Unknown error',
         stack: event.error?.stack,
@@ -16,6 +21,9 @@ export default function ErrorReporter() {
 
     const handleRejection = (event: PromiseRejectionEvent) => {
       const reason = event.reason
+      if (isChunkLoadError(reason)) {
+        if (attemptChunkReload()) return
+      }
       let message = 'Unhandled promise rejection'
       let stack: string | undefined
       if (reason instanceof Error) {

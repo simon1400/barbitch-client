@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import { Container } from 'components/Container'
 
 import { BookHeader } from './components/BookHeader'
+import { BookReservationProvider } from './components/BookReservationContext'
 import HideSmartsupp from './components/HiddenChatbox'
 import './styles.scss'
 
@@ -67,8 +68,10 @@ export default async function BookLayout({
       <style>{`html, body { background-color: #161615; }`}</style>
       <main className={'min-h-screen pb-[100px] pt-[112px] dark-tm'}>
         <Container size={'sm'}>
-          <BookHeader />
-          {children}
+          <BookReservationProvider>
+            <BookHeader />
+            {children}
+          </BookReservationProvider>
           <HideSmartsupp />
         </Container>
       </main>

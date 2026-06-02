@@ -1,5 +1,6 @@
 'use client'
 
+import { attemptChunkReload, isChunkLoadError } from 'lib/chunkRecovery'
 import { reportClientError } from 'lib/errorReporter'
 import { useEffect } from 'react'
 
@@ -11,6 +12,7 @@ export default function GlobalError({
   reset: () => void
 }) {
   useEffect(() => {
+    if (isChunkLoadError(error) && attemptChunkReload()) return
     reportClientError({
       message: error.message || 'Global error (no message)',
       stack: error.stack,

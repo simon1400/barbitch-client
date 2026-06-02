@@ -7,6 +7,7 @@ import { useOnMountUnsafe } from 'helpers/useOnMountUnsaf'
 import { useRouter } from 'next/navigation'
 import { useCallback, useMemo, useState } from 'react'
 
+import { useBookReservation } from '../../components/BookReservationContext'
 import { checkBlacklist } from '../../fetch/checkBlacklist'
 import { BlacklistError, createEvent } from '../../fetch/createEvent'
 
@@ -34,6 +35,8 @@ interface Props {
 
 const BookForm = ({ idReservation }: Props) => {
   const router = useRouter()
+  const { expiredId } = useBookReservation()
+  const isExpired = expiredId === idReservation
 
   const [userData, setUserData] = useState<IUserData>({
     name: '',
@@ -72,6 +75,10 @@ const BookForm = ({ idReservation }: Props) => {
 
   const handleBook = async (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     e.preventDefault()
+
+    // Слот уже не удерживается — отправка создаст событие на истёкшую резервацию
+    // (Noona вернёт 400/422, что код ошибочно трактует как блэклист → /blocked).
+    if (isExpired) return
 
     const errors: Partial<IErrorUserData> = {}
 
@@ -137,6 +144,27 @@ const BookForm = ({ idReservation }: Props) => {
 
       console.error('Booking error:', err)
     }
+  }
+
+  if (isExpired) {
+    return (
+      <div className={'bg-[#252523] rounded-special-small p-6 text-center'}>
+        <p className={'text-white text-resMd1 mb-1'}>{'Rezervace vypršela'}</p>
+        <p className={'text-[#A0A0A0] text-xss mb-5'}>
+          {'Vyhrazený čas na dokončení rezervace vypršel. Vyberte prosím nový termín.'}
+        </p>
+        <Button
+          text={'Zpět na výběr termínu'}
+          href={'#'}
+          inverse
+          small
+          onClick={(e) => {
+            e.preventDefault()
+            router.back()
+          }}
+        />
+      </div>
+    )
   }
 
   return (

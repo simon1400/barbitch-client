@@ -7,6 +7,7 @@ import { getJuniorMapByJuniorId } from '../../fetch/juniorMap'
 import { getSlotReservation } from '../../fetch/slotReservation'
 
 import BookForm from './BookForm'
+import { ReservationExpired } from './components/ReservationExpired'
 
 export const metadata: Metadata = {
   title: 'Dokončení rezervace | Barbitch Beauty Studio Brno',
@@ -26,12 +27,27 @@ const JuniorBadge = () => (
 
 export default async function BookServicePage({ params }: any) {
   const { idReservation } = await params
-  const data = await getSlotReservation(idReservation)
 
-  const eventType = data.event_types?.[0]
+  let data: Awaited<ReturnType<typeof getSlotReservation>> | null = null
+  try {
+    data = await getSlotReservation(idReservation)
+  } catch {
+    // Истёкшая (таймер 5 мин) или невалидная резервация — Noona отдаёт 404.
+    data = null
+  }
+
+  const eventType = data?.event_types?.[0]
+
+  // Резервация не найдена/истекла либо пришла без услуги — показываем экран вместо краша.
+  if (!data || !eventType) return <ReservationExpired idReservation={idReservation} />
 
   // Если выбранный event_type — junior-вариант, маппинг вернёт senior_price для зачёркивания
-  const juniorMap = eventType?.id ? await getJuniorMapByJuniorId(eventType.id) : null
+  let juniorMap: Awaited<ReturnType<typeof getJuniorMapByJuniorId>> | null = null
+  try {
+    juniorMap = eventType.id ? await getJuniorMapByJuniorId(eventType.id) : null
+  } catch {
+    juniorMap = null
+  }
   const isJunior = juniorMap !== null
 
   const totalPrice = eventType.payments?.total_payment

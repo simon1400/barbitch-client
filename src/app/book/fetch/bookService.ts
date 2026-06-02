@@ -30,8 +30,11 @@ export const getBookService = async () => {
     }
   })
 
+  // Ответ тяжёлый (~2 МБ, все услуги) — на медленном мобильном соединении глобальные
+  // 15с Noona не хватает. Поднимаем таймаут только для этого запроса до 30с.
   const data = await Noona.get(
     `/companies/${NOONA_COMPANY_ID}/event_types/expanded?${queryString.toString()}`,
+    { timeout: 30_000 },
   )
   return data.data
 }

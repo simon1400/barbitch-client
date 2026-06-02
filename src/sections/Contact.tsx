@@ -20,22 +20,26 @@ const Contact = async () => {
         </div>
         <div className={'lg:flex justify-between text-xs1 lg:text-base text-center lg:text-left'}>
           <div className={'text-nowrap mb-5 lg:mb-0'}>
-            <Link
-              className={
-                'block text-primary underline duration-300 underline-offset-2 hover:underline-offset-4'
-              }
-              href={`tel:${contact.phone.replaceAll(' ', '')}`}
-            >
-              {contact.phone}
-            </Link>
-            <Link
-              className={
-                'block text-primary underline duration-300 underline-offset-2 hover:underline-offset-4'
-              }
-              href={`mailto:${encodeURI(contact.email)}`}
-            >
-              {'Napište nám!'}
-            </Link>
+            {contact.phone && (
+              <Link
+                className={
+                  'block text-primary underline duration-300 underline-offset-2 hover:underline-offset-4'
+                }
+                href={`tel:${contact.phone.replaceAll(' ', '')}`}
+              >
+                {contact.phone}
+              </Link>
+            )}
+            {contact.email && (
+              <Link
+                className={
+                  'block text-primary underline duration-300 underline-offset-2 hover:underline-offset-4'
+                }
+                href={`mailto:${encodeURI(contact.email)}`}
+              >
+                {'Napište nám!'}
+              </Link>
+            )}
           </div>
           <div className={'w-full text-center text-nowrap mb-5 lg:mb-0'}>
             {parseHtml(contact.openHours || '', false)}

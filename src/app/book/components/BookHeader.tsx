@@ -5,6 +5,8 @@ import { useParams, usePathname, useRouter } from 'next/navigation'
 import { useEffect } from 'react'
 import { useTimer } from 'react-timer-hook'
 
+import { useBookReservation } from './BookReservationContext'
+
 type Step = 'service' | 'personal' | 'reservation' | 'home' | 'extras'
 
 const backTextMap: Record<Step, string> = {
@@ -27,6 +29,11 @@ export const BookHeader = () => {
   const params = useParams()
   const pathname = usePathname()
   const router = useRouter()
+  const { expiredId, setExpiredId } = useBookReservation()
+  const idReservation = typeof params?.idReservation === 'string' ? params.idReservation : null
+
+  // Таймер удержания слота имеет смысл только пока текущая резервация не истекла.
+  const showTimer = Boolean(idReservation) && expiredId !== idReservation
 
   const handleBack = (e: React.MouseEvent<HTMLAnchorElement>) => {
     if (params?.serviceId || params?.idReservation) {
@@ -35,17 +42,23 @@ export const BookHeader = () => {
     }
   }
 
-  const { seconds, minutes, start } = useTimer({
+  const { seconds, minutes, restart } = useTimer({
     expiryTimestamp: addMinutes(new Date(), 5),
     autoStart: false,
+    // Истёк таймер удержания слота → помечаем ИМЕННО эту резервацию истёкшей,
+    // чтобы форма заблокировала отправку (иначе Noona отклонит истёкший слот).
+    onExpire: () => setExpiredId(idReservation),
   })
 
   useEffect(() => {
-    if (params?.idReservation) {
-      start()
+    // BookHeader живёт в layout и переживает навигацию внутри /book, поэтому при
+    // каждой НОВОЙ резервации перезапускаем 5-минутный таймер. Сравнение expiredId
+    // с текущим id само считает новую резервацию действительной — сброс не нужен.
+    if (idReservation) {
+      restart(addMinutes(new Date(), 5), true)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [params])
+  }, [idReservation])
 
   const step: Step = pathname?.endsWith('/extras')
     ? 'extras'
@@ -71,7 +84,7 @@ export const BookHeader = () => {
           <img src={'/assets/icons/chevronLeft.svg'} alt={'Chevron left icon'} />
           <span>{backText}</span>
         </a>
-        {params?.idReservation && (
+        {showTimer && (
           <div>
             <span
               className={
