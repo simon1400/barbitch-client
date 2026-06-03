@@ -7,18 +7,25 @@ export async function GET() {
 
   const routes = await getSitemapSlugs()
 
-  const now = new Date().toISOString()
+  // lastmod statických stránek odvozujeme z nejnovější změny CMS obsahu —
+  // ne z času buildu (ten by Googlu lhal „změněno“ při každém nasazení).
+  const contentDates = routes
+    .map((r) => new Date(r.update).getTime())
+    .filter((t) => !Number.isNaN(t))
+  const lastModified = (
+    contentDates.length > 0 ? new Date(Math.max(...contentDates)) : new Date()
+  ).toISOString()
 
   const staticRoutes = [
-    { update: now, slug: ``, priority: '1.0', changefreq: 'weekly' },
-    { update: now, slug: '/blog', priority: '0.9', changefreq: 'weekly' },
-    { update: now, slug: '/darkovy-voucher', priority: '0.8', changefreq: 'monthly' },
-    { update: now, slug: '/kontakt', priority: '0.8', changefreq: 'monthly' },
-    { update: now, slug: '/cenik', priority: '0.8', changefreq: 'monthly' },
-    { update: now, slug: '/book', priority: '0.8', changefreq: 'monthly' },
+    { update: lastModified, slug: ``, priority: '1.0', changefreq: 'weekly' },
+    { update: lastModified, slug: '/blog', priority: '0.9', changefreq: 'weekly' },
+    { update: lastModified, slug: '/darkovy-voucher', priority: '0.8', changefreq: 'monthly' },
+    { update: lastModified, slug: '/kontakt', priority: '0.8', changefreq: 'monthly' },
+    { update: lastModified, slug: '/cenik', priority: '0.8', changefreq: 'monthly' },
+    { update: lastModified, slug: '/book', priority: '0.8', changefreq: 'monthly' },
     // Inzerát na pozici — jen když běží nábor (HIRING.enabled).
     ...(HIRING.enabled
-      ? [{ update: now, slug: '/kariera', priority: '0.7', changefreq: 'weekly' }]
+      ? [{ update: lastModified, slug: '/kariera', priority: '0.7', changefreq: 'weekly' }]
       : []),
   ]
 

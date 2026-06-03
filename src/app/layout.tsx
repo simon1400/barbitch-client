@@ -12,6 +12,7 @@ import HiringBar from 'components/HiringBar'
 import { AppProvider } from 'context/AppContext'
 import { HideOnRoutes } from 'helpers/HideOnRoutes'
 import { HIRING } from 'lib/hiring'
+import { DEFAULT_OG_IMAGE } from 'lib/seo'
 import { Montserrat } from 'next/font/google'
 import Script from 'next/script'
 import { Suspense } from 'react'
@@ -34,10 +35,21 @@ export const metadata: Metadata = {
     siteName: 'Barbitch',
     locale: 'cs_CZ',
     type: 'website',
+    images: [DEFAULT_OG_IMAGE],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Barbitch – Manikúra, řasy a obočí v Brně',
+    description:
+      'Objevte moderní beauty studio Bar.bitch v Brně. Profesionální manikúra, trendy obočí a dokonalé řasy.',
+    images: [DEFAULT_OG_IMAGE.url],
   },
   robots: {
     index: true,
     follow: true,
+  },
+  verification: {
+    google: process.env.GOOGLE_SITE_VERIFICATION,
   },
 }
 

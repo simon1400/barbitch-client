@@ -1,15 +1,18 @@
 import type { Metadata } from 'next'
 
 import { DynamicContent } from 'components/DynamicContent'
+import { getBookingPricelist } from 'fetch/bookingPricelist'
 import { getLinkToReserve } from 'fetch/contact'
 import { getFullService } from 'fetch/service'
 import { Axios } from 'lib/api'
 import { getStrapiImageUrl } from 'lib/image-utils'
 import { BreadcrumbSchema } from 'schemasOrg/breadcrumb'
-import { SchemaJsonManikura } from 'schemasOrg/manikura'
-import { SchemaJsonOboci } from 'schemasOrg/oboci'
-import { SchemaJsonRasy } from 'schemasOrg/rasy'
 import { ServiceSchema } from 'schemasOrg/service'
+import {
+  getServicesForSlug,
+  PRICED_SERVICE_SLUGS,
+  ServicePriceSchema,
+} from 'schemasOrg/servicePrice'
 import { Top } from 'sections/Top/Top'
 
 const serviceKeywordsMap: Record<string, string[]> = {
@@ -95,7 +98,13 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
 const Service = async ({ params }: any) => {
   const { slug } = await params
 
-  const [data, dataLink] = await Promise.all([getFullService(slug), getLinkToReserve()])
+  const isPriced = PRICED_SERVICE_SLUGS.includes(slug)
+
+  const [data, dataLink, pricelist] = await Promise.all([
+    getFullService(slug),
+    getLinkToReserve(),
+    isPriced ? getBookingPricelist() : Promise.resolve([]),
+  ])
 
   return (
     <main>
@@ -105,10 +114,9 @@ const Service = async ({ params }: any) => {
           { name: data.title, url: `https://barbitch.cz/service/${slug}` },
         ]}
       />
-      {slug === 'oboci' && <SchemaJsonOboci />}
-      {slug === 'rasy' && <SchemaJsonRasy />}
-      {slug === 'manikura' && <SchemaJsonManikura />}
-      {slug !== 'oboci' && slug !== 'rasy' && slug !== 'manikura' && (
+      {isPriced ? (
+        <ServicePriceSchema slug={slug} services={getServicesForSlug(pricelist, slug)} />
+      ) : (
         <ServiceSchema name={data.title} url={`https://barbitch.cz/service/${slug}`} />
       )}
       <Top title={data.title} small linkToReserve={dataLink.linkToReserve} />

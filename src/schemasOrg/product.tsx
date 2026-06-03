@@ -1,3 +1,5 @@
+import { GOOGLE_RATING } from 'lib/seo'
+
 interface ProductSchemaProps {
   name: string
   description: string
@@ -21,9 +23,9 @@ export const ProductSchema = ({
   highPrice,
   offerCount,
   priceCurrency = 'CZK',
-  ratingValue = 4.6,
-  reviewCount = 113,
-  bestRating = 5,
+  ratingValue = GOOGLE_RATING.ratingValue,
+  reviewCount = GOOGLE_RATING.reviewCount,
+  bestRating = GOOGLE_RATING.bestRating,
 }: ProductSchemaProps) => {
   const schema = {
     '@context': 'https://schema.org',

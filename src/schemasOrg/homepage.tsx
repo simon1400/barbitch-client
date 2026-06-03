@@ -1,3 +1,5 @@
+import { GOOGLE_RATING } from 'lib/seo'
+
 const schema = {
   '@context': 'https://schema.org',
   '@type': 'BeautySalon',
@@ -32,6 +34,12 @@ const schema = {
     },
   ],
   sameAs: ['https://www.instagram.com/barbitch.cz', 'https://www.facebook.com/barbtchcz'],
+  aggregateRating: {
+    '@type': 'AggregateRating',
+    ratingValue: GOOGLE_RATING.ratingValue,
+    reviewCount: GOOGLE_RATING.reviewCount,
+    bestRating: GOOGLE_RATING.bestRating,
+  },
 }
 
 export const SchemaJsonHomepage = () => {

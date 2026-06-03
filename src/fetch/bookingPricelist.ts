@@ -2,6 +2,7 @@ import type { IAddonGroup } from 'app/book/fetch/addonGroupService'
 
 import { getJuniorNoonaIds } from 'app/book/fetch/juniorMap'
 import { Axios, Noona } from 'lib/api'
+import { cache } from 'react'
 
 const NOONA_COMPANY_ID = process.env.NOONA_COMPANY_ID || ''
 
@@ -69,7 +70,9 @@ const buildServices = (
   return services
 }
 
-export const getBookingPricelist = async (): Promise<IPricelistGroup[]> => {
+// cache() dedupuje volání v rámci jednoho requestu — service stránka volá tuto
+// funkci pro schema cen i přes PriceList (DynamicContent) → jen jeden fetch do Noony.
+export const getBookingPricelist = cache(async (): Promise<IPricelistGroup[]> => {
   const queryString = 'select=title&select=group_event_types&select=description'
 
   const [noonaResponse, addonGroups, juniorIds] = await Promise.all([
@@ -95,4 +98,4 @@ export const getBookingPricelist = async (): Promise<IPricelistGroup[]> => {
     if (services.length > 0) result.push({ title: group.title, services })
   }
   return result
-}
+})

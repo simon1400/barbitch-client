@@ -28,7 +28,7 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       title: homepageMeta.metaData.title,
       siteName: 'Barbitch',
-      locale: 'cs',
+      locale: 'cs_CZ',
       description: homepageMeta.metaData.description,
       images: [getStrapiImageUrl(homepageMeta.metaData.image?.url)],
       url: 'https://barbitch.cz',
