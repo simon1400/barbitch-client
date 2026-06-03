@@ -4,18 +4,43 @@ import Button from 'components/Button'
 import { Container } from 'components/Container'
 import { Input } from 'components/form/Input'
 import { Textarea } from 'components/form/Textarea'
-import { BadgeAlert, CircleCheckBig } from 'lucide-react'
-import { useState } from 'react'
+import { BadgeAlert, CircleCheckBig, Paperclip, X } from 'lucide-react'
+import { useRef, useState } from 'react'
+
+// Maximální velikost životopisu (5 MB) + povolené přípony.
+const MAX_RESUME_BYTES = 5 * 1024 * 1024
+const ALLOWED_RESUME_EXT = '.pdf,.doc,.docx,.jpg,.jpeg,.png,.webp,.heic'
 
 const CareerForm = ({ instagram }: { instagram?: string }) => {
   const [data, setData] = useState({ name: '', phone: '', message: '' })
   const [error, setError] = useState({ name: false, phone: false })
+  const [resume, setResume] = useState<File | null>(null)
+  const [resumeError, setResumeError] = useState<string | null>(null)
   const [loading, setLoading] = useState(false)
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle')
+  const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleChange = (name: string, value: string) => {
     setError({ ...error, [name]: false })
     setData({ ...data, [name]: value })
+  }
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setResumeError(null)
+    const file = e.target.files?.[0] ?? null
+    if (file && file.size > MAX_RESUME_BYTES) {
+      setResumeError('Soubor je příliš velký (max 5 MB).')
+      setResume(null)
+      if (fileInputRef.current) fileInputRef.current.value = ''
+      return
+    }
+    setResume(file)
+  }
+
+  const clearResume = () => {
+    setResume(null)
+    setResumeError(null)
+    if (fileInputRef.current) fileInputRef.current.value = ''
   }
 
   const validate = () => {
@@ -40,13 +65,16 @@ const CareerForm = ({ instagram }: { instagram?: string }) => {
     setStatus('idle')
 
     try {
-      await axios.post('/api/career-apply', {
-        name: data.name.trim(),
-        phone: data.phone.trim(),
-        message: data.message.trim(),
-      })
+      const formData = new FormData()
+      formData.append('name', data.name.trim())
+      formData.append('phone', data.phone.trim())
+      formData.append('message', data.message.trim())
+      if (resume) formData.append('resume', resume)
+
+      await axios.post('/api/career-apply', formData)
       setStatus('success')
       setData({ name: '', phone: '', message: '' })
+      clearResume()
     } catch {
       setStatus('error')
     } finally {
@@ -94,6 +122,53 @@ const CareerForm = ({ instagram }: { instagram?: string }) => {
             value={data.message}
             handleChange={handleChange}
           />
+
+          <div className={'mb-5'}>
+            <label className={'font-bold mb-2 block'} htmlFor={'resume_input'}>
+              {'Životopis (nepovinné)'}
+            </label>
+            <input
+              ref={fileInputRef}
+              type={'file'}
+              id={'resume_input'}
+              name={'resume'}
+              accept={ALLOWED_RESUME_EXT}
+              onChange={handleFileChange}
+              className={'sr-only'}
+            />
+            {resume ? (
+              <div
+                className={
+                  'w-full min-h-13 rounded-special-small shadow-lg bg-white px-5 py-3 flex items-center gap-3'
+                }
+              >
+                <Paperclip className={'shrink-0 text-primary'} size={20} />
+                <span className={'grow truncate text-sm'}>{resume.name}</span>
+                <button
+                  type={'button'}
+                  onClick={clearResume}
+                  aria-label={'Odebrat soubor'}
+                  className={'shrink-0 text-gray-500 hover:text-red-500'}
+                >
+                  <X size={20} />
+                </button>
+              </div>
+            ) : (
+              <button
+                type={'button'}
+                onClick={() => fileInputRef.current?.click()}
+                className={
+                  'w-full h-13 rounded-special-small shadow-lg bg-white px-5 flex items-center gap-3 text-gray-500 hover:text-accent text-left'
+                }
+              >
+                <Paperclip className={'shrink-0 text-primary'} size={20} />
+                <span className={'truncate'}>{'Nahrát životopis (PDF, DOC, obrázek)'}</span>
+              </button>
+            )}
+            {resumeError && (
+              <span className={'mt-1 block font-bold text-xss text-red-500'}>{resumeError}</span>
+            )}
+          </div>
 
           {status === 'error' && (
             <div
