@@ -1,5 +1,6 @@
 'use client'
 
+import { usePathname } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 
 const API = process.env.NEXT_PUBLIC_APP_API || 'https://strapi.barbitch.cz'
@@ -117,6 +118,10 @@ export default function ChatWidget() {
   const fileInputRef = useRef<HTMLInputElement>(null)
   const lastIdRef = useRef(0)
 
+  /* Тизер не должен всплывать на страницах бронирования — мешает контенту */
+  const pathname = usePathname()
+  const isBookingPage = pathname?.startsWith('/book') ?? false
+
   /* ─── Check cookie consent (event-driven, no polling) ─── */
   useEffect(() => {
     const check = () => {
@@ -147,13 +152,16 @@ export default function ChatWidget() {
 
   /* ─── Teaser: show after 60s if no session and not dismissed ─── */
   useEffect(() => {
-    if (hasSession) return
+    if (hasSession || isBookingPage) {
+      setShowTeaser(false)
+      return
+    }
     const dismissed = sessionStorage.getItem('barbitch_chat_teaser_dismissed')
     if (dismissed) return
 
     const timer = setTimeout(() => setShowTeaser(true), 60000)
     return () => clearTimeout(timer)
-  }, [hasSession])
+  }, [hasSession, isBookingPage])
 
   /* ─── Poll messages when chat is open ─── */
   useEffect(() => {
@@ -538,7 +546,7 @@ export default function ChatWidget() {
       {!open && (
         <>
           {/* Teaser popup */}
-          {showTeaser && (
+          {showTeaser && !isBookingPage && (
             <div
               className={
                 'fixed bottom-[88px] right-6 z-[9998] animate-in slide-in-from-bottom duration-300'
