@@ -1,8 +1,8 @@
-import type { IMasterPriority } from '../../../fetch/masterPriority'
+import type { EmployeeLoad, IMasterPriority } from '../../../fetch/masterPriority'
 
 import { LoaderCircle } from 'lucide-react'
 
-import { selectMasterByPriority } from '../../../fetch/masterPriority'
+import { selectMaster } from '../../../fetch/masterPriority'
 
 export interface IBlockSlots {
   time: string
@@ -15,12 +15,16 @@ const TimeBlock = ({
   handleSelect,
   loadingTimepicker,
   masterPriorities,
+  employeeLoad,
+  selectedDate,
 }: {
   head: string
   blockSlots: IBlockSlots[]
   handleSelect: (employeeIds: string, time: string) => void
   loadingTimepicker: string
   masterPriorities: IMasterPriority[]
+  employeeLoad: EmployeeLoad
+  selectedDate: Date
 }) => {
   return (
     <div className={'flex flex-col gap-2.5 w-full'}>
@@ -30,7 +34,12 @@ const TimeBlock = ({
           key={item.time}
           onClick={() => {
             if (!loadingTimepicker.length) {
-              const selectedId = selectMasterByPriority(item.employeeIds, masterPriorities)
+              const selectedId = selectMaster(
+                item.employeeIds,
+                masterPriorities,
+                employeeLoad,
+                selectedDate,
+              )
               handleSelect(selectedId, item.time)
             }
           }}

@@ -35,6 +35,7 @@ async function BookCalendarContent({
         filteredData: data.filteredData,
         masterPriorities,
         employeeEventTypeMap: data.employeeEventTypeMap,
+        employeeLoad: data.employeeLoad,
       }}
     />
   )

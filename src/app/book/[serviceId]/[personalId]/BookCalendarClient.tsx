@@ -1,5 +1,5 @@
 'use client'
-import type { IMasterPriority } from '../../fetch/masterPriority'
+import type { EmployeeLoad, IMasterPriority } from '../../fetch/masterPriority'
 import type { ISlotService } from '../../fetch/slotsService'
 
 import { format, formatISO, parseISO } from 'date-fns'
@@ -26,6 +26,7 @@ interface BookCalendarClientProps {
     filteredData: ISlotService[]
     masterPriorities: IMasterPriority[]
     employeeEventTypeMap: Record<string, string>
+    employeeLoad: EmployeeLoad
   }
 }
 
@@ -102,6 +103,8 @@ export default function BookCalendarClient({ initialData }: BookCalendarClientPr
           handleSelect={handleSelect}
           loadingTimepicker={loadingTimepicker}
           masterPriorities={initialData.masterPriorities}
+          employeeLoad={initialData.employeeLoad}
+          selectedDate={selected as Date}
         />
       ) : (
         <EmptyAlert />

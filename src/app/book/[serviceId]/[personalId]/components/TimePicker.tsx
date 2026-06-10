@@ -1,5 +1,5 @@
 'use client'
-import type { IMasterPriority } from '../../../fetch/masterPriority'
+import type { EmployeeLoad, IMasterPriority } from '../../../fetch/masterPriority'
 import type { IBlockSlots } from './TimeBlock'
 
 import { parse } from 'date-fns'
@@ -12,11 +12,15 @@ const TimePicker = ({
   handleSelect,
   loadingTimepicker,
   masterPriorities,
+  employeeLoad,
+  selectedDate,
 }: {
   loadingTimepicker: string
   slots: { employeeIds: string[]; time: string }[]
   handleSelect: (employeeIds: string, time: string) => void
   masterPriorities: IMasterPriority[]
+  employeeLoad: EmployeeLoad
+  selectedDate: Date
 }) => {
   const [morning, setMorning] = useState<IBlockSlots[]>([])
   const [afternoon, setAfternoon] = useState<IBlockSlots[]>([])
@@ -42,6 +46,8 @@ const TimePicker = ({
         handleSelect={handleSelect}
         loadingTimepicker={loadingTimepicker}
         masterPriorities={masterPriorities}
+        employeeLoad={employeeLoad}
+        selectedDate={selectedDate}
       />
       <TimeBlock
         head={'odpoledne'}
@@ -49,6 +55,8 @@ const TimePicker = ({
         handleSelect={handleSelect}
         loadingTimepicker={loadingTimepicker}
         masterPriorities={masterPriorities}
+        employeeLoad={employeeLoad}
+        selectedDate={selectedDate}
       />
     </div>
   )

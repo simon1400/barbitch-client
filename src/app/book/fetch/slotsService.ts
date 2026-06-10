@@ -1,3 +1,5 @@
+import type { EmployeeLoad } from './masterPriority'
+
 import {
   addMonths,
   endOfMonth,
@@ -8,7 +10,7 @@ import {
   startOfDay,
   subDays,
 } from 'date-fns'
-import { Noona } from 'lib/api'
+import { Noona, NoonaHQ } from 'lib/api'
 
 import { getJuniorMapForSenior } from './juniorMap'
 import { getPersonalService } from './personalService'
@@ -29,6 +31,9 @@ export interface IGetSlotServiceResult {
   // employeeId → event_type для бронирования. Junior-мастера маппятся на
   // junior event_type (−20%), senior-мастера в карте отсутствуют (= serviceId).
   employeeEventTypeMap: Record<string, string>
+  // employeeId → { дата: кол-во броней }. Используется для балансировки "Kdokoliv"
+  // (наименее загруженный мастер). Пусто для конкретного мастера или при сбое HQ.
+  employeeLoad: EmployeeLoad
 }
 
 export const filterFutureDates = (data: ISlotService[]) => {
@@ -125,6 +130,53 @@ const mergeSlots = (base: ISlotService[], extra: ISlotService[]): ISlotService[]
   })
 }
 
+// Загрузка мастеров (число активных броней по дням) из Noona HQ.
+// Один запрос на мастера (их немного), параллельно. Сбой по любому мастеру
+// не критичен — выбор просто откатится к приоритету.
+const fetchEmployeeLoad = async (
+  employeeIds: string[],
+  start_date: string,
+  end_date: string,
+): Promise<EmployeeLoad> => {
+  const result: EmployeeLoad = {}
+
+  await Promise.all(
+    employeeIds.map(async (id) => {
+      try {
+        const qs = new URLSearchParams()
+        qs.append('select', 'starts_at')
+        qs.append('select', 'ends_at')
+        qs.append('select', 'status')
+        qs.append(
+          'filter',
+          JSON.stringify({
+            from: `${start_date}T00:00:00.000Z`,
+            to: `${end_date}T23:59:59.999Z`,
+            employee_id: id,
+          }),
+        )
+
+        const res = await NoonaHQ.get(`/${NOONA_COMPANY_ID}/events?${qs.toString()}`)
+        const events: any[] = Array.isArray(res.data) ? res.data : []
+
+        const byDate: Record<string, number> = {}
+        for (const ev of events) {
+          if (ev.status === 'cancelled') continue
+          const iso: string | undefined = ev.starts_at || ev.ends_at
+          if (!iso) continue
+          const day = iso.slice(0, 10) // 'yyyy-MM-dd'
+          byDate[day] = (byDate[day] || 0) + 1
+        }
+        result[id] = byDate
+      } catch {
+        // загрузка не критична — оставляем мастера без данных (load = 0)
+      }
+    }),
+  )
+
+  return result
+}
+
 export const getSlotService = async (
   eventId: string,
   employeesId: string,
@@ -138,7 +190,7 @@ export const getSlotService = async (
     const executeDate = filteredData
       .filter((item) => !item.slots.length)
       .map((item) => parseISO(item.date))
-    return { executeDate, filteredData, employeeEventTypeMap: {} }
+    return { executeDate, filteredData, employeeEventTypeMap: {}, employeeLoad: {} }
   }
 
   // "Kdokoliv" — мержим senior + junior мастеров (если у услуги есть junior-копия).
@@ -163,13 +215,18 @@ export const getSlotService = async (
     .map((item: { id: string }) => item.id)
     .filter((id: string) => !juniorIdSet.has(id))
 
-  const [seniorSlots, juniorSlots] = await Promise.all([
+  const loadIds = [...seniorIds, ...juniorIds]
+
+  const [seniorSlots, juniorSlots, employeeLoad] = await Promise.all([
     seniorIds.length
       ? fetchSlots(eventId, start_date, end_date, { employeeIds: seniorIds })
       : Promise.resolve<ISlotService[]>([]),
     juniorIds.length && juniorMap
       ? fetchSlots(juniorMap.junior_noona_id, start_date, end_date, { employeeIds: juniorIds })
       : Promise.resolve<ISlotService[]>([]),
+    loadIds.length
+      ? fetchEmployeeLoad(loadIds, start_date, end_date)
+      : Promise.resolve<EmployeeLoad>({}),
   ])
 
   const merged = juniorSlots.length ? mergeSlots(seniorSlots, juniorSlots) : seniorSlots
@@ -178,5 +235,5 @@ export const getSlotService = async (
     .filter((item) => !item.slots.length)
     .map((item) => parseISO(item.date))
 
-  return { executeDate, filteredData, employeeEventTypeMap }
+  return { executeDate, filteredData, employeeEventTypeMap, employeeLoad }
 }
