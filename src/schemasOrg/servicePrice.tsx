@@ -1,5 +1,6 @@
 import type { IPricelistGroup } from 'fetch/bookingPricelist'
 
+import { jsonLd } from 'lib/jsonLd'
 import { SITE_URL } from 'lib/seo'
 
 interface ServiceSeo {
@@ -138,7 +139,7 @@ export const ServicePriceSchema = ({
     <script
       id={'schema-org'}
       type={'application/ld+json'}
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
+      dangerouslySetInnerHTML={{ __html: jsonLd(schema) }}
     />
   )
 }

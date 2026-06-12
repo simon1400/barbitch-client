@@ -1,3 +1,5 @@
+import { jsonLd } from 'lib/jsonLd'
+
 interface BreadcrumbItem {
   name: string
   url: string
@@ -16,9 +18,6 @@ export const BreadcrumbSchema = ({ items }: { items: BreadcrumbItem[] }) => {
   }
 
   return (
-    <script
-      type={'application/ld+json'}
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
+    <script type={'application/ld+json'} dangerouslySetInnerHTML={{ __html: jsonLd(schema) }} />
   )
 }

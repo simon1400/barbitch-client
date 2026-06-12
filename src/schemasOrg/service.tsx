@@ -1,3 +1,5 @@
+import { jsonLd } from 'lib/jsonLd'
+
 interface ServiceSchemaProps {
   name: string
   url: string
@@ -30,9 +32,6 @@ export const ServiceSchema = ({ name, url, description }: ServiceSchemaProps) =>
   }
 
   return (
-    <script
-      type={'application/ld+json'}
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
+    <script type={'application/ld+json'} dangerouslySetInnerHTML={{ __html: jsonLd(schema) }} />
   )
 }

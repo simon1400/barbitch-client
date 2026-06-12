@@ -1,3 +1,5 @@
+import { jsonLd } from 'lib/jsonLd'
+
 interface ArticleSchemaProps {
   title: string
   description: string
@@ -21,10 +23,10 @@ export const ArticleSchema = ({
     '@context': 'https://schema.org',
     '@type': 'Article',
     headline: title,
-    description: description,
-    image: image,
-    datePublished: datePublished,
-    dateModified: dateModified,
+    description,
+    image,
+    datePublished,
+    dateModified,
     author: {
       '@type': 'Organization',
       name: author,
@@ -45,9 +47,6 @@ export const ArticleSchema = ({
   }
 
   return (
-    <script
-      type={'application/ld+json'}
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
+    <script type={'application/ld+json'} dangerouslySetInnerHTML={{ __html: jsonLd(schema) }} />
   )
 }

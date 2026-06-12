@@ -1,32 +1,39 @@
 import type { NextRequest } from 'next/server'
 
+import { clientIp, makeRateLimiter, sameOrigin } from 'lib/route-guard'
 import { NextResponse } from 'next/server'
 import { Resend } from 'resend'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
-// Add CORS headers
-const corsHeaders = {
-  'Access-Control-Allow-Origin': '*',
-  'Access-Control-Allow-Methods': 'POST, OPTIONS',
-  'Access-Control-Allow-Headers': 'Content-Type',
-}
-
-export async function OPTIONS() {
-  return NextResponse.json({}, { headers: corsHeaders })
-}
+const limit = makeRateLimiter(10, 60_000)
+const escapeHtml = (value: unknown) =>
+  String(value ?? '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
 
 export async function POST(req: NextRequest) {
   try {
+    if (!sameOrigin(req)) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    }
+    if (!limit(clientIp(req))) {
+      return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
+    }
+
     const { email, buyerName, recipientName, voucherId, validUntil } = await req.json()
 
     // Validate required fields
     if (!email || !buyerName || !recipientName || !voucherId || !validUntil) {
-      return NextResponse.json(
-        { error: 'All fields are required' },
-        { status: 400, headers: corsHeaders },
-      )
+      return NextResponse.json({ error: 'All fields are required' }, { status: 400 })
     }
+
+    const safeBuyer = escapeHtml(buyerName)
+    const safeRecipient = escapeHtml(recipientName)
+    const safeVoucherId = escapeHtml(voucherId)
+    const safeValidUntil = escapeHtml(validUntil)
 
     const htmlTemplate = `<!DOCTYPE html>
 <html lang="cs">
@@ -56,7 +63,7 @@ export async function POST(req: NextRequest) {
             <tr>
               <td class="px" style="padding:24px 24px 0 24px;text-align:center;">
                 <div style="font-family:Arial,Helvetica,sans-serif;font-size:28px;font-weight:700;line-height:1.3;color:#ffffff;margin:0;">
-                  Gratulujeme, ${buyerName}! 🎉
+                  Gratulujeme, ${safeBuyer}! 🎉
                 </div>
               </td>
             </tr>
@@ -86,22 +93,22 @@ export async function POST(req: NextRequest) {
                       <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
                         <tr>
                           <td style="font-family:Arial,Helvetica,sans-serif;font-size:15px;color:#bdbdbd;padding:6px 0;">
-                            <strong style="color:#ffffff;">Objednatel:</strong> ${buyerName}
+                            <strong style="color:#ffffff;">Objednatel:</strong> ${safeBuyer}
                           </td>
                         </tr>
                         <tr>
                           <td style="font-family:Arial,Helvetica,sans-serif;font-size:15px;color:#bdbdbd;padding:6px 0;">
-                            <strong style="color:#ffffff;">Pro:</strong> ${recipientName}
+                            <strong style="color:#ffffff;">Pro:</strong> ${safeRecipient}
                           </td>
                         </tr>
                         <tr>
                           <td style="font-family:Arial,Helvetica,sans-serif;font-size:15px;color:#bdbdbd;padding:6px 0;">
-                            <strong style="color:#ffffff;">ID voucheru:</strong> ${voucherId}
+                            <strong style="color:#ffffff;">ID voucheru:</strong> ${safeVoucherId}
                           </td>
                         </tr>
                         <tr>
                           <td style="font-family:Arial,Helvetica,sans-serif;font-size:15px;color:#bdbdbd;padding:6px 0;">
-                            <strong style="color:#ffffff;">Platný do:</strong> ${validUntil}
+                            <strong style="color:#ffffff;">Platný do:</strong> ${safeValidUntil}
                           </td>
                         </tr>
                       </table>
@@ -215,15 +222,12 @@ export async function POST(req: NextRequest) {
 
     if (error) {
       console.error('Error sending email:', error)
-      return NextResponse.json({ error: error.message }, { status: 500, headers: corsHeaders })
+      return NextResponse.json({ error: error.message }, { status: 500 })
     }
 
-    return NextResponse.json({ success: true, data }, { status: 200, headers: corsHeaders })
+    return NextResponse.json({ success: true, data }, { status: 200 })
   } catch (error) {
     console.error('Error in send-confirmation-voucher API:', error)
-    return NextResponse.json(
-      { error: 'Failed to send email' },
-      { status: 500, headers: corsHeaders },
-    )
+    return NextResponse.json({ error: 'Failed to send email' }, { status: 500 })
   }
 }

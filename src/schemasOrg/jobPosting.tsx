@@ -1,3 +1,5 @@
+import { jsonLd } from 'lib/jsonLd'
+
 interface JobPostingProps {
   title: string
   // Kompletní popis pozice v HTML (požadováno Googlem).
@@ -62,9 +64,6 @@ export const JobPostingSchema = ({
   }
 
   return (
-    <script
-      type={'application/ld+json'}
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
+    <script type={'application/ld+json'} dangerouslySetInnerHTML={{ __html: jsonLd(schema) }} />
   )
 }

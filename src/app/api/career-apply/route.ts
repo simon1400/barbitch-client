@@ -1,10 +1,13 @@
 import type { NextRequest } from 'next/server'
 
 import { Buffer } from 'node:buffer'
+import { clientIp, makeRateLimiter, sameOrigin } from 'lib/route-guard'
 import { NextResponse } from 'next/server'
 import { Resend } from 'resend'
 
 const resend = new Resend(process.env.RESEND_API_KEY!)
+
+const limit = makeRateLimiter(5, 60_000)
 
 const escapeHtml = (value: string) =>
   value
@@ -43,8 +46,32 @@ const ALLOWED_RESUME_TYPES = new Set([
   'image/heic',
 ])
 
+type ParsedResume =
+  | { ok: true; attachment: { filename: string; content: Buffer } | null }
+  | { ok: false; status: number; error: string }
+
+const parseResume = async (resume: FormDataEntryValue | null): Promise<ParsedResume> => {
+  if (!(resume instanceof File) || resume.size === 0) return { ok: true, attachment: null }
+  if (resume.size > MAX_RESUME_BYTES) return { ok: false, status: 413, error: 'Resume too large' }
+  if (resume.type && !ALLOWED_RESUME_TYPES.has(resume.type)) {
+    return { ok: false, status: 415, error: 'Unsupported resume type' }
+  }
+  const safeFilename = (resume.name || 'zivotopis').replaceAll(/[^\w.\-() ]/g, '_').slice(0, 150)
+  return {
+    ok: true,
+    attachment: { filename: safeFilename, content: Buffer.from(await resume.arrayBuffer()) },
+  }
+}
+
 export async function POST(req: NextRequest) {
   try {
+    if (!sameOrigin(req)) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    }
+    if (!limit(clientIp(req))) {
+      return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
+    }
+
     const form = await req.formData()
     const name = form.get('name')
     const phone = form.get('phone')
@@ -66,22 +93,11 @@ export async function POST(req: NextRequest) {
     const safeMessage = message ? escapeHtml(String(message)).slice(0, 4000) : ''
 
     // Příloha — životopis (nepovinné).
-    let attachment: { filename: string; content: Buffer } | null = null
-    if (resume instanceof File && resume.size > 0) {
-      if (resume.size > MAX_RESUME_BYTES) {
-        return NextResponse.json({ error: 'Resume too large' }, { status: 413 })
-      }
-      if (resume.type && !ALLOWED_RESUME_TYPES.has(resume.type)) {
-        return NextResponse.json({ error: 'Unsupported resume type' }, { status: 415 })
-      }
-      const safeFilename = (resume.name || 'zivotopis')
-        .replaceAll(/[^\w.\-() ]/g, '_')
-        .slice(0, 150)
-      attachment = {
-        filename: safeFilename,
-        content: Buffer.from(await resume.arrayBuffer()),
-      }
+    const parsed = await parseResume(resume)
+    if (!parsed.ok) {
+      return NextResponse.json({ error: parsed.error }, { status: parsed.status })
     }
+    const attachment = parsed.attachment
 
     const html = `
       <div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:24px;color:#161615;">

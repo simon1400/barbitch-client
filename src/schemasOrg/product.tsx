@@ -1,3 +1,4 @@
+import { jsonLd } from 'lib/jsonLd'
 import { GOOGLE_RATING } from 'lib/seo'
 
 interface ProductSchemaProps {
@@ -94,9 +95,6 @@ export const ProductSchema = ({
   }
 
   return (
-    <script
-      type={'application/ld+json'}
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
+    <script type={'application/ld+json'} dangerouslySetInnerHTML={{ __html: jsonLd(schema) }} />
   )
 }

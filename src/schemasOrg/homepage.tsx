@@ -1,3 +1,4 @@
+import { jsonLd } from 'lib/jsonLd'
 import { GOOGLE_RATING } from 'lib/seo'
 
 const schema = {
@@ -48,7 +49,7 @@ export const SchemaJsonHomepage = () => {
       id={'schema-org'}
       type={'application/ld+json'}
       dangerouslySetInnerHTML={{
-        __html: JSON.stringify(schema),
+        __html: jsonLd(schema),
       }}
     />
   )

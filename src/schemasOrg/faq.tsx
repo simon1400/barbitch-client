@@ -1,3 +1,5 @@
+import { jsonLd } from 'lib/jsonLd'
+
 interface FAQItem {
   question: string
   answer: string
@@ -18,9 +20,6 @@ export const FAQSchema = ({ faqs }: { faqs: FAQItem[] }) => {
   }
 
   return (
-    <script
-      type={'application/ld+json'}
-      dangerouslySetInnerHTML={{ __html: JSON.stringify(schema) }}
-    />
+    <script type={'application/ld+json'} dangerouslySetInnerHTML={{ __html: jsonLd(schema) }} />
   )
 }

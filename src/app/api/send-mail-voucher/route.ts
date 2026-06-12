@@ -11,11 +11,27 @@ import { PDFDocument, rgb, StandardFonts } from 'pdf-lib'
 import { Resend } from 'resend'
 
 import { htmlTemplate } from './htmlTemplate'
+import { clientIp, makeRateLimiter, sameOrigin } from 'lib/route-guard'
 
 const resend = new Resend(process.env.RESEND_API_KEY!)
 
+const limit = makeRateLimiter(10, 60_000)
+const escapeHtml = (value: unknown) =>
+  String(value ?? '')
+    .replaceAll('&', '&amp;')
+    .replaceAll('<', '&lt;')
+    .replaceAll('>', '&gt;')
+    .replaceAll('"', '&quot;')
+
 export async function POST(req: NextRequest) {
   try {
+    if (!sameOrigin(req)) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    }
+    if (!limit(clientIp(req))) {
+      return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
+    }
+
     const {
       email,
       name,
@@ -34,7 +50,16 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Missing required field: email' }, { status: 400 })
     }
 
-    const templatePath = path.join(process.cwd(), 'public', 'vouchers', `${voucher}.pdf`)
+    // Whitelist voucher template name — strip any path component (no traversal).
+    const safeVoucher = path.basename(String(voucher ?? '')).replaceAll(/[^\w.-]/g, '')
+    if (!safeVoucher) {
+      return NextResponse.json({ error: 'Invalid voucher' }, { status: 400 })
+    }
+    const vouchersDir = path.join(process.cwd(), 'public', 'vouchers')
+    const templatePath = path.join(vouchersDir, `${safeVoucher}.pdf`)
+    if (!templatePath.startsWith(vouchersDir + path.sep)) {
+      return NextResponse.json({ error: 'Invalid voucher' }, { status: 400 })
+    }
     const templateBytes = fs.readFileSync(templatePath)
 
     const pdfDoc = await PDFDocument.load(templateBytes)
@@ -120,7 +145,7 @@ export async function POST(req: NextRequest) {
         </tr>
       `
     } else if (deliveryMethod === 'mail') {
-      const deliveryAddress = `${street}, ${postalCode} ${city}, ${country}`
+      const deliveryAddress = `${escapeHtml(street)}, ${escapeHtml(postalCode)} ${escapeHtml(city)}, ${escapeHtml(country)}`
       deliveryInstructions = `
         <tr>
           <td class="px" style="padding:6px 24px;">
@@ -156,22 +181,23 @@ export async function POST(req: NextRequest) {
       `
     }
 
-    // Заменяем персонализацию в HTML шаблоне
+    // Заменяем персонализацию в HTML шаблоне (пользовательские поля экранируются)
+    const plainName = String(name || 'Zákazník').slice(0, 200)
     const personalizedHtml = htmlTemplate
-      .replace(/\{\{ name \}\}/g, name || 'Zákazník')
+      .replace(/\{\{ name \}\}/g, escapeHtml(plainName))
       .replace(/\{\{ sum \}\}/g, String(totalSum))
-      .replace(/\{\{ idVoucher \}\}/g, String(idVoucher))
+      .replace(/\{\{ idVoucher \}\}/g, escapeHtml(idVoucher))
       .replace(/\{\{ deliveryInstructions \}\}/g, deliveryInstructions)
 
     const { data, error } = await resend.emails.send({
       from: `Bar.Bitch Brno <${process.env.RESEND_FROM_EMAIL!}>`,
       to: [email],
       bcc: process.env.RESEND_BCC_EMAIL ? [process.env.RESEND_BCC_EMAIL] : undefined,
-      subject: `Děkujeme za objednávku, ${name || 'Zákazník'}!`,
+      subject: `Děkujeme za objednávku, ${plainName}!`,
       html: personalizedHtml,
       attachments: [
         {
-          filename: `v_${voucher}_${idVoucher}.pdf`,
+          filename: `v_${safeVoucher}_${String(idVoucher).replaceAll(/[^\w.-]/g, '')}.pdf`,
           content: pdfBase64,
         },
       ],
