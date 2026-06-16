@@ -101,7 +101,7 @@ export async function POST(req: NextRequest) {
 
     const html = `
       <div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:24px;color:#161615;">
-        <h2 style="margin:0 0 16px;font-size:20px;">Nová reakce na inzerát — administrátor/ka</h2>
+        <h2 style="margin:0 0 16px;font-size:20px;">Nová reakce na inzerát — lashmakerka</h2>
         <p style="margin:0 0 8px;"><strong>Jméno:</strong> ${safeName}</p>
         <p style="margin:0 0 8px;"><strong>Telefon:</strong> <a href="tel:${safePhone.replaceAll(' ', '')}">${safePhone}</a></p>
         ${safeMessage ? `<p style="margin:16px 0 4px;"><strong>Zpráva:</strong></p><p style="margin:0;white-space:pre-wrap;">${safeMessage}</p>` : ''}

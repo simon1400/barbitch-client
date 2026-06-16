@@ -13,16 +13,16 @@ import CareerForm from './CareerForm'
 export const revalidate = 3600
 
 export const metadata: Metadata = {
-  title: 'Kariéra — hledáme administrátorku',
+  title: 'Kariéra — hledáme lashmakerku',
   description:
-    'Přidej se k týmu beauty salonu Bar.Bitch v centru Brna. Hledáme administrátorku / administrátora salonu. Napiš nám na Instagramu nebo vyplň krátký formulář.',
+    'Přidej se k týmu beauty salonu Bar.Bitch v centru Brna. Hledáme lashmakerku / lash stylistku na prodlužování řas. Napiš nám na Instagramu nebo vyplň krátký formulář.',
   alternates: {
     canonical: 'https://barbitch.cz/kariera',
   },
   openGraph: {
-    title: 'Hledáme administrátorku | Bar.Bitch Brno',
+    title: 'Hledáme lashmakerku | Bar.Bitch Brno',
     description:
-      'Staň se tváří našeho salonu v centru Brna. Mladý tým, stylové prostředí, férové ohodnocení.',
+      'Připoj se k mladému týmu salonu v centru Brna. Prodlužování řas, kvalitní materiály, férové ohodnocení s provizí.',
     url: 'https://barbitch.cz/kariera',
     siteName: 'Barbitch',
     locale: 'cs_CZ',
@@ -32,24 +32,24 @@ export const metadata: Metadata = {
 }
 
 const introText =
-  'Staň se tváří našeho salonu v centru Brna. Hledáme spolehlivou a usměvavou posilu, která se postará o klientky i o každodenní chod salonu. Praxe není podmínkou — důležitá je chuť a přístup.'
+  'Hledáme šikovnou lashmakerku do našeho salonu v centru Brna. Připoj se k mladému sehranému týmu a dělej to, co tě baví — prodlužování řas a krásu, ze které mají klientky radost. Šikovné juniorky vítáme, hlavní je preciznost a chuť se učit.'
 
 const taskItems = [
-  'Vítáš klientky a staráš se o příjemnou atmosféru salonu',
-  'Vyřizuješ objednávky, telefon a komunikaci na sociálních sítích',
-  'Koordinuješ mistry a hladký každodenní chod salonu',
+  'Prodlužování a zhušťování řas — klasika i objemové techniky',
+  'Lash lifting, barvení a péče o řasy a obočí',
+  'Poradíš klientkám s výběrem stylu a péčí o řasy',
 ]
 
 const offerItems = [
   'Stylové prostředí v centru Brna a mladý sehraný tým',
-  'Férové ohodnocení a bonusy z výsledků salonu',
-  'Zaškolení — hlavní je chuť, spolehlivost a úsměv',
+  'Férové ohodnocení s provizí z odvedené práce a stálou klientelu',
+  'Kvalitní materiály, zázemí a prostor pro růst',
 ]
 
 const lookingForItems = [
-  'Komunikativní a spolehlivou osobnost',
-  'Smysl pro pořádek a zvládání více věcí najednou',
-  'Češtinu slovem i písmem (další jazyk výhodou)',
+  'Zkušenost s prodlužováním řas (vítáme i šikovné juniorky)',
+  'Preciznost, smysl pro detail a čisté provedení',
+  'Spolehlivost, úsměv a chuť učit se nové techniky',
 ]
 
 const List = ({ title, items }: { title: string; items: string[] }) => (
@@ -89,9 +89,6 @@ const Kariera = async () => {
         datePosted={HIRING.datePosted}
         validThrough={HIRING.validThrough}
         employmentType={HIRING.employmentType}
-        salaryValue={HIRING.salaryValue}
-        salaryCurrency={HIRING.salaryCurrency}
-        salaryUnit={HIRING.salaryUnit}
       />
       <BreadcrumbSchema
         items={[
@@ -100,7 +97,7 @@ const Kariera = async () => {
         ]}
       />
       <Top
-        title={'Hledáme administrátorku'}
+        title={'Hledáme lashmakerku'}
         small
         linkToReserve={contact.linkToReserve || ''}
         titleClassName={'text-md1 sm:text-md2 lg:text-top'}
