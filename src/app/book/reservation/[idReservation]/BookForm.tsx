@@ -33,6 +33,24 @@ interface Props {
   idReservation: string
 }
 
+// Атрибуция e-mail-предложения «дозапись в окно»: если клиент пришёл по ссылке из
+// письма (метка bb_offer в localStorage, не старше 6ч) — дописываем в комментарий брони
+// Noona источник + скидку, чтобы мастер применил её. Метку очищаем после использования.
+const applyOfferAttribution = (userComment: string): string => {
+  try {
+    const raw = localStorage.getItem('bb_offer')
+    if (!raw) return userComment
+    localStorage.removeItem('bb_offer')
+    const o = JSON.parse(raw) as { src?: string; disc?: string; ts?: number }
+    if (o?.src !== 'win' || Date.now() - (o.ts || 0) >= 6 * 60 * 60 * 1000) return userComment
+    const sleva = o.disc ? `sleva ${o.disc} %` : 'sleva'
+    const tag = `📧 Dozápis z e-mailu · ${sleva} — uplatnit při platbě`
+    return userComment ? `${tag}\n${userComment}` : tag
+  } catch {
+    return userComment
+  }
+}
+
 const BookForm = ({ idReservation }: Props) => {
   const router = useRouter()
   const { expiredId } = useBookReservation()
@@ -112,7 +130,7 @@ const BookForm = ({ idReservation }: Props) => {
         source: 'quick bookings',
         phone_country_code: phoneData.phone_country_code,
         phone_number: phoneData.phone_number,
-        comment: userData.comment,
+        comment: applyOfferAttribution(userData.comment),
       })
 
       // If user is blacklisted, redirect to blocked page

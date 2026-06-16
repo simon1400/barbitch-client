@@ -65,15 +65,55 @@ interface MergedPersonal extends IPersonalService {
   isJunior: boolean
 }
 
+// getPersonalService идёт в Noona (axios без error-интерсептора). На таймаут/5xx/
+// сетевой сбой он бросает и роняет весь Server Component. Ретраим один раз (короткий
+// blip Noona — самая частая причина), и только при повторной неудаче помечаем ошибку.
+const fetchSeniorMasters = async (
+  serviceId: string,
+): Promise<{ masters: IPersonalService[]; failed: boolean }> => {
+  for (let attempt = 0; attempt < 2; attempt++) {
+    try {
+      const masters = await getPersonalService(serviceId)
+      return { masters, failed: false }
+    } catch {
+      // повтор
+    }
+  }
+  return { masters: [], failed: true }
+}
+
+// Senior + junior списки, дедуп по personal.id. Junior-мастера из senior-списка
+// убираем (tier=junior определяет junior/senior, а не Noona skills).
+const mergeMasters = (
+  seniorMasters: IPersonalService[],
+  juniorMasters: IPersonalService[],
+  juniorTierIds: Set<string>,
+): MergedPersonal[] => {
+  const merged: MergedPersonal[] = []
+  const seen = new Set<string>()
+  for (const m of seniorMasters) {
+    if (seen.has(m.id) || juniorTierIds.has(m.id)) continue
+    seen.add(m.id)
+    merged.push({ ...m, isJunior: false })
+  }
+  for (const m of juniorMasters) {
+    if (seen.has(m.id) || !juniorTierIds.has(m.id)) continue
+    seen.add(m.id)
+    merged.push({ ...m, isJunior: true })
+  }
+  return merged
+}
+
 const BookPersonalPage = async ({ params }: any) => {
   const { serviceId } = await params
 
-  // Параллельно: senior-мастера для текущей услуги, junior-маппинг, список junior personals
-  const [seniorMasters, juniorMap, juniorPersonals] = await Promise.all([
-    getPersonalService(serviceId),
+  // Параллельно: senior-мастера для текущей услуги, junior-маппинг, список junior personals.
+  const [seniorResult, juniorMap, juniorPersonals] = await Promise.all([
+    fetchSeniorMasters(serviceId),
     getJuniorMapForSenior(serviceId),
     getJuniorPersonals(),
   ])
+  const { masters: seniorMasters, failed: noonaFailed } = seniorResult
 
   // Если есть junior-копия услуги — догружаем junior-мастеров отдельным запросом
   let juniorMasters: IPersonalService[] = []
@@ -89,28 +129,36 @@ const BookPersonalPage = async ({ params }: any) => {
     juniorPersonals.filter((p) => p.tier === 'junior').map((p) => p.noonaEmployeeId),
   )
 
-  // Senior список + junior список, дедупликация по personal.id
-  // Junior-мастера из senior-списка убираем (защита: tier=junior определяет, junior он или senior, а не Noona skills)
-  const merged: MergedPersonal[] = []
-  const seen = new Set<string>()
-  for (const m of seniorMasters) {
-    if (seen.has(m.id)) continue
-    if (juniorTierIds.has(m.id)) continue
-    seen.add(m.id)
-    merged.push({ ...m, isJunior: false })
-  }
-  for (const m of juniorMasters) {
-    if (seen.has(m.id)) continue
-    if (!juniorTierIds.has(m.id)) continue
-    seen.add(m.id)
-    merged.push({ ...m, isJunior: true })
-  }
+  const merged = mergeMasters(seniorMasters, juniorMasters, juniorTierIds)
 
   const buildHref = (item: MergedPersonal): string => {
     if (item.isJunior && juniorMap) {
       return `/book/${juniorMap.junior_noona_id}/${item.id}`
     }
     return `/book/${serviceId}/${item.id}`
+  }
+
+  // Нет мастеров: либо Noona временно недоступна (noonaFailed) — тогда просим
+  // попробовать позже, либо услуга реально без доступных мастеров — предлагаем
+  // выбрать другую. Любой из случаев лучше краша Server Component.
+  if (merged.length === 0) {
+    return (
+      <div className={'bg-[#252523] rounded-special-small px-5 py-10 text-center'}>
+        <h2 className={'text-xs1 leading-snug mb-5'}>
+          {noonaFailed
+            ? 'Rezervační systém je momentálně nedostupný. Zkuste to prosím za chvíli.'
+            : 'Pro tuto službu nejsou dostupné žádné specialistky. Vyberte si prosím jinou službu.'}
+        </h2>
+        <Link
+          className={
+            'inline-block bg-primary text-white text-xs1 font-bold rounded-special-small px-6 py-3'
+          }
+          href={'/book'}
+        >
+          {'Zpět na výběr služby'}
+        </Link>
+      </div>
+    )
   }
 
   return (

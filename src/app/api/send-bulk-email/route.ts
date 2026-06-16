@@ -79,6 +79,11 @@ export async function POST(req: NextRequest) {
         to: [recipient.email],
         subject,
         html: personalizedHtml,
+        // Сигнал отписки для спам-фильтров (Gmail/Seznam показывают «Unsubscribe»).
+        // mailto — без отдельного endpoint; ответ «NEZASÍLAT» обрабатывается вручную.
+        headers: {
+          'List-Unsubscribe': '<mailto:info@barbitch.cz?subject=NEZASILAT>',
+        },
       }
     })
 

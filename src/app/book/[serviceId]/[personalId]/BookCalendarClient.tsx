@@ -53,6 +53,25 @@ export default function BookCalendarClient({ initialData }: BookCalendarClientPr
       deleteSlotReservation(idReservation).catch(() => {})
       localStorage.removeItem('idSlotReservation')
     }
+
+    // Переход с e-mail-предложения «дозапись в окно»: метка для атрибуции (попадёт
+    // в комментарий брони Noona) + предвыбор предложенной даты.
+    try {
+      const p = new URLSearchParams(window.location.search)
+      if (p.get('src') === 'win') {
+        localStorage.setItem(
+          'bb_offer',
+          JSON.stringify({ src: 'win', disc: p.get('disc') || '', ts: Date.now() }),
+        )
+      }
+      const d = p.get('d')
+      if (d && /^\d{4}-\d{2}-\d{2}$/.test(d)) {
+        const dt = parseISO(d)
+        if (!Number.isNaN(dt.getTime())) setSelected(dt)
+      }
+    } catch {
+      /* no-op */
+    }
   }, [])
 
   useEffect(() => {
