@@ -1,0 +1,277 @@
+<!doctype html>
+<html lang="cs">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Zkuste nehty u naší junior mistrové</title>
+    <style>
+      @media (max-width: 600px) {
+        .container {
+          width: 100% !important;
+        }
+        .px {
+          padding-left: 16px !important;
+          padding-right: 16px !important;
+        }
+      }
+    </style>
+  </head>
+  <body
+    style="
+      margin: 0;
+      padding: 0;
+      background: #1f1f1f;
+      -webkit-text-size-adjust: 100%;
+      -ms-text-size-adjust: 100%;
+    "
+  >
+    <!-- Розовая рамка-фон как на сайте -->
+    <table
+      role="presentation"
+      width="100%"
+      cellspacing="0"
+      cellpadding="0"
+      border="0"
+      style="background: #e71e6e"
+    >
+      <tr>
+        <td>
+          <table
+            role="presentation"
+            align="center"
+            width="600"
+            class="container"
+            cellspacing="0"
+            cellpadding="0"
+            border="0"
+            style="margin: 0 auto; background: #161615; color: #ffffff; width: 600px"
+          >
+            <!-- Логотип на розовой плашке -->
+            <tr>
+              <td style="padding: 24px; text-align: center; background: #e71e6e">
+                <img
+                  src="https://barbitch.cz/assets/logo-email.png"
+                  alt="Bar.Bitch"
+                  width="220"
+                  style="max-width: 220px; height: auto; display: block; margin: 0 auto"
+                />
+              </td>
+            </tr>
+
+            <!-- Заголовок со спарклами -->
+            <tr>
+              <td class="px" style="padding: 32px 32px 8px 32px; text-align: center">
+                <div
+                  style="
+                    font-family: Arial, Helvetica, sans-serif;
+                    font-size: 13px;
+                    letter-spacing: 3px;
+                    color: #e71e6e;
+                    font-weight: 700;
+                    text-transform: uppercase;
+                    margin-bottom: 10px;
+                  "
+                >
+                  ✦ &nbsp;HNED PO VAŠÍ NÁVŠTĚVĚ&nbsp; ✦
+                </div>
+                <div
+                  style="
+                    font-family: Arial, Helvetica, sans-serif;
+                    font-size: 30px;
+                    font-weight: 700;
+                    line-height: 1.25;
+                    color: #ffffff;
+                  "
+                >
+                  Zkusíte nové nehty, {{name}}? 💅
+                </div>
+              </td>
+            </tr>
+
+            <!-- Текст -->
+            <tr>
+              <td class="px" style="padding: 16px 40px 8px 40px; text-align: center">
+                <div
+                  style="
+                    font-family: Arial, Helvetica, sans-serif;
+                    font-size: 15px;
+                    line-height: 23px;
+                    color: #e6e6e6;
+                  "
+                >
+                  Máte u nás rezervaci na <strong style="color: #ffffff">{{anchorLabel}}</strong>
+                  dne <strong style="color: #ffffff">{{date}}</strong>. Hned po ní, ve
+                  <strong style="color: #ffffff">{{time}}</strong>, má naše
+                  <strong style="color: #ffffff">junior mistrová {{master}}</strong> volno — co
+                  takhle si rovnou dopřát i <strong style="color: #ffffff">{{service}}</strong> za
+                  zvýhodněnou cenu?
+                </div>
+              </td>
+            </tr>
+
+            <!-- Двойная скидка -->
+            <tr>
+              <td class="px" style="padding: 20px 32px 8px 32px">
+                <table
+                  role="presentation"
+                  width="100%"
+                  cellspacing="0"
+                  cellpadding="0"
+                  border="0"
+                  style="background: #0f0f0f; border: 2px dashed #e71e6e; border-radius: 12px"
+                >
+                  <tr>
+                    <td style="padding: 24px 20px; text-align: center">
+                      <div
+                        style="
+                          font-family: Arial, Helvetica, sans-serif;
+                          font-size: 12px;
+                          letter-spacing: 3px;
+                          font-weight: 700;
+                          color: #e71e6e;
+                          margin-bottom: 8px;
+                        "
+                      >
+                        DVOJITÁ VÝHODA U JUNIOR MISTROVÉ
+                      </div>
+                      <div
+                        style="
+                          font-family: Arial, Helvetica, sans-serif;
+                          font-size: 30px;
+                          font-weight: 700;
+                          line-height: 1.2;
+                          color: #ffffff;
+                        "
+                      >
+                        <span style="color: #e71e6e">−20 %</span> už v ceně<br />
+                        <span style="font-size: 18px; color: #e6e6e6"
+                          >+ <span style="color: #e71e6e">−{{discount}}</span> za dozápis</span
+                        >
+                      </div>
+                      <div
+                        style="
+                          font-family: Arial, Helvetica, sans-serif;
+                          font-size: 14px;
+                          line-height: 21px;
+                          color: #bdbdbd;
+                          margin-top: 12px;
+                        "
+                      >
+                        na {{service}} ve {{time}} u {{master}}
+                      </div>
+                      <div
+                        style="
+                          font-family: Arial, Helvetica, sans-serif;
+                          font-size: 13px;
+                          line-height: 19px;
+                          color: #8a8a8a;
+                          margin-top: 6px;
+                        "
+                      >
+                        Cena junior služby je už o 20 % nižší — slevu za dozápis stačí zmínit při
+                        rezervaci nebo v salonu.
+                      </div>
+                    </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+
+            <!-- Pojištění kvality -->
+            <tr>
+              <td class="px" style="padding: 12px 40px 4px 40px; text-align: center">
+                <div
+                  style="
+                    font-family: Arial, Helvetica, sans-serif;
+                    font-size: 13px;
+                    line-height: 20px;
+                    color: #a0a0a0;
+                  "
+                >
+                  Junior mistrová má o něco méně praxe, proto procedura může trvat o trochu déle —
+                  vše ale děláme v souladu se standardy salonu a s kvalitními materiály 💕
+                </div>
+              </td>
+            </tr>
+
+            <!-- CTA -->
+            <tr>
+              <td style="padding: 20px 40px 12px 40px; text-align: center">
+                <a
+                  href="{{bookingUrl}}"
+                  style="
+                    display: inline-block;
+                    background: #e71e6e;
+                    color: #ffffff;
+                    font-family: Arial, Helvetica, sans-serif;
+                    font-size: 16px;
+                    font-weight: 700;
+                    text-decoration: none;
+                    padding: 15px 40px;
+                    border-radius: 999px;
+                  "
+                  >REZERVOVAT VE {{time}}&nbsp;&nbsp;→</a
+                >
+              </td>
+            </tr>
+
+            <!-- Подсказка про время -->
+            <tr>
+              <td class="px" style="padding: 4px 40px 28px 40px; text-align: center">
+                <div
+                  style="
+                    font-family: Arial, Helvetica, sans-serif;
+                    font-size: 13px;
+                    letter-spacing: 1px;
+                    color: #8a8a8a;
+                  "
+                >
+                  Termín v kalendáři jen potvrdíte — vše je připravené na {{date}}.
+                </div>
+              </td>
+            </tr>
+
+            <!-- Подпись -->
+            <tr>
+              <td class="px" style="padding: 0 40px 28px 40px; text-align: center">
+                <div
+                  style="
+                    font-family: Arial, Helvetica, sans-serif;
+                    font-size: 14px;
+                    line-height: 21px;
+                    color: #a0a0a0;
+                  "
+                >
+                  Těšíme se na vás!<br />
+                  Tým <strong style="color: #ffffff">Bar.Bitch</strong> · Křenová 294/16, Brno ·
+                  <a href="https://barbitch.cz" style="color: #e71e6e; text-decoration: none"
+                    >barbitch.cz</a
+                  >
+                </div>
+              </td>
+            </tr>
+
+            <!-- Opt-out (povinné pro marketingová sdělení) -->
+            <tr>
+              <td class="px" style="padding: 16px 40px 24px 40px; background: #0f0f0f">
+                <div
+                  style="
+                    font-family: Arial, Helvetica, sans-serif;
+                    font-size: 12px;
+                    line-height: 18px;
+                    color: #6f6f6f;
+                    text-align: center;
+                  "
+                >
+                  Tento e-mail jsme vám poslaly k vaší nadcházející rezervaci. Nechcete už dostávat
+                  naše nabídky? Stačí odpovědět na tento e-mail se slovem „NEZASÍLAT&ldquo; a
+                  vyřadíme vás.
+                </div>
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>
