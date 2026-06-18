@@ -1,12 +1,32 @@
 import type { NextRequest } from 'next/server'
 
-import { clientIp, makeRateLimiter, sameOrigin } from 'lib/route-guard'
+import { clientIp, makeRateLimiter } from 'lib/route-guard'
 import { NextResponse } from 'next/server'
 import { Resend } from 'resend'
 
 const resend = new Resend(process.env.RESEND_API_KEY)
 
 const limit = makeRateLimiter(10, 60_000)
+
+// Этот роут вызывает АДМИНКА (admin.barbitch.cz) cross-origin, как send-bulk-email.
+// Поэтому sameOrigin тут не подходит — нужен CORS-allowlist по origin.
+const ALLOWED_ORIGINS = new Set([
+  'https://admin.barbitch.cz',
+  'https://barbitch.cz',
+  'https://www.barbitch.cz',
+])
+
+const corsHeaders = (req: NextRequest): Record<string, string> => {
+  const origin = req.headers.get('origin') || ''
+  const headers: Record<string, string> = {
+    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Headers': 'Content-Type',
+    Vary: 'Origin',
+  }
+  if (ALLOWED_ORIGINS.has(origin)) headers['Access-Control-Allow-Origin'] = origin
+  return headers
+}
+
 const escapeHtml = (value: unknown) =>
   String(value ?? '')
     .replaceAll('&', '&amp;')
@@ -14,20 +34,26 @@ const escapeHtml = (value: unknown) =>
     .replaceAll('>', '&gt;')
     .replaceAll('"', '&quot;')
 
+export async function OPTIONS(req: NextRequest) {
+  return NextResponse.json({}, { headers: corsHeaders(req) })
+}
+
 export async function POST(req: NextRequest) {
+  const cors = corsHeaders(req)
   try {
-    if (!sameOrigin(req)) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+    const origin = req.headers.get('origin')
+    if (origin && !ALLOWED_ORIGINS.has(origin)) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403, headers: cors })
     }
     if (!limit(clientIp(req))) {
-      return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
+      return NextResponse.json({ error: 'Too many requests' }, { status: 429, headers: cors })
     }
 
     const { email, buyerName, recipientName, voucherId, validUntil } = await req.json()
 
     // Validate required fields
     if (!email || !buyerName || !recipientName || !voucherId || !validUntil) {
-      return NextResponse.json({ error: 'All fields are required' }, { status: 400 })
+      return NextResponse.json({ error: 'All fields are required' }, { status: 400, headers: cors })
     }
 
     const safeBuyer = escapeHtml(buyerName)
@@ -222,12 +248,12 @@ export async function POST(req: NextRequest) {
 
     if (error) {
       console.error('Error sending email:', error)
-      return NextResponse.json({ error: error.message }, { status: 500 })
+      return NextResponse.json({ error: error.message }, { status: 500, headers: cors })
     }
 
-    return NextResponse.json({ success: true, data }, { status: 200 })
+    return NextResponse.json({ success: true, data }, { status: 200, headers: cors })
   } catch (error) {
     console.error('Error in send-confirmation-voucher API:', error)
-    return NextResponse.json({ error: 'Failed to send email' }, { status: 500 })
+    return NextResponse.json({ error: 'Failed to send email' }, { status: 500, headers: cors })
   }
 }
