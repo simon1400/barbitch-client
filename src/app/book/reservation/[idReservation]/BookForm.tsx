@@ -118,7 +118,14 @@ const BookForm = ({ idReservation }: Props) => {
         phone_country_code: phoneData.phone_country_code,
       })
 
-      // Create event even for blacklisted users - Noona will handle it
+      // Клиент в блэклисте — НЕ создаём бронь в Noona, сразу на /blocked.
+      // (Группа «Blacklist» в Noona сама записи не блокирует, поэтому раньше
+      // бронь создавалась всегда и попадала в календарь.)
+      if (isBlacklisted) {
+        router.push('/blocked')
+        return
+      }
+
       await createEvent({
         time_slot_reservation: idReservation,
         customer_name: userData.name,
@@ -132,13 +139,6 @@ const BookForm = ({ idReservation }: Props) => {
         phone_number: phoneData.phone_number,
         comment: applyOfferAttribution(userData.comment),
       })
-
-      // If user is blacklisted, redirect to blocked page
-      // Event is already created in Noona, it will handle it automatically
-      if (isBlacklisted) {
-        router.push('/blocked')
-        return
-      }
 
       // Send Lead event to FB CAPI
       sendCAPIEvent('Lead', {
