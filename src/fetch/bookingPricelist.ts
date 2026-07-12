@@ -1,7 +1,8 @@
 import type { IAddonGroup } from 'app/book/fetch/addonGroupService'
 
 import { getJuniorNoonaIds } from 'app/book/fetch/juniorMap'
-import { Axios, Noona } from 'lib/api'
+import { Axios } from 'lib/api'
+import { Noona } from 'lib/noona'
 import { cache } from 'react'
 
 const NOONA_COMPANY_ID = process.env.NOONA_COMPANY_ID || ''

@@ -8,35 +8,9 @@ export const Axios = axios.create({
   timeout: 15000,
 })
 
-export const Noona = axios.create({
-  baseURL: 'https://api.noona.is/v1/marketplace',
-  timeout: 15000,
-})
-
-Noona.interceptors.request.use(
-  (config) => {
-    config.headers.Authorization = `Bearer ${process.env.NOONA_TOKEN}`
-    return config
-  },
-  (error) => {
-    return Promise.reject(error)
-  },
-)
-
-export const NoonaHQ = axios.create({
-  baseURL: 'https://api.noona.is/v1/hq/companies',
-  timeout: 15000,
-})
-
-NoonaHQ.interceptors.request.use(
-  (config) => {
-    config.headers.Authorization = `Bearer ${process.env.NOONA_TOKEN}`
-    return config
-  },
-  (error) => {
-    return Promise.reject(error)
-  },
-)
+// Noona-инстансы переехали в lib/noona.ts (server-only) — NOONA_TOKEN не должен
+// попадать в браузерный бандл. Ручки собственного движка (/api/engine/*) живут
+// в app/book/fetch/engine.ts (отдельный axios без интерсептора ниже).
 
 Axios.interceptors.response.use(
   (response) => response.data.data,

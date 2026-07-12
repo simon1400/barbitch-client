@@ -1,30 +1,21 @@
-import type { EmployeeLoad, IMasterPriority } from '../../../fetch/masterPriority'
-
 import { LoaderCircle } from 'lucide-react'
-
-import { selectMaster } from '../../../fetch/masterPriority'
 
 export interface IBlockSlots {
   time: string
-  employeeIds: string[]
 }
 
+// Клик по времени сразу создаёт холд (мастера для «Kdokoliv» выбирает движок —
+// балансировка по загрузке + буст приоритета серверные).
 const TimeBlock = ({
   head,
   blockSlots,
   handleSelect,
   loadingTimepicker,
-  masterPriorities,
-  employeeLoad,
-  selectedDate,
 }: {
   head: string
   blockSlots: IBlockSlots[]
-  handleSelect: (employeeIds: string, time: string) => void
+  handleSelect: (time: string) => void
   loadingTimepicker: string
-  masterPriorities: IMasterPriority[]
-  employeeLoad: EmployeeLoad
-  selectedDate: Date
 }) => {
   return (
     <div className={'flex flex-col gap-2.5 w-full'}>
@@ -34,13 +25,7 @@ const TimeBlock = ({
           key={item.time}
           onClick={() => {
             if (!loadingTimepicker.length) {
-              const selectedId = selectMaster(
-                item.employeeIds,
-                masterPriorities,
-                employeeLoad,
-                selectedDate,
-              )
-              handleSelect(selectedId, item.time)
+              handleSelect(item.time)
             }
           }}
           className={`h-[38px] block w-full rounded-special-small text-white text-[14px]/[38px] duration-200  ${loadingTimepicker === item.time ? 'bg-primary' : 'bg-[#161615]'} ${!loadingTimepicker.length ? 'hover:bg-primary cursor-pointer' : 'cursor-progress'}`}

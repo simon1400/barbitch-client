@@ -1,13 +1,12 @@
 'use client'
-import type { EmployeeLoad, IMasterPriority } from '../../fetch/masterPriority'
-import type { ISlotService } from '../../fetch/slotsService'
+import type { ISelection } from '../../fetch/engine'
 
-import { format, formatISO, parseISO } from 'date-fns'
+import { format, parseISO } from 'date-fns'
 import dynamic from 'next/dynamic'
 import { useParams, useRouter } from 'next/navigation'
 import { useEffect, useMemo, useState } from 'react'
 
-import { createSlotReservation, deleteSlotReservation } from '../../fetch/slotReservation'
+import { createEngineHold, engineErrorCode } from '../../fetch/engine'
 
 import { CalendarSkeletonInner } from './components/CalendarSkeleton'
 
@@ -18,44 +17,38 @@ const BookDatePicker = dynamic(() => import('./components/DatePicker'), {
 const EmptyAlert = dynamic(() => import('./components/EmptyAlert'), { ssr: false })
 const TimePicker = dynamic(() => import('./components/TimePicker'), { ssr: false })
 
-const NOONA_COMPANY_ID = process.env.NOONA_COMPANY_ID || ''
+export interface ISlotDay {
+  date: string
+  slots: { time: string }[]
+}
 
 interface BookCalendarClientProps {
   initialData: {
     executeDateStrings: string[]
-    filteredData: ISlotService[]
-    masterPriorities: IMasterPriority[]
-    employeeEventTypeMap: Record<string, string>
-    employeeLoad: EmployeeLoad
+    filteredData: ISlotDay[]
+    selection: ISelection
   }
 }
 
 export default function BookCalendarClient({ initialData }: BookCalendarClientProps) {
   const params = useParams()
   const serviceId = params?.serviceId as string
+  const personalId = params?.personalId as string
   const router = useRouter()
 
-  const data = useMemo(
-    () => ({
-      executeDate: initialData.executeDateStrings.map((d) => parseISO(d)),
-      filteredData: initialData.filteredData,
-    }),
+  const excludeDates = useMemo(
+    () => initialData.executeDateStrings.map((d) => parseISO(d)),
     [initialData],
   )
 
-  const [slots, setSlots] = useState<{ employeeIds: string[]; time: string }[]>([])
+  const [slots, setSlots] = useState<{ time: string }[]>([])
   const [selected, setSelected] = useState<Date | null>(new Date())
   const [loadingTimepicker, setLoadingTimepicker] = useState<string>('')
+  const [slotError, setSlotError] = useState<string>('')
 
   useEffect(() => {
-    const idReservation = localStorage.getItem('idSlotReservation') || null
-    if (idReservation) {
-      deleteSlotReservation(idReservation).catch(() => {})
-      localStorage.removeItem('idSlotReservation')
-    }
-
     // Переход с e-mail-предложения «дозапись в окно»: метка для атрибуции (попадёт
-    // в комментарий брони Noona) + предвыбор предложенной даты.
+    // в комментарий брони) + предвыбор предложенной даты.
     try {
       const p = new URLSearchParams(window.location.search)
       if (p.get('src') === 'win') {
@@ -77,53 +70,54 @@ export default function BookCalendarClient({ initialData }: BookCalendarClientPr
   useEffect(() => {
     if (selected) {
       const selectDate = format(selected, 'yyyy-MM-dd')
-      const filterSlots = data.filteredData.find((item) => item.date === selectDate)
+      const filterSlots = initialData.filteredData.find((item) => item.date === selectDate)
       setSlots(filterSlots?.slots || [])
     }
-  }, [data, selected])
+  }, [initialData, selected])
 
   const selectDate = (value: Date | null) => {
     if (!value) return
+    setSlotError('')
     setSelected(value)
   }
 
-  const handleSelect = async (employeeId: string, time: string) => {
+  const handleSelect = async (time: string) => {
+    if (!time || !selected) return
     setLoadingTimepicker(time)
+    setSlotError('')
     try {
-      if (!time || !selected) throw new Error('Invalid input')
-
-      const [hours, minutes] = time.split(':').map(Number)
-      selected.setHours(hours, minutes, 0, 0)
-
-      // Если выбранный мастер — junior, бронируем его junior event_type (−20%),
-      // иначе обычный serviceId из URL.
-      const eventTypeId = initialData.employeeEventTypeMap[employeeId] || serviceId
-
-      const slotRezervation = await createSlotReservation({
-        company: NOONA_COMPANY_ID,
-        event_types: [eventTypeId],
-        starts_at: formatISO(selected),
-        employee: employeeId,
+      // Холд на 5 минут; для 'any' конкретного мастера выберет движок (балансировка).
+      const hold = await createEngineHold({
+        service: serviceId,
+        selection: initialData.selection,
+        employee: personalId,
+        date: format(selected, 'yyyy-MM-dd'),
+        time,
       })
-      router.push(`/book/reservation/${slotRezervation.id}`)
+      router.push(`/book/reservation/${hold.holdId}`)
       setLoadingTimepicker('')
     } catch (error) {
       setLoadingTimepicker('')
-      console.error('Slot reservation error:', error)
+      if (engineErrorCode(error) === 'slot_taken') {
+        // Слот заняли, пока клиент выбирал — обновляем доступность с сервера.
+        setSlotError('Tento termín byl právě obsazen. Vyberte prosím jiný čas.')
+        router.refresh()
+        return
+      }
+      setSlotError('Rezervaci se nepodařilo vytvořit. Zkuste to prosím znovu.')
+      console.error('Slot hold error:', error)
     }
   }
 
   return (
     <div className={'bg-[#252523] rounded-special-small px-7.5 py-5'}>
-      <BookDatePicker data={data.executeDate} selected={selected as Date} selectDate={selectDate} />
+      <BookDatePicker data={excludeDates} selected={selected as Date} selectDate={selectDate} />
+      {slotError && <p className={'text-[#E71E6E] text-xss text-center pt-3'}>{slotError}</p>}
       {slots.length ? (
         <TimePicker
           slots={slots}
           handleSelect={handleSelect}
           loadingTimepicker={loadingTimepicker}
-          masterPriorities={initialData.masterPriorities}
-          employeeLoad={initialData.employeeLoad}
-          selectedDate={selected as Date}
         />
       ) : (
         <EmptyAlert />

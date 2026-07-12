@@ -1,6 +1,6 @@
 'use client'
 
-import type { IBookServiceGroup } from './fetch/bookService'
+import type { IEngineServiceGroup } from './fetch/engine'
 
 import Button from 'components/Button'
 import { useCallback, useEffect, useState } from 'react'
@@ -13,27 +13,11 @@ import {
 } from '@/components/ui/accordion'
 
 import { BookServiceItem } from './components/BookServiceItem'
-import { getHiddenServiceIds } from './fetch/addonGroupService'
-import { getBookService } from './fetch/bookService'
+import { getEngineCatalog } from './fetch/engine'
 
-// На /book показываем только эти категории. Сопоставление по вхождению
-// подстроки — устойчиво к эмодзи/пробелам в конце названия группы Noona.
-// Junior-группа («Nehty - Junior», 656 услуг) и пулы вариантов
-// (Gel lak manikúra, Prodloužení nehtů, Sundání, Nano-zpevnění,
-// Hygienická manikúra и т.п.) сюда не попадают и не грузятся в список.
-const VISIBLE_CATEGORY_MATCHERS = ['Nehty 💅', 'Obočí', 'barvení a péče', 'Prodlužování řas']
-
-const isVisibleCategory = (title: string): boolean =>
-  VISIBLE_CATEGORY_MATCHERS.some((m) => title.includes(m))
-
-const filterGroups = (groups: IBookServiceGroup[], hiddenIds: Set<string>): IBookServiceGroup[] =>
-  groups
-    .filter((group) => isVisibleCategory(group.title))
-    .map((group) => ({
-      ...group,
-      group_event_types: group.group_event_types.filter((s) => !hiddenIds.has(s.id.toString())),
-    }))
-    .filter((group) => group.group_event_types.length > 0)
+// Каталог приходит из собственного движка (/api/engine/services): только
+// active+onlineBookable услуги, уже сгруппированные по категориям — ни фильтра
+// категорий, ни скрытия combo-услуг (как при Noona) больше не нужно.
 
 const BookServiceSkeleton = () => (
   <div className={'animate-pulse space-y-2.5'}>
@@ -44,7 +28,7 @@ const BookServiceSkeleton = () => (
 )
 
 const BookServicePage = () => {
-  const [data, setData] = useState<IBookServiceGroup[]>([])
+  const [data, setData] = useState<IEngineServiceGroup[]>([])
   const [accordionValue, setAccordionValue] = useState<string>('')
   const [selectedServiceId, setSelectedServiceId] = useState<string>('')
   const [isLoading, setIsLoading] = useState(true)
@@ -54,11 +38,8 @@ const BookServicePage = () => {
     setIsLoading(true)
     setHasError(false)
     try {
-      const [servicesData, hiddenIds] = await Promise.all([getBookService(), getHiddenServiceIds()])
-
-      const filtered = filterGroups(servicesData, hiddenIds)
-
-      setData(filtered)
+      const groups = await getEngineCatalog()
+      setData(groups.filter((g) => g.services.length > 0))
 
       const savedState = sessionStorage.getItem('lastBookingState')
       if (savedState) {
@@ -113,12 +94,12 @@ const BookServicePage = () => {
           <AccordionTrigger className={'p-5 text-resMd1'}>{group.title}</AccordionTrigger>
           <AccordionContent className={'px-3 pb-0'}>
             <ul>
-              {group.group_event_types.map((service) => (
+              {group.services.map((service) => (
                 <BookServiceItem
                   key={service.id}
                   service={service}
                   category={group.title}
-                  isSelected={selectedServiceId === service.id.toString()}
+                  isSelected={selectedServiceId === service.id}
                 />
               ))}
             </ul>

@@ -1,18 +1,17 @@
 'use client'
-import type { IBookService } from '../fetch/bookService'
+import type { IEngineService } from '../fetch/engine'
 
 import Image from 'components/Image'
 import Link from 'next/link'
 import { useState } from 'react'
 
 interface BookServiceItemProps {
-  service: IBookService
+  service: IEngineService
   category: string
   isSelected: boolean
 }
 
 export const BookServiceItem = ({ service, category, isSelected }: BookServiceItemProps) => {
-  const price = service.variations?.[0]?.prices?.[0]?.amount ?? 'N/A'
   const [showInfo, setShowInfo] = useState(false)
 
   const handleInfoService = (e: any) => {
@@ -26,7 +25,7 @@ export const BookServiceItem = ({ service, category, isSelected }: BookServiceIt
       'lastBookingState',
       JSON.stringify({
         category,
-        serviceId: service.id.toString(),
+        serviceId: service.id,
       }),
     )
   }
@@ -39,28 +38,12 @@ export const BookServiceItem = ({ service, category, isSelected }: BookServiceIt
         onClick={handleClick}
       >
         <div className={'flex py-3.5 px-1 items-center gap-4'}>
-          <span
-            className={
-              'min-w-[36px] w-[36px] h-[36px] overflow-hidden self-start rounded-full block relative'
-            }
-          >
-            {!!service.images && (
-              <Image
-                src={service.images[0].image}
-                alt={service.title}
-                width={36}
-                height={36}
-                className={'object-cover w-full h-full'}
-                loading={'lazy'}
-                quality={70}
-                sizes={'36px'}
-              />
-            )}
-          </span>
           <span className={'w-full'}>
             <h3 className={'text-xs1 leading-5 mb-1.5'}>{service.title}</h3>
             <div className={'flex'}>
-              <p className={`text-[#A0A0A0] text-xs1 leading-none`}>{`${service.minutes} min`}</p>
+              <p className={`text-[#A0A0A0] text-xs1 leading-none`}>
+                {`${service.durationMin} min`}
+              </p>
               {service.description && (
                 <span
                   role={'button'}
@@ -75,7 +58,7 @@ export const BookServiceItem = ({ service, category, isSelected }: BookServiceIt
             </div>
           </span>
           <span className={'flex items-center text-xs1 text-primary font-bold gap-2.5 self-start'}>
-            <span className={'whitespace-nowrap'}>{`${price} Kč`}</span>
+            <span className={'whitespace-nowrap'}>{`${service.price} Kč`}</span>
             <Image
               src={'/assets/icons/chevronRight.svg'}
               alt={'Chevron right icon'}

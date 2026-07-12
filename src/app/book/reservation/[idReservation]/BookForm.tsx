@@ -3,13 +3,11 @@ import Button from 'components/Button'
 import { Container } from 'components/Container'
 import { sendGoogleAdsConversion } from 'fetch/googleAds'
 import { sendCAPIEvent } from 'fetch/pixel'
-import { useOnMountUnsafe } from 'helpers/useOnMountUnsaf'
 import { useRouter } from 'next/navigation'
-import { useCallback, useMemo, useState } from 'react'
+import { useCallback, useState } from 'react'
 
 import { useBookReservation } from '../../components/BookReservationContext'
-import { checkBlacklist } from '../../fetch/checkBlacklist'
-import { BlacklistError, createEvent } from '../../fetch/createEvent'
+import { createEngineBooking, engineErrorCode } from '../../fetch/engine'
 
 import { UserData } from './components/UserData'
 
@@ -35,7 +33,7 @@ interface Props {
 
 // Атрибуция e-mail-предложения «дозапись в окно»: если клиент пришёл по ссылке из
 // письма (метка bb_offer в localStorage, не старше 6ч) — дописываем в комментарий брони
-// Noona источник + скидку, чтобы мастер применил её. Метку очищаем после использования.
+// источник + скидку, чтобы мастер применил её. Метку очищаем после использования.
 const applyOfferAttribution = (userComment: string): string => {
   try {
     const raw = localStorage.getItem('bb_offer')
@@ -53,7 +51,7 @@ const applyOfferAttribution = (userComment: string): string => {
 
 const BookForm = ({ idReservation }: Props) => {
   const router = useRouter()
-  const { expiredId } = useBookReservation()
+  const { expiredId, setExpiredId } = useBookReservation()
   const isExpired = expiredId === idReservation
 
   const [userData, setUserData] = useState<IUserData>({
@@ -72,30 +70,17 @@ const BookForm = ({ idReservation }: Props) => {
     gdprConsent: false,
   })
 
-  useOnMountUnsafe(() => {
-    localStorage.setItem('idSlotReservation', idReservation)
-  })
+  const [submitError, setSubmitError] = useState<string>('')
 
   const handleChange = useCallback((name: string, value: string | boolean) => {
     setUserData((prev) => ({ ...prev, [name]: value }))
     setErrorData((prev) => ({ ...prev, [name]: false }))
   }, [])
 
-  const phoneData = useMemo(() => {
-    const defaultCountryCode = '+420'
-    return {
-      phone_country_code: userData.phone.startsWith('+')
-        ? userData.phone.slice(0, 4)
-        : defaultCountryCode,
-      phone_number: userData.phone.replace(/^\+\d{3}/, ''),
-    }
-  }, [userData.phone])
-
   const handleBook = async (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     e.preventDefault()
 
-    // Слот уже не удерживается — отправка создаст событие на истёкшую резервацию
-    // (Noona вернёт 400/422, что код ошибочно трактует как блэклист → /blocked).
+    // Холд уже истёк — движок бронь не примет, не отправляем.
     if (isExpired) return
 
     const errors: Partial<IErrorUserData> = {}
@@ -110,34 +95,15 @@ const BookForm = ({ idReservation }: Props) => {
       return
     }
 
+    setSubmitError('')
     try {
-      // Check blacklist before creating event
-      const isBlacklisted = await checkBlacklist({
+      // Блэклист проверяет сервер (403 blacklisted) — клиентского чека больше нет.
+      await createEngineBooking({
+        holdId: idReservation,
+        name: userData.name,
+        phone: userData.phone,
         email: userData.email,
-        phone_number: phoneData.phone_number,
-        phone_country_code: phoneData.phone_country_code,
-      })
-
-      // Клиент в блэклисте — НЕ создаём бронь в Noona, сразу на /blocked.
-      // (Группа «Blacklist» в Noona сама записи не блокирует, поэтому раньше
-      // бронь создавалась всегда и попадала в календарь.)
-      if (isBlacklisted) {
-        router.push('/blocked')
-        return
-      }
-
-      await createEvent({
-        time_slot_reservation: idReservation,
-        customer_name: userData.name,
-        number_of_guests: 1,
-        no_show_acknowledged: true,
-        email: userData.email,
-        origin: 'online',
-        channel: 'google maps',
-        source: 'quick bookings',
-        phone_country_code: phoneData.phone_country_code,
-        phone_number: phoneData.phone_number,
-        comment: applyOfferAttribution(userData.comment),
+        customerComment: applyOfferAttribution(userData.comment),
       })
 
       // Send Lead event to FB CAPI
@@ -154,12 +120,20 @@ const BookForm = ({ idReservation }: Props) => {
 
       router.push('/thank-you')
     } catch (err) {
-      // Check if customer is blacklisted
-      if (err instanceof BlacklistError) {
+      const code = engineErrorCode(err)
+      if (code === 'blacklisted') {
         router.push('/blocked')
         return
       }
-
+      if (code === 'hold_expired' || code === 'hold_not_found') {
+        setExpiredId(idReservation)
+        return
+      }
+      if (code === 'slot_taken') {
+        setSubmitError('Termín byl bohužel právě obsazen. Vyberte prosím jiný čas.')
+        return
+      }
+      setSubmitError('Rezervaci se nepodařilo vytvořit. Zkuste to prosím znovu.')
       console.error('Booking error:', err)
     }
   }
@@ -197,6 +171,8 @@ const BookForm = ({ idReservation }: Props) => {
           </p>
         </div>
       </div>
+
+      {submitError && <p className={'text-[#E71E6E] text-xss text-center mb-5'}>{submitError}</p>}
 
       <div
         className={'fixed flex items-center bottom-0 left-0 w-full h-[70px]'}

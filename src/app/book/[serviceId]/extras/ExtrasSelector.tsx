@@ -1,61 +1,26 @@
 'use client'
 
-import type { IAddonGroup, IModifierItem, IModifierResult } from '../../fetch/addonGroupService'
+import type { IEngineModifier, IEngineService } from '../../fetch/engine'
 
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
+import { calcSelectionPricing, selectionToQuery } from '../../fetch/engine'
+
 interface ExtrasSelectorProps {
-  serviceId: string
-  group: IAddonGroup
+  service: IEngineService
 }
 
-const findModifierResult = (
-  modifierResults: IModifierResult[],
-  checkedKeys: Set<string>,
-): string | null => {
-  if (checkedKeys.size === 0) return null
-  const sorted = [...checkedKeys].sort().join(',')
-  return modifierResults.find((mr) => mr.modifier_keys === sorted)?.result_noona_id ?? null
-}
-
-// Возвращает Set ключей modifier, доступных для данного варианта (по наличию записей в modifier_results)
-const getAvailableModifierKeys = (idx: number, group: IAddonGroup): Set<string> => {
-  const results =
-    idx === 0
-      ? (group.base_modifier_results ?? [])
-      : (group.addons[idx - 1]?.modifier_results ?? [])
-
-  const available = new Set<string>()
-  for (const mr of results) {
-    for (const k of mr.modifier_keys.split(',')) {
-      available.add(k.trim())
-    }
-  }
-  return available
-}
-
-export const ExtrasSelector = ({ serviceId, group }: ExtrasSelectorProps) => {
+export const ExtrasSelector = ({ service }: ExtrasSelectorProps) => {
   const router = useRouter()
+  // 0 = базовый вариант, 1..n = service.variants[i-1]
   const [selectedIndex, setSelectedIndex] = useState(0)
   const [checkedModifiers, setCheckedModifiers] = useState<Set<string>>(new Set())
-  // Which rows have their "info" description expanded (id: `addon:<label>` / `mod:<key>`)
+  // Which rows have their "info" description expanded (id: `variant:<label>` / `mod:<key>`)
   const [openInfo, setOpenInfo] = useState<Set<string>>(new Set())
 
-  const handleSelectIndex = (idx: number) => {
-    const available = getAvailableModifierKeys(idx, group)
-    setCheckedModifiers((prev) => {
-      const next = new Set(prev)
-      for (const key of next) {
-        if (!available.has(key)) next.delete(key)
-      }
-      return next
-    })
-    setSelectedIndex(idx)
-  }
-
   const toggleModifier = (key: string) => {
-    const modifiers = group.modifiers ?? []
+    const modifiers = service.modifiers ?? []
     const grp = modifiers.find((m) => m.key === key)?.group?.trim()
     setCheckedModifiers((prev) => {
       const next = new Set(prev)
@@ -74,55 +39,28 @@ export const ExtrasSelector = ({ serviceId, group }: ExtrasSelectorProps) => {
     })
   }
 
-  const getResult = () => {
-    const modifierPriceDiff = [...checkedModifiers].reduce((sum, key) => {
-      const mod = (group.modifiers ?? []).find((m) => m.key === key)
-      return sum + (mod?.price_diff ?? 0)
-    }, 0)
-
-    if (selectedIndex === 0) {
-      const overrideId =
-        checkedModifiers.size > 0
-          ? findModifierResult(group.base_modifier_results ?? [], checkedModifiers)
-          : null
-      return {
-        href: `/book/${overrideId ?? serviceId}`,
-        total: group.base_price + modifierPriceDiff,
-        hasOverride: overrideId !== null || checkedModifiers.size === 0,
-      }
-    } else {
-      const addon = group.addons[selectedIndex - 1]
-      const overrideId =
-        checkedModifiers.size > 0
-          ? findModifierResult(addon.modifier_results ?? [], checkedModifiers)
-          : null
-      return {
-        href: `/book/${overrideId ?? addon.result_noona_id}`,
-        total: group.base_price + addon.price_diff + modifierPriceDiff,
-        hasOverride: overrideId !== null || checkedModifiers.size === 0,
-      }
-    }
+  const selection = {
+    variant: selectedIndex === 0 ? null : service.variants[selectedIndex - 1].label,
+    modifiers: [...checkedModifiers],
   }
-
-  const { href, total, hasOverride } = getResult()
-  const availableModifierKeys = getAvailableModifierKeys(selectedIndex, group)
+  const { seniorPrice: total } = calcSelectionPricing(service, selection)
 
   const options: Array<{ id: string; label: string; priceDiff: number; description?: string }> = [
     { id: 'base', label: 'Základní varianta', priceDiff: 0 },
-    ...group.addons.map((addon) => ({
-      id: `addon:${addon.label}`,
-      label: addon.label,
-      priceDiff: addon.price_diff,
-      description: addon.description,
+    ...service.variants.map((variant) => ({
+      id: `variant:${variant.label}`,
+      label: variant.label,
+      priceDiff: variant.priceDiff,
+      description: variant.description,
     })),
   ]
 
-  const allModifiers = group.modifiers ?? []
+  const allModifiers = service.modifiers ?? []
   // Свободные модификаторы (без группы) → чекбоксы в «Doplňkové služby»
   const freeModifiers = allModifiers.filter((m) => !m.group?.trim())
   // Модификаторы с группой → каждая группа в свой блок с радио-выбором (один/ни одного)
   const modifierGroupOrder: string[] = []
-  const modifierGroups = new Map<string, IModifierItem[]>()
+  const modifierGroups = new Map<string, IEngineModifier[]>()
   for (const m of allModifiers) {
     const g = m.group?.trim()
     if (!g) continue
@@ -165,40 +103,34 @@ export const ExtrasSelector = ({ serviceId, group }: ExtrasSelectorProps) => {
   // Одна строка модификатора. radio=true → круглый индикатор (взаимоисключающая
   // группа), иначе квадратный чекбокс. Поведение клика одинаковое (toggleModifier
   // сам снимает другие в группе и позволяет снять выбор повторным кликом).
-  const renderModifierRow = (modifier: IModifierItem, radio: boolean) => {
+  const renderModifierRow = (modifier: IEngineModifier, radio: boolean) => {
     const isChecked = checkedModifiers.has(modifier.key)
-    const isDisabled = !availableModifierKeys.has(modifier.key)
-    const active = isChecked && !isDisabled
     const infoId = `mod:${modifier.key}`
     const showInfo = openInfo.has(infoId)
     return (
       <div key={modifier.key} className={'border-t-2 border-[#3C3C3C] border-dotted'}>
         <div
           role={'button'}
-          onClick={() => !isDisabled && toggleModifier(modifier.key)}
+          onClick={() => toggleModifier(modifier.key)}
           className={`flex items-center gap-4 px-4 py-3.5 transition-colors duration-150 ${
-            isDisabled
-              ? 'opacity-35 cursor-not-allowed'
-              : isChecked
-                ? 'bg-[#3C3C3C] cursor-pointer'
-                : 'hover:bg-[#2e2e2c] cursor-pointer'
+            isChecked ? 'bg-[#3C3C3C] cursor-pointer' : 'hover:bg-[#2e2e2c] cursor-pointer'
           }`}
         >
           {radio ? (
             <span
               className={`shrink-0 flex items-center justify-center w-5 h-5 rounded-full border-2 transition-colors duration-150 ${
-                active ? 'border-[#E71E6E]' : 'border-[#A0A0A0]'
+                isChecked ? 'border-[#E71E6E]' : 'border-[#A0A0A0]'
               }`}
             >
-              {active && <span className={'w-2.5 h-2.5 rounded-full bg-[#E71E6E] block'} />}
+              {isChecked && <span className={'w-2.5 h-2.5 rounded-full bg-[#E71E6E] block'} />}
             </span>
           ) : (
             <span
               className={`shrink-0 flex items-center justify-center w-5 h-5 rounded border-2 transition-colors duration-150 ${
-                active ? 'border-[#E71E6E] bg-[#E71E6E]' : 'border-[#A0A0A0]'
+                isChecked ? 'border-[#E71E6E] bg-[#E71E6E]' : 'border-[#A0A0A0]'
               }`}
             >
-              {active && (
+              {isChecked && (
                 <svg width={'11'} height={'8'} viewBox={'0 0 11 8'} fill={'none'}>
                   <path
                     d={'M1 3.5L4 6.5L10 1'}
@@ -218,13 +150,11 @@ export const ExtrasSelector = ({ serviceId, group }: ExtrasSelectorProps) => {
           </span>
 
           <span
-            className={`shrink-0 text-xss font-semibold rounded-xl px-2 py-1 whitespace-nowrap ${
-              isDisabled
-                ? 'text-[#A0A0A0] bg-[#A0A0A01A] border border-[#A0A0A040]'
-                : 'text-[#E71E6E] bg-[#E71E6E1A] border border-[#E71E6E40]'
-            }`}
+            className={
+              'shrink-0 text-xss font-semibold rounded-xl px-2 py-1 whitespace-nowrap text-[#E71E6E] bg-[#E71E6E1A] border border-[#E71E6E40]'
+            }
           >
-            {`+${modifier.price_diff} Kč`}
+            {`+${modifier.priceDiff} Kč`}
           </span>
         </div>
         {showInfo && modifier.description && (
@@ -253,7 +183,9 @@ export const ExtrasSelector = ({ serviceId, group }: ExtrasSelectorProps) => {
     <div className={'pb-17'}>
       {/* Список основных опций (радиокнопки) */}
       <div className={'bg-[#252523] rounded-special-small overflow-hidden'}>
-        {group.title && <p className={'px-4 pt-3.5 pb-1 text-xss text-[#A0A0A0]'}>{group.title}</p>}
+        {service.title && (
+          <p className={'px-4 pt-3.5 pb-1 text-xss text-[#A0A0A0]'}>{service.title}</p>
+        )}
         {options.map((option, index) => {
           const isSelected = selectedIndex === index
           const showInfo = openInfo.has(option.id)
@@ -264,7 +196,7 @@ export const ExtrasSelector = ({ serviceId, group }: ExtrasSelectorProps) => {
             >
               <div
                 role={'button'}
-                onClick={() => handleSelectIndex(index)}
+                onClick={() => setSelectedIndex(index)}
                 className={`flex items-center gap-4 px-4 py-4 cursor-pointer transition-colors duration-150 ${
                   isSelected ? 'bg-[#3C3C3C]' : 'hover:bg-[#2e2e2c]'
                 }`}
@@ -360,14 +292,11 @@ export const ExtrasSelector = ({ serviceId, group }: ExtrasSelectorProps) => {
             >{`${total} Kč`}</span>
           </div>
           <button
-            onClick={() => router.push(href)}
+            onClick={() => router.push(`/book/${service.id}${selectionToQuery(selection)}`)}
             type={'button'}
-            disabled={!hasOverride}
-            className={`w-full transition-colors duration-150 text-white font-semibold text-xs1 py-3.5 rounded-special-small ${
-              hasOverride
-                ? 'bg-[#E71E6E] hover:bg-[#c9195f] active:bg-[#b01555]'
-                : 'bg-[#5a5a5a] cursor-not-allowed'
-            }`}
+            className={
+              'w-full transition-colors duration-150 text-white font-semibold text-xs1 py-3.5 rounded-special-small bg-[#E71E6E] hover:bg-[#c9195f] active:bg-[#b01555]'
+            }
           >
             {'Pokračovat'}
           </button>

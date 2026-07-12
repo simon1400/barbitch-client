@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 
 import { redirect } from 'next/navigation'
 
-import { getAddonGroup } from '../../fetch/addonGroupService'
+import { getEngineService } from '../../fetch/engine'
 
 import { ExtrasSelector } from './ExtrasSelector'
 
@@ -14,13 +14,24 @@ export const metadata: Metadata = {
 
 const ExtrasPage = async ({ params }: any) => {
   const { serviceId } = await params
-  const group = await getAddonGroup(serviceId)
 
-  if (!group) {
-    redirect(`/book/${serviceId}`)
+  let service: Awaited<ReturnType<typeof getEngineService>> | null = null
+  try {
+    service = await getEngineService(serviceId)
+  } catch {
+    // Неизвестный id (напр. легаси-ссылка на combo из старого письма) → на выбор услуги.
+    service = null
   }
 
-  return <ExtrasSelector serviceId={serviceId} group={group} />
+  if (!service) redirect('/book')
+
+  // Без вариантов и дополнений выбирать нечего — сразу на выбор мастера.
+  // service.id = канонический documentId (легаси noonaBaseId уже отрезолвлен движком).
+  if (!service.variants.length && !service.modifiers.length) {
+    redirect(`/book/${service.id}`)
+  }
+
+  return <ExtrasSelector service={service} />
 }
 
 export default ExtrasPage

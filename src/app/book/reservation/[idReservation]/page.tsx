@@ -3,8 +3,7 @@ import type { Metadata } from 'next'
 import { formatInTimeZone } from 'date-fns-tz'
 import { JUNIOR_DISCOUNT_PERCENT } from 'lib/junior'
 
-import { getJuniorMapByJuniorId } from '../../fetch/juniorMap'
-import { getSlotReservation } from '../../fetch/slotReservation'
+import { getEngineHold } from '../../fetch/engine'
 
 import BookForm from './BookForm'
 import { ReservationExpired } from './components/ReservationExpired'
@@ -28,30 +27,24 @@ const JuniorBadge = () => (
 export default async function BookServicePage({ params }: any) {
   const { idReservation } = await params
 
-  let data: Awaited<ReturnType<typeof getSlotReservation>> | null = null
+  let hold: Awaited<ReturnType<typeof getEngineHold>> | null = null
   try {
-    data = await getSlotReservation(idReservation)
+    hold = await getEngineHold(idReservation)
   } catch {
-    // Истёкшая (таймер 5 мин) или невалидная резервация — Noona отдаёт 404.
-    data = null
+    // Неизвестный/удалённый холд — движок отдаёт 404.
+    hold = null
   }
 
-  const eventType = data?.event_types?.[0]
+  const serviceItem = hold?.services?.[0]
 
-  // Резервация не найдена/истекла либо пришла без услуги — показываем экран вместо краша.
-  if (!data || !eventType) return <ReservationExpired idReservation={idReservation} />
-
-  // Если выбранный event_type — junior-вариант, маппинг вернёт senior_price для зачёркивания
-  let juniorMap: Awaited<ReturnType<typeof getJuniorMapByJuniorId>> | null = null
-  try {
-    juniorMap = eventType.id ? await getJuniorMapByJuniorId(eventType.id) : null
-  } catch {
-    juniorMap = null
+  // Холд не найден/истёк (таймер 5 мин) — показываем экран вместо краша.
+  if (!hold || hold.expired || !serviceItem) {
+    return <ReservationExpired idReservation={idReservation} />
   }
-  const isJunior = juniorMap !== null
 
-  const totalPrice = eventType.payments?.total_payment
-  const seniorPrice = juniorMap?.senior_price
+  // Junior-мастер: движок уже применил −20% (price < seniorPrice) — показываем
+  // зачёркнутую senior-цену.
+  const isJunior = serviceItem.seniorPrice > hold.price
 
   return (
     <>
@@ -62,18 +55,18 @@ export default async function BookServicePage({ params }: any) {
           <li className={'flex justify-between py-2.5'}>
             <span className={'text-[#A0A0A0]'}>{'Datum'}</span>
             <span className={'text-white'}>
-              {formatInTimeZone(new Date(data.starts_at), 'Europe/Prague', 'd.M.yyyy HH:mm')}
+              {formatInTimeZone(new Date(hold.startsAt), 'Europe/Prague', 'd.M.yyyy HH:mm')}
             </span>
           </li>
           <li className={'flex justify-between py-2.5'}>
             <span className={'text-[#A0A0A0]'}>{'Trvání'}</span>
-            <span className={'text-white'}>{`${eventType.minutes} min`}</span>
+            <span className={'text-white'}>{`${hold.durationMin} min`}</span>
           </li>
           <li className={'flex justify-between py-2.5 items-center gap-4'}>
             <span className={'text-[#A0A0A0]'}>{'Zaměstnanec'}</span>
             <span className={'text-white flex items-center gap-2 leading-none'}>
               {isJunior && <JuniorBadge />}
-              <span>{data.employee?.profile.name ?? 'Neznámý'}</span>
+              <span>{hold.employee?.name ?? 'Neznámý'}</span>
             </span>
           </li>
           {isJunior && (
@@ -92,17 +85,17 @@ export default async function BookServicePage({ params }: any) {
             }
           >
             <span className={'text-[#A0A0A0]'}>{'Služba'}</span>
-            <span className={'text-white'}>{eventType.title}</span>
+            <span className={'text-white text-right'}>{serviceItem.title}</span>
           </li>
           <li className={'flex justify-between py-5 items-center'}>
             <span className={'text-[#A0A0A0]'}>{'Celková cena'}</span>
             <span className={'flex items-baseline gap-2 whitespace-nowrap'}>
-              {isJunior && typeof seniorPrice === 'number' && seniorPrice > 0 && (
-                <span className={'text-xss text-[#A0A0A0] line-through'}>{`${seniorPrice} Kč`}</span>
+              {isJunior && (
+                <span className={'text-xss text-[#A0A0A0] line-through'}>
+                  {`${serviceItem.seniorPrice} Kč`}
+                </span>
               )}
-              <span className={'text-white'}>
-                {typeof totalPrice === 'number' ? `${totalPrice} Kč` : 'N/A'}
-              </span>
+              <span className={'text-white'}>{`${hold.price} Kč`}</span>
             </span>
           </li>
           <li className={'text-[11px]'}>
