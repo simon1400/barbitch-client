@@ -8,8 +8,8 @@ export const Axios = axios.create({
   timeout: 15000,
 })
 
-// Noona-инстансы переехали в lib/noona.ts (server-only) — NOONA_TOKEN не должен
-// попадать в браузерный бандл. Ручки собственного движка (/api/engine/*) живут
+// К Noona клиент больше не обращается (шаг 7.1: /cenik переведён на движок,
+// lib/noona.ts удалён). Ручки собственного движка (/api/engine/*) живут
 // в app/book/fetch/engine.ts (отдельный axios без интерсептора ниже).
 
 Axios.interceptors.response.use(

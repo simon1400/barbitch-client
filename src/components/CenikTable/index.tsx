@@ -32,12 +32,11 @@ export const CenikTable = ({ groups }: { groups: IPricelistGroup[] }) => {
 
             <div>
               {group.services.map((service) => {
-                const ag = service.addonGroup
-                const addons = ag?.addons ?? []
-                const modifiers = ag?.modifiers ?? []
-                const hasAddons = addons.length > 0
+                const variants = service.variants ?? []
+                const modifiers = service.modifiers ?? []
+                const hasVariants = variants.length > 0
                 const hasModifiers = modifiers.length > 0
-                const hasExtras = hasAddons || hasModifiers
+                const hasExtras = hasVariants || hasModifiers
                 const isOpen = openIds.has(service.id)
 
                 return (
@@ -53,7 +52,7 @@ export const CenikTable = ({ groups }: { groups: IPricelistGroup[] }) => {
                     {/* ── accordion content ── */}
                     {hasExtras && isOpen && (
                       <AccordionContent
-                        addons={addons}
+                        variants={variants}
                         hasModifiers={hasModifiers}
                         modifiers={modifiers}
                         service={service}

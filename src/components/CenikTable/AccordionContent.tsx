@@ -1,30 +1,35 @@
-import type { IAddonItem, IModifierItem } from 'app/book/fetch/addonGroupService'
+import type { IEngineModifier, IEngineVariant } from 'app/book/fetch/engine'
 import type { IPricelistService } from 'fetch/bookingPricelist'
+
+import { selectionToQuery } from 'app/book/fetch/engine'
 
 import { BookLink } from './BookLink'
 import { PriceBadge } from './PriceBadge'
 
 export const AccordionContent = ({
-  addons,
+  variants,
   hasModifiers,
   modifiers,
   service,
 }: {
-  addons: IAddonItem[]
+  variants: IEngineVariant[]
   hasModifiers: boolean
-  modifiers: IModifierItem[]
+  modifiers: IEngineModifier[]
   service: IPricelistService
 }) => {
   return (
     <div className={'pb-3'}>
-      {addons.map((addon) => (
-        <div key={addon.result_noona_id} className={'flex items-center gap-3 py-1 pl-3 md:pl-5'}>
-          <span className={'text-xs1 text-[#444] flex-1 min-w-0'}>{addon.label}</span>
-          <PriceBadge diff={addon.price_diff} />
+      {variants.map((variant) => (
+        <div key={variant.label} className={'flex items-center gap-3 py-1 pl-3 md:pl-5'}>
+          <span className={'text-xs1 text-[#444] flex-1 min-w-0'}>{variant.label}</span>
+          <PriceBadge diff={variant.priceDiff} />
           <span className={'shrink-0 text-xs1 font-semibold whitespace-nowrap'}>
-            {`${service.basePrice + addon.price_diff} Kč`}
+            {`${service.basePrice + variant.priceDiff} Kč`}
           </span>
-          <BookLink href={`/book/${addon.result_noona_id}`} />
+          {/* предвыбранный вариант уходит на выбор мастера через query (?v=, формат s101) */}
+          <BookLink
+            href={`/book/${service.id}${selectionToQuery({ variant: variant.label, modifiers: [] })}`}
+          />
           <span className={'w-6.5 shrink-0'} />
         </div>
       ))}
@@ -39,7 +44,7 @@ export const AccordionContent = ({
           {modifiers.map((mod) => (
             <div key={mod.key} className={'flex items-center gap-3 py-2'}>
               <span className={'text-xs1 text-[#444] flex-1 min-w-0'}>{mod.label}</span>
-              <PriceBadge diff={mod.price_diff} />
+              <PriceBadge diff={mod.priceDiff} />
               <span className={'w-6.5 shrink-0'} />
             </div>
           ))}

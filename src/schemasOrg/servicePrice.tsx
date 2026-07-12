@@ -8,14 +8,14 @@ interface ServiceSeo {
   name: string
   description: string
   catalogName: string
-  /** Shoda názvu Noona kategorie pro tuto službu (fuzzy, lowercase). */
+  /** Shoda názvu kategorie ceníku (kategorie salon-service) pro tuto službu (fuzzy, lowercase). */
   matchesGroup: (title: string) => boolean
 }
 
 /**
  * Kurátorovaný SEO copy zůstává statický (názvy/popisy ladí marketing),
- * ALE ceny a rozsah se počítají dynamicky z živého ceníku Noona — viz
- * ServicePriceSchema. Hardcode cen dřív zastarával (Noona je zdroj pravdy).
+ * ALE ceny a rozsah se počítají dynamicky z živého ceníku (katalog salon-service
+ * přes /api/engine/services) — viz ServicePriceSchema. Hardcode cen dřív zastarával.
  */
 const SERVICE_SEO: Record<string, ServiceSeo> = {
   manikura: {

@@ -28,11 +28,8 @@ const nextConfig: NextConfig = {
     APP_DOMAIN: process.env.APP_DOMAIN,
     PIXEL_ID: process.env.PIXEL_ID,
     PIXEL_ACCESS_TOKEN: process.env.PIXEL_ACCESS_TOKEN,
-    // NOONA_TOKEN намеренно НЕ в env-блоке (CRIT C1 s79): токен не должен
-    // инлайниться в клиентский бандл. Серверные модули (lib/noona.ts) читают
-    // его из runtime process.env. NOONA_COMPANY_ID — не секрет, нужен
-    // серверному прайсу /cenik до cutover.
-    NOONA_COMPANY_ID: process.env.NOONA_COMPANY_ID,
+    // NOONA_* здесь больше нет: клиент к Noona не обращается вовсе
+    // (booking-флоу и прайс работают через собственный движок /api/engine/*).
   },
   compress: true,
   experimental: {
