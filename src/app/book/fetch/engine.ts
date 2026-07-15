@@ -258,3 +258,38 @@ export const postEngineCancel = async (token: string): Promise<IEngineCancelInfo
   const res = await Engine.post(`/api/engine/cancel/${encodeURIComponent(token)}`)
   return res.data
 }
+
+// ── správa rezervace по токену (страница /rezervace/[token]: перенос + отмена) ──
+
+export interface IEngineManageInfo extends IEngineCancelInfo {
+  rescheduleCount: number
+  rescheduleLimit: number
+  reschedulable: boolean
+  rescheduled?: boolean
+}
+
+export const getEngineManage = async (token: string): Promise<IEngineManageInfo> => {
+  const res = await Engine.get(`/api/engine/manage/${encodeURIComponent(token)}`)
+  return res.data
+}
+
+/** Слоты для переноса: услуга/мастер берутся из самой брони, её интервал не блокирует. */
+export const getEngineManageAvailability = async (
+  token: string,
+  from: string,
+  to: string,
+): Promise<IEngineAvailability> => {
+  const qs = new URLSearchParams({ from, to })
+  const res = await Engine.get(
+    `/api/engine/manage/${encodeURIComponent(token)}/availability?${qs.toString()}`,
+  )
+  return res.data
+}
+
+export const postEngineReschedule = async (
+  token: string,
+  body: { date: string; time: string },
+): Promise<IEngineManageInfo> => {
+  const res = await Engine.post(`/api/engine/manage/${encodeURIComponent(token)}/reschedule`, body)
+  return res.data
+}

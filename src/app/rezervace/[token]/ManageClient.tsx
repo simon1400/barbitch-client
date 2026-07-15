@@ -1,11 +1,13 @@
 'use client'
 
-import type { IEngineCancelInfo } from '../../../book/fetch/engine'
+import type { IEngineManageInfo } from '../../book/fetch/engine'
 
 import { formatInTimeZone } from 'date-fns-tz'
 import { useState } from 'react'
 
-import { engineErrorCode, postEngineCancel } from '../../../book/fetch/engine'
+import { engineErrorCode, postEngineCancel } from '../../book/fetch/engine'
+
+import { RescheduleSection } from './RescheduleSection'
 
 const STATUS_LABELS: Record<string, string> = {
   active: 'Aktivní',
@@ -37,9 +39,9 @@ const CancelledBox = () => (
 
 const TooLateBox = ({ hours, salonPhone }: { hours: number; salonPhone: string }) => (
   <Box>
-    <p className={'text-white text-resMd1 mb-1'}>{'Rezervaci už nelze zrušit online'}</p>
+    <p className={'text-white text-resMd1 mb-1'}>{'Rezervaci už nelze upravit online'}</p>
     <p className={'text-[#A0A0A0] text-xss'}>
-      {`Rezervace lze rušit nejpozději ${hours} hodiny předem. `}
+      {`Změny a zrušení jsou možné nejpozději ${hours} hodiny předem. `}
       {salonPhone ? 'Zavolejte prosím do salonu: ' : 'Kontaktujte prosím salon.'}
       {salonPhone && (
         <a className={'text-primary underline'} href={`tel:${salonPhone.replaceAll(' ', '')}`}>
@@ -50,39 +52,99 @@ const TooLateBox = ({ hours, salonPhone }: { hours: number; salonPhone: string }
   </Box>
 )
 
-const ConfirmBox = ({
+const CancelConfirmBox = ({
   submitting,
   error,
   onCancel,
+  onBack,
 }: {
   submitting: boolean
   error: string
   onCancel: () => void
+  onBack: () => void
 }) => (
   <Box>
     <p className={'text-[#A0A0A0] text-xss mb-5'}>{'Opravdu chcete tuto rezervaci zrušit?'}</p>
     {error && <p className={'text-[#E71E6E] text-xss mb-4'}>{error}</p>}
-    <button
-      type={'button'}
-      onClick={onCancel}
-      disabled={submitting}
-      className={`w-full max-w-[270px] transition-colors duration-150 text-white font-semibold text-xs1 py-3.5 rounded-special-small ${
-        submitting ? 'bg-[#5a5a5a] cursor-progress' : 'bg-[#E71E6E] hover:bg-[#c9195f]'
-      }`}
-    >
-      {submitting ? 'Ruším…' : 'Zrušit rezervaci'}
-    </button>
+    <div className={'flex flex-col items-center gap-3'}>
+      <button
+        type={'button'}
+        onClick={onCancel}
+        disabled={submitting}
+        className={`w-full max-w-[270px] transition-colors duration-150 text-white font-semibold text-xs1 py-3.5 rounded-special-small ${
+          submitting ? 'bg-[#5a5a5a] cursor-progress' : 'bg-[#E71E6E] hover:bg-[#c9195f]'
+        }`}
+      >
+        {submitting ? 'Ruším…' : 'Zrušit rezervaci'}
+      </button>
+      <button
+        type={'button'}
+        onClick={onBack}
+        disabled={submitting}
+        className={
+          'w-full max-w-[270px] border border-[#3C3C3C] text-[#A0A0A0] text-xs1 py-3 rounded-special-small hover:text-white'
+        }
+      >
+        {'Zpět'}
+      </button>
+    </div>
+  </Box>
+)
+
+const ActionsBox = ({
+  info,
+  onReschedule,
+  onCancelClick,
+}: {
+  info: IEngineManageInfo
+  onReschedule: () => void
+  onCancelClick: () => void
+}) => (
+  <Box>
+    <div className={'flex flex-col items-center gap-3'}>
+      {info.reschedulable && (
+        <button
+          type={'button'}
+          onClick={onReschedule}
+          className={
+            'w-full max-w-[270px] bg-primary hover:bg-[#c9195f] transition-colors duration-150 text-white font-semibold text-xs1 py-3.5 rounded-special-small'
+          }
+        >
+          {'Změnit termín'}
+        </button>
+      )}
+      <button
+        type={'button'}
+        onClick={onCancelClick}
+        className={
+          'w-full max-w-[270px] border border-[#E71E6E] text-[#E71E6E] font-semibold text-xs1 py-3 rounded-special-small hover:bg-[#E71E6E14]'
+        }
+      >
+        {'Zrušit rezervaci'}
+      </button>
+    </div>
+    {!info.reschedulable && (
+      <p className={'text-[#A0A0A0] text-xss mt-4'}>
+        {'Online přesun termínu už není pro tuto rezervaci dostupný — zavolejte prosím do salonu.'}
+      </p>
+    )}
+    <p className={'text-[#6f6f6f] text-xss mt-4'}>
+      {'Chcete jinou službu? Zrušte tuto rezervaci a vytvořte novou.'}
+    </p>
   </Box>
 )
 
 interface Props {
   token: string
-  initialInfo: IEngineCancelInfo
+  initialInfo: IEngineManageInfo
   salonPhone: string
 }
 
-export const CancelClient = ({ token, initialInfo, salonPhone }: Props) => {
-  const [info, setInfo] = useState<IEngineCancelInfo>(initialInfo)
+export const ManageClient = ({ token, initialInfo, salonPhone }: Props) => {
+  const [info, setInfo] = useState<IEngineManageInfo>(initialInfo)
+  const [mode, setMode] = useState<'view' | 'reschedule'>('view')
+  const [confirmCancel, setConfirmCancel] = useState(false)
+  const [rescheduled, setRescheduled] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
   const [cancelled, setCancelled] = useState(initialInfo.status === 'cancelled')
@@ -113,17 +175,50 @@ export const CancelClient = ({ token, initialInfo, salonPhone }: Props) => {
     }
   }
 
+  const handleRescheduled = (next: IEngineManageInfo) => {
+    setInfo((prev) => ({ ...prev, ...next }))
+    setRescheduled(true)
+    setMode('view')
+  }
+
   const renderAction = () => {
     if (cancelled) return <CancelledBox />
     if (info.status !== 'active') {
       return (
         <Box>
-          <p className={'text-[#A0A0A0] text-xss'}>{'Tuto rezervaci už nelze zrušit.'}</p>
+          <p className={'text-[#A0A0A0] text-xss'}>{'Tuto rezervaci už nelze upravit.'}</p>
         </Box>
       )
     }
-    if (!info.cancellable) return <TooLateBox hours={info.cancelMinHours} salonPhone={salonPhone} />
-    return <ConfirmBox submitting={submitting} error={error} onCancel={handleCancel} />
+    if (!info.cancellable) {
+      return <TooLateBox hours={info.cancelMinHours} salonPhone={salonPhone} />
+    }
+    if (mode === 'reschedule') {
+      return (
+        <RescheduleSection
+          token={token}
+          onBack={() => setMode('view')}
+          onDone={handleRescheduled}
+        />
+      )
+    }
+    if (confirmCancel) {
+      return (
+        <CancelConfirmBox
+          submitting={submitting}
+          error={error}
+          onCancel={handleCancel}
+          onBack={() => setConfirmCancel(false)}
+        />
+      )
+    }
+    return (
+      <ActionsBox
+        info={info}
+        onReschedule={() => setMode('reschedule')}
+        onCancelClick={() => setConfirmCancel(true)}
+      />
+    )
   }
 
   return (
@@ -164,6 +259,18 @@ export const CancelClient = ({ token, initialInfo, salonPhone }: Props) => {
           </li>
         </ul>
       </div>
+
+      {rescheduled && !cancelled && (
+        <div
+          className={
+            'bg-[#1f3527] border border-[#2f6b3f] rounded-special-small px-5 py-3.5 text-center mb-5'
+          }
+        >
+          <p className={'text-[#4ade80] text-xss'}>
+            {'✓ Termín byl změněn. Potvrzení s novou pozvánkou jsme poslali e-mailem.'}
+          </p>
+        </div>
+      )}
 
       {renderAction()}
     </>
