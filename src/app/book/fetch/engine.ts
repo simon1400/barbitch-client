@@ -49,6 +49,8 @@ export interface IEngineService {
   durationMin: number
   price: number
   description?: string
+  /** Иконка услуги (Strapi media, относительный /uploads/... → engineAssetUrl). */
+  iconUrl?: string | null
   variants: IEngineVariant[]
   modifiers: IEngineModifier[]
 }

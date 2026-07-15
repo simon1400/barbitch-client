@@ -5,6 +5,8 @@ import Image from 'components/Image'
 import Link from 'next/link'
 import { useState } from 'react'
 
+import { engineAssetUrl } from '../fetch/engine'
+
 interface BookServiceItemProps {
   service: IEngineService
   category: string
@@ -38,6 +40,24 @@ export const BookServiceItem = ({ service, category, isSelected }: BookServiceIt
         onClick={handleClick}
       >
         <div className={'flex py-3.5 px-1 items-center gap-4'}>
+          <span
+            className={
+              'min-w-[36px] w-[36px] h-[36px] overflow-hidden self-start rounded-full block relative'
+            }
+          >
+            {!!service.iconUrl && (
+              <Image
+                src={engineAssetUrl(service.iconUrl) as string}
+                alt={service.title}
+                width={36}
+                height={36}
+                className={'object-cover w-full h-full'}
+                loading={'lazy'}
+                quality={70}
+                sizes={'36px'}
+              />
+            )}
+          </span>
           <span className={'w-full'}>
             <h3 className={'text-xs1 leading-5 mb-1.5'}>{service.title}</h3>
             <div className={'flex'}>
