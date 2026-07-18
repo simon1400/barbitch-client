@@ -1,11 +1,12 @@
 'use client'
 
-import type { ICabinetBookings, ICabinetClient } from './fetch/cabinetApi'
+import type { ICabinetBookings, ICabinetClient, ICabinetLoyalty } from './fetch/cabinetApi'
 
 import { useCallback, useEffect, useState } from 'react'
 
 import { BookingsSection } from './components/BookingsSection'
 import { LoginForm } from './components/LoginForm'
+import { LoyaltySection } from './components/LoyaltySection'
 import { ProfileSection } from './components/ProfileSection'
 import { RebookSection } from './components/RebookSection'
 import { Box } from './components/shared'
@@ -14,6 +15,7 @@ import {
   clearCabinetJwt,
   getCabinetBookings,
   getCabinetJwt,
+  getCabinetLoyalty,
   getCabinetMe,
 } from './fetch/cabinetApi'
 
@@ -39,6 +41,9 @@ export const CabinetClient = ({ salonPhone }: { salonPhone: string }) => {
   const [phase, setPhase] = useState<Phase>('loading')
   const [client, setClient] = useState<ICabinetClient | null>(null)
   const [bookings, setBookings] = useState<ICabinetBookings | null>(null)
+  // null = программа лояльности выключена (503 loyalty_disabled) / не загрузилась —
+  // секция «Věrnostní program» просто не показывается, кабинет живёт без неё
+  const [loyalty, setLoyalty] = useState<ICabinetLoyalty | null>(null)
 
   const load = useCallback(async () => {
     if (!getCabinetJwt()) {
@@ -47,9 +52,14 @@ export const CabinetClient = ({ salonPhone }: { salonPhone: string }) => {
     }
     setPhase('loading')
     try {
-      const [me, list] = await Promise.all([getCabinetMe(), getCabinetBookings()])
+      const [me, list, loyaltyData] = await Promise.all([
+        getCabinetMe(),
+        getCabinetBookings(),
+        getCabinetLoyalty().catch(() => null),
+      ])
       setClient(me)
       setBookings(list)
+      setLoyalty(loyaltyData)
       setPhase('dashboard')
     } catch (err) {
       const status = cabinetErrorStatus(err)
@@ -76,10 +86,21 @@ export const CabinetClient = ({ salonPhone }: { salonPhone: string }) => {
     }
   }, [])
 
+  // после уплатнения скидки обновляются и брони (новая цена), и карточка (used)
+  const reloadBookingsAndLoyalty = useCallback(async () => {
+    await reloadBookings()
+    try {
+      setLoyalty(await getCabinetLoyalty())
+    } catch {
+      // тихо: карточка обновится при следующей загрузке
+    }
+  }, [reloadBookings])
+
   const logout = () => {
     clearCabinetJwt()
     setClient(null)
     setBookings(null)
+    setLoyalty(null)
     setPhase('login')
   }
 
@@ -120,7 +141,18 @@ export const CabinetClient = ({ salonPhone }: { salonPhone: string }) => {
           {'Odhlásit se'}
         </button>
       </div>
-      <BookingsSection bookings={bookings} salonPhone={salonPhone} onChanged={reloadBookings} />
+      <BookingsSection
+        bookings={bookings}
+        salonPhone={salonPhone}
+        onChanged={reloadBookingsAndLoyalty}
+      />
+      {loyalty && (
+        <LoyaltySection
+          loyalty={loyalty}
+          bookings={bookings}
+          onChanged={reloadBookingsAndLoyalty}
+        />
+      )}
       <RebookSection bookings={bookings} />
       <ProfileSection client={client} onSaved={setClient} />
     </>

@@ -50,6 +50,16 @@ const Menu = ({ nav }: { nav: IDataNav }) => {
                       />
                     </li>
                   ))}
+                {/* Личный кабинет клиента (К4, отмашка владельца) — хардкод,
+                    НЕ из CMS: пункт живёт/умирает вместе с деплоем /cabinet */}
+                <li className={'mt-2 lg:mt-2.5 text-right'}>
+                  <MenuLink
+                    size={'text-resLg lg:text-md text-right'}
+                    href={'/cabinet'}
+                    heading={'Můj účet'}
+                    reverse
+                  />
+                </li>
               </ul>
             </div>
             <Button

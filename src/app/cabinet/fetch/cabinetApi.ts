@@ -87,6 +87,47 @@ export interface ICabinetBookings {
   history: ICabinetBooking[]
 }
 
+// ── лояльность bitchcard (К4) ──
+
+export interface ILoyaltyRedemption {
+  status: 'available' | 'used' | 'expired'
+  code: string | null
+  expiresAt: string | null
+}
+
+export interface ILoyaltyTrackItem {
+  title: string
+  thresholdKc: number
+  discountType: 'percent' | 'fixed' | 'voucher'
+  discountValue: number
+  reached: boolean
+  redemption: ILoyaltyRedemption | null
+}
+
+export interface ILoyaltyTransaction {
+  delta: number
+  reason: 'visit' | 'manual' | 'signup' | 'referral'
+  comment: string | null
+  createdAt: string
+}
+
+export interface ICabinetLoyalty {
+  cardYear: number
+  balanceKc: number
+  stamps: number
+  track: ILoyaltyTrackItem[]
+  transactions: ILoyaltyTransaction[]
+}
+
+export interface IApplyRedemptionResult {
+  applied: boolean
+  code: string
+  reward: { title: string; discountType: string; discountValue: number }
+  discountKc: number
+  totalPrice: number
+  originalPrice: number
+}
+
 // ── auth ──
 
 export const postCabinetLogin = async (email: string): Promise<{ ok: boolean }> => {
@@ -153,6 +194,27 @@ export const postCabinetReschedule = async (
   const res = await Cabinet.post(
     `/api/cabinet/bookings/${encodeURIComponent(bookingId)}/reschedule`,
     body,
+  )
+  return res.data
+}
+
+// ── лояльность bitchcard ──
+
+// Цифровая карточка: баланс/наклейки/трек/транзакции. 503 loyalty_disabled →
+// программа выключена (секцию в UI не показываем).
+export const getCabinetLoyalty = async (): Promise<ICabinetLoyalty> => {
+  const res = await Cabinet.get('/api/cabinet/loyalty')
+  return res.data
+}
+
+// Уплатнить награду (код из трека) на свою предстоящую бронь — скидка на totalPrice
+export const postCabinetApplyRedemption = async (
+  bookingId: string,
+  code: string,
+): Promise<IApplyRedemptionResult> => {
+  const res = await Cabinet.post(
+    `/api/cabinet/bookings/${encodeURIComponent(bookingId)}/redemption`,
+    { code },
   )
   return res.data
 }

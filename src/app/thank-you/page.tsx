@@ -62,6 +62,27 @@ export default function ThankYou() {
               {'Přiveďte kamarádku a získejte 10% slevu na další návštěvu!'}
             </p>
           </div>
+          {/* CTA личного кабинета (К4): брони + věrnostní program bitchcard */}
+          <div
+            className={'mb-10 mx-auto max-w-[560px] bg-accent/80 rounded-special-small px-6 py-5'}
+          >
+            <p className={'text-white text-baseSm md:text-baseText font-bold mb-1'}>
+              {'✦ Sledujte své rezervace a sbírejte nálepky ✦'}
+            </p>
+            <p className={'text-white text-baseSm mb-4'}>
+              {
+                'V klientském kabinetu spravujete své termíny a za každých 1 000 Kč získáte nálepku bitchcard — odměny až sleva 50 %.'
+              }
+            </p>
+            <a
+              href={'/cabinet'}
+              className={
+                'inline-block bg-white text-primary text-baseSm font-bold rounded-special-small px-6 py-3'
+              }
+            >
+              {'Můj účet →'}
+            </a>
+          </div>
           <div>
             <Button text={'zpět na úvod'} href={'/'} />
           </div>
