@@ -7,7 +7,7 @@ import type {
   ILoyaltyTrackItem,
 } from '../fetch/cabinetApi'
 
-import { useState } from 'react'
+import { Fragment, useState } from 'react'
 
 import { cabinetErrorCode, postCabinetApplyRedemption } from '../fetch/cabinetApi'
 
@@ -44,38 +44,53 @@ const bookingOptionLabel = (b: ICabinetBooking): string => {
   return `${fmtDay(b.date)}${time}${price}`
 }
 
-// Кружки-наклейки: заполненные = наклейки (floor balance/1000), milestone-позиции
-// (3/5/8 из трека) помечены звёздочкой и подписью скидки.
+// Наклейки (нумерованные 1..8, за každých 1 000 Kč) + награды ОТДЕЛЬНЫМИ метками
+// ПОСЛЕ 3-й / 5-й / 8-й наклейки (как на физической карте: 3 наклейки → скидка,
+// +2 → скидка, +3 → скидка). Порог/1000 = после какой наклейки идёт награда.
 const StampsRow = ({ loyalty }: { loyalty: ICabinetLoyalty }) => {
   const milestones = new Map<number, ILoyaltyTrackItem>()
   for (const item of loyalty.track) {
     milestones.set(Math.round(item.thresholdKc / 1000), item)
   }
   return (
-    <div className={'flex justify-center gap-2 sm:gap-3 flex-wrap mb-3'}>
+    <div className={'flex justify-center items-start gap-1.5 sm:gap-2 flex-wrap mb-3'}>
       {Array.from({ length: CARD_STAMPS }, (_, i) => {
         const n = i + 1
         const filled = loyalty.stamps >= n
         const milestone = milestones.get(n)
         return (
-          <div key={n} className={'flex flex-col items-center gap-1'}>
+          <Fragment key={n}>
             <div
               className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full border flex items-center justify-center text-xss font-bold ${
                 filled
                   ? 'bg-primary border-primary text-white'
                   : 'bg-transparent border-[#3C3C3C] text-[#5a5a5a]'
-              } ${milestone && !filled ? 'border-primary/60' : ''}`}
+              }`}
             >
-              {milestone ? '✦' : n}
+              {n}
             </div>
             {milestone && (
-              <span
-                className={`text-[10px] leading-none ${filled ? 'text-primary' : 'text-[#A0A0A0]'}`}
-              >
-                {rewardShortLabel(milestone)}
-              </span>
+              <div className={'flex flex-col items-center gap-1'}>
+                <div
+                  className={`w-9 h-9 sm:w-10 sm:h-10 rounded-full border border-dashed flex items-center justify-center text-sm ${
+                    milestone.reached
+                      ? 'bg-primary border-primary text-white'
+                      : 'bg-transparent border-primary/50 text-primary/70'
+                  }`}
+                  title={milestone.title}
+                >
+                  {'✦'}
+                </div>
+                <span
+                  className={`text-[10px] leading-none font-semibold ${
+                    milestone.reached ? 'text-primary' : 'text-[#A0A0A0]'
+                  }`}
+                >
+                  {rewardShortLabel(milestone)}
+                </span>
+              </div>
             )}
-          </div>
+          </Fragment>
         )
       })}
     </div>
