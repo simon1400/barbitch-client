@@ -2,5 +2,6 @@ User-Agent: *
 Allow: /book$
 Disallow: /book/
 Disallow: /rezervace/
+Disallow: /cabinet
 
 Sitemap: https://barbitch.cz/sitemap.xml
