@@ -29,22 +29,27 @@ const HiringBar = () => {
   if (!HIRING.enabled) return null
 
   return (
-    <Link
-      href={HIRING.href}
-      aria-label={`${HIRING.marquee} — ${HIRING.cta}`}
-      className={
-        'fixed top-0 left-0 w-full z-[60] h-9 lg:h-10 bg-accent text-white flex items-center overflow-hidden uppercase text-xs lg:text-sm tracking-wide group'
-      }
-    >
-      <div
+    <>
+      <Link
+        href={HIRING.href}
+        aria-label={`${HIRING.marquee} — ${HIRING.cta}`}
         className={
-          'flex whitespace-nowrap will-change-transform animate-marquee group-hover:[animation-play-state:paused]'
+          'fixed top-0 left-0 w-full z-[60] h-9 lg:h-10 bg-accent text-white flex items-center overflow-hidden uppercase text-xs lg:text-sm tracking-wide group'
         }
       >
-        <Strip />
-        <Strip />
-      </div>
-    </Link>
+        <div
+          className={
+            'flex whitespace-nowrap will-change-transform animate-marquee group-hover:[animation-play-state:paused]'
+          }
+        >
+          <Strip />
+          <Strip />
+        </div>
+      </Link>
+      {/* Спейсер под фикс-полосу (раньше был pt-9 на body) — исчезает вместе
+          с полосой, когда HiringBar скрыт (напр. в кабинете). */}
+      <div className={'h-9 lg:h-10'} aria-hidden />
+    </>
   )
 }
 

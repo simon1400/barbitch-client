@@ -8,7 +8,8 @@ import { useEffect } from 'react'
 const Buttons = ({ linkToReserve }: { linkToReserve: string }) => {
   const pathname = usePathname()
   const params = useParams()
-  const bookPage = pathname.includes('/book')
+  // Тёмные страницы (резервация + кабинет) — светлый логотип/гамбургер, без CTA-кнопки.
+  const darkPage = pathname.includes('/book') || pathname.includes('/cabinet')
   const { menu, setMenu } = useAppContext()
 
   useEffect(() => {
@@ -28,7 +29,7 @@ const Buttons = ({ linkToReserve }: { linkToReserve: string }) => {
 
   return (
     <div className={'flex gap-13 items-center'}>
-      {!bookPage && (
+      {!darkPage && (
         <Button
           inverse={menu}
           className={'hidden lg:block'}
@@ -41,7 +42,7 @@ const Buttons = ({ linkToReserve }: { linkToReserve: string }) => {
       )}
 
       <Hamburger
-        color={menu || params?.post || bookPage ? '#fff' : '#161615'}
+        color={menu || params?.post || darkPage ? '#fff' : '#161615'}
         onToggle={() => setMenu(!menu)}
         toggled={menu}
         size={48}

@@ -11,7 +11,6 @@ import { Header } from 'components/Header'
 import HiringBar from 'components/HiringBar'
 import { AppProvider } from 'context/AppContext'
 import { HideOnRoutes } from 'helpers/HideOnRoutes'
-import { HIRING } from 'lib/hiring'
 import { DEFAULT_OG_IMAGE } from 'lib/seo'
 import { Montserrat } from 'next/font/google'
 import Script from 'next/script'
@@ -94,10 +93,10 @@ export default async function RootLayout({
           document.head.appendChild(s);
         `}
       </Script>
-      <body
-        className={`bg-base antialiased overflow-x-hidden ${HIRING.enabled ? 'pt-9 lg:pt-10' : ''} ${montserat.className}`}
-      >
-        <HiringBar />
+      <body className={`bg-base antialiased overflow-x-hidden ${montserat.className}`}>
+        <HideOnRoutes routes={['/cabinet']}>
+          <HiringBar />
+        </HideOnRoutes>
         <AppProvider>
           <ErrorReporter />
           <FacebookPageView />
@@ -117,12 +116,12 @@ export default async function RootLayout({
             <Header />
           </Suspense>
           {children}
-          <HideOnRoutes routes={['/book', '/kontakt']}>
+          <HideOnRoutes routes={['/book', '/kontakt', '/cabinet']}>
             <Suspense>
               <Banner />
             </Suspense>
           </HideOnRoutes>
-          <HideOnRoutes routes={['/book']}>
+          <HideOnRoutes routes={['/book', '/cabinet']}>
             <Suspense>
               <Footer />
             </Suspense>

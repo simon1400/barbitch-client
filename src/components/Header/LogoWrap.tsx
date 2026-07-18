@@ -6,9 +6,9 @@ import { useParams, usePathname } from 'next/navigation'
 const LogoWrap = () => {
   const params = useParams()
   const pathname = usePathname()
-  const bookPage = pathname.includes('/book')
+  const darkPage = pathname.includes('/book') || pathname.includes('/cabinet')
   const { menu } = useAppContext()
-  const fill = menu ? 'fill-primary' : params?.post || bookPage ? 'fill-white' : 'fill-accent'
+  const fill = menu ? 'fill-primary' : params?.post || darkPage ? 'fill-white' : 'fill-accent'
   return (
     <div>
       <a
