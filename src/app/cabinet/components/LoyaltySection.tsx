@@ -4,13 +4,19 @@ import type {
   ICabinetBooking,
   ICabinetBookings,
   ICabinetLoyalty,
+  ILoyaltyBonusReward,
   ILoyaltyTrackItem,
   ILoyaltyTransaction,
 } from '../fetch/cabinetApi'
 
 import { Fragment, useState } from 'react'
 
-import { cabinetErrorCode, postCabinetApplyRedemption } from '../fetch/cabinetApi'
+import {
+  cabinetErrorCode,
+  postCabinetApplyRedemption,
+  postCabinetClaimVoucher,
+  sendBonusVoucherMail,
+} from '../fetch/cabinetApi'
 
 import { fmtDay, ghostBtnCls, SectionTitle } from './shared'
 
@@ -326,6 +332,189 @@ const TransactionRow = ({ tx }: { tx: ILoyaltyTransaction }) => {
   )
 }
 
+// Безопасный от backtracking паттерн (как в VoucherForm).
+const isEmail = (v: string) => /^[^\s@]+@[^\s@][^\s.@]*\.[^\s@]+$/.test(v.trim())
+
+const claimErrorMessage = (code: string): string => {
+  if (code === 'no_voucher_reward') return 'Bonus není k dispozici.'
+  if (code === 'redemption_unavailable') return 'Bonus už byl uplatněn nebo vypršel.'
+  if (code === 'invalid_email') return 'Zadejte platný e-mail příjemce.'
+  if (code === 'voucher_create_failed')
+    return 'Voucher se nepodařilo vytvořit. Zkuste to prosím znovu.'
+  return 'Něco se nepodařilo. Zkuste to prosím znovu.'
+}
+
+const modeBtnCls = (active: boolean) =>
+  `flex-1 text-xss font-semibold px-4 py-2.5 rounded-special-small border transition-colors ${
+    active
+      ? 'bg-primary border-primary text-white'
+      : 'bg-transparent border-[#3C3C3C] text-[#A0A0A0] hover:text-white'
+  }`
+
+// Форма обналичивания бонуса: выбор self/gift + сабмит. Держит собственный state,
+// чтобы cognitive-complexity родительского блока оставалась в норме.
+const BonusClaimForm = ({
+  onDone,
+  onBack,
+}: {
+  onDone: (msg: string) => void
+  onBack: () => void
+}) => {
+  const [mode, setMode] = useState<'self' | 'gift'>('self')
+  const [giftName, setGiftName] = useState('')
+  const [giftEmail, setGiftEmail] = useState('')
+  const [submitting, setSubmitting] = useState(false)
+  const [error, setError] = useState('')
+
+  const sendMail = async (claim: Awaited<ReturnType<typeof postCabinetClaimVoucher>>) => {
+    try {
+      await sendBonusVoucherMail(claim)
+      return `Voucher byl odeslán na ${claim.email}.`
+    } catch {
+      return `Voucher byl vytvořen, ale e-mail se nepodařilo odeslat na ${claim.email}. Kontaktujte prosím salon.`
+    }
+  }
+
+  const handleClaim = async () => {
+    if (submitting) return
+    const gift = mode === 'gift'
+    if (gift && (giftName.trim().length < 2 || !isEmail(giftEmail))) {
+      setError('Vyplňte jméno a platný e-mail příjemce.')
+      return
+    }
+    setSubmitting(true)
+    setError('')
+    try {
+      const claim = await postCabinetClaimVoucher(
+        gift ? giftName.trim() : undefined,
+        gift ? giftEmail.trim() : undefined,
+      )
+      onDone(await sendMail(claim))
+    } catch (err) {
+      setError(claimErrorMessage(cabinetErrorCode(err)))
+      setSubmitting(false)
+    }
+  }
+
+  const inputCls =
+    'w-full bg-[#161615] border border-[#3C3C3C] rounded-special-small px-3 py-2.5 text-white text-xss outline-none focus:border-primary'
+
+  return (
+    <div className={'mt-4 text-left'}>
+      <div className={'flex gap-2 mb-3'}>
+        <button
+          type={'button'}
+          onClick={() => setMode('self')}
+          className={modeBtnCls(mode === 'self')}
+        >
+          {'Sobě'}
+        </button>
+        <button
+          type={'button'}
+          onClick={() => setMode('gift')}
+          className={modeBtnCls(mode === 'gift')}
+        >
+          {'Jako dárek'}
+        </button>
+      </div>
+
+      {mode === 'self' ? (
+        <p className={'text-[#A0A0A0] text-xss mb-3'}>{'Voucher pošleme na váš e-mail.'}</p>
+      ) : (
+        <div className={'space-y-2 mb-3'}>
+          <input
+            type={'text'}
+            value={giftName}
+            onChange={(e) => setGiftName(e.target.value)}
+            placeholder={'Jméno příjemce'}
+            maxLength={18}
+            className={inputCls}
+          />
+          <input
+            type={'email'}
+            value={giftEmail}
+            onChange={(e) => setGiftEmail(e.target.value)}
+            placeholder={'E-mail příjemce'}
+            className={inputCls}
+          />
+        </div>
+      )}
+
+      {error && <p className={'text-[#E71E6E] text-xss mb-2'}>{error}</p>}
+      <div className={'flex gap-2'}>
+        <button
+          type={'button'}
+          disabled={submitting}
+          onClick={handleClaim}
+          className={`flex-1 text-white font-semibold text-xss px-5 py-2.5 rounded-special-small transition-colors ${
+            submitting ? 'bg-[#5a5a5a] cursor-progress' : 'bg-primary hover:bg-[#c9195f]'
+          }`}
+        >
+          {submitting ? 'Odesílám…' : 'Odeslat voucher'}
+        </button>
+        <button
+          type={'button'}
+          disabled={submitting}
+          onClick={onBack}
+          className={
+            'border border-[#3C3C3C] text-[#A0A0A0] text-xss px-5 py-2.5 rounded-special-small hover:text-white'
+          }
+        >
+          {'Zpět'}
+        </button>
+      </div>
+    </div>
+  )
+}
+
+// Блок-сюрприз награды C: показывается только когда карта закрыта (8/8) и бонус
+// заработан, но ещё не обналичен. Клиент выбирает «sobě» (email из кабинета) или
+// «jako dárek» (имя + email получателя) → claim создаёт voucher-запись → письмо с PDF.
+const BonusVoucherBlock = ({
+  bonus,
+  onClaimed,
+}: {
+  bonus: ILoyaltyBonusReward
+  onClaimed: () => void
+}) => {
+  const [open, setOpen] = useState(false)
+  const [done, setDone] = useState('')
+
+  const handleDone = (msg: string) => {
+    setDone(msg)
+    onClaimed()
+  }
+
+  return (
+    <div
+      className={
+        'bg-[#252523] border border-dashed border-primary/60 rounded-special-small px-5 py-5 mb-4 text-center'
+      }
+    >
+      <p className={'text-primary text-xs1 font-bold'}>
+        {`✦ Bonus: dárkový voucher ${bonus.value} Kč ✦`}
+      </p>
+      <p className={'text-[#A0A0A0] text-xss leading-snug mt-1.5'}>
+        {'Gratulujeme k plné kartě! Máte odměnu — voucher, který můžete využít sami nebo darovat.'}
+      </p>
+
+      {done && <p className={'text-[#4ade80] text-xss mt-3'}>{`✓ ${done}`}</p>}
+      {!done && open && <BonusClaimForm onDone={handleDone} onBack={() => setOpen(false)} />}
+      {!done && !open && (
+        <button
+          type={'button'}
+          onClick={() => setOpen(true)}
+          className={
+            'mt-4 inline-block bg-primary text-white font-bold text-xss px-6 py-2.5 rounded-special-small hover:bg-[#c9195f] transition-colors'
+          }
+        >
+          {'Získat'}
+        </button>
+      )}
+    </div>
+  )
+}
+
 interface Props {
   loyalty: ICabinetLoyalty
   bookings: ICabinetBookings
@@ -383,6 +572,11 @@ export const LoyaltySection = ({ loyalty, bookings, onChanged }: Props) => {
           <p className={'text-[#4ade80] text-xss'}>{`✓ ${flash}`}</p>
         </div>
       )}
+      {loyalty.stamps >= CARD_STAMPS &&
+        loyalty.bonusReward?.available &&
+        !loyalty.bonusReward.claimed && (
+          <BonusVoucherBlock bonus={loyalty.bonusReward} onClaimed={onChanged} />
+        )}
       <div className={'bg-[#252523] rounded-special-small px-5 pt-5 pb-4 text-center'}>
         <StampsRow loyalty={loyalty} />
         <p className={'text-[#A0A0A0] text-xss'}>

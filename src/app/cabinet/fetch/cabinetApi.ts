@@ -113,11 +113,22 @@ export interface ILoyaltyTransaction {
   createdAt: string
 }
 
+// Награда C: бонус-ваучер 1000 Kč — отдельно от track[] (сюрприз после 8/8).
+export interface ILoyaltyBonusReward {
+  thresholdKc: number
+  value: number
+  available: boolean
+  claimed: boolean
+  expired: boolean
+  expiresAt: string | null
+}
+
 export interface ICabinetLoyalty {
   cardYear: number
   balanceKc: number
   stamps: number
   track: ILoyaltyTrackItem[]
+  bonusReward: ILoyaltyBonusReward | null
   transactions: ILoyaltyTransaction[]
 }
 
@@ -229,4 +240,41 @@ export const deleteCabinetRedemption = async (
     `/api/cabinet/bookings/${encodeURIComponent(bookingId)}/redemption`,
   )
   return res.data
+}
+
+// ── награда C: бонус-ваучер ──
+
+export interface IClaimVoucherResult {
+  idVoucher: string
+  sum: number
+  recipientName: string
+  email: string
+}
+
+// Обналичить бонусную voucher-награду (себе / в подарок). Ответ несёт данные
+// для отправки PDF-письма (idVoucher/sum/email/recipientName).
+export const postCabinetClaimVoucher = async (
+  recipientName?: string,
+  recipientEmail?: string,
+): Promise<IClaimVoucherResult> => {
+  const res = await Cabinet.post('/api/cabinet/loyalty/voucher', {
+    recipientName,
+    recipientEmail,
+  })
+  return res.data
+}
+
+// Отправка PDF-ваучера на почту через same-origin Next-роут (как VoucherForm).
+// voucher='1000' → шаблон public/vouchers/1000.pdf. Отдельный axios (НЕ Cabinet —
+// у того baseURL=strapi); дефолтный инстанс с относительным путём = свой origin.
+export const sendBonusVoucherMail = async (claim: IClaimVoucherResult): Promise<void> => {
+  await axios.post('/api/send-mail-voucher', {
+    email: claim.email,
+    name: claim.recipientName,
+    sum: claim.sum,
+    idVoucher: claim.idVoucher,
+    voucher: String(claim.sum),
+    recipientName: claim.recipientName,
+    deliveryMethod: 'email',
+  })
 }
