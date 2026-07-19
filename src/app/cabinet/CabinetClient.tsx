@@ -166,8 +166,8 @@ export const CabinetClient = ({ salonPhone }: { salonPhone: string }) => {
     <>
       <header className={'flex items-start justify-between gap-4 mb-6'}>
         <div className={'min-w-0'}>
-          <h1 className={'text-[#FFFFFFBF] text-resLg leading-none'}>{'Můj účet'}</h1>
-          <p className={'text-[#A0A0A0] text-xss mt-1.5 truncate'}>{client.name}</p>
+          <p className={'text-[#A0A0A0] text-xss uppercase tracking-[0.14em]'}>{'Můj účet'}</p>
+          <h1 className={'text-white text-resLg leading-none mt-1.5 truncate'}>{client.name}</h1>
         </div>
         <button
           type={'button'}

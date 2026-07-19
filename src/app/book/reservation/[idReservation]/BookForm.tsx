@@ -4,8 +4,9 @@ import { Container } from 'components/Container'
 import { sendGoogleAdsConversion } from 'fetch/googleAds'
 import { sendCAPIEvent } from 'fetch/pixel'
 import { useRouter } from 'next/navigation'
-import { useCallback, useState } from 'react'
+import { useCallback, useEffect, useState } from 'react'
 
+import { getCabinetJwt, getCabinetMe } from '../../../cabinet/fetch/cabinetApi'
 import { useBookReservation } from '../../components/BookReservationContext'
 import { createEngineBooking, engineErrorCode, THANK_YOU_STORAGE_KEY } from '../../fetch/engine'
 
@@ -71,6 +72,32 @@ const BookForm = ({ idReservation }: Props) => {
   })
 
   const [submitError, setSubmitError] = useState<string>('')
+  // Имя залогиненного клиента — если есть, данные подставлены из профиля кабинета
+  const [accountName, setAccountName] = useState<string | null>(null)
+
+  // Автозаполнение из личного кабинета: если клиент залогинен (client-JWT в
+  // localStorage), тянем профиль и подставляем имя/телефон/e-mail. Поля остаются
+  // редактируемыми (бронь для другого человека). Невалидный/просроченный JWT —
+  // тихо игнорируем. GDPR-согласие НЕ пред-заполняем (должно быть активным).
+  useEffect(() => {
+    if (!getCabinetJwt()) return
+    let cancelled = false
+    getCabinetMe()
+      .then((me) => {
+        if (cancelled) return
+        setUserData((prev) => ({
+          ...prev,
+          name: prev.name || me.name || '',
+          phone: prev.phone || me.phone || '',
+          email: prev.email || me.email || '',
+        }))
+        setAccountName(me.name || null)
+      })
+      .catch(() => {})
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   const handleChange = useCallback((name: string, value: string | boolean) => {
     setUserData((prev) => ({ ...prev, [name]: value }))
@@ -177,6 +204,29 @@ const BookForm = ({ idReservation }: Props) => {
 
   return (
     <>
+      {accountName && (
+        <div
+          className={
+            'bg-[#252523] border border-[#4a2a3a] rounded-special-small px-5 py-3 mb-5 flex items-center gap-2.5'
+          }
+        >
+          <svg width={16} height={16} viewBox={'0 0 24 24'} fill={'none'} aria-hidden>
+            <path
+              d={'M4.5 12.5l4.5 4.5L19.5 6.5'}
+              stroke={'#E71E6E'}
+              strokeWidth={2.2}
+              strokeLinecap={'round'}
+              strokeLinejoin={'round'}
+            />
+          </svg>
+          <span className={'text-xss text-[#A0A0A0]'}>
+            {'Údaje vyplněny z účtu '}
+            <span className={'text-white'}>{accountName}</span>
+            {'. Můžete je upravit.'}
+          </span>
+        </div>
+      )}
+
       <UserData userData={userData} handleChange={handleChange} errorData={errorData} />
 
       <div className={'bg-[#252523] rounded-special-small px-5 py-3.5 mb-5'}>

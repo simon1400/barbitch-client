@@ -94,7 +94,7 @@ export default async function RootLayout({
         `}
       </Script>
       <body className={`bg-base antialiased overflow-x-hidden ${montserat.className}`}>
-        <HideOnRoutes routes={['/cabinet']}>
+        <HideOnRoutes routes={['/cabinet', '/book', '/thank-you', '/rezervace', '/blocked']}>
           <HiringBar />
         </HideOnRoutes>
         <AppProvider>

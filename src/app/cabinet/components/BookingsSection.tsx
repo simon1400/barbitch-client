@@ -84,8 +84,11 @@ const countdown = (iso: string | null): string => {
 const dateBox = (iso: string | null): { day: string; month: string } => {
   if (!iso) return { day: '', month: '' }
   try {
+    // Локальные getDate/getMonth (НЕ getUTC*): parseISO плоской даты даёт локальную
+    // полночь, и остальные форматтеры (weekdayOf/heroDate) тоже локальные — иначе в
+    // TZ с положительным сдвигом число уезжало на день назад (баг «29» при středa 30.)
     const d = parseISO(iso)
-    return { day: String(d.getUTCDate()), month: MONTHS_ABBR[d.getUTCMonth()] ?? '' }
+    return { day: String(d.getDate()), month: MONTHS_ABBR[d.getMonth()] ?? '' }
   } catch {
     return { day: '', month: '' }
   }
