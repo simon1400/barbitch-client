@@ -239,18 +239,18 @@ const BookingCard = ({
         }`}
       >
         <span
-          className={`w-4 h-4 rounded-full flex items-center justify-center text-[9px] ${
+          className={`w-4 h-4 rounded-full flex items-center justify-center li text-[10px]/9 ${
             nearest ? 'bg-white text-primary' : 'bg-[#5a5a58] text-white'
           }`}
         >
           {step}
         </span>
-        {nearest ? 'Nejbližší termín' : `${step}. termín`}
+        {fmtDay(booking.date)}
       </span>
     )}
     {/* Kdy — datum + čas (čas jako akcent vpravo) */}
     <div className={'flex items-baseline justify-between gap-3'}>
-      <p className={'text-white text-xs1 font-semibold'}>{fmtDay(booking.date)}</p>
+      {/* <p className={'text-white text-xs1 font-semibold'}>{fmtDay(booking.date)}</p> */}
       {booking.time && (
         <span className={'text-primary text-xs1 font-bold whitespace-nowrap'}>{booking.time}</span>
       )}

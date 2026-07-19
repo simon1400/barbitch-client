@@ -129,8 +129,7 @@ export const CabinetClient = ({ salonPhone }: { salonPhone: string }) => {
   return (
     <>
       <div className={'flex items-center justify-between mb-2'}>
-        <p className={'text-white text-xs1'}>
-          {'Vítejte, '}
+        <p className={'text-white text-sm1'}>
           <span className={'font-semibold'}>{client.name}</span>
         </p>
         <button
