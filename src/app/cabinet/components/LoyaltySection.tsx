@@ -475,15 +475,11 @@ const BonusVoucherBlock = ({
   onClaimed,
 }: {
   bonus: ILoyaltyBonusReward
-  onClaimed: () => void
+  // Успешный claim → сообщение уходит НА УРОВЕНЬ СЕКЦИИ (flash), чтобы пережить
+  // reload лояльности (после claimed=true блок размонтируется).
+  onClaimed: (msg: string) => void
 }) => {
   const [open, setOpen] = useState(false)
-  const [done, setDone] = useState('')
-
-  const handleDone = (msg: string) => {
-    setDone(msg)
-    onClaimed()
-  }
 
   return (
     <div
@@ -498,9 +494,9 @@ const BonusVoucherBlock = ({
         {'Gratulujeme k plné kartě! Máte odměnu — voucher, který můžete využít sami nebo darovat.'}
       </p>
 
-      {done && <p className={'text-[#4ade80] text-xss mt-3'}>{`✓ ${done}`}</p>}
-      {!done && open && <BonusClaimForm onDone={handleDone} onBack={() => setOpen(false)} />}
-      {!done && !open && (
+      {open ? (
+        <BonusClaimForm onDone={onClaimed} onBack={() => setOpen(false)} />
+      ) : (
         <button
           type={'button'}
           onClick={() => setOpen(true)}
@@ -575,7 +571,14 @@ export const LoyaltySection = ({ loyalty, bookings, onChanged }: Props) => {
       {loyalty.stamps >= CARD_STAMPS &&
         loyalty.bonusReward?.available &&
         !loyalty.bonusReward.claimed && (
-          <BonusVoucherBlock bonus={loyalty.bonusReward} onClaimed={onChanged} />
+          <BonusVoucherBlock
+            bonus={loyalty.bonusReward}
+            onClaimed={(msg) => {
+              setApplyError('')
+              setFlash(msg)
+              onChanged()
+            }}
+          />
         )}
       <div className={'bg-[#252523] rounded-special-small px-5 pt-5 pb-4 text-center'}>
         <StampsRow loyalty={loyalty} />
