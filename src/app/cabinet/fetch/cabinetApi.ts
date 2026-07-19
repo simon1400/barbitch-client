@@ -76,6 +76,8 @@ export interface ICabinetBooking {
   arrived: boolean
   services: ICabinetBookingService[]
   totalPrice: number | null
+  // Применённая скидка bitchcard (null — скидки на брони нет)
+  discount: { discountKc: number; rewardTitle: string | null; code: string | null } | null
   employeeName: string | null
   canCancel: boolean
   canReschedule: boolean
@@ -215,6 +217,16 @@ export const postCabinetApplyRedemption = async (
   const res = await Cabinet.post(
     `/api/cabinet/bookings/${encodeURIComponent(bookingId)}/redemption`,
     { code },
+  )
+  return res.data
+}
+
+// Снять применённую скидку со своей активной брони — награда вернётся в трек
+export const deleteCabinetRedemption = async (
+  bookingId: string,
+): Promise<{ released: number; code?: string; discountKc?: number }> => {
+  const res = await Cabinet.delete(
+    `/api/cabinet/bookings/${encodeURIComponent(bookingId)}/redemption`,
   )
   return res.data
 }
