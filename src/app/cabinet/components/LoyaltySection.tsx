@@ -537,6 +537,7 @@ export const LoyaltySection = ({ loyalty, bookings, onChanged }: Props) => {
     if (code === 'redemption_unavailable') return 'Sleva už byla uplatněna nebo vypršela.'
     if (code === 'booking_has_redemption') return 'Na této rezervaci už je uplatněna sleva.'
     if (code === 'booking_not_active') return 'Rezervace už není aktivní.'
+    if (code === 'reward_not_earned') return 'Na tuto slevu zatím nemáte nárok.'
     return 'Uplatnění se nepodařilo. Zkuste to prosím znovu.'
   }
 

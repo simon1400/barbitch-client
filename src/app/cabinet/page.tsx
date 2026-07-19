@@ -23,9 +23,6 @@ export default async function CabinetPage() {
       <style>{`html, body { background-color: #161615; }`}</style>
       <main className={'min-h-screen pb-[100px] pt-[112px] dark-tm'}>
         <Container size={'sm'}>
-          <div className={'mb-5.5 text-center'}>
-            <h1 className={'text-[#FFFFFFBF] text-resLg'}>{'Můj účet'}</h1>
-          </div>
           <CabinetClient salonPhone={contact.phone} />
         </Container>
       </main>

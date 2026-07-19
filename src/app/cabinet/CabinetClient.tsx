@@ -4,11 +4,12 @@ import type { ICabinetBookings, ICabinetClient, ICabinetLoyalty } from './fetch/
 
 import { useCallback, useEffect, useState } from 'react'
 
+import { AccountTiles } from './components/AccountTiles'
 import { BookingsSection } from './components/BookingsSection'
+import { HistoryPanel } from './components/HistoryPanel'
 import { LoginForm } from './components/LoginForm'
 import { LoyaltySection } from './components/LoyaltySection'
 import { ProfileSection } from './components/ProfileSection'
-import { RebookSection } from './components/RebookSection'
 import { Box } from './components/shared'
 import {
   cabinetErrorStatus,
@@ -20,18 +21,33 @@ import {
 } from './fetch/cabinetApi'
 
 type Phase = 'loading' | 'login' | 'dashboard' | 'disabled' | 'error'
+// Свёрнутые под-панели дашборда (плашки Historie / Profil)
+type Panel = 'history' | 'profile' | null
+
+// Заголовок «Můj účet» для не-dashboard фаз (login/loading/…) — по центру
+const SimpleHeader = () => (
+  <div className={'mb-5.5 text-center'}>
+    <h1 className={'text-[#FFFFFFBF] text-resLg'}>{'Můj účet'}</h1>
+  </div>
+)
 
 const DisabledBox = () => (
-  <Box>
-    <p className={'text-white text-resMd1 mb-1'}>{'Kabinet zatím není dostupný'}</p>
-    <p className={'text-[#A0A0A0] text-xss'}>{'Zkuste to prosím později.'}</p>
-  </Box>
+  <>
+    <SimpleHeader />
+    <Box>
+      <p className={'text-white text-resMd1 mb-1'}>{'Kabinet zatím není dostupný'}</p>
+      <p className={'text-[#A0A0A0] text-xss'}>{'Zkuste to prosím později.'}</p>
+    </Box>
+  </>
 )
 
 const LoadingBox = () => (
-  <Box>
-    <p className={'text-[#A0A0A0] text-xss animate-pulse'}>{'Načítám…'}</p>
-  </Box>
+  <>
+    <SimpleHeader />
+    <Box>
+      <p className={'text-[#A0A0A0] text-xss animate-pulse'}>{'Načítám…'}</p>
+    </Box>
+  </>
 )
 
 // Оркестратор кабинета: гейт по client-JWT из localStorage → login-форма или
@@ -44,6 +60,7 @@ export const CabinetClient = ({ salonPhone }: { salonPhone: string }) => {
   // null = программа лояльности выключена (503 loyalty_disabled) / не загрузилась —
   // секция «Věrnostní program» просто не показывается, кабинет живёт без неё
   const [loyalty, setLoyalty] = useState<ICabinetLoyalty | null>(null)
+  const [panel, setPanel] = useState<Panel>(null)
 
   const load = useCallback(async () => {
     if (!getCabinetJwt()) {
@@ -101,45 +118,67 @@ export const CabinetClient = ({ salonPhone }: { salonPhone: string }) => {
     setClient(null)
     setBookings(null)
     setLoyalty(null)
+    setPanel(null)
     setPhase('login')
   }
 
   if (phase === 'loading') return <LoadingBox />
   if (phase === 'disabled') return <DisabledBox />
-  if (phase === 'login') return <LoginForm />
+  if (phase === 'login') {
+    return (
+      <>
+        <SimpleHeader />
+        <LoginForm />
+      </>
+    )
+  }
   if (phase === 'error' || !client || !bookings) {
     return (
-      <Box>
-        <p className={'text-[#A0A0A0] text-xss mb-4'}>
-          {'Data se nepodařilo načíst. Zkuste to prosím znovu.'}
-        </p>
-        <button
-          type={'button'}
-          onClick={load}
-          className={
-            'inline-block bg-primary text-white text-xs1 font-bold rounded-special-small px-6 py-3'
-          }
-        >
-          {'Zkusit znovu'}
-        </button>
-      </Box>
+      <>
+        <SimpleHeader />
+        <Box>
+          <p className={'text-[#A0A0A0] text-xss mb-4'}>
+            {'Data se nepodařilo načíst. Zkuste to prosím znovu.'}
+          </p>
+          <button
+            type={'button'}
+            onClick={load}
+            className={
+              'inline-block bg-primary text-white text-xs1 font-bold rounded-special-small px-6 py-3'
+            }
+          >
+            {'Zkusit znovu'}
+          </button>
+        </Box>
+      </>
     )
+  }
+
+  // Свёрнутые под-панели: заменяют весь дашборд (своя шапка «‹» назад)
+  if (panel === 'history') {
+    return <HistoryPanel history={bookings.history} onBack={() => setPanel(null)} />
+  }
+  if (panel === 'profile') {
+    return <ProfileSection client={client} onSaved={setClient} onBack={() => setPanel(null)} />
   }
 
   return (
     <>
-      <div className={'flex items-center justify-between mb-2'}>
-        <p className={'text-white text-sm1'}>
-          <span className={'font-semibold'}>{client.name}</span>
-        </p>
+      <header className={'flex items-start justify-between gap-4 mb-6'}>
+        <div className={'min-w-0'}>
+          <h1 className={'text-[#FFFFFFBF] text-resLg leading-none'}>{'Můj účet'}</h1>
+          <p className={'text-[#A0A0A0] text-xss mt-1.5 truncate'}>{client.name}</p>
+        </div>
         <button
           type={'button'}
           onClick={logout}
-          className={'text-[#A0A0A0] text-xss underline hover:text-white'}
+          className={
+            'shrink-0 border border-[#3C3C3C] text-[#A0A0A0] text-xss rounded-special-small px-4 py-2.5 hover:text-white hover:border-[#5a5a5a] transition-colors'
+          }
         >
-          {'Odhlásit se'}
+          {'Odhlásit'}
         </button>
-      </div>
+      </header>
       <BookingsSection
         bookings={bookings}
         salonPhone={salonPhone}
@@ -152,8 +191,12 @@ export const CabinetClient = ({ salonPhone }: { salonPhone: string }) => {
           onChanged={reloadBookingsAndLoyalty}
         />
       )}
-      <RebookSection bookings={bookings} />
-      <ProfileSection client={client} onSaved={setClient} />
+      <AccountTiles
+        bookings={bookings}
+        client={client}
+        onOpenHistory={() => setPanel('history')}
+        onOpenProfile={() => setPanel('profile')}
+      />
     </>
   )
 }

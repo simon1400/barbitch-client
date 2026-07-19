@@ -6,7 +6,7 @@ import { useState } from 'react'
 
 import { cabinetErrorCode, patchCabinetMe } from '../fetch/cabinetApi'
 
-import { inputCls, primaryBtnCls, SectionTitle } from './shared'
+import { inputCls, PanelHeader } from './shared'
 
 const PATCH_ERRORS: Record<string, string> = {
   invalid_name: 'Neplatné jméno.',
@@ -17,11 +17,12 @@ const PATCH_ERRORS: Record<string, string> = {
 interface Props {
   client: ICabinetClient
   onSaved: (next: ICabinetClient) => void
+  onBack: () => void
 }
 
-// Профиль: jméno/telefon/datum narození/marketing souhlas; e-mail read-only
-// (identity kabinetu — смена = отдельный verify-флоу, не в К2).
-export const ProfileSection = ({ client, onSaved }: Props) => {
+// Под-панель «Profil»: jméno/telefon/datum narození/marketing souhlas; e-mail
+// read-only (identity kabinetu — смена = отдельный verify-флоу, не в К2).
+export const ProfileSection = ({ client, onSaved, onBack }: Props) => {
   const [name, setName] = useState(client.name || '')
   const [phone, setPhone] = useState(client.phone || '')
   const [birthday, setBirthday] = useState(client.birthday || '')
@@ -67,16 +68,25 @@ export const ProfileSection = ({ client, onSaved }: Props) => {
 
   return (
     <section>
-      <SectionTitle>{'Profil'}</SectionTitle>
+      <PanelHeader title={'Profil'} subtitle={'Údaje pro rezervace a novinky'} onBack={onBack} />
       <form onSubmit={handleSave} className={'bg-[#252523] rounded-special-small px-5 py-4'}>
         {field(
           'E-mail',
-          <input
-            type={'email'}
-            value={client.email || ''}
-            disabled
-            className={`${inputCls} opacity-60 cursor-not-allowed`}
-          />,
+          <div className={'relative'}>
+            <input
+              type={'email'}
+              value={client.email || ''}
+              disabled
+              className={`${inputCls} opacity-60 cursor-not-allowed pr-28`}
+            />
+            <span
+              className={
+                'absolute right-4 top-1/2 -translate-y-1/2 text-[#6b6b6b] text-[10px] font-extrabold uppercase tracking-wide pointer-events-none'
+              }
+            >
+              {'Nelze změnit'}
+            </span>
+          </div>,
         )}
         {field(
           'Jméno',
@@ -119,9 +129,26 @@ export const ProfileSection = ({ client, onSaved }: Props) => {
         </label>
         {error && <p className={'text-[#E71E6E] text-xss mb-3'}>{error}</p>}
         {saved && !dirty && <p className={'text-[#4ade80] text-xss mb-3'}>{'✓ Uloženo.'}</p>}
-        <button type={'submit'} disabled={saving || !dirty} className={primaryBtnCls(saving)}>
-          {saving ? 'Ukládám…' : 'Uložit profil'}
-        </button>
+        <div className={'flex gap-2.5'}>
+          <button
+            type={'submit'}
+            disabled={saving || !dirty}
+            className={`flex-1 transition-colors duration-150 text-white font-semibold text-xs1 py-3.5 rounded-special-small ${
+              saving || !dirty ? 'bg-[#5a5a5a] cursor-not-allowed' : 'bg-primary hover:bg-[#c9195f]'
+            }`}
+          >
+            {saving ? 'Ukládám…' : 'Uložit profil'}
+          </button>
+          <button
+            type={'button'}
+            onClick={onBack}
+            className={
+              'shrink-0 border border-[#3C3C3C] text-[#A0A0A0] text-xs1 px-6 py-3.5 rounded-special-small hover:text-white transition-colors'
+            }
+          >
+            {'Zpět'}
+          </button>
+        </div>
       </form>
     </section>
   )

@@ -3,8 +3,11 @@
 import type { ICabinetBooking, ICabinetBookings } from '../fetch/cabinetApi'
 
 import { RescheduleCalendar } from 'components/booking/RescheduleCalendar'
+import { differenceInCalendarDays, format, parseISO } from 'date-fns'
+import { cs } from 'date-fns/locale/cs'
 import { useCallback, useState } from 'react'
 
+import { selectionToQuery } from '../../book/fetch/engine'
 import {
   cabinetErrorCode,
   deleteCabinetRedemption,
@@ -13,10 +16,23 @@ import {
   postCabinetReschedule,
 } from '../fetch/cabinetApi'
 
-import { Box, fmtDay, ghostBtnCls, SectionTitle } from './shared'
+import { fmtDay, SectionTitle } from './shared'
 
-// Сколько записей истории показываем свёрнуто (остальное — под «Zobrazit vše»)
-const HISTORY_PREVIEW = 5
+// Чешские 3-буквенные сокращения месяцев (для боковой даты-плашки компактных карт)
+const MONTHS_ABBR = [
+  'LED',
+  'ÚNO',
+  'BŘE',
+  'DUB',
+  'KVĚ',
+  'ČVN',
+  'ČVC',
+  'SRP',
+  'ZÁŘ',
+  'ŘÍJ',
+  'LIS',
+  'PRO',
+]
 
 const serviceTitle = (b: ICabinetBooking): string =>
   (b.services ?? [])
@@ -24,35 +40,77 @@ const serviceTitle = (b: ICabinetBooking): string =>
     .filter(Boolean)
     .join(', ')
 
-// Компактная дата истории: «24. 6. 2026» из YYYY-MM-DD
-const fmtHistoryDate = (iso: string | null): string => {
-  if (!iso) return '—'
-  const [y, m, d] = iso.split('-')
-  return `${Number(d)}. ${Number(m)}. ${y}`
+// «1 190 Kč» — тысячи через пробел (без regex — sonarjs slow-regex)
+const fmtPrice = (n: number): string => {
+  const digits = String(Math.round(Math.abs(n)))
+  let grouped = ''
+  for (let i = 0; i < digits.length; i += 1) {
+    if (i > 0 && (digits.length - i) % 3 === 0) grouped += ' '
+    grouped += digits[i]
+  }
+  return `${n < 0 ? '−' : ''}${grouped} Kč`
 }
 
-// Статус-чип: точка + подпись, цвет по исходу визита
-const STATUS_META: Record<string, { label: string; color: string }> = {
-  active: { label: 'Aktivní', color: '#4ade80' },
-  checkedOut: { label: 'Proběhla', color: '#4ade80' },
-  cancelled: { label: 'Zrušena', color: '#E71E6E' },
-  noshow: { label: 'Nedostavila se', color: '#f59e0b' },
+// Дата hero-карты двумя строками: «pátek» / «24. července»
+const heroDate = (iso: string | null): { weekday: string; dayMonth: string } => {
+  if (!iso) return { weekday: '', dayMonth: '' }
+  try {
+    const d = parseISO(iso)
+    return {
+      weekday: format(d, 'EEEE', { locale: cs }),
+      dayMonth: format(d, 'd. MMMM', { locale: cs }),
+    }
+  } catch {
+    return { weekday: '', dayMonth: iso }
+  }
 }
 
-const StatusChip = ({ status }: { status: ICabinetBooking['status'] }) => {
-  const meta = STATUS_META[status] ?? { label: status, color: '#A0A0A0' }
-  return (
-    <span
-      className={'inline-flex items-center gap-1.5 text-xss whitespace-nowrap'}
-      style={{ color: meta.color }}
-    >
-      <span
-        className={'w-1.5 h-1.5 rounded-full shrink-0'}
-        style={{ backgroundColor: meta.color }}
-      />
-      {meta.label}
-    </span>
-  )
+// «ZA 5 DNÍ» / «ZÍTRA» / «DNES» — до даты брони (чешская множественность)
+const countdown = (iso: string | null): string => {
+  if (!iso) return ''
+  try {
+    const diff = differenceInCalendarDays(parseISO(iso), new Date())
+    if (diff < 0) return ''
+    if (diff === 0) return 'DNES'
+    if (diff === 1) return 'ZÍTRA'
+    if (diff < 5) return `ZA ${diff} DNY`
+    return `ZA ${diff} DNÍ`
+  } catch {
+    return ''
+  }
+}
+
+// Боковая плашка компактной карты: «12» / «SRP»
+const dateBox = (iso: string | null): { day: string; month: string } => {
+  if (!iso) return { day: '', month: '' }
+  try {
+    const d = parseISO(iso)
+    return { day: String(d.getUTCDate()), month: MONTHS_ABBR[d.getUTCMonth()] ?? '' }
+  } catch {
+    return { day: '', month: '' }
+  }
+}
+
+const weekdayOf = (iso: string | null): string => {
+  if (!iso) return ''
+  try {
+    return format(parseISO(iso), 'EEEE', { locale: cs })
+  } catch {
+    return ''
+  }
+}
+
+// deep-link «Rezervovat znovu» по последнему снапшоту с serviceDocId
+const buildRebook = (bookings: ICabinetBookings): { href: string; service: string } | null => {
+  const source: ICabinetBooking[] = [...bookings.history, ...bookings.upcoming]
+  const last = source.find((b) => b.services?.[0]?.serviceDocId)
+  if (!last) return null
+  const item = last.services[0]
+  const href = `/book/${item.serviceDocId}${selectionToQuery({
+    variant: item.variant ?? null,
+    modifiers: item.modifiers ?? [],
+  })}`
+  return { href, service: item.title }
 }
 
 // Цена брони: со скидкой — исходная зачёркнута, итоговая рядом; иначе просто итог.
@@ -63,13 +121,13 @@ const PriceValue = ({ booking }: { booking: ICabinetBooking }) => {
     return (
       <>
         <span className={'line-through text-[#6b6b6b] font-normal mr-1.5'}>
-          {`${booking.totalPrice + d.discountKc} Kč`}
+          {fmtPrice(booking.totalPrice + d.discountKc)}
         </span>
-        {`${booking.totalPrice} Kč`}
+        {fmtPrice(booking.totalPrice)}
       </>
     )
   }
-  return <>{`${booking.totalPrice} Kč`}</>
+  return <>{fmtPrice(booking.totalPrice)}</>
 }
 
 const TrashIcon = () => (
@@ -92,8 +150,79 @@ const TrashIcon = () => (
   </svg>
 )
 
-// Блок применённой скидки bitchcard: зелёный бейдж со скидкой + иконка-корзина
-// внутри для снятия (инлайн-подтверждение). Только у активной брони со скидкой.
+const ChevronIcon = ({ open }: { open: boolean }) => (
+  <svg
+    className={`shrink-0 text-[#8a8a8a] transition-transform duration-150 ${open ? 'rotate-90' : ''}`}
+    width={'18'}
+    height={'18'}
+    viewBox={'0 0 24 24'}
+    fill={'none'}
+    stroke={'currentColor'}
+    strokeWidth={'2'}
+    strokeLinecap={'round'}
+    strokeLinejoin={'round'}
+    aria-hidden={'true'}
+  >
+    <path d={'m9 18 6-6-6-6'} />
+  </svg>
+)
+
+const CalendarIcon = () => (
+  <svg
+    width={'22'}
+    height={'22'}
+    viewBox={'0 0 24 24'}
+    fill={'none'}
+    stroke={'#E71E6E'}
+    strokeWidth={'2'}
+    strokeLinecap={'round'}
+    strokeLinejoin={'round'}
+    aria-hidden={'true'}
+  >
+    <rect x={'3'} y={'4'} width={'18'} height={'18'} rx={'2'} />
+    <path d={'M16 2v4M8 2v4M3 10h18'} />
+  </svg>
+)
+
+// ── общие действия карты ──
+
+interface CardProps {
+  booking: ICabinetBooking
+  cancelConfirming: boolean
+  cancelSubmitting: boolean
+  cancelError: string
+  releaseConfirming: boolean
+  releasing: boolean
+  releaseError: string
+  onCancelClick: () => void
+  onConfirmCancel: () => void
+  onAbortCancel: () => void
+  onReschedule: () => void
+  onReleaseClick: () => void
+  onConfirmRelease: () => void
+  onAbortRelease: () => void
+}
+
+// Читабельный бейдж применённой скидки (в свёрнутой компактной карте — без корзины)
+const DiscountBadgeReadonly = ({
+  discount,
+}: {
+  discount: NonNullable<ICabinetBooking['discount']>
+}) => (
+  <span
+    className={
+      'inline-flex items-center bg-[#1f3527] border border-[#2f6b3f] rounded-special-small text-xss text-[#4ade80] px-3 py-1.5'
+    }
+  >
+    <span className={'font-semibold'}>{`✦ Sleva bitchcard −${fmtPrice(discount.discountKc)}`}</span>
+    {discount.rewardTitle ? (
+      <span className={'text-[#7fbf95]'}>{` · ${discount.rewardTitle}`}</span>
+    ) : null}
+  </span>
+)
+
+// Блок применённой скидки bitchcard: зелёный бейдж + иконка-корзина внутри для
+// снятия (инлайн-подтверждение). Только у активной брони со скидкой.
 const DiscountBlock = ({
   booking,
   confirming,
@@ -115,7 +244,7 @@ const DiscountBlock = ({
   if (!d || d.discountKc <= 0) return null
   if (confirming) {
     return (
-      <div className={'mt-2 bg-[#161615] rounded-special-small p-3'}>
+      <div className={'mt-3 bg-[#161615] rounded-special-small p-3'}>
         <p className={'text-[#A0A0A0] text-xss mb-2.5'}>
           {'Zrušit slevu? Vrátí se zpět do věrnostního programu a půjde použít jindy.'}
         </p>
@@ -148,11 +277,11 @@ const DiscountBlock = ({
   return (
     <div
       className={
-        'mt-2 inline-flex items-stretch bg-[#1f3527] border border-[#2f6b3f] rounded-special-small text-xss'
+        'mt-3 inline-flex items-stretch bg-[#1f3527] border border-[#2f6b3f] rounded-special-small text-xss'
       }
     >
       <span className={'text-[#4ade80] px-3 py-1.5'}>
-        <span className={'font-semibold'}>{`✦ Sleva bitchcard −${d.discountKc} Kč`}</span>
+        <span className={'font-semibold'}>{`✦ Sleva bitchcard −${fmtPrice(d.discountKc)}`}</span>
         {d.rewardTitle ? <span className={'text-[#7fbf95]'}>{` · ${d.rewardTitle}`}</span> : null}
       </span>
       {booking.canCancel && (
@@ -172,33 +301,91 @@ const DiscountBlock = ({
   )
 }
 
-// Стрелка-шаг между карточками (последовательность броней)
-const StepArrow = () => (
-  <div className={'flex justify-center pt-2 pb-4 text-[#5a5a5a]'}>
-    <svg
-      width={'18'}
-      height={'18'}
-      viewBox={'0 0 24 24'}
-      fill={'none'}
-      stroke={'currentColor'}
-      strokeWidth={'2'}
-      strokeLinecap={'round'}
-      strokeLinejoin={'round'}
-      aria-hidden={'true'}
-    >
-      <path d={'M12 5v14'} />
-      <path d={'m19 12-7 7-7-7'} />
-    </svg>
+// Инлайн-подтверждение отмены резервации
+const CancelConfirm = ({
+  error,
+  submitting,
+  onConfirm,
+  onAbort,
+}: {
+  error: string
+  submitting: boolean
+  onConfirm: () => void
+  onAbort: () => void
+}) => (
+  <div className={'mt-4'}>
+    <p className={'text-[#A0A0A0] text-xss mb-3'}>{'Opravdu chcete tuto rezervaci zrušit?'}</p>
+    {error && <p className={'text-[#E71E6E] text-xss mb-3'}>{error}</p>}
+    <div className={'flex gap-2.5'}>
+      <button
+        type={'button'}
+        onClick={onConfirm}
+        disabled={submitting}
+        className={`flex-1 transition-colors duration-150 text-white font-semibold text-xss py-3 rounded-special-small ${
+          submitting ? 'bg-[#5a5a5a] cursor-progress' : 'bg-[#E71E6E] hover:bg-[#c9195f]'
+        }`}
+      >
+        {submitting ? 'Ruším…' : 'Zrušit rezervaci'}
+      </button>
+      <button
+        type={'button'}
+        onClick={onAbort}
+        disabled={submitting}
+        className={
+          'flex-1 border border-[#3C3C3C] text-[#A0A0A0] text-xss py-3 rounded-special-small hover:text-white'
+        }
+      >
+        {'Zpět'}
+      </button>
+    </div>
   </div>
 )
 
-const BookingCard = ({
+// Кнопки «Změnit termín» / «Zrušit» (одинаковы для hero и компактной карты)
+const ActionButtons = ({
   booking,
-  nearest,
-  step,
-  confirming,
-  submitting,
-  error,
+  onReschedule,
+  onCancelClick,
+}: {
+  booking: ICabinetBooking
+  onReschedule: () => void
+  onCancelClick: () => void
+}) => {
+  if (!booking.canReschedule && !booking.canCancel) return null
+  return (
+    <div className={'flex gap-2.5 mt-4'}>
+      {booking.canReschedule && (
+        <button
+          type={'button'}
+          onClick={onReschedule}
+          className={
+            'flex-1 bg-primary hover:bg-[#c9195f] transition-colors duration-150 text-white font-semibold text-xss py-3 rounded-special-small'
+          }
+        >
+          {'Změnit termín'}
+        </button>
+      )}
+      {booking.canCancel && (
+        <button
+          type={'button'}
+          onClick={onCancelClick}
+          className={
+            'flex-1 bg-[#2a2a28] border border-[#3C3C3C] text-[#c5c5c5] font-semibold text-xss py-3 rounded-special-small hover:text-white transition-colors'
+          }
+        >
+          {'Zrušit'}
+        </button>
+      )}
+    </div>
+  )
+}
+
+// Hero-карта ближайшего термина: крупная дата, розовая плашка времени + отсчёт
+const HeroCard = ({
+  booking: b,
+  cancelConfirming,
+  cancelSubmitting,
+  cancelError,
   releaseConfirming,
   releasing,
   releaseError,
@@ -209,170 +396,185 @@ const BookingCard = ({
   onReleaseClick,
   onConfirmRelease,
   onAbortRelease,
-}: {
-  booking: ICabinetBooking
-  nearest?: boolean
-  step?: number | null
-  confirming: boolean
-  submitting: boolean
-  error: string
-  releaseConfirming: boolean
-  releasing: boolean
-  releaseError: string
-  onCancelClick: () => void
-  onConfirmCancel: () => void
-  onAbortCancel: () => void
-  onReschedule: () => void
-  onReleaseClick: () => void
-  onConfirmRelease: () => void
-  onAbortRelease: () => void
-}) => (
-  <div
-    className={`relative bg-[#252523] rounded-special-small px-5 pb-4 ${
-      step != null ? 'pt-5' : 'pt-4'
-    }`}
-  >
-    {step != null && (
-      <span
-        className={`absolute -top-2.5 left-4 z-10 inline-flex items-center gap-1.5 text-[10px] font-bold uppercase tracking-wide rounded-full pl-1 pr-2.5 py-0.5 shadow-md ${
-          nearest ? 'bg-primary text-white' : 'bg-[#3a3a38] text-[#d5d5d5]'
-        }`}
-      >
-        <span
-          className={`w-4 h-4 rounded-full flex items-center justify-center li text-[10px]/9 ${
-            nearest ? 'bg-white text-primary' : 'bg-[#5a5a58] text-white'
-          }`}
-        >
-          {step}
-        </span>
-        {fmtDay(booking.date)}
-      </span>
-    )}
-    {/* Kdy — datum + čas (čas jako akcent vpravo) */}
-    <div className={'flex items-baseline justify-between gap-3'}>
-      {/* <p className={'text-white text-xs1 font-semibold'}>{fmtDay(booking.date)}</p> */}
-      {booking.time && (
-        <span className={'text-primary text-xs1 font-bold whitespace-nowrap'}>{booking.time}</span>
-      )}
-    </div>
-    {/* Co — služba, hlavní řádek karty */}
-    <p className={'text-white text-xs1 leading-snug mt-2.5'}>
-      {serviceTitle(booking) || 'Rezervace'}
-    </p>
-    {/* Kdo + kolik — mistrová vlevo, cena vpravo */}
-    {(booking.employeeName || booking.totalPrice != null) && (
-      <div className={'flex items-center justify-between gap-3 mt-1.5'}>
-        <span className={'text-[#A0A0A0] text-xss'}>{booking.employeeName ?? ''}</span>
-        <span className={'text-white text-xss whitespace-nowrap'}>
-          <PriceValue booking={booking} />
-        </span>
-      </div>
-    )}
-    <DiscountBlock
-      booking={booking}
-      confirming={releaseConfirming}
-      busy={releasing}
-      error={releaseError}
-      onReleaseClick={onReleaseClick}
-      onConfirmRelease={onConfirmRelease}
-      onAbortRelease={onAbortRelease}
-    />
-    {confirming ? (
-      <div className={'mt-4 text-center'}>
-        <p className={'text-[#A0A0A0] text-xss mb-3'}>{'Opravdu chcete tuto rezervaci zrušit?'}</p>
-        {error && <p className={'text-[#E71E6E] text-xss mb-3'}>{error}</p>}
-        <div className={'flex flex-col items-center gap-2.5'}>
-          <button
-            type={'button'}
-            onClick={onConfirmCancel}
-            disabled={submitting}
-            className={`w-full max-w-[270px] transition-colors duration-150 text-white font-semibold text-xs1 py-3 rounded-special-small ${
-              submitting ? 'bg-[#5a5a5a] cursor-progress' : 'bg-[#E71E6E] hover:bg-[#c9195f]'
-            }`}
-          >
-            {submitting ? 'Ruším…' : 'Zrušit rezervaci'}
-          </button>
-          <button
-            type={'button'}
-            onClick={onAbortCancel}
-            disabled={submitting}
-            className={ghostBtnCls}
-          >
-            {'Zpět'}
-          </button>
-        </div>
-      </div>
-    ) : (
-      <div className={'flex flex-wrap gap-2.5 mt-3.5'}>
-        {booking.canReschedule && (
-          <button
-            type={'button'}
-            onClick={onReschedule}
-            className={
-              'bg-primary hover:bg-[#c9195f] transition-colors duration-150 text-white font-semibold text-xss px-5 py-2.5 rounded-special-small'
-            }
-          >
-            {'Změnit termín'}
-          </button>
-        )}
-        {booking.canCancel && (
-          <button
-            type={'button'}
-            onClick={onCancelClick}
-            className={
-              'border border-[#E71E6E] text-[#E71E6E] font-semibold text-xss px-5 py-2.5 rounded-special-small hover:bg-[#E71E6E14]'
-            }
-          >
-            {'Zrušit'}
-          </button>
-        )}
-      </div>
-    )}
-  </div>
-)
-
-// Строка истории: дата + статус-чип сверху, услуга отдельной приглушённой
-// строкой ниже — так дату и исход визита легко сканировать по краям.
-const HistoryRow = ({ booking }: { booking: ICabinetBooking }) => (
-  <li className={'py-3 border-b border-[#3C3C3C] last:border-0'}>
-    <div className={'flex items-center justify-between gap-3'}>
-      <span className={'text-white text-xss font-semibold whitespace-nowrap'}>
-        {fmtHistoryDate(booking.date)}
-      </span>
-      <StatusChip status={booking.status} />
-    </div>
-    <p className={'text-[#cbcbcb] text-xss font-medium leading-snug mt-1'}>
-      {serviceTitle(booking) || 'Rezervace'}
-    </p>
-  </li>
-)
-
-const History = ({ history }: { history: ICabinetBooking[] }) => {
-  const [showAll, setShowAll] = useState(false)
-  const visible = showAll ? history : history.slice(0, HISTORY_PREVIEW)
-  const hidden = history.length - visible.length
+}: CardProps) => {
+  const { weekday, dayMonth } = heroDate(b.date)
+  const cd = countdown(b.date)
   return (
-    <>
-      <SectionTitle>{'Historie návštěv'}</SectionTitle>
-      <div className={'bg-[#252523] rounded-special-small px-5 py-1'}>
-        <ul>
-          {visible.map((b) => (
-            <HistoryRow key={b.documentId} booking={b} />
-          ))}
-        </ul>
+    <div
+      className={'relative overflow-hidden rounded-special-small border border-[#4a2a3a] p-5'}
+      style={{
+        background:
+          'radial-gradient(130% 130% at 0% 0%, rgba(231,30,110,0.20) 0%, rgba(28,23,25,0) 55%), #1c1719',
+      }}
+    >
+      <p className={'text-primary text-xss uppercase tracking-[0.14em] mb-3'}>
+        {'Nejbližší termín'}
+      </p>
+      <div className={'flex items-start justify-between gap-4'}>
+        <div className={'min-w-0'}>
+          <p className={'text-white text-resBig leading-tight'}>{weekday}</p>
+          <p className={'text-white text-resBig leading-tight'}>{dayMonth}</p>
+          <p className={'text-[#e8e8e8] text-xs1 leading-snug mt-2.5'}>
+            {serviceTitle(b) || 'Rezervace'}
+          </p>
+          {(b.employeeName || b.totalPrice != null) && (
+            <p className={'text-[#A0A0A0] text-xss mt-1'}>
+              {b.employeeName}
+              {b.employeeName && b.totalPrice != null ? ' · ' : ''}
+              {b.totalPrice != null && (
+                <span className={'text-white'}>
+                  <PriceValue booking={b} />
+                </span>
+              )}
+            </p>
+          )}
+        </div>
+        {b.time && (
+          <div className={'shrink-0 bg-primary rounded-[10px] px-3.5 py-2.5 text-center'}>
+            <p className={'text-white text-resBig leading-none'}>{b.time}</p>
+            {cd && (
+              <p className={'text-white text-[10px] font-extrabold tracking-wide mt-1'}>{cd}</p>
+            )}
+          </div>
+        )}
       </div>
-      {hidden > 0 && (
-        <button
-          type={'button'}
-          onClick={() => setShowAll(true)}
-          className={`${ghostBtnCls} mt-2.5`}
-        >
-          {`Zobrazit celou historii (${history.length})`}
-        </button>
+      <DiscountBlock
+        booking={b}
+        confirming={releaseConfirming}
+        busy={releasing}
+        error={releaseError}
+        onReleaseClick={onReleaseClick}
+        onConfirmRelease={onConfirmRelease}
+        onAbortRelease={onAbortRelease}
+      />
+      {cancelConfirming ? (
+        <CancelConfirm
+          error={cancelError}
+          submitting={cancelSubmitting}
+          onConfirm={onConfirmCancel}
+          onAbort={onAbortCancel}
+        />
+      ) : (
+        <ActionButtons booking={b} onReschedule={onReschedule} onCancelClick={onCancelClick} />
       )}
-    </>
+    </div>
   )
 }
+
+// Компактная карта следующего термина: боковая дата-плашка, разворот по стрелке
+const CompactCard = ({
+  booking: b,
+  cancelConfirming,
+  cancelSubmitting,
+  cancelError,
+  releaseConfirming,
+  releasing,
+  releaseError,
+  onCancelClick,
+  onConfirmCancel,
+  onAbortCancel,
+  onReschedule,
+  onReleaseClick,
+  onConfirmRelease,
+  onAbortRelease,
+}: CardProps) => {
+  const [open, setOpen] = useState(false)
+  const { day, month } = dateBox(b.date)
+  const dayTime = [weekdayOf(b.date), b.time].filter(Boolean).join(' ')
+  const d = b.discount
+  return (
+    <div className={'bg-[#252523] rounded-special-small overflow-hidden'}>
+      <button
+        type={'button'}
+        onClick={() => setOpen((o) => !o)}
+        className={'w-full flex items-center gap-4 px-4 py-3.5 text-left'}
+      >
+        <div className={'shrink-0 w-12 rounded-special-small bg-[#161615] py-2 text-center'}>
+          <p className={'text-white text-sm leading-none'}>{day}</p>
+          <p className={'text-[#A0A0A0] text-[10px] font-extrabold tracking-wide mt-1'}>{month}</p>
+        </div>
+        <div className={'min-w-0 flex-1'}>
+          <p className={'text-white text-xs1 leading-snug'}>{serviceTitle(b) || 'Rezervace'}</p>
+          <p className={'text-[#A0A0A0] text-xss mt-0.5'}>
+            {[dayTime, b.employeeName].filter(Boolean).join(' · ')}
+            {b.totalPrice != null && (
+              <>
+                {dayTime || b.employeeName ? ' · ' : ''}
+                <span className={'text-white'}>
+                  <PriceValue booking={b} />
+                </span>
+              </>
+            )}
+          </p>
+        </div>
+        <ChevronIcon open={open} />
+      </button>
+      {!open && d && d.discountKc > 0 && (
+        <div className={'px-4 pb-3.5 -mt-1'}>
+          <DiscountBadgeReadonly discount={d} />
+        </div>
+      )}
+      {open && (
+        <div className={'px-4 pb-4'}>
+          <DiscountBlock
+            booking={b}
+            confirming={releaseConfirming}
+            busy={releasing}
+            error={releaseError}
+            onReleaseClick={onReleaseClick}
+            onConfirmRelease={onConfirmRelease}
+            onAbortRelease={onAbortRelease}
+          />
+          {cancelConfirming ? (
+            <CancelConfirm
+              error={cancelError}
+              submitting={cancelSubmitting}
+              onConfirm={onConfirmCancel}
+              onAbort={onAbortCancel}
+            />
+          ) : (
+            <ActionButtons booking={b} onReschedule={onReschedule} onCancelClick={onCancelClick} />
+          )}
+        </div>
+      )}
+    </div>
+  )
+}
+
+// «+ Rezervovat další termín — {služba} jako minule»
+const RebookCta = ({ href, service }: { href: string; service: string }) => (
+  <a
+    href={href}
+    className={
+      'block border border-dashed border-[#3C3C3C] rounded-special-small px-5 py-4 text-center text-[#A0A0A0] text-xss hover:text-white hover:border-primary transition-colors'
+    }
+  >
+    {`+ Rezervovat další termín — ${service} jako minule`}
+  </a>
+)
+
+// Пустое состояние: иконка + приглашение записаться
+const EmptyState = () => (
+  <div className={'bg-[#252523] rounded-special-small px-6 py-9 text-center'}>
+    <div
+      className={
+        'w-14 h-14 rounded-full bg-[#161615] flex items-center justify-center mx-auto mb-4'
+      }
+    >
+      <CalendarIcon />
+    </div>
+    <p className={'text-white text-resMd1 mb-1.5'}>{'Zatím nemáte žádnou rezervaci'}</p>
+    <p className={'text-[#A0A0A0] text-xss mb-5'}>{'Vyberte si termín a my se o vás postaráme.'}</p>
+    <a
+      className={
+        'inline-block bg-primary hover:bg-[#c9195f] transition-colors duration-150 text-white text-xs1 font-bold rounded-special-small px-7 py-3.5'
+      }
+      href={'/book'}
+    >
+      {'Rezervovat termín'}
+    </a>
+  </div>
+)
 
 interface Props {
   bookings: ICabinetBookings
@@ -380,9 +582,8 @@ interface Props {
   onChanged: () => void
 }
 
-// Секция «Moje rezervace»: upcoming с действиями Zrušit / Změnit termín
-// (флаги canCancel/canReschedule с сервера; правила 3ч/лимит — серверные,
-// движок вернёт too_late/reschedule_limit) + historie.
+// Секция «Moje rezervace»: hero ближайшего термина + компактные следующие
+// (canCancel/canReschedule с сервера) + «Rezervovat znovu» + historie.
 export const BookingsSection = ({ bookings, salonPhone, onChanged }: Props) => {
   const [rescheduleId, setRescheduleId] = useState<string | null>(null)
   const [confirmId, setConfirmId] = useState<string | null>(null)
@@ -468,27 +669,22 @@ export const BookingsSection = ({ bookings, salonPhone, onChanged }: Props) => {
     setReleaseId(id)
   }
 
-  const renderCard = (b: ICabinetBooking, nearest: boolean, step: number | null) => (
-    <BookingCard
-      key={b.documentId}
-      booking={b}
-      nearest={nearest}
-      step={step}
-      confirming={confirmId === b.documentId}
-      submitting={submitting}
-      error={actionError}
-      releaseConfirming={releaseId === b.documentId}
-      releasing={releasing}
-      releaseError={releaseError}
-      onCancelClick={() => startCancel(b.documentId)}
-      onConfirmCancel={handleConfirmCancel}
-      onAbortCancel={() => setConfirmId(null)}
-      onReschedule={() => startReschedule(b.documentId)}
-      onReleaseClick={() => startRelease(b.documentId)}
-      onConfirmRelease={handleConfirmRelease}
-      onAbortRelease={() => setReleaseId(null)}
-    />
-  )
+  const cardProps = (b: ICabinetBooking): CardProps => ({
+    booking: b,
+    cancelConfirming: confirmId === b.documentId,
+    cancelSubmitting: submitting,
+    cancelError: actionError,
+    releaseConfirming: releaseId === b.documentId,
+    releasing,
+    releaseError,
+    onCancelClick: () => startCancel(b.documentId),
+    onConfirmCancel: handleConfirmCancel,
+    onAbortCancel: () => setConfirmId(null),
+    onReschedule: () => startReschedule(b.documentId),
+    onReleaseClick: () => startRelease(b.documentId),
+    onConfirmRelease: handleConfirmRelease,
+    onAbortRelease: () => setReleaseId(null),
+  })
 
   const rescheduleBooking = rescheduleId
     ? bookings.upcoming.find((b) => b.documentId === rescheduleId)
@@ -517,9 +713,10 @@ export const BookingsSection = ({ bookings, salonPhone, onChanged }: Props) => {
     )
   }
 
+  const rebook = buildRebook(bookings)
+
   return (
     <section>
-      <SectionTitle>{'Moje rezervace'}</SectionTitle>
       {flash && (
         <div
           className={
@@ -530,31 +727,16 @@ export const BookingsSection = ({ bookings, salonPhone, onChanged }: Props) => {
         </div>
       )}
       {bookings.upcoming.length === 0 ? (
-        <Box>
-          <p className={'text-[#A0A0A0] text-xss mb-4'}>{'Nemáte žádné nadcházející rezervace.'}</p>
-          <a
-            className={
-              'inline-block bg-primary text-white text-xs1 font-bold rounded-special-small px-6 py-3'
-            }
-            href={'/book'}
-          >
-            {'Rezervovat termín'}
-          </a>
-        </Box>
-      ) : bookings.upcoming.length === 1 ? (
-        renderCard(bookings.upcoming[0], false, null)
+        <EmptyState />
       ) : (
-        // Několik termínů → kroky se šipkami (nejbližší nahoře), karty na plnou šířku
-        <div className={'pt-4'}>
-          {bookings.upcoming.map((b, idx) => (
-            <div key={b.documentId}>
-              {idx > 0 && <StepArrow />}
-              {renderCard(b, idx === 0, idx + 1)}
-            </div>
+        <div className={'space-y-3'}>
+          <HeroCard {...cardProps(bookings.upcoming[0])} />
+          {bookings.upcoming.slice(1).map((b) => (
+            <CompactCard key={b.documentId} {...cardProps(b)} />
           ))}
+          {rebook && <RebookCta href={rebook.href} service={rebook.service} />}
         </div>
       )}
-      {bookings.history.length > 0 && <History history={bookings.history} />}
     </section>
   )
 }
