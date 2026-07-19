@@ -203,6 +203,12 @@ interface CardProps {
   onAbortRelease: () => void
 }
 
+// Лейбл скидки по типу: bitchcard-награда либо скидка за дозапись (rebook)
+const discountLabel = (discount: NonNullable<ICabinetBooking['discount']>): string =>
+  discount.type === 'rebook'
+    ? `✦ Sleva za dozápis −${fmtPrice(discount.discountKc)}`
+    : `✦ Sleva bitchcard −${fmtPrice(discount.discountKc)}`
+
 // Читабельный бейдж применённой скидки (в свёрнутой компактной карте — без корзины)
 const DiscountBadgeReadonly = ({
   discount,
@@ -214,7 +220,7 @@ const DiscountBadgeReadonly = ({
       'inline-flex items-center bg-[#1f3527] border border-[#2f6b3f] rounded-special-small text-xss text-[#4ade80] px-3 py-1.5'
     }
   >
-    <span className={'font-semibold'}>{`✦ Sleva bitchcard −${fmtPrice(discount.discountKc)}`}</span>
+    <span className={'font-semibold'}>{discountLabel(discount)}</span>
     {discount.rewardTitle ? (
       <span className={'text-[#7fbf95]'}>{` · ${discount.rewardTitle}`}</span>
     ) : null}
@@ -281,10 +287,11 @@ const DiscountBlock = ({
       }
     >
       <span className={'text-[#4ade80] px-3 py-1.5'}>
-        <span className={'font-semibold'}>{`✦ Sleva bitchcard −${fmtPrice(d.discountKc)}`}</span>
+        <span className={'font-semibold'}>{discountLabel(d)}</span>
         {d.rewardTitle ? <span className={'text-[#7fbf95]'}>{` · ${d.rewardTitle}`}</span> : null}
       </span>
-      {booking.canCancel && (
+      {/* корзина снятия — только bitchcard: rebook-скидку снимает лишь админ из календаря */}
+      {booking.canCancel && d.type !== 'rebook' && (
         <button
           type={'button'}
           onClick={onReleaseClick}

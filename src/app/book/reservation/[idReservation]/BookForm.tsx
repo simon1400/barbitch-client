@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation'
 import { useCallback, useState } from 'react'
 
 import { useBookReservation } from '../../components/BookReservationContext'
-import { createEngineBooking, engineErrorCode } from '../../fetch/engine'
+import { createEngineBooking, engineErrorCode, THANK_YOU_STORAGE_KEY } from '../../fetch/engine'
 
 import { UserData } from './components/UserData'
 
@@ -98,13 +98,29 @@ const BookForm = ({ idReservation }: Props) => {
     setSubmitError('')
     try {
       // Блэклист проверяет сервер (403 blacklisted) — клиентского чека больше нет.
-      await createEngineBooking({
+      const booking = await createEngineBooking({
         holdId: idReservation,
         name: userData.name,
         phone: userData.phone,
         email: userData.email,
         customerComment: applyOfferAttribution(userData.comment),
       })
+
+      // Данные брони для /thank-you (бейдж времени + предложения дозаписи по cancelToken).
+      // sessionStorage: живёт только в этой вкладке, thank-you сам отсеет устаревшее.
+      try {
+        sessionStorage.setItem(
+          THANK_YOU_STORAGE_KEY,
+          JSON.stringify({
+            cancelToken: booking.cancelToken,
+            date: booking.date,
+            time: booking.time,
+            ts: Date.now(),
+          }),
+        )
+      } catch {
+        // приватный режим/квоты — thank-you просто покажет обычный экран
+      }
 
       // Send Lead event to FB CAPI
       sendCAPIEvent('Lead', {

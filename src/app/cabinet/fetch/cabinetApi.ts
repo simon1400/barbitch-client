@@ -76,8 +76,14 @@ export interface ICabinetBooking {
   arrived: boolean
   services: ICabinetBookingService[]
   totalPrice: number | null
-  // Применённая скидка bitchcard (null — скидки на брони нет)
-  discount: { discountKc: number; rewardTitle: string | null; code: string | null } | null
+  // Применённая скидка (null — скидки на брони нет): bitchcard-награда либо
+  // скидка за дозапись с thank-you (type 'rebook' — клиент снять не может)
+  discount: {
+    type?: 'bitchcard' | 'rebook'
+    discountKc: number
+    rewardTitle: string | null
+    code: string | null
+  } | null
   employeeName: string | null
   canCancel: boolean
   canReschedule: boolean

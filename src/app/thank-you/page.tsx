@@ -1,7 +1,6 @@
 import type { Metadata } from 'next'
 
-import Button from 'components/Button'
-import { Container } from 'components/Container'
+import ThankYouClient from './ThankYouClient'
 
 export const dynamic = 'force-static'
 
@@ -36,58 +35,8 @@ export async function generateMetadata(): Promise<Metadata> {
   }
 }
 
+// Контент клиентский: подтверждение + предложения дозаписи (rebook) по данным
+// только что созданной брони из sessionStorage; без них — обычный статичный экран.
 export default function ThankYou() {
-  return (
-    <main
-      className={'min-h-[600px] md:min-h-[700px] h-screen flex'}
-      style={{
-        backgroundImage: 'linear-gradient(0deg, rgba(231,30,110,1) 0%, rgba(255,0,101,0.5) 100%)',
-      }}
-    >
-      <div className={'m-auto text-center relative'}>
-        <div
-          className={
-            'absolute top-[50%] left-[50%] -translate-y-1/2 -translate-x-1/2 w-[660px] h-[578px] -z-10'
-          }
-        >
-          <img src={'/assets/icons/heart.svg'} alt={'Big pink heart icon'} />
-        </div>
-        <Container size={'lg'}>
-          <div className={'mb-17'}>
-            <h1 className={'mb-10 text-resLg md:text-xxl'}>{'Vaše rezervace je potvrzena.'}</h1>
-            <p className={'text-white text-baseSm md:text-baseText'}>
-              {'Těšíme se na vás v našem salonu a slibujeme, že váš zážitek bude jedinečný!'}
-            </p>
-            <p className={'text-white text-baseSm md:text-baseText font-bold'}>
-              {'Přiveďte kamarádku a získejte 10% slevu na další návštěvu!'}
-            </p>
-          </div>
-          {/* CTA личного кабинета (К4): брони + věrnostní program bitchcard */}
-          <div
-            className={'mb-10 mx-auto max-w-[560px] bg-accent/80 rounded-special-small px-6 py-5'}
-          >
-            <p className={'text-white text-baseSm md:text-baseText font-bold mb-1'}>
-              {'✦ Sledujte své rezervace a sbírejte nálepky ✦'}
-            </p>
-            <p className={'text-white text-baseSm mb-4'}>
-              {
-                'V klientském kabinetu spravujete své termíny a za každých 1 000 Kč získáte nálepku bitchcard — odměny až sleva 50 %.'
-              }
-            </p>
-            <a
-              href={'/cabinet'}
-              className={
-                'inline-block bg-white text-primary text-baseSm font-bold rounded-special-small px-6 py-3'
-              }
-            >
-              {'Můj účet →'}
-            </a>
-          </div>
-          <div>
-            <Button text={'zpět na úvod'} href={'/'} />
-          </div>
-        </Container>
-      </div>
-    </main>
-  )
+  return <ThankYouClient />
 }

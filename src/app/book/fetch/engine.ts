@@ -223,6 +223,13 @@ export const getEngineHold = async (holdId: string): Promise<IEngineHold> => {
 export interface IEngineBookingResult {
   bookingId: string
   cancelToken: string
+  date: string
+  time: string | null
+  startsAt: string
+  endsAt: string
+  totalPrice: number
+  employee: { documentId: string; name: string }
+  services: IEngineHoldService[]
 }
 
 export const createEngineBooking = async (body: {
@@ -233,6 +240,68 @@ export const createEngineBooking = async (body: {
   customerComment?: string
 }): Promise<IEngineBookingResult> => {
   const res = await Engine.post('/api/engine/bookings', body)
+  return res.data
+}
+
+// ── дозапись с thank-you (аутентификация cancelToken только что созданной брони) ──
+
+// Ключ sessionStorage, через который BookForm передаёт данные брони на /thank-you.
+export const THANK_YOU_STORAGE_KEY = 'bb_thankyou'
+
+export interface IRebookServiceOption {
+  serviceDocId: string
+  title: string
+  bucket: 'manicure' | 'brows' | 'lashes'
+  durationMin: number
+  /** Цена услуги у этого мастера (у junior уже −20%) — показывается перечёркнутой. */
+  price: number
+  /** Итог со скидкой дозаписи −15%. */
+  discountedPrice: number
+  endTime: string
+}
+
+export interface IRebookOffer {
+  employeeDocId: string
+  employeeName: string
+  tier: 'senior' | 'junior'
+  photoUrl: string | null
+  /** «Lash specialistka» / «Brow & Nail specialistka» — подпись на карточке. */
+  specialist: string
+  startMin: number
+  startTime: string
+  services: IRebookServiceOption[]
+}
+
+export interface IRebookOffers {
+  available: boolean
+  reason?: 'expired' | 'not_active' | 'no_client' | 'no_offers'
+  discountPercent: number
+  expiresAt: string
+  anchor: { date: string; time: string | null }
+  offers: IRebookOffer[]
+}
+
+export interface IRebookCreated {
+  bookingId: string
+  date: string
+  time: string
+  endTime: string
+  totalPrice: number
+  originalPrice: number
+  employee: { documentId: string; name: string }
+  serviceTitle: string
+}
+
+export const getEngineRebookOffers = async (token: string): Promise<IRebookOffers> => {
+  const res = await Engine.get(`/api/engine/rebook/${encodeURIComponent(token)}/offers`)
+  return res.data
+}
+
+export const postEngineRebook = async (
+  token: string,
+  body: { service: string; employee: string },
+): Promise<IRebookCreated> => {
+  const res = await Engine.post(`/api/engine/rebook/${encodeURIComponent(token)}`, body)
   return res.data
 }
 
