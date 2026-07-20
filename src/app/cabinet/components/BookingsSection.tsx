@@ -194,10 +194,12 @@ interface CardProps {
   cancelConfirming: boolean
   cancelSubmitting: boolean
   cancelError: string
+  cancelReason: string
   releaseConfirming: boolean
   releasing: boolean
   releaseError: string
   onCancelClick: () => void
+  onCancelReasonChange: (value: string) => void
   onConfirmCancel: () => void
   onAbortCancel: () => void
   onReschedule: () => void
@@ -315,16 +317,31 @@ const DiscountBlock = ({
 const CancelConfirm = ({
   error,
   submitting,
+  reason,
+  onReasonChange,
   onConfirm,
   onAbort,
 }: {
   error: string
   submitting: boolean
+  reason: string
+  onReasonChange: (value: string) => void
   onConfirm: () => void
   onAbort: () => void
 }) => (
   <div className={'mt-4'}>
     <p className={'text-[#A0A0A0] text-xss mb-3'}>{'Opravdu chcete tuto rezervaci zrušit?'}</p>
+    <textarea
+      value={reason}
+      onChange={(e) => onReasonChange(e.target.value)}
+      rows={2}
+      maxLength={500}
+      disabled={submitting}
+      placeholder={'Důvod zrušení (nepovinné)'}
+      className={
+        'w-full resize-none rounded-special-small bg-[#161615] border border-[#3C3C3C] text-white text-xss px-3.5 py-2.5 mb-3 placeholder:text-[#6f6f6f] focus:border-[#E71E6E] focus:outline-none'
+      }
+    />
     {error && <p className={'text-[#E71E6E] text-xss mb-3'}>{error}</p>}
     <div className={'flex gap-2.5'}>
       <button
@@ -396,10 +413,12 @@ const HeroCard = ({
   cancelConfirming,
   cancelSubmitting,
   cancelError,
+  cancelReason,
   releaseConfirming,
   releasing,
   releaseError,
   onCancelClick,
+  onCancelReasonChange,
   onConfirmCancel,
   onAbortCancel,
   onReschedule,
@@ -461,6 +480,8 @@ const HeroCard = ({
         <CancelConfirm
           error={cancelError}
           submitting={cancelSubmitting}
+          reason={cancelReason}
+          onReasonChange={onCancelReasonChange}
           onConfirm={onConfirmCancel}
           onAbort={onAbortCancel}
         />
@@ -477,10 +498,12 @@ const CompactCard = ({
   cancelConfirming,
   cancelSubmitting,
   cancelError,
+  cancelReason,
   releaseConfirming,
   releasing,
   releaseError,
   onCancelClick,
+  onCancelReasonChange,
   onConfirmCancel,
   onAbortCancel,
   onReschedule,
@@ -539,6 +562,8 @@ const CompactCard = ({
             <CancelConfirm
               error={cancelError}
               submitting={cancelSubmitting}
+              reason={cancelReason}
+              onReasonChange={onCancelReasonChange}
               onConfirm={onConfirmCancel}
               onAbort={onAbortCancel}
             />
@@ -597,6 +622,7 @@ interface Props {
 export const BookingsSection = ({ bookings, salonPhone, onChanged }: Props) => {
   const [rescheduleId, setRescheduleId] = useState<string | null>(null)
   const [confirmId, setConfirmId] = useState<string | null>(null)
+  const [cancelReason, setCancelReason] = useState('')
   const [submitting, setSubmitting] = useState(false)
   const [actionError, setActionError] = useState('')
   const [flash, setFlash] = useState('')
@@ -619,8 +645,9 @@ export const BookingsSection = ({ bookings, salonPhone, onChanged }: Props) => {
     setSubmitting(true)
     setActionError('')
     try {
-      await postCabinetCancel(confirmId)
+      await postCabinetCancel(confirmId, cancelReason.trim() || undefined)
       setConfirmId(null)
+      setCancelReason('')
       setFlash('Rezervace byla zrušena.')
       onChanged()
     } catch (err) {
@@ -663,6 +690,7 @@ export const BookingsSection = ({ bookings, salonPhone, onChanged }: Props) => {
   const startCancel = (id: string) => {
     setFlash('')
     setActionError('')
+    setCancelReason('')
     setReleaseId(null)
     setConfirmId(id)
   }
@@ -684,12 +712,17 @@ export const BookingsSection = ({ bookings, salonPhone, onChanged }: Props) => {
     cancelConfirming: confirmId === b.documentId,
     cancelSubmitting: submitting,
     cancelError: actionError,
+    cancelReason,
     releaseConfirming: releaseId === b.documentId,
     releasing,
     releaseError,
     onCancelClick: () => startCancel(b.documentId),
+    onCancelReasonChange: setCancelReason,
     onConfirmCancel: handleConfirmCancel,
-    onAbortCancel: () => setConfirmId(null),
+    onAbortCancel: () => {
+      setConfirmId(null)
+      setCancelReason('')
+    },
     onReschedule: () => startReschedule(b.documentId),
     onReleaseClick: () => startRelease(b.documentId),
     onConfirmRelease: handleConfirmRelease,

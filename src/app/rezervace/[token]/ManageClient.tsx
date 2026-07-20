@@ -55,16 +55,31 @@ const TooLateBox = ({ hours, salonPhone }: { hours: number; salonPhone: string }
 const CancelConfirmBox = ({
   submitting,
   error,
+  reason,
+  onReasonChange,
   onCancel,
   onBack,
 }: {
   submitting: boolean
   error: string
+  reason: string
+  onReasonChange: (value: string) => void
   onCancel: () => void
   onBack: () => void
 }) => (
   <Box>
-    <p className={'text-[#A0A0A0] text-xss mb-5'}>{'Opravdu chcete tuto rezervaci zrušit?'}</p>
+    <p className={'text-[#A0A0A0] text-xss mb-4'}>{'Opravdu chcete tuto rezervaci zrušit?'}</p>
+    <textarea
+      value={reason}
+      onChange={(e) => onReasonChange(e.target.value)}
+      rows={2}
+      maxLength={500}
+      disabled={submitting}
+      placeholder={'Důvod zrušení (nepovinné)'}
+      className={
+        'w-full resize-none rounded-special-small bg-[#161615] border border-[#3C3C3C] text-white text-xss text-left px-4 py-3 mb-4 placeholder:text-[#6f6f6f] focus:border-[#E71E6E] focus:outline-none'
+      }
+    />
     {error && <p className={'text-[#E71E6E] text-xss mb-4'}>{error}</p>}
     <div className={'flex flex-col items-center gap-3'}>
       <button
@@ -144,6 +159,7 @@ export const ManageClient = ({ token, initialInfo, salonPhone }: Props) => {
   const [info, setInfo] = useState<IEngineManageInfo>(initialInfo)
   const [mode, setMode] = useState<'view' | 'reschedule'>('view')
   const [confirmCancel, setConfirmCancel] = useState(false)
+  const [cancelReason, setCancelReason] = useState('')
   const [rescheduled, setRescheduled] = useState(false)
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
@@ -165,7 +181,7 @@ export const ManageClient = ({ token, initialInfo, salonPhone }: Props) => {
     setSubmitting(true)
     setError('')
     try {
-      const result = await postEngineCancel(token)
+      const result = await postEngineCancel(token, cancelReason.trim() || undefined)
       setInfo((prev) => ({ ...prev, ...result }))
       setCancelled(true)
     } catch (err) {
@@ -207,6 +223,8 @@ export const ManageClient = ({ token, initialInfo, salonPhone }: Props) => {
         <CancelConfirmBox
           submitting={submitting}
           error={error}
+          reason={cancelReason}
+          onReasonChange={setCancelReason}
           onCancel={handleCancel}
           onBack={() => setConfirmCancel(false)}
         />

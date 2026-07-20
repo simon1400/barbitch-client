@@ -325,8 +325,11 @@ export const getEngineCancel = async (token: string): Promise<IEngineCancelInfo>
   return res.data
 }
 
-export const postEngineCancel = async (token: string): Promise<IEngineCancelInfo> => {
-  const res = await Engine.post(`/api/engine/cancel/${encodeURIComponent(token)}`)
+export const postEngineCancel = async (
+  token: string,
+  reason?: string,
+): Promise<IEngineCancelInfo> => {
+  const res = await Engine.post(`/api/engine/cancel/${encodeURIComponent(token)}`, { reason })
   return res.data
 }
 

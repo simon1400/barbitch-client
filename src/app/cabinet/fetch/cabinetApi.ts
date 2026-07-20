@@ -189,8 +189,13 @@ export const getCabinetBookings = async (): Promise<ICabinetBookings> => {
   return res.data
 }
 
-export const postCabinetCancel = async (bookingId: string): Promise<IEngineManageInfo> => {
-  const res = await Cabinet.post(`/api/cabinet/bookings/${encodeURIComponent(bookingId)}/cancel`)
+export const postCabinetCancel = async (
+  bookingId: string,
+  reason?: string,
+): Promise<IEngineManageInfo> => {
+  const res = await Cabinet.post(`/api/cabinet/bookings/${encodeURIComponent(bookingId)}/cancel`, {
+    reason,
+  })
   return res.data
 }
 
