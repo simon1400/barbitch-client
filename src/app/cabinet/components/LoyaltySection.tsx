@@ -536,6 +536,9 @@ export const LoyaltySection = ({ loyalty, bookings, onChanged }: Props) => {
   const applyErrorMessage = (code: string): string => {
     if (code === 'redemption_unavailable') return 'Sleva už byla uplatněna nebo vypršela.'
     if (code === 'booking_has_redemption') return 'Na této rezervaci už je uplatněna sleva.'
+    // одна скидка на услугу: на брони уже висит скидка за дозапис (−15 %)
+    if (code === 'booking_has_discount')
+      return 'Na této rezervaci už je sleva za dozápis — slevy nelze sčítat.'
     if (code === 'booking_not_active') return 'Rezervace už není aktivní.'
     if (code === 'reward_not_earned') return 'Na tuto slevu zatím nemáte nárok.'
     return 'Uplatnění se nepodařilo. Zkuste to prosím znovu.'
