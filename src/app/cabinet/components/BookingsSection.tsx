@@ -588,8 +588,11 @@ const RebookCta = ({ href, service }: { href: string; service: string }) => (
   </a>
 )
 
-// Пустое состояние: иконка + приглашение записаться
-const EmptyState = () => (
+// Пустое состояние: иконка + приглашение записаться.
+// Если у клиента нет ВООБЩЕ ничего (ни будущих, ни прошлых) — почти всегда это
+// значит, что резервации у него под ДРУГИМ e-mail (частый случай: Apple «skrytý
+// e-mail» из noona.app) и он смотрит в пустой новый аккаунт. Подсказываем, куда писать.
+const EmptyState = ({ noHistory, salonPhone }: { noHistory: boolean; salonPhone: string }) => (
   <div className={'bg-[#252523] rounded-special-small px-6 py-9 text-center'}>
     <div
       className={
@@ -608,6 +611,26 @@ const EmptyState = () => (
     >
       {'Rezervovat termín'}
     </a>
+    {noHistory && (
+      <div className={'mt-7 pt-5 border-t border-[#3a3a38]'}>
+        <p className={'text-[#A0A0A0] text-xss leading-snug'}>
+          {'U nás už jste byla, ale nevidíte své rezervace ani nálepky bitchcard? '}
+          {'Nejspíš je máte pod jiným e-mailem. '}
+          {salonPhone ? 'Zavolejte nám na ' : 'Ozvěte se nám a účet vám propojíme.'}
+          {salonPhone && (
+            <>
+              <a
+                className={'text-primary underline'}
+                href={`tel:${salonPhone.replaceAll(' ', '')}`}
+              >
+                {salonPhone}
+              </a>
+              {' a účet vám propojíme.'}
+            </>
+          )}
+        </p>
+      </div>
+    )}
   </div>
 )
 
@@ -770,7 +793,7 @@ export const BookingsSection = ({ bookings, salonPhone, onChanged }: Props) => {
         </div>
       )}
       {bookings.upcoming.length === 0 ? (
-        <EmptyState />
+        <EmptyState noHistory={bookings.history.length === 0} salonPhone={salonPhone} />
       ) : (
         <div className={'space-y-3'}>
           <HeroCard {...cardProps(bookings.upcoming[0])} />
