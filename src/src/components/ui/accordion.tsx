@@ -54,8 +54,13 @@ const AccordionContent = ({
 }) => (
   <AccordionPrimitive.Content
     ref={ref}
+    // `data-[state=closed]:h-0` je nutné kvůli `forceMount`: bez něj se obsah
+    // při prvním vykreslení zobrazí v plné výšce (animace se spouští až při
+    // změně stavu, ne po načtení). Pro Content bez `forceMount` je to no-op,
+    // protože zavřený se vůbec nerenderuje. Klíčové snímky animace mají
+    // v kaskádě přednost, takže rozbalování i sbalování animuje dál.
     className={
-      'overflow-hidden text-sm data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down'
+      'overflow-hidden text-sm data-[state=closed]:h-0 data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down'
     }
     {...props}
   >

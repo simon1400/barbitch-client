@@ -66,7 +66,7 @@ export const Faq = ({
               <AccordionContent
                 forceMount
                 className={
-                  'px-5 pb-0 overflow-hidden faq-content data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down'
+                  'px-5 pb-0 overflow-hidden faq-content data-[state=closed]:h-0 data-[state=closed]:animate-accordion-up data-[state=open]:animate-accordion-down'
                 }
               >
                 {parseHtml(item.content)}
