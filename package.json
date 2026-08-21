@@ -29,11 +29,9 @@
     "react": "^19.0.0",
     "react-datepicker": "^8.2.1",
     "react-dom": "^19.0.0",
-    "react-responsive-masonry": "^2.7.1",
     "react-timer-hook": "^4.0.5",
     "resend": "^6.2.1",
     "sass": "^1.83.4",
-    "swiper": "^11.2.4",
     "tailwind-merge": "^3.0.2",
     "tailwindcss-animate": "^1.0.7",
     "yet-another-react-lightbox": "^3.21.7"

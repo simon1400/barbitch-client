@@ -8,3 +8,4 @@ Disallow: /cabinet
 Disallow: /api/
 
 Sitemap: https://barbitch.cz/sitemap.xml
+Sitemap: https://barbitch.cz/image-sitemap.xml

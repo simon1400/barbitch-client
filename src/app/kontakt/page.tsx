@@ -1,11 +1,12 @@
 import type { Metadata } from 'next'
 
+import { Breadcrumbs } from 'components/Breadcrumbs'
 import { Container } from 'components/Container'
+import { MapEmbed } from 'components/MapEmbed'
 import { getContactContent, getLinkToReserve } from 'fetch/contact'
 import { getContactMeta } from 'fetch/getMeta'
 import { parseHtml } from 'lib/parseHtml'
 import { cmsTitle, ogImages } from 'lib/seo'
-import { BreadcrumbSchema } from 'schemasOrg/breadcrumb'
 import { LocalBusinessSchema } from 'schemasOrg/localBusiness'
 import { Top } from 'sections/Top/Top'
 
@@ -47,16 +48,18 @@ const Contact = async () => {
   const [dataLink, dataContent] = await Promise.all([getLinkToReserve(), getContactContent()])
   return (
     <main>
-      <BreadcrumbSchema
+      <LocalBusinessSchema />
+      {/* H1 je tu napevno — jako jediná stránka nepoužívá titulek z CMS. */}
+      <Top title={'Kontakt — Barbitch Brno'} small linkToReserve={dataLink.linkToReserve} />
+      <Breadcrumbs
         items={[
           { name: 'Hlavní strana', url: 'https://barbitch.cz' },
           { name: 'Kontakt', url: 'https://barbitch.cz/kontakt' },
         ]}
       />
-      <LocalBusinessSchema />
-      <Top title={'Kontakt'} small linkToReserve={dataLink.linkToReserve} />
       <Container size={'md'}>
         <div className={'content'}>{parseHtml(dataContent.content)}</div>
+        <MapEmbed mapLink={dataContent.linkToMap} />
       </Container>
     </main>
   )

@@ -33,6 +33,10 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     alternates: {
       canonical: `https://barbitch.cz/blog`,
+      // Aby čtečky a agregátory feed našly samy.
+      types: {
+        'application/rss+xml': [{ url: '/feed.xml', title: 'B.B.Blog — Barbitch Brno' }],
+      },
     },
   }
 }
