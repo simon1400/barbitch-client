@@ -45,10 +45,13 @@ const Review = ({
       <div className={'md:flex md:justify-between items-center mb-7 gap-2'}>
         <div className={'flex items-center gap-2.5 mb-5 md:mb-0'}>
           <div className={'rounded-full min-w-[52px] w-[52px] h-[52px] overflow-hidden'}>
+            {/* Rozměry musí být explicitní, jinak se blok po načtení avataru přelije (CLS). */}
             <img
               className={'object-cover w-full h-full'}
               src={data.reviewer.profilePhotoUrl}
               alt={data.reviewer.displayName}
+              width={52}
+              height={52}
               loading={'lazy'}
               referrerPolicy={'no-referrer'}
             />

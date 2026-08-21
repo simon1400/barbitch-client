@@ -15,17 +15,9 @@ const metaUrl = 'https://barbitch.cz/book'
 
 export async function generateMetadata(): Promise<Metadata> {
   return {
-    title: metaTitle,
+    // `absolute` — titulek značku už obsahuje, šablona by ji přidala podruhé.
+    title: { absolute: metaTitle },
     description: metaDescription,
-    keywords: [
-      'rezervace online',
-      'barbitch rezervace',
-      'manikúra Brno',
-      'prodloužení řas Brno',
-      'úprava obočí Brno',
-      'beauty studio Brno',
-      'objednat se online',
-    ],
     robots: {
       index: true,
       follow: true,

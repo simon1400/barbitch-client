@@ -1,12 +1,13 @@
 import type { Metadata } from 'next'
 
+import { Breadcrumbs } from 'components/Breadcrumbs'
 import { DynamicContent } from 'components/DynamicContent'
 import { getBookingPricelist } from 'fetch/bookingPricelist'
 import { getLinkToReserve } from 'fetch/contact'
 import { getFullService } from 'fetch/service'
 import { Axios } from 'lib/api'
-import { getStrapiImageUrl } from 'lib/image-utils'
-import { BreadcrumbSchema } from 'schemasOrg/breadcrumb'
+import { cmsTitle, ogImages } from 'lib/seo'
+import { notFound } from 'next/navigation'
 import { ServiceSchema } from 'schemasOrg/service'
 import {
   getServicesForSlug,
@@ -15,49 +16,21 @@ import {
 } from 'schemasOrg/servicePrice'
 import { Top } from 'sections/Top/Top'
 
-const serviceKeywordsMap: Record<string, string[]> = {
-  rasy: [
-    'prodloužení řas Brno',
-    'řasy Brno',
-    'nehty Brno',
-    'rasy brno',
-    'klasické řasy',
-    '2D řasy',
-    '3D řasy',
-    'barvení řas',
-    'beauty studio Brno',
-  ],
-  oboci: [
-    'úprava obočí Brno',
-    'laminace obočí',
-    'obočí Brno',
-    'barvení obočí',
-    'depilace obočí',
-    'beauty studio Brno',
-  ],
-  manikura: [
-    'manikúra Brno',
-    'gelové nehty Brno',
-    'nehty Brno',
-    'gel lak',
-    'klasická manikúra',
-    'japonská manikúra',
-    'beauty studio Brno',
-  ],
-}
-
-const defaultKeywords = ['barbitch', 'beauty studio Brno', 'kosmetické služby Brno']
-
-function getServiceKeywords(slug: string): string[] {
-  return [...(serviceKeywordsMap[slug] || []), ...defaultKeywords]
-}
+// Bez toho se stránka vygeneruje jednou při buildu a v Strapi upravená cena
+// nebo text se na produkci neobjeví až do dalšího nasazení.
+export const revalidate = 3600
 
 export async function generateStaticParams() {
-  const slugServices = (await Axios.get('/api/services?fields[0]=slug')) as { slug: string }[]
+  try {
+    const slugServices = (await Axios.get('/api/services?fields[0]=slug')) as { slug: string }[]
 
-  return slugServices.map((service) => ({
-    slug: service.slug,
-  }))
+    return slugServices.map((service) => ({
+      slug: service.slug,
+    }))
+  } catch (error) {
+    console.error('Failed to fetch service slugs for static params:', error)
+    return []
+  }
 }
 
 export async function generateMetadata({ params }: any): Promise<Metadata> {
@@ -66,29 +39,31 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
 
   if (!data || !data.metaData) {
     return {
-      title: 'Service Not Found',
+      title: { absolute: 'Služba nenalezena (404) | Barbitch' },
       description: '',
+      robots: { index: false, follow: false },
     }
   }
 
   return {
-    title: data.metaData.title || data.title,
+    title: cmsTitle(data.metaData.title || data.title),
     description: data.metaData.description || '',
     openGraph: {
       title: data.metaData.title || data.title,
       description: data.metaData.description || '',
       siteName: 'Barbitch',
-      images: [getStrapiImageUrl(data.metaData.image?.url)],
+      locale: 'cs_CZ',
+      images: ogImages(data.metaData.image?.url, `${data.title} — Barbitch Brno`),
       url: `https://barbitch.cz/service/${slug}`,
-      type: 'article',
+      // Stránka služby není článek.
+      type: 'website',
     },
     twitter: {
       card: 'summary_large_image',
       title: data.metaData.title || data.title,
       description: data.metaData.description || '',
-      images: [getStrapiImageUrl(data.metaData.image?.url)],
+      images: ogImages(data.metaData.image?.url, `${data.title} — Barbitch Brno`),
     },
-    keywords: getServiceKeywords(slug),
     alternates: {
       canonical: `https://barbitch.cz/service/${slug}`,
     },
@@ -106,20 +81,24 @@ const Service = async ({ params }: any) => {
     isPriced ? getBookingPricelist() : Promise.resolve([]),
   ])
 
+  if (!data) {
+    return notFound()
+  }
+
   return (
     <main>
-      <BreadcrumbSchema
-        items={[
-          { name: 'Hlavní strana', url: 'https://barbitch.cz' },
-          { name: data.title, url: `https://barbitch.cz/service/${slug}` },
-        ]}
-      />
       {isPriced ? (
         <ServicePriceSchema slug={slug} services={getServicesForSlug(pricelist, slug)} />
       ) : (
         <ServiceSchema name={data.title} url={`https://barbitch.cz/service/${slug}`} />
       )}
       <Top title={data.title} small linkToReserve={dataLink.linkToReserve} />
+      <Breadcrumbs
+        items={[
+          { name: 'Hlavní strana', url: 'https://barbitch.cz' },
+          { name: data.title, url: `https://barbitch.cz/service/${slug}` },
+        ]}
+      />
       <DynamicContent data={data.dynamicContent} variant={'service'} />
     </main>
   )

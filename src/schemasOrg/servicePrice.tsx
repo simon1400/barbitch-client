@@ -20,7 +20,9 @@ interface ServiceSeo {
 const SERVICE_SEO: Record<string, ServiceSeo> = {
   manikura: {
     serviceType: 'Manikúra',
-    name: 'Manikúra Brno | Gelové nehty & profesionální péče | Barbitch',
+    // `name` je název služby, ne titulek stránky — marketingový text patří
+    // do `description` (Google jinak zobrazuje celý title-tag jako název).
+    name: 'Manikúra Brno',
     description:
       'Hledáš kvalitní manikúru v Brně? Nabízíme gelové, francouzské a designové nehty v moderním beauty studiu. Objednej se online ještě dnes!',
     catalogName: 'Ceník manikúry',
@@ -28,7 +30,7 @@ const SERVICE_SEO: Record<string, ServiceSeo> = {
   },
   oboci: {
     serviceType: 'Obočí',
-    name: 'Obočí Brno | Laminace, barvení a modelace – Barbitch Beauty Studio',
+    name: 'Úprava obočí Brno',
     description:
       'Upravené obočí bez starostí! Nabízíme laminaci, barvení i modelaci obočí v Brně. Svěř se profesionálkám z Barbitch studia a objednej se online.',
     catalogName: 'Ceník obočí',
@@ -36,7 +38,7 @@ const SERVICE_SEO: Record<string, ServiceSeo> = {
   },
   rasy: {
     serviceType: 'Řasy',
-    name: 'Řasy Brno | Prodloužení a barvení řas – Barbitch Beauty Studio',
+    name: 'Prodlužování řas Brno',
     description:
       'Užij si krásné řasy bez stresu! Nabízíme prodloužení řas Classic, 2D, 3D i barvení – vše v moderním beauty studiu v Brně. Objednej se ještě dnes.',
     catalogName: 'Ceník řas',

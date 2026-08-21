@@ -14,12 +14,15 @@ export const SocNav = ({ items }: { items?: ISocItem[] }) => {
                 href={item.link}
                 className={'duration-200 fill-primary hover:fill-accent'}
                 target={'_blank'}
+                // Bez `noopener` má otevřená stránka přístup k `window.opener`.
+                rel={'noopener noreferrer'}
+                aria-label={`Barbitch na ${item.type}`}
               >
                 {item.type === 'instagram' && (
                   <span className={'block w-8 lg:w-16'}>
                     <Image
                       src={'/assets/icons/instagram.svg'}
-                      alt={'Instagram logo icon'}
+                      alt={''}
                       width={64}
                       height={64}
                       className={'w-8 lg:w-16 h-auto'}
@@ -30,7 +33,7 @@ export const SocNav = ({ items }: { items?: ISocItem[] }) => {
                   <span className={'block w-8 lg:w-16'}>
                     <Image
                       src={'/assets/icons/tikTok.svg'}
-                      alt={'TikTok logo icon'}
+                      alt={''}
                       width={64}
                       height={64}
                       className={'w-8 lg:w-16 h-auto'}

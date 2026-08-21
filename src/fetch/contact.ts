@@ -62,5 +62,7 @@ export const getContactContent = async (): Promise<IDataContact> => {
 
 export const getLinkToReserve = async (): Promise<IDataLinkToReserve> => {
   const data = await getContact()
-  return { linkToReserve: data.linkToReserve }
+  // Prázdný odkaz (výpadek CMS) by odstranil CTA „Rezervovat termín“ ze všech
+  // stránek — vlastní rezervace na /book funguje nezávisle na obsahu v CMS.
+  return { linkToReserve: data.linkToReserve || '/book' }
 }

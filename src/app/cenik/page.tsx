@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 
+import { Breadcrumbs } from 'components/Breadcrumbs'
 import { CenikTable } from 'components/CenikTable'
 import { Container } from 'components/Container'
 import { DynamicContent } from 'components/DynamicContent'
@@ -8,9 +9,9 @@ import { getLinkToReserve } from 'fetch/contact'
 import { getPricelistMeta } from 'fetch/getMeta'
 import { getPricelistPage } from 'fetch/pricelist'
 import { getReviews } from 'fetch/reviews'
-import { getStrapiImageUrl } from 'lib/image-utils'
 import { parseHtml } from 'lib/parseHtml'
-import { BreadcrumbSchema } from 'schemasOrg/breadcrumb'
+import { cmsTitle, ogImages } from 'lib/seo'
+import { PricelistSchema } from 'schemasOrg/pricelist'
 import Reviews from 'sections/Reviews'
 import { Top } from 'sections/Top/Top'
 
@@ -20,32 +21,27 @@ export async function generateMetadata(): Promise<Metadata> {
   const { metaData } = await getPricelistMeta()
 
   return {
-    title: metaData.title,
-    description: metaData.description,
+    // Bez fallbacku by výpadek CMS znamenal prázdný <title>.
+    title: cmsTitle(metaData.title || 'Ceník služeb – manikúra, řasy a obočí Brno'),
+    description:
+      metaData.description ||
+      'Aktuální ceník salonu Barbitch v Brně: manikúra, gel lak, prodlužování řas a úprava obočí. Rezervujte si termín online.',
     openGraph: {
-      title: metaData.title || 'Ceník',
+      title: metaData.title || 'Ceník služeb – manikúra, řasy a obočí Brno',
       description: metaData.description || '',
       siteName: 'Barbitch',
-      images: [getStrapiImageUrl(metaData.image?.url)],
+      locale: 'cs_CZ',
+      images: ogImages(metaData.image?.url, 'Ceník služeb Barbitch Brno'),
       url: `https://barbitch.cz/cenik`,
-      type: 'article',
+      // Ceník není článek.
+      type: 'website',
     },
     twitter: {
       card: 'summary_large_image',
       title: metaData.title || 'Ceník',
       description: metaData.description || '',
-      images: [getStrapiImageUrl(metaData.image?.url)],
+      images: ogImages(metaData.image?.url, 'Ceník služeb Barbitch Brno'),
     },
-    keywords: [
-      'barbitch',
-      'ceník',
-      'ceny',
-      'manikúra cena',
-      'řasy cena',
-      'obočí cena',
-      'Brno',
-      'beauty studio',
-    ],
     alternates: {
       canonical: `https://barbitch.cz/cenik`,
     },
@@ -62,13 +58,14 @@ const PriceList = async () => {
 
   return (
     <main>
-      <BreadcrumbSchema
+      <PricelistSchema groups={groups} />
+      <Top title={dataPage.title} small linkToReserve={dataLink.linkToReserve} />
+      <Breadcrumbs
         items={[
           { name: 'Hlavní strana', url: 'https://barbitch.cz' },
           { name: 'Ceník', url: 'https://barbitch.cz/cenik' },
         ]}
       />
-      <Top title={dataPage.title} small linkToReserve={dataLink.linkToReserve} />
       <Container size={'lg'}>
         {dataPage.contentText && (
           <div className={'w-full mb-10 text-xs1 lg:text-base content'}>

@@ -4,15 +4,12 @@ import Image from 'components/Image'
 import { getStrapiImageUrl } from 'lib/image-utils'
 import dynamic from 'next/dynamic'
 import { useState } from 'react'
+import { MasonryGrid } from 'sections/Masonry/MasonryGrid'
 import 'yet-another-react-lightbox/styles.css'
 
+// Lightbox zůstává klientský (otevírá se až po kliknutí), mřížka ale musí být
+// v HTML — jinak z galerie služby zbyl jen prázdný nadpis.
 const Lightbox = dynamic(() => import('yet-another-react-lightbox'), { ssr: false })
-const MasonryGrid = dynamic(
-  () => import('sections/Masonry/MasonryGrid').then((mod) => mod.MasonryGrid),
-  {
-    ssr: false,
-  },
-)
 
 export const Galery = ({
   data,
@@ -31,6 +28,15 @@ export const Galery = ({
 
   const length = data.image.length
 
+  // Staticky zapsané třídy — `grid-cols-${length}` JIT nevygeneruje a mřížka
+  // pak tiše spadne do jednoho sloupce.
+  const gridColumns =
+    length === 1
+      ? 'grid-cols-1 md:grid-cols-1'
+      : length === 2
+        ? 'grid-cols-2 md:grid-cols-2'
+        : 'grid-cols-2 md:grid-cols-3'
+
   // Masonry variant - полноэкранная галерея с lightbox
   if (variant === 'masonry') {
     return (
@@ -39,7 +45,7 @@ export const Galery = ({
         aria-labelledby={'masonry-gallery'}
       >
         <h2 id={'masonry-gallery'} className={'sr-only'}>
-          {'Masonry Gallery'}
+          {'Galerie našich prací'}
         </h2>
         <MasonryGrid>
           {data.image.map((image, idx) => (
@@ -84,9 +90,7 @@ export const Galery = ({
   return (
     <section className={'pt-0 pb-12 mb:pb-17'}>
       <Container size={'xl'}>
-        <div
-          className={`grid grid-cols-${length > 1 ? '2' : length} md:grid-cols-${length >= 3 ? '3' : length} gap-4 md:gap-8`}
-        >
+        <div className={`grid ${gridColumns} gap-4 md:gap-8`}>
           {data.image.map((item, index) => (
             <div key={item.documentId} className={`${!contain && 'pt-[100%]'} relative`}>
               <Image

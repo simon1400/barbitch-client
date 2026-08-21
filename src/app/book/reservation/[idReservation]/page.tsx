@@ -12,6 +12,8 @@ export const metadata: Metadata = {
   title: 'Dokončení rezervace | Barbitch Beauty Studio Brno',
   description: 'Zadejte své kontaktní údaje a dokončete rezervaci v Barbitch Beauty Studiu v Brně.',
   robots: { index: false, follow: false },
+  // Kroky rezervace jsou noindex — zděděný canonical na /book nemá co potvrzovat.
+  alternates: { canonical: undefined },
 }
 
 const JuniorBadge = () => (

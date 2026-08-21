@@ -7,12 +7,13 @@ import { getHomepage } from 'fetch/homepage'
 import { getReviews } from 'fetch/reviews'
 import { getServiceHomepage } from 'fetch/service'
 import { getStrapiImageUrl } from 'lib/image-utils'
-import { SchemaJsonHomepage } from 'schemasOrg/homepage'
+import { cmsTitle } from 'lib/seo'
+import { LocalBusinessSchema } from 'schemasOrg/localBusiness'
 import About from 'sections/About'
 import Galery from 'sections/Galery'
 import HandSec from 'sections/HandSec'
 import Posts from 'sections/Posts'
-import LazyReviews from 'sections/Reviews.lazy'
+import Reviews from 'sections/Reviews'
 import { Top } from 'sections/Top/Top'
 
 export const revalidate = 3600
@@ -21,7 +22,7 @@ export async function generateMetadata(): Promise<Metadata> {
   const homepageMeta = await getHomeMeta()
 
   return {
-    title: homepageMeta.metaData.title || 'Barbitch – Manikúra, řasy a obočí v Brně',
+    title: cmsTitle(homepageMeta.metaData.title || 'Barbitch – Manikúra, řasy a obočí v Brně'),
     description:
       homepageMeta.metaData.description ||
       'Objevte moderní beauty studio Bar.bitch v Brně. Profesionální manikúra, trendy obočí a dokonalé řasy. Individuální přístup a relaxace s kvalitními materiály. Rezervujte si termín ještě dnes!',
@@ -57,13 +58,13 @@ const Home = async () => {
 
   return (
     <main>
-      <SchemaJsonHomepage />
+      <LocalBusinessSchema />
       <Top title={data.title} linkToReserve={dataLink.linkToReserve} />
       <HandSec service={dataService} />
       <Galery data={data.galery} />
       <Posts data={posts} />
       <About text={data.aboutUs} />
-      <LazyReviews reviews={reviews} />
+      <Reviews reviews={reviews} />
     </main>
   )
 }

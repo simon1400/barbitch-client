@@ -15,8 +15,10 @@ export const BlogBigShort = ({ data }: { data: IDataPostShort }) => {
           }
           fill
           src={getStrapiImageUrl(data.image?.url)}
-          alt={data.image?.alternativeText || 'Článek Barbitch blogu'}
-          loading={'eager'}
+          alt={data.image?.alternativeText || `Článek: ${data.title.replaceAll(';sp;', ' ')}`}
+          // `loading="eager"` samo o sobě obrázek nepředtahuje — bez `priority`
+          // nevznikne preload a LCP na /blog čeká na objevení v HTML.
+          priority
           quality={75}
           sizes={'(max-width: 768px) 100vw, 954px'}
           placeholder={'blur'}
@@ -55,7 +57,7 @@ export const BlogShort = ({ data }: { data: IDataPostShort }) => {
           width={500}
           height={500}
           src={getStrapiImageUrl(data.image?.url)}
-          alt={data.image?.alternativeText || 'Článek Barbitch blogu'}
+          alt={data.image?.alternativeText || `Článek: ${data.title.replaceAll(';sp;', ' ')}`}
           loading={'lazy'}
           quality={70}
           sizes={'(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 500px'}

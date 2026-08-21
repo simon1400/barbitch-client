@@ -52,8 +52,11 @@ const Contact = async () => {
               }
               href={contact.linkToMap || '/'}
               target={'_blank'}
+              rel={'noopener noreferrer'}
+              // Kotva „google maps“ neříkala nic o cíli.
+              aria-label={'Barbitch Beauty Studio na Google Maps — Křenová 294/16, Brno'}
             >
-              {'google maps'}
+              {'Barbitch na Google Maps'}
             </Link>
           </div>
         </div>

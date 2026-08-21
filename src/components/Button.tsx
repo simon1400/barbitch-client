@@ -42,7 +42,10 @@ const Button = ({
     <a
       type={'button'}
       href={href}
-      target={blank ? '_blank' : '_self'}
+      // `rel` u odkazů do nového okna: bez `noopener` má cílová stránka přístup
+      // k `window.opener`. `_self` je výchozí chování, není ho třeba psát.
+      target={blank ? '_blank' : undefined}
+      rel={blank ? 'noopener noreferrer' : undefined}
       className={combinedClasses}
       id={id}
       onClick={onClick}

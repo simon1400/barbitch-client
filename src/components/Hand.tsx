@@ -1,5 +1,6 @@
-'use client'
-
+// Popisky služeb jsou skutečné <a href> uvnitř SVG (Google je prochází).
+// Dřív to byly <text onClick={window.location.href=…}> — bez odkazu, bez
+// fokusu a bez jakéhokoli přenosu odkazové váhy na stránky služeb.
 export const Hand = () => {
   return (
     <svg xmlns={'http://www.w3.org/2000/svg'} viewBox={'0 0 1496 920'}>
@@ -125,7 +126,7 @@ export const Hand = () => {
         <path id={'Path_27'} d={'M704.44,408.29c-.08-.12-.04-.05,0,0'} fill={'#161615'} />
       </g>
       <g id={'text'}>
-        <g id={'ŘASY'} onClick={() => (window.location.href = '/service/rasy')}>
+        <a href={'/service/rasy'} aria-label={'Prodlužování řas'}>
           <text
             transform={'translate(932.01 811.64)'}
             className={'fill-accent text-xl cursor-pointer hover:fill-primary duration-200'}
@@ -134,8 +135,8 @@ export const Hand = () => {
               {'ŘASY'}
             </tspan>
           </text>
-        </g>
-        <g id={'OBOČÍ'} onClick={() => (window.location.href = '/service/oboci')}>
+        </a>
+        <a href={'/service/oboci'} aria-label={'Úprava obočí'}>
           <text
             transform={'translate(228.15 722.64)'}
             className={'fill-accent text-xl cursor-pointer hover:fill-primary duration-200'}
@@ -144,8 +145,8 @@ export const Hand = () => {
               {'OBOČÍ'}
             </tspan>
           </text>
-        </g>
-        <g id={'MANIKÚRA'} onClick={() => (window.location.href = '/service/manikura')}>
+        </a>
+        <a href={'/service/manikura'} aria-label={'Manikúra'}>
           <text
             transform={'translate(237.53 367.64)'}
             className={'fill-accent text-xl cursor-pointer hover:fill-primary duration-200'}
@@ -154,7 +155,7 @@ export const Hand = () => {
               {'MANIKÚRA'}
             </tspan>
           </text>
-        </g>
+        </a>
       </g>
     </svg>
   )

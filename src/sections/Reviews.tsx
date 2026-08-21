@@ -1,29 +1,27 @@
-'use client'
 import type { IReview } from 'fetch/reviews'
 
 import Button from 'components/Button'
 import Image from 'components/Image'
-import { Stars } from 'components/Review'
-import dynamic from 'next/dynamic'
+import Review, { Stars } from 'components/Review'
 import React from 'react'
-import { Autoplay } from 'swiper/modules'
-import { SwiperSlide } from 'swiper/react'
-import 'swiper/css'
-import 'swiper/css/navigation'
-import 'swiper/css/pagination'
 
-const Swiper = dynamic(() => import('swiper/react').then((mod) => mod.Swiper), { ssr: false })
-const Review = dynamic(() => import('components/Review'))
-
+/**
+ * Recenze serverově.
+ *
+ * Dřív to byl Swiper s `ssr: false` (a na hlavní stránce navíc celá sekce přes
+ * `Reviews.lazy`), takže v HTML zbyl jen nadpis „Recenze“ bez obsahu — pro
+ * vyhledávač signál tenké sekce. Vodorovný `scroll-snap` dělá totéž bez JS:
+ * na dotyku se listuje prstem, na desktopu kolečkem/táhnutím.
+ */
 const CtaReview = () => {
   return (
-    <div className={'bg-white py-[50px] md:py-[83px] md:px-[70px] text-center'}>
+    <div className={'bg-white py-[50px] md:py-[83px] md:px-[70px] text-center h-full'}>
       <Image
         className={'mx-auto mb-7'}
         src={'/assets/google.png'}
         width={63}
         height={63}
-        alt={'google icon'}
+        alt={''}
         loading={'lazy'}
         quality={80}
       />
@@ -54,55 +52,37 @@ const Reviews = ({ reviews }: { reviews: IReview[] }) => {
     starRating: r.rating,
   }))
 
-  const length = mapped.length
+  const ctaIndex = Math.floor(mapped.length / 2)
+
+  const slideCls =
+    'snap-start shrink-0 basis-[85%] sm:basis-[42%] md:basis-[30%] lg:basis-[27%] h-auto'
 
   return (
-    <section className={'pb-20'}>
-      <h2 className={'text-lg lg:text-big uppercase mt-10 lg:mt-20 text-center -mb-1'}>
+    <section className={'pb-20'} aria-labelledby={'recenze'}>
+      <h2
+        id={'recenze'}
+        className={'text-lg lg:text-big uppercase mt-10 lg:mt-20 text-center -mb-1'}
+      >
         {'Recenze'}
       </h2>
-      <Swiper
-        spaceBetween={40}
-        slidesPerView={1}
-        loop
-        modules={[Autoplay]}
-        autoplay={{
-          delay: 2500,
-          disableOnInteraction: false,
-          pauseOnMouseEnter: true,
-        }}
-        breakpoints={{
-          640: {
-            slidesPerView: 2.5,
-            spaceBetween: 25,
-          },
-          768: {
-            slidesPerView: 3.5,
-            spaceBetween: 30,
-          },
-        }}
+      <div
+        className={
+          'flex gap-6 md:gap-8 overflow-x-auto snap-x snap-mandatory scroll-px-4 px-4 pt-10 pb-4 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden'
+        }
       >
-        {mapped.map((item, idx) => {
-          if (Math.floor(length / 2) === idx) {
-            return (
-              <React.Fragment key={`${item.reviewId}cta`}>
-                <SwiperSlide>
-                  <CtaReview />
-                </SwiperSlide>
-                <SwiperSlide>
-                  <Review data={item} />
-                </SwiperSlide>
-              </React.Fragment>
-            )
-          } else {
-            return (
-              <SwiperSlide key={item.reviewId}>
-                <Review data={item} />
-              </SwiperSlide>
-            )
-          }
-        })}
-      </Swiper>
+        {mapped.map((item, idx) => (
+          <React.Fragment key={item.reviewId}>
+            {idx === ctaIndex && (
+              <div className={slideCls}>
+                <CtaReview />
+              </div>
+            )}
+            <div className={slideCls}>
+              <Review data={item} />
+            </div>
+          </React.Fragment>
+        ))}
+      </div>
     </section>
   )
 }

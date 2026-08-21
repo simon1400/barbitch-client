@@ -1,5 +1,5 @@
 import { jsonLd } from 'lib/jsonLd'
-import { GOOGLE_RATING } from 'lib/seo'
+import { absUrl, SITE_URL } from 'lib/seo'
 
 interface ProductSchemaProps {
   name: string
@@ -10,9 +10,6 @@ interface ProductSchemaProps {
   highPrice: number
   offerCount: number
   priceCurrency?: string
-  ratingValue?: number
-  reviewCount?: number
-  bestRating?: number
 }
 
 export const ProductSchema = ({
@@ -24,9 +21,6 @@ export const ProductSchema = ({
   highPrice,
   offerCount,
   priceCurrency = 'CZK',
-  ratingValue = GOOGLE_RATING.ratingValue,
-  reviewCount = GOOGLE_RATING.reviewCount,
-  bestRating = GOOGLE_RATING.bestRating,
 }: ProductSchemaProps) => {
   const schema = {
     '@context': 'https://schema.org',
@@ -34,16 +28,10 @@ export const ProductSchema = ({
     name,
     description,
     url,
-    image: image || 'https://barbitch.cz/assets/bigBaner.jpg',
+    image: absUrl(image) || `${SITE_URL}/assets/bigBaner.jpg`,
     brand: {
       '@type': 'Brand',
       name: 'Barbitch',
-    },
-    aggregateRating: {
-      '@type': 'AggregateRating',
-      ratingValue,
-      reviewCount,
-      bestRating,
     },
     offers: {
       '@type': 'AggregateOffer',

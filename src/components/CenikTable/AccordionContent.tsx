@@ -29,6 +29,7 @@ export const AccordionContent = ({
           {/* предвыбранный вариант уходит на выбор мастера через query (?v=, формат s101) */}
           <BookLink
             href={`/book/${service.id}${selectionToQuery({ variant: variant.label, modifiers: [] })}`}
+            service={`${service.title} — ${variant.label}`}
           />
           <span className={'w-6.5 shrink-0'} />
         </div>

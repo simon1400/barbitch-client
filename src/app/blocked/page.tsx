@@ -11,7 +11,8 @@ export async function generateMetadata(): Promise<Metadata> {
     'Bohužel nemůžeme vaši rezervaci zpracovat. Pro více informací nás prosím kontaktujte.'
 
   return {
-    title,
+    // `absolute` — titulek už značku obsahuje, šablona by ji přidala podruhé.
+    title: { absolute: title },
     description,
     robots: { index: false, follow: false },
     openGraph: {
@@ -29,10 +30,7 @@ export async function generateMetadata(): Promise<Metadata> {
       description,
       images: ['https://barbitch.cz/assets/bigBaner.jpg'],
     },
-    keywords: ['barbitch', 'bar.bitch', 'bar bitch', 'Brno', 'Nehty'],
-    alternates: {
-      canonical: 'https://barbitch.cz/blocked',
-    },
+    // Žádný canonical: stránka je noindex, kanonizovat ji na sebe je protimluv.
   }
 }
 

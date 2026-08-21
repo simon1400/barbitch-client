@@ -4,7 +4,7 @@ import { DynamicContent } from 'components/DynamicContent'
 import { getLinkToReserve } from 'fetch/contact'
 import { getVoucherMeta } from 'fetch/getMeta'
 import { getVoucher } from 'fetch/voucher'
-import { getStrapiImageUrl } from 'lib/image-utils'
+import { cmsTitle, ogImages } from 'lib/seo'
 import { BreadcrumbSchema } from 'schemasOrg/breadcrumb'
 import { ProductSchema } from 'schemasOrg/product'
 import { Top } from 'sections/Top/Top'
@@ -19,32 +19,23 @@ export async function generateMetadata(): Promise<Metadata> {
   const { title, metaData } = data
 
   return {
-    title: metaData?.title || title,
+    title: cmsTitle(metaData?.title || title || 'Dárkový voucher do beauty salonu Brno'),
     description: metaData?.description,
     openGraph: {
       title: metaData.title || title,
       description: metaData.description || '',
       siteName: 'Barbitch',
-      images: [getStrapiImageUrl(metaData.image?.url)],
+      locale: 'cs_CZ',
+      images: ogImages(metaData.image?.url, 'Dárkový voucher Barbitch Brno'),
       url: `https://barbitch.cz/darkovy-voucher`,
-      type: 'article',
+      type: 'website',
     },
     twitter: {
       card: 'summary_large_image',
       title: metaData.title || title,
       description: metaData.description || '',
-      images: [getStrapiImageUrl(metaData.image?.url)],
+      images: ogImages(metaData.image?.url, 'Dárkový voucher Barbitch Brno'),
     },
-    keywords: [
-      'barbitch',
-      'dárkový voucher',
-      'dárkový poukaz',
-      'dárek',
-      'manikúra',
-      'řasy',
-      'obočí',
-      'Brno',
-    ],
     alternates: {
       canonical: `https://barbitch.cz/darkovy-voucher`,
     },

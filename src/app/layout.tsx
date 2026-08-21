@@ -1,5 +1,5 @@
 /* eslint-disable react-dom/no-dangerously-set-innerhtml */
-import type { Metadata } from 'next'
+import type { Metadata, Viewport } from 'next'
 
 import LazyChatWidget from 'components/ChatWidget.lazy'
 import CookieConsent from 'components/CookieConsent'
@@ -43,18 +43,27 @@ export const metadata: Metadata = {
       'Objevte moderní beauty studio Bar.bitch v Brně. Profesionální manikúra, trendy obočí a dokonalé řasy.',
     images: [DEFAULT_OG_IMAGE.url],
   },
-  robots: {
-    index: true,
-    follow: true,
-  },
+  // Žádné globální `robots: index, follow` — je to výchozí chování a na 404
+  // se to srazilo s automatickým `noindex` od Nextu (dvě protichůdné direktivy
+  // v jedné hlavičce). Stránky, které mají být `noindex`, si to nastavují samy.
 }
 
 const montserat = Montserrat({
-  subsets: ['latin'],
+  // `latin-ext` nese českou diakritiku (ě š č ř ž ý á í é ů ú). Bez něj
+  // spadnou tato písmena uprostřed slov na Arial a H1 se po načtení přelije.
+  subsets: ['latin', 'latin-ext'],
   weight: ['400', '700'],
   display: 'swap',
   fallback: ['Arial', 'sans-serif'],
 })
+
+// Vlastní <meta viewport>/<meta theme-color> v <head> by se zdvojily
+// s tím, co Next generuje sám — patří sem.
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  themeColor: '#e71e6e',
+}
 
 export default async function RootLayout({
   children,
@@ -64,11 +73,8 @@ export default async function RootLayout({
   return (
     <html lang={'cs'}>
       <head>
-        <meta name={'viewport'} content={'width=device-width, initial-scale=1.0'} />
-        <meta name={'theme-color'} content={'#e71e6e'} />
         <meta name={'mobile-web-app-capable'} content={'yes'} />
         <meta name={'apple-mobile-web-app-status-bar-style'} content={'black-translucent'} />
-        <meta name={'yandex-verification'} content={'93178409d4f4b109'} />
         <link rel={'preconnect'} href={'https://ik.imagekit.io'} />
         <link rel={'preconnect'} href={'https://strapi.barbitch.cz'} />
         <link rel={'dns-prefetch'} href={'https://lh3.googleusercontent.com'} />

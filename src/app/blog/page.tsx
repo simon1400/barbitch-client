@@ -3,7 +3,7 @@ import type { Metadata } from 'next'
 import { getAllPost, getBlogPage } from 'fetch/blog'
 import { getLinkToReserve } from 'fetch/contact'
 import { getBlogPageMeta } from 'fetch/getMeta'
-import { getStrapiImageUrl } from 'lib/image-utils'
+import { cmsTitle, ogImages } from 'lib/seo'
 import Posts from 'sections/Posts'
 import { Top } from 'sections/Top/Top'
 
@@ -13,23 +13,24 @@ export async function generateMetadata(): Promise<Metadata> {
   const { metaData } = await getBlogPageMeta()
 
   return {
-    title: metaData?.title || 'B.B.Blog',
+    title: cmsTitle(metaData?.title || 'B.B.Blog'),
     description: metaData?.description,
     openGraph: {
       title: metaData.title || 'B.B.Blog',
       description: metaData.description || '',
       siteName: 'Barbitch',
-      images: [getStrapiImageUrl(metaData.image?.url)],
+      locale: 'cs_CZ',
+      images: ogImages(metaData.image?.url, 'B.B.Blog — Barbitch Brno'),
       url: `https://barbitch.cz/blog`,
-      type: 'article',
+      // Výpis článků není článek.
+      type: 'website',
     },
     twitter: {
       card: 'summary_large_image',
       title: metaData.title || 'B.B.Blog',
       description: metaData.description || '',
-      images: [getStrapiImageUrl(metaData.image?.url)],
+      images: ogImages(metaData.image?.url, 'B.B.Blog — Barbitch Brno'),
     },
-    keywords: ['barbitch', 'bar.bitch', 'bar bitch', 'Brno', 'Blog', 'Nehty', 'B.B.Blog'],
     alternates: {
       canonical: `https://barbitch.cz/blog`,
     },
@@ -47,7 +48,9 @@ const Blog = async () => {
     <main>
       <Top title={data.title} small linkToReserve={dataLink.linkToReserve} />
       <section className={'pb-16'}>
-        <Posts data={posts.reverse()} blog />
+        {/* Pořadí řeší `sort` v dotazu (nejnovější první) — `reverse()` navíc
+            mutoval pole a spoléhal na výchozí pořadí ze Strapi. */}
+        <Posts data={posts} blog />
       </section>
     </main>
   )

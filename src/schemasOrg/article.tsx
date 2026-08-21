@@ -1,11 +1,12 @@
 import { jsonLd } from 'lib/jsonLd'
+import { absUrl, clampHeadline, latestDate, SITE_URL } from 'lib/seo'
 
 interface ArticleSchemaProps {
   title: string
   description: string
-  image: string
-  datePublished: string
-  dateModified: string
+  image?: string
+  datePublished?: string
+  dateModified?: string
   author?: string
   url: string
 }
@@ -22,22 +23,24 @@ export const ArticleSchema = ({
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'Article',
-    headline: title,
+    headline: clampHeadline(title),
     description,
-    image,
+    image: absUrl(image),
     datePublished,
-    dateModified,
+    // Strapi ukládá `updatedAt` o zlomek sekundy dřív než `publishedAt` —
+    // bez tohoto by každý článek tvrdil, že byl upraven před vydáním.
+    dateModified: latestDate(datePublished, dateModified),
     author: {
       '@type': 'Organization',
       name: author,
-      url: 'https://barbitch.cz',
+      url: SITE_URL,
     },
     publisher: {
       '@type': 'Organization',
       name: 'Barbitch',
       logo: {
         '@type': 'ImageObject',
-        url: 'https://barbitch.cz/logo.jpg',
+        url: `${SITE_URL}/logo.jpg`,
       },
     },
     mainEntityOfPage: {

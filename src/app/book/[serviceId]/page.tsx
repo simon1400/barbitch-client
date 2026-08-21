@@ -19,6 +19,8 @@ export const metadata: Metadata = {
   title: 'Výběr specialistky | Rezervace – Barbitch Beauty Studio Brno',
   description: 'Vyberte si specialistku pro vaši rezervaci v Barbitch Beauty Studiu v Brně.',
   robots: { index: false, follow: false },
+  // Kroky rezervace jsou noindex — kanonizovat je nemá co potvrzovat.
+  alternates: { canonical: undefined },
 }
 
 const ProfileImage = ({ src, className }: { src: string | null; className?: string }) => (

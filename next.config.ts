@@ -17,8 +17,17 @@ const nextConfig: NextConfig = {
         permanent: true,
       },
       {
+        // Dřív mířil na /blog — pro Google soft-404. Míří na článek, který
+        // tím slugem byl původně myšlen.
         source: '/blog/halloween-beauty-2025',
-        destination: '/blog',
+        destination: '/blog/halloween-beauty-brno-2025',
+        permanent: true,
+      },
+      {
+        // `/hiring` je prázdná kopie `/kariera` (0 slov, jen H1).
+        // Drž v souladu s `REDIRECTED_ARTICLE_SLUGS` v `src/fetch/sitemap.ts`.
+        source: '/hiring',
+        destination: '/kariera',
         permanent: true,
       },
     ]

@@ -10,7 +10,8 @@ export async function generateMetadata(): Promise<Metadata> {
     'Objevte moderní beauty studio Bar.bitch v Brně. Profesionální manikúra, trendy obočí a dokonalé řasy. Individuální přístup a relaxace s kvalitními materiály. Rezervujte si termín ještě dnes!'
 
   return {
-    title,
+    // `absolute` — titulek už značku obsahuje, šablona by ji přidala podruhé.
+    title: { absolute: title },
     description,
     robots: { index: false, follow: false },
     openGraph: {
@@ -28,10 +29,7 @@ export async function generateMetadata(): Promise<Metadata> {
       description,
       images: ['https://barbitch.cz/assets/bigBaner.jpg'],
     },
-    keywords: ['barbitch', 'bar.bitch', 'bar bitch', 'Brno', 'Nehty', 'Děkujeme'],
-    alternates: {
-      canonical: 'https://barbitch.cz/thank-you',
-    },
+    // Žádný canonical: stránka je noindex, kanonizovat ji na sebe je protimluv.
   }
 }
 

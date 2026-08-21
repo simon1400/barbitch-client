@@ -16,7 +16,8 @@ const Menu = ({ nav }: { nav: IDataNav }) => {
       className={`fixed top-0 left-0 w-full bg-accent z-20 overflow-hidden flex items-end transition-opacity duration-300 ${
         open ? 'opacity-1 h-screen' : 'opacity-0 h-0'
       }`}
-      role={'menu'}
+      // Žádné `role="menu"`: přebíjelo to landmark <nav> uvnitř a pro čtečku
+      // z navigace dělalo aplikační menu (očekává ovládání šipkami).
       aria-label={'Hlavní menu'}
       inert={!open ? true : undefined}
     >
@@ -25,31 +26,26 @@ const Menu = ({ nav }: { nav: IDataNav }) => {
           <nav className={'lg:flex items-center justify-between w-full pb-20'}>
             <div>
               <ul className={'mb-2.5 lg:mb-0 block'} aria-label={'Hlavní navigace'}>
-                {nav.leftNav?.length &&
-                  nav.leftNav.map((item: INavItem) => (
-                    <li key={`leftMenu_${item.title}`}>
-                      <MenuLink
-                        size={'text-sm1 lg:text-lg'}
-                        heading={item.title}
-                        href={item.link}
-                      />
-                    </li>
-                  ))}
+                {/* `?.length &&` vykreslí při prázdném poli literální 0. */}
+                {nav.leftNav?.map((item: INavItem) => (
+                  <li key={`leftMenu_${item.title}`}>
+                    <MenuLink size={'text-sm1 lg:text-lg'} heading={item.title} href={item.link} />
+                  </li>
+                ))}
               </ul>
             </div>
             <div>
               <ul className={'block text-right'} aria-label={'Doplňková navigace'}>
-                {nav.rightNav?.length &&
-                  nav.rightNav.map((item: INavItem) => (
-                    <li className={'mt-2 lg:mt-2.5 text-right'} key={`rightMenu_${item.title}`}>
-                      <MenuLink
-                        size={'text-resLg lg:text-md text-right'}
-                        href={item.link}
-                        heading={item.title}
-                        reverse
-                      />
-                    </li>
-                  ))}
+                {nav.rightNav?.map((item: INavItem) => (
+                  <li className={'mt-2 lg:mt-2.5 text-right'} key={`rightMenu_${item.title}`}>
+                    <MenuLink
+                      size={'text-resLg lg:text-md text-right'}
+                      href={item.link}
+                      heading={item.title}
+                      reverse
+                    />
+                  </li>
+                ))}
               </ul>
             </div>
             <Button

@@ -94,6 +94,13 @@ export const getAllPost = async (): Promise<IDataPostShort[]> => {
           fields: ['url', 'alternativeText'],
         },
       },
+      // Bez explicitního řazení a stránkování platil výchozí limit Strapi (25):
+      // 26. článkem by nejstarší příspěvky tiše zmizely z /blog i ze sitemapy.
+      sort: ['publishedAt:desc'],
+      pagination: {
+        start: 0,
+        limit: 100,
+      },
     },
     {
       encodeValuesOnly: true,

@@ -39,8 +39,14 @@ export const getVoucher = async () => {
     },
   )
 
-  const data: IDataVoucher = await Axios.get(`/api/vaucher-page?${query}`)
-  return data
+  // Bez odchycení by výpadek CMS shodil celý /darkovy-voucher do 500.
+  try {
+    const data: IDataVoucher = await Axios.get(`/api/vaucher-page?${query}`)
+    return data
+  } catch (error) {
+    console.error('Failed to fetch voucher page:', error)
+    return { title: 'Dárkový voucher', dynamicContent: [] } satisfies IDataVoucher
+  }
 }
 
 export const createVoucher = async (body: any) => {

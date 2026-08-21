@@ -1,7 +1,10 @@
 User-Agent: *
-Allow: /book$
+# `Allow: /book$` respektuje jen Google a Bing — `$` není součástí standardu.
+# Dvojice Allow/Disallow níž funguje všude (vyhrává nejdelší shoda).
+Allow: /book
 Disallow: /book/
 Disallow: /rezervace/
 Disallow: /cabinet
+Disallow: /api/
 
 Sitemap: https://barbitch.cz/sitemap.xml

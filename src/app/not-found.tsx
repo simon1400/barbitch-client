@@ -1,4 +1,15 @@
+import type { Metadata } from 'next'
+
 import Button from 'components/Button'
+
+// Platí pro statickou trasu `/_not-found`. Pro 404 vyvolanou `notFound()`
+// z dynamické trasy si titulek drží root layout a `noindex` doplní Next sám —
+// proto v rootu žádné globální `robots: index` není.
+export const metadata: Metadata = {
+  title: { absolute: 'Stránka nenalezena (404) | Barbitch' },
+  description: 'Tato stránka neexistuje. Přejděte na úvod nebo si rovnou rezervujte termín.',
+  robots: { index: false, follow: false },
+}
 
 export default function NotFound() {
   return (
@@ -11,7 +22,9 @@ export default function NotFound() {
       <div className={'m-auto text-center'}>
         <h1 className={'sr-only'}>{'Stránka nenalezena'}</h1>
         <div className={'mb-[50px] md:mb-[100px]'}>
-          <p className={'text-top md:text-[450px] font-bold leading-none'} aria-hidden="true">{'404'}</p>
+          <p className={'text-top md:text-[450px] font-bold leading-none'} aria-hidden={'true'}>
+            {'404'}
+          </p>
           <p className={'text-white font-bold text-lg md:text-[107px] md:-mt-[200px]'}>
             {'NAILS NOT FOUND'}
           </p>

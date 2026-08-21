@@ -4,6 +4,7 @@ import Button from 'components/Button'
 import { Container } from 'components/Container'
 import { getContact } from 'fetch/contact'
 import { HIRING } from 'lib/hiring'
+import { DEFAULT_OG_IMAGE } from 'lib/seo'
 import { BreadcrumbSchema } from 'schemasOrg/breadcrumb'
 import { JobPostingSchema } from 'schemasOrg/jobPosting'
 import { Top } from 'sections/Top/Top'
@@ -13,6 +14,7 @@ import CareerForm from './CareerForm'
 export const revalidate = 3600
 
 export const metadata: Metadata = {
+  // Tři různé titulky (title/og/twitter) mátly náhledy — teď jeden.
   title: 'Kariéra — hledáme lashmakerku',
   description:
     'Přidej se k týmu beauty salonu Bar.Bitch v centru Brna. Hledáme lashmakerku / lash stylistku na prodlužování řas. Napiš nám na Instagramu nebo vyplň krátký formulář.',
@@ -20,14 +22,23 @@ export const metadata: Metadata = {
     canonical: 'https://barbitch.cz/kariera',
   },
   openGraph: {
-    title: 'Hledáme lashmakerku | Bar.Bitch Brno',
+    title: 'Kariéra — hledáme lashmakerku | Barbitch Brno',
     description:
       'Připoj se k mladému týmu salonu v centru Brna. Prodlužování řas, kvalitní materiály, férové ohodnocení s provizí.',
     url: 'https://barbitch.cz/kariera',
     siteName: 'Barbitch',
     locale: 'cs_CZ',
     type: 'website',
-    images: ['/assets/banner.jpg'],
+    // Dřív `banner.jpg` — telefonní portrét 3024×4032, který sociální sítě
+    // ořízly na nepoužitelný výřez.
+    images: [DEFAULT_OG_IMAGE],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Kariéra — hledáme lashmakerku | Barbitch Brno',
+    description:
+      'Připoj se k mladému týmu salonu v centru Brna. Prodlužování řas, kvalitní materiály, férové ohodnocení s provizí.',
+    images: [DEFAULT_OG_IMAGE.url],
   },
 }
 

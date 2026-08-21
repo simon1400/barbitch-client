@@ -38,7 +38,7 @@ export const getServiceHomepage = async (): Promise<IDataHomepageService[]> => {
   }
 }
 
-export const getFullService = async (slug: string): Promise<IDataFullService> => {
+export const getFullService = async (slug: string): Promise<IDataFullService | undefined> => {
   const query = qs.stringify(
     {
       filters: {
@@ -93,14 +93,16 @@ export const getFullService = async (slug: string): Promise<IDataFullService> =>
     },
   )
 
+  // Vrací `undefined` místo výjimky: neznámý slug má skončit 404 přes `notFound()`,
+  // ne pádem stránky do 500 (tak se choval `/service/{cokoliv}`).
   try {
     const data: IDataFullService[] = await Axios.get(`/api/services?${query}`)
     if (!data || data.length === 0) {
-      throw new Error(`Service not found: ${slug}`)
+      return undefined
     }
     return data[0]
   } catch (error) {
     console.error('Failed to fetch full service:', error)
-    throw error
+    return undefined
   }
 }

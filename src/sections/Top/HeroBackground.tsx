@@ -62,6 +62,7 @@ function generateSparkles(count: number): Sparkle[] {
 export default function HeroBackground() {
   const containerRef = useRef<HTMLDivElement>(null)
   const [isDesktop, setIsDesktop] = useState(false)
+  const [reducedMotion, setReducedMotion] = useState(false)
   const [sparkles] = useState(() => generateSparkles(35))
   const [trail, setTrail] = useState<TrailSparkle[]>([])
   const trailIdRef = useRef(0)
@@ -74,9 +75,20 @@ export default function HeroBackground() {
     return () => window.removeEventListener('resize', check)
   }, [])
 
+  // 35 nekonečných animací plus stopa za kurzorem běžely bez ohledu na to,
+  // že si uživatel vypnul pohyb v systému. Drží to vytížený hlavní vlákno
+  // (INP) a na mobilu i baterii.
+  useEffect(() => {
+    const query = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const apply = () => setReducedMotion(query.matches)
+    apply()
+    query.addEventListener('change', apply)
+    return () => query.removeEventListener('change', apply)
+  }, [])
+
   const handleMouseMove = useCallback(
     (e: React.MouseEvent) => {
-      if (!containerRef.current || !isDesktop) return
+      if (!containerRef.current || !isDesktop || reducedMotion) return
       const now = performance.now()
       if (now - lastSpawnRef.current < 28) return
       lastSpawnRef.current = now
@@ -113,14 +125,14 @@ export default function HeroBackground() {
       }
       setTrail((prev) => [...prev.slice(-60), ...newSparkles])
     },
-    [isDesktop],
+    [isDesktop, reducedMotion],
   )
 
   const removeTrail = useCallback((id: number) => {
     setTrail((prev) => prev.filter((t) => t.id !== id))
   }, [])
 
-  const visibleSparkles = isDesktop ? sparkles : sparkles.slice(0, 18)
+  const visibleSparkles = reducedMotion ? [] : isDesktop ? sparkles : sparkles.slice(0, 18)
 
   return (
     <div
@@ -171,7 +183,7 @@ export default function HeroBackground() {
       </div>
 
       {/* Mouse-following glitter trail — desktop */}
-      {isDesktop && (
+      {isDesktop && !reducedMotion && (
         <div className={'absolute inset-0 pointer-events-none'}>
           <AnimatePresence>
             {trail.map((t) => (

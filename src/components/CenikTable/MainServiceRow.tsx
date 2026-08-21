@@ -28,7 +28,7 @@ export const MainServiceRow = ({
       <span className={'shrink-0 font-bold text-xs whitespace-nowrap'}>
         {`${service.basePrice} Kč`}
       </span>
-      <BookLink href={`/book/${service.id}/extras`} />
+      <BookLink href={`/book/${service.id}/extras`} service={service.title} />
       {hasExtras ? (
         <ChevronDown
           size={25}

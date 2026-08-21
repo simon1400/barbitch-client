@@ -10,6 +10,8 @@ export const metadata: Metadata = {
   title: 'Doplňkové služby | Rezervace – Barbitch Beauty Studio Brno',
   description: 'Přidejte doplňkové služby ke své rezervaci v Barbitch Beauty Studiu v Brně.',
   robots: { index: false, follow: false },
+  // Kroky rezervace jsou noindex — zděděný canonical na /book nemá co potvrzovat.
+  alternates: { canonical: undefined },
 }
 
 const ExtrasPage = async ({ params }: any) => {
