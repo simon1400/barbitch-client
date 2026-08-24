@@ -79,9 +79,31 @@ export interface IEngineEmployee {
   photoUrl: string | null
 }
 
-export const getEngineEmployees = async (serviceId: string): Promise<IEngineEmployee[]> => {
-  const res = await Engine.get(`/api/engine/services/${encodeURIComponent(serviceId)}/employees`)
-  return res.data?.employees ?? []
+export interface IEngineEmployeeList {
+  employees: IEngineEmployee[]
+  /** Сколько мастеров скрыто, потому что не делают выбранный вариант/дополнение. */
+  hiddenByRestrictions: number
+}
+
+/**
+ * Мастера услуги. selection (вариант + дополнения с шага /extras) передаётся на сервер:
+ * мастера, которым эта комбинация не разрешена, в список не попадают.
+ */
+export const getEngineEmployees = async (
+  serviceId: string,
+  selection?: ISelection,
+): Promise<IEngineEmployeeList> => {
+  const qs = new URLSearchParams()
+  if (selection?.variant) qs.set('variant', selection.variant)
+  if (selection?.modifiers.length) qs.set('modifiers', selection.modifiers.join(','))
+  const suffix = qs.toString() ? `?${qs.toString()}` : ''
+  const res = await Engine.get(
+    `/api/engine/services/${encodeURIComponent(serviceId)}/employees${suffix}`,
+  )
+  return {
+    employees: res.data?.employees ?? [],
+    hiddenByRestrictions: Number(res.data?.hiddenByRestrictions ?? 0),
+  }
 }
 
 // ── выбор варианта/дополнений (шаг /extras → дальше через query) ──

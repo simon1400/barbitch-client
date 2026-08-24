@@ -1,6 +1,6 @@
 /* eslint-disable import/order */
 import type { Metadata } from 'next'
-import type { IEngineEmployee, IEngineService } from '../fetch/engine'
+import type { IEngineEmployee, IEngineService, ISelection } from '../fetch/engine'
 
 import { MasterIcon } from 'icons/Master'
 import { calcJuniorPrice, JUNIOR_DISCOUNT_PERCENT } from 'lib/junior'
@@ -67,17 +67,30 @@ const JuniorPrice = ({
 )
 
 // Оба запроса идут в наш движок; на сетевой сбой/5xx не роняем Server Component.
+// selection уходит и в /employees: мастера, которые выбранный вариант/дополнения
+// не делают (salon-service.restrictions), сервер из списка убирает.
 const fetchData = async (
   serviceId: string,
-): Promise<{ service: IEngineService | null; employees: IEngineEmployee[]; failed: boolean }> => {
+  selection: ISelection,
+): Promise<{
+  service: IEngineService | null
+  employees: IEngineEmployee[]
+  hiddenByRestrictions: number
+  failed: boolean
+}> => {
   try {
-    const [service, employees] = await Promise.all([
+    const [service, list] = await Promise.all([
       getEngineService(serviceId),
-      getEngineEmployees(serviceId),
+      getEngineEmployees(serviceId, selection),
     ])
-    return { service, employees, failed: false }
+    return {
+      service,
+      employees: list.employees,
+      hiddenByRestrictions: list.hiddenByRestrictions,
+      failed: false,
+    }
   } catch {
-    return { service: null, employees: [], failed: true }
+    return { service: null, employees: [], hiddenByRestrictions: 0, failed: true }
   }
 }
 
@@ -85,25 +98,30 @@ const BookPersonalPage = async ({ params, searchParams }: any) => {
   const { serviceId } = await params
   const selection = selectionFromSearchParams((await searchParams) ?? {})
 
-  const { service, employees, failed } = await fetchData(serviceId)
+  const { service, employees, hiddenByRestrictions, failed } = await fetchData(serviceId, selection)
 
-  // Нет мастеров: либо движок временно недоступен (failed) — просим попробовать
-  // позже, либо услуга реально без назначенных мастеров — предлагаем другую.
+  // Нет мастеров: движок недоступен (failed) / услугу никто не делает /
+  // выбранную комбинацию не делает ни одна из назначенных мастеров —
+  // в последнем случае ведём назад на шаг выбора, а не на выбор услуги.
   if (!service || employees.length === 0) {
+    const restricted = Boolean(service) && hiddenByRestrictions > 0
+    const backHref = restricted ? `/book/${serviceId}/extras` : '/book'
     return (
       <div className={'bg-[#252523] rounded-special-small px-5 py-10 text-center'}>
         <h2 className={'text-xs1 leading-snug mb-5'}>
           {failed
             ? 'Rezervační systém je momentálně nedostupný. Zkuste to prosím za chvíli.'
-            : 'Pro tuto službu nejsou dostupné žádné specialistky. Vyberte si prosím jinou službu.'}
+            : restricted
+              ? 'Vybranou kombinaci u nás bohužel nedělá žádná specialistka. Upravte prosím výběr délky nebo doplňků.'
+              : 'Pro tuto službu nejsou dostupné žádné specialistky. Vyberte si prosím jinou službu.'}
         </h2>
         <Link
           className={
             'inline-block bg-primary text-white text-xs1 font-bold rounded-special-small px-6 py-3'
           }
-          href={'/book'}
+          href={backHref}
         >
-          {'Zpět na výběr služby'}
+          {restricted ? 'Upravit výběr' : 'Zpět na výběr služby'}
         </Link>
       </div>
     )
@@ -165,6 +183,14 @@ const BookPersonalPage = async ({ params, searchParams }: any) => {
           </li>
         ))}
       </ul>
+      {hiddenByRestrictions > 0 && (
+        <p className={'text-[11px] leading-snug text-[#A0A0A0] px-1 pb-4 pt-1'}>
+          {'Zobrazujeme jen specialistky, které vybranou kombinaci dělají. '}
+          <Link className={'underline'} href={`/book/${service.id}/extras`}>
+            {'Upravit výběr'}
+          </Link>
+        </p>
+      )}
     </div>
   )
 }

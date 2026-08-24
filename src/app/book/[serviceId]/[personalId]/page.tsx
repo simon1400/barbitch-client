@@ -6,7 +6,12 @@ import { addDays, addMonths, endOfMonth, format } from 'date-fns'
 import Link from 'next/link'
 import { Suspense } from 'react'
 
-import { getEngineAvailability, selectionFromSearchParams } from '../../fetch/engine'
+import {
+  engineErrorCode,
+  getEngineAvailability,
+  selectionFromSearchParams,
+  selectionToQuery,
+} from '../../fetch/engine'
 
 import BookCalendarClient from './BookCalendarClient'
 import CalendarSkeleton from './components/CalendarSkeleton'
@@ -34,6 +39,10 @@ async function BookCalendarContent({
 
   let days: Awaited<ReturnType<typeof getEngineAvailability>>['days'] = []
   let failed = false
+  // мастеру не разрешена выбранная комбинация (salon-service.restrictions) или он
+  // вообще не делает услугу — на шаге выбора его нет, сюда можно попасть только
+  // прямой ссылкой/кнопкой «назад»
+  let mismatch = false
   try {
     const availability = await getEngineAvailability({
       service: serviceId,
@@ -43,23 +52,27 @@ async function BookCalendarContent({
       to,
     })
     days = availability.days
-  } catch {
-    failed = true
+  } catch (error) {
+    const code = engineErrorCode(error)
+    mismatch = code === 'employee_not_allowed' || code === 'employee_service_mismatch'
+    failed = !mismatch
   }
 
-  if (failed) {
+  if (failed || mismatch) {
     return (
       <div className={'bg-[#252523] rounded-special-small px-5 py-10 text-center'}>
         <h2 className={'text-xs1 leading-snug mb-5'}>
-          {'Rezervační systém je momentálně nedostupný. Zkuste to prosím za chvíli.'}
+          {mismatch
+            ? 'Tato specialistka vybranou kombinaci nedělá. Vyberte prosím jinou specialistku nebo upravte výběr.'
+            : 'Rezervační systém je momentálně nedostupný. Zkuste to prosím za chvíli.'}
         </h2>
         <Link
           className={
             'inline-block bg-primary text-white text-xs1 font-bold rounded-special-small px-6 py-3'
           }
-          href={'/book'}
+          href={mismatch ? `/book/${serviceId}${selectionToQuery(selection)}` : '/book'}
         >
-          {'Zpět na výběr služby'}
+          {mismatch ? 'Zpět na výběr specialistky' : 'Zpět na výběr služby'}
         </Link>
       </div>
     )
