@@ -1,5 +1,9 @@
+/* eslint-disable import/order */
+
 import type { NextRequest } from 'next/server'
 
+import { Buffer } from 'node:buffer'
+import crypto from 'node:crypto'
 import { clientIp, makeRateLimiter } from 'lib/route-guard'
 import { NextResponse } from 'next/server'
 import { Resend } from 'resend'
@@ -8,23 +12,19 @@ const resend = new Resend(process.env.RESEND_API_KEY)
 
 const limit = makeRateLimiter(10, 60_000)
 
-// Этот роут вызывает АДМИНКА (admin.barbitch.cz) cross-origin, как send-bulk-email.
-// Поэтому sameOrigin тут не подходит — нужен CORS-allowlist по origin.
-const ALLOWED_ORIGINS = new Set([
-  'https://admin.barbitch.cz',
-  'https://barbitch.cz',
-  'https://www.barbitch.cz',
-])
-
-const corsHeaders = (req: NextRequest): Record<string, string> => {
-  const origin = req.headers.get('origin') || ''
-  const headers: Record<string, string> = {
-    'Access-Control-Allow-Methods': 'POST, OPTIONS',
-    'Access-Control-Allow-Headers': 'Content-Type',
-    Vary: 'Origin',
-  }
-  if (ALLOWED_ORIGINS.has(origin)) headers['Access-Control-Allow-Origin'] = origin
-  return headers
+// Роут ТОЛЬКО server-to-server: его дёргает Strapi (api::campaign) после
+// проверки JWT владельца. Из браузера сюда больше никто не ходит — CORS снят.
+//
+// 🟥 Почему появился секрет (s182): раньше роут был открыт в интернет и слал
+// письмо от info@barbitch.cz на произвольный адрес с произвольным содержимым
+// полей — достаточно было знать URL (админка ходила сюда без авторизации).
+// Тот же секрет и та же схема, что у send-bulk-email (s175): нет секрета в
+// окружении → 503, режим fail-closed.
+const timingSafeEqual = (a: string, b: string): boolean => {
+  const bufA = Buffer.from(a)
+  const bufB = Buffer.from(b)
+  if (bufA.length !== bufB.length) return false
+  return crypto.timingSafeEqual(bufA, bufB)
 }
 
 const escapeHtml = (value: unknown) =>
@@ -34,26 +34,25 @@ const escapeHtml = (value: unknown) =>
     .replaceAll('>', '&gt;')
     .replaceAll('"', '&quot;')
 
-export async function OPTIONS(req: NextRequest) {
-  return NextResponse.json({}, { headers: corsHeaders(req) })
-}
-
 export async function POST(req: NextRequest) {
-  const cors = corsHeaders(req)
   try {
-    const origin = req.headers.get('origin')
-    if (origin && !ALLOWED_ORIGINS.has(origin)) {
-      return NextResponse.json({ error: 'Forbidden' }, { status: 403, headers: cors })
+    const secret = process.env.CAMPAIGN_SEND_SECRET
+    if (!secret) {
+      return NextResponse.json({ error: 'Voucher confirmation is not configured' }, { status: 503 })
+    }
+    const provided = req.headers.get('x-campaign-secret') || ''
+    if (!timingSafeEqual(provided, secret)) {
+      return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }
     if (!limit(clientIp(req))) {
-      return NextResponse.json({ error: 'Too many requests' }, { status: 429, headers: cors })
+      return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
     }
 
     const { email, buyerName, recipientName, voucherId, validUntil } = await req.json()
 
     // Validate required fields
     if (!email || !buyerName || !recipientName || !voucherId || !validUntil) {
-      return NextResponse.json({ error: 'All fields are required' }, { status: 400, headers: cors })
+      return NextResponse.json({ error: 'All fields are required' }, { status: 400 })
     }
 
     const safeBuyer = escapeHtml(buyerName)
@@ -248,12 +247,12 @@ export async function POST(req: NextRequest) {
 
     if (error) {
       console.error('Error sending email:', error)
-      return NextResponse.json({ error: error.message }, { status: 500, headers: cors })
+      return NextResponse.json({ error: error.message }, { status: 500 })
     }
 
-    return NextResponse.json({ success: true, data }, { status: 200, headers: cors })
+    return NextResponse.json({ success: true, data }, { status: 200 })
   } catch (error) {
     console.error('Error in send-confirmation-voucher API:', error)
-    return NextResponse.json({ error: 'Failed to send email' }, { status: 500, headers: cors })
+    return NextResponse.json({ error: 'Failed to send email' }, { status: 500 })
   }
 }
