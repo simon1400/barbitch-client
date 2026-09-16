@@ -25,12 +25,7 @@ const resend = new Resend(process.env.RESEND_API_KEY)
 
 // Белый список шаблонов. Имя подставляется в path.join, поэтому без списка
 // «шаблон» вида ../../../secret прочитал бы посторонний .html с диска.
-const TEMPLATES = new Set([
-  'win-back',
-  'birthday-discount',
-  'window-cross-sell',
-  'window-cross-sell-junior',
-])
+const TEMPLATES = new Set(['win-back', 'birthday-discount'])
 
 const timingSafeEqual = (a: string, b: string): boolean => {
   const bufA = Buffer.from(a)

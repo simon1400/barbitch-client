@@ -47,16 +47,10 @@ export default function BookCalendarClient({ initialData }: BookCalendarClientPr
   const [slotError, setSlotError] = useState<string>('')
 
   useEffect(() => {
-    // Переход с e-mail-предложения «дозапись в окно»: метка для атрибуции (попадёт
-    // в комментарий брони) + предвыбор предложенной даты.
+    // Предвыбор даты по ссылке (?d=YYYY-MM-DD). Метка письма «дозапись в окно»
+    // (bb_offer) удалена вместе с письмами в s197.
     try {
       const p = new URLSearchParams(window.location.search)
-      if (p.get('src') === 'win') {
-        localStorage.setItem(
-          'bb_offer',
-          JSON.stringify({ src: 'win', disc: p.get('disc') || '', ts: Date.now() }),
-        )
-      }
       const d = p.get('d')
       if (d && /^\d{4}-\d{2}-\d{2}$/.test(d)) {
         const dt = parseISO(d)
