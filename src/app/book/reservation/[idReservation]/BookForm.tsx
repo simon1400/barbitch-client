@@ -3,6 +3,7 @@ import Button from 'components/Button'
 import { Container } from 'components/Container'
 import { sendGoogleAdsConversion } from 'fetch/googleAds'
 import { sendCAPIEvent } from 'fetch/pixel'
+import { getBookingAttribution } from 'lib/attribution'
 import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useState } from 'react'
 
@@ -113,6 +114,7 @@ const BookForm = ({ idReservation }: Props) => {
         phone: userData.phone,
         email: userData.email,
         customerComment: userData.comment,
+        attribution: getBookingAttribution(),
       })
 
       // Данные брони для /thank-you (бейдж времени + предложения дозаписи по cancelToken).

@@ -1,3 +1,5 @@
+import type { BookingAttribution } from 'lib/attribution'
+
 import axios from 'axios'
 
 // Data-слой booking-флоу поверх собственного движка (Strapi custom api booking-engine,
@@ -260,6 +262,8 @@ export const createEngineBooking = async (body: {
   phone: string
   email?: string
   customerComment?: string
+  /** откуда клиент пришёл на сайт (lib/attribution, s200) */
+  attribution?: BookingAttribution
 }): Promise<IEngineBookingResult> => {
   const res = await Engine.post('/api/engine/bookings', body)
   return res.data

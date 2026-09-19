@@ -1,6 +1,7 @@
 /* eslint-disable react-dom/no-dangerously-set-innerhtml */
 import type { Metadata, Viewport } from 'next'
 
+import AttributionCapture from 'components/AttributionCapture'
 import LazyChatWidget from 'components/ChatWidget.lazy'
 import CookieConsent from 'components/CookieConsent'
 import ErrorReporter from 'components/ErrorReporter'
@@ -107,6 +108,7 @@ export default async function RootLayout({
           <ErrorReporter />
           <FacebookPageView />
           <GoogleAdsClickId />
+          <AttributionCapture />
           <Suspense
             fallback={
               <header className={'absolute w-full z-50'}>
