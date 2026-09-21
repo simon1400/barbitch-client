@@ -203,7 +203,15 @@ export interface IEngineHoldService {
   price: number
   durationMin: number
   seniorPrice: number
+  // снапшот движка: базовая услуга, её documentId и выбранный вариант (s203 — гейт коррекции)
+  base?: string
+  serviceDocId?: string
+  variant?: string | null
 }
+
+// «Korekce do 5 dnů» за 0 Kč — сервер пустит только после визита за последние 5 дней.
+export const isFreeKorekceHold = (item: IEngineHoldService | undefined, price: number): boolean =>
+  !!item && /^korekce do 5 dn/i.test((item.base ?? item.title).trim()) && price <= 0
 
 export interface IEngineHold {
   holdId: string

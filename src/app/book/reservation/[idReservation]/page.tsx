@@ -1,9 +1,10 @@
 import type { Metadata } from 'next'
 
 import { formatInTimeZone } from 'date-fns-tz'
+import { getContact } from 'fetch/contact'
 import { JUNIOR_DISCOUNT_PERCENT } from 'lib/junior'
 
-import { getEngineHold } from '../../fetch/engine'
+import { getEngineHold, getEngineService, isFreeKorekceHold } from '../../fetch/engine'
 
 import BookForm from './BookForm'
 import { ReservationExpired } from './components/ReservationExpired'
@@ -47,6 +48,26 @@ export default async function BookServicePage({ params }: any) {
   // Junior-мастер: движок уже применил −20% (price < seniorPrice) — показываем
   // зачёркнутую senior-цену.
   const isJunior = serviceItem.seniorPrice > hold.price
+
+  // Бесплатная коррекция: предупреждаем до отправки, а после 409 korekce_no_visit
+  // форма покажет телефон салона и (у ногтей) ссылку на платный вариант 150 Kč.
+  const freeKorekce = isFreeKorekceHold(serviceItem, hold.price)
+  let korekce: { salonPhone: string; paidHref: string | null } | null = null
+  if (freeKorekce) {
+    const [contact, service] = await Promise.all([
+      getContact(),
+      serviceItem.serviceDocId
+        ? getEngineService(serviceItem.serviceDocId).catch(() => null)
+        : null,
+    ])
+    korekce = {
+      salonPhone: contact.phone,
+      paidHref:
+        service && service.variants.length > 0 && serviceItem.serviceDocId
+          ? `/book/${serviceItem.serviceDocId}/extras`
+          : null,
+    }
+  }
 
   return (
     <>
@@ -100,13 +121,24 @@ export default async function BookServicePage({ params }: any) {
               <span className={'text-white'}>{`${hold.price} Kč`}</span>
             </span>
           </li>
-          <li className={'text-[11px]'}>
-            <span className={'text-[#A0A0A0]'}>{'Platba - hotově nebo kartou na pobočce'}</span>
-          </li>
+          {korekce ? (
+            <li className={'pb-2.5'}>
+              <p className={'text-[11px] text-[#A0A0A0] leading-snug font-normal'}>
+                <span className={'font-bold text-[#E71E6E]'}>{'Korekce zdarma'}</span>
+                {
+                  ' — poskytujeme ji do 5 dnů po návštěvě v našem salonu. Podle telefonního čísla ověříme, že jste u nás v posledních 5 dnech byla.'
+                }
+              </p>
+            </li>
+          ) : (
+            <li className={'text-[11px]'}>
+              <span className={'text-[#A0A0A0]'}>{'Platba - hotově nebo kartou na pobočce'}</span>
+            </li>
+          )}
         </ul>
       </div>
 
-      <BookForm idReservation={idReservation} />
+      <BookForm idReservation={idReservation} korekce={korekce} />
     </>
   )
 }

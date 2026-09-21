@@ -31,12 +31,17 @@ export interface IErrorUserData {
 
 interface Props {
   idReservation: string
+  // Бесплатная «Korekce do 5 dnů»: телефон салона для экрана отказа и ссылка на
+  // платный вариант (null у ресниц — у них платного варианта в каталоге нет).
+  korekce?: { salonPhone: string; paidHref: string | null } | null
 }
 
-const BookForm = ({ idReservation }: Props) => {
+const BookForm = ({ idReservation, korekce = null }: Props) => {
   const router = useRouter()
   const { expiredId, setExpiredId } = useBookReservation()
   const isExpired = expiredId === idReservation
+  // Сервер не нашёл визит за последние 5 дней (409 korekce_no_visit).
+  const [korekceBlocked, setKorekceBlocked] = useState(false)
 
   const [userData, setUserData] = useState<IUserData>({
     name: '',
@@ -86,6 +91,29 @@ const BookForm = ({ idReservation }: Props) => {
     setUserData((prev) => ({ ...prev, [name]: value }))
     setErrorData((prev) => ({ ...prev, [name]: false }))
   }, [])
+
+  // Ответ движка на неудачную бронь — по коду ошибки (см. EngineError в strapi).
+  const onBookingError = (err: unknown) => {
+    const code = engineErrorCode(err)
+    if (code === 'blacklisted') {
+      router.push('/blocked')
+      return
+    }
+    if (code === 'hold_expired' || code === 'hold_not_found') {
+      setExpiredId(idReservation)
+      return
+    }
+    if (code === 'slot_taken') {
+      setSubmitError('Termín byl bohužel právě obsazen. Vyberte prosím jiný čas.')
+      return
+    }
+    if (code === 'korekce_no_visit') {
+      setKorekceBlocked(true)
+      return
+    }
+    setSubmitError('Rezervaci se nepodařilo vytvořit. Zkuste to prosím znovu.')
+    console.error('Booking error:', err)
+  }
 
   const handleBook = async (e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) => {
     e.preventDefault()
@@ -147,22 +175,38 @@ const BookForm = ({ idReservation }: Props) => {
 
       router.push('/thank-you')
     } catch (err) {
-      const code = engineErrorCode(err)
-      if (code === 'blacklisted') {
-        router.push('/blocked')
-        return
-      }
-      if (code === 'hold_expired' || code === 'hold_not_found') {
-        setExpiredId(idReservation)
-        return
-      }
-      if (code === 'slot_taken') {
-        setSubmitError('Termín byl bohužel právě obsazen. Vyberte prosím jiný čas.')
-        return
-      }
-      setSubmitError('Rezervaci se nepodařilo vytvořit. Zkuste to prosím znovu.')
-      console.error('Booking error:', err)
+      onBookingError(err)
     }
+  }
+
+  if (korekceBlocked) {
+    const phone = korekce?.salonPhone ?? ''
+    return (
+      <div className={'bg-[#252523] rounded-special-small p-6 text-center'}>
+        <p className={'text-white text-resMd1 mb-1'}>{'Návštěvu jsme nenašli'}</p>
+        <p className={'text-[#A0A0A0] text-xss mb-5'}>
+          {
+            'Korekci zdarma poskytujeme do 5 dnů po návštěvě v našem salonu. Podle zadaného telefonního čísla jsme v posledních 5 dnech žádnou návštěvu nenašli. Zavolejte nám prosím — domluvíme se osobně.'
+          }
+        </p>
+        <div className={'flex flex-col items-center gap-3'}>
+          {phone && (
+            <Button
+              text={`Zavolat ${phone}`}
+              href={`tel:${phone.replaceAll(' ', '')}`}
+              inverse
+              small
+            />
+          )}
+          {korekce?.paidHref && (
+            <Button text={'Rezervovat placenou korekci'} href={korekce.paidHref} small />
+          )}
+          <a href={'/book'} className={'text-[#A0A0A0] text-xss underline'}>
+            {'Zpět na výběr služby'}
+          </a>
+        </div>
+      </div>
+    )
   }
 
   if (isExpired) {
