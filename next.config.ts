@@ -30,6 +30,12 @@ const nextConfig: NextConfig = {
         destination: '/kariera',
         permanent: true,
       },
+      {
+        // Stará akční stránka bitchcard — Google ji pořád zkouší, vracela 404.
+        source: '/bitchcard-2025',
+        destination: '/cenik',
+        statusCode: 301,
+      },
     ]
   },
   env: {

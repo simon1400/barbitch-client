@@ -2,7 +2,7 @@ import type { Metadata } from 'next'
 
 import { redirect } from 'next/navigation'
 
-import { getEngineService } from '../../fetch/engine'
+import { getEngineServiceCached } from '../../fetch/serviceCache'
 
 import { ExtrasSelector } from './ExtrasSelector'
 
@@ -17,9 +17,9 @@ export const metadata: Metadata = {
 const ExtrasPage = async ({ params }: any) => {
   const { serviceId } = await params
 
-  let service: Awaited<ReturnType<typeof getEngineService>> | null = null
+  let service: Awaited<ReturnType<typeof getEngineServiceCached>> | null = null
   try {
-    service = await getEngineService(serviceId)
+    service = await getEngineServiceCached(serviceId)
   } catch {
     // Неизвестный id (напр. легаси-ссылка на combo из старого письма) → на выбор услуги.
     service = null

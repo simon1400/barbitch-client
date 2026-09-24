@@ -1,8 +1,7 @@
 User-Agent: *
-# `Allow: /book$` respektuje jen Google a Bing — `$` není součástí standardu.
-# Dvojice Allow/Disallow níž funguje všude (vyhrává nejdelší shoda).
-Allow: /book
-Disallow: /book/
+# /book/… záměrně NEblokujeme: staré adresy z Noona tam dostávají 301 (middleware)
+# a Google ho musí vidět, jinak je z indexu nevyřadí. Kroky rezervace samy
+# nesou noindex, do výsledků se nedostanou.
 Disallow: /rezervace/
 Disallow: /cabinet
 Disallow: /api/

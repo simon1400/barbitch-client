@@ -10,10 +10,10 @@ import {
   calcSelectionPricing,
   engineAssetUrl,
   getEngineEmployees,
-  getEngineService,
   selectionFromSearchParams,
   selectionToQuery,
 } from '../fetch/engine'
+import { getEngineServiceCached } from '../fetch/serviceCache'
 
 export const metadata: Metadata = {
   title: 'Výběr specialistky | Rezervace – Barbitch Beauty Studio Brno',
@@ -80,7 +80,7 @@ const fetchData = async (
 }> => {
   try {
     const [service, list] = await Promise.all([
-      getEngineService(serviceId),
+      getEngineServiceCached(serviceId), // tentýž požadavek, co už udělal layout
       getEngineEmployees(serviceId, selection),
     ])
     return {

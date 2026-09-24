@@ -9,6 +9,19 @@ declare global {
   }
 }
 
+// Inline skript v <head> (app/layout.tsx) gtag definuje, ale na stránce 404 se
+// nespustí — volání window.gtag pak shodilo celý web na „Něco se pokazilo“
+// u každého, kdo dřív cookies přijal. Stejná definice jako od Googlu:
+// do dataLayer musí jít objekt `arguments`, pole by GTM nepřečetl.
+function ensureGtag() {
+  const dataLayer = (window.dataLayer = window.dataLayer || [])
+  if (typeof window.gtag === 'function') return
+  window.gtag = function gtag() {
+    // eslint-disable-next-line prefer-rest-params
+    dataLayer.push(arguments)
+  }
+}
+
 function getConsentCookie(): string | null {
   if (typeof document === 'undefined') return null
   const match = document.cookie.match(/(?:^|; )cookie_consent=([^;]*)/)
@@ -21,6 +34,7 @@ function setConsentCookie(value: 'accepted' | 'rejected') {
 }
 
 function grantConsent() {
+  ensureGtag()
   window.gtag('consent', 'update', {
     analytics_storage: 'granted',
     ad_storage: 'granted',
