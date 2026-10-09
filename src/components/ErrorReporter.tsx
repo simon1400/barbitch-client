@@ -4,6 +4,37 @@ import { attemptChunkReload, isChunkLoadError } from 'lib/chunkRecovery'
 import { reportClientError } from 'lib/errorReporter'
 import { useEffect } from 'react'
 
+// Промис отклонён не ошибкой. JSON.stringify давал в журнал «{"isTrusted":true}»
+// (событие) и «{}» (DOMException и т. п.) — по ним не понять, что упало. Пишем
+// тип события и элемент с адресом: «Event "error" on <SCRIPT src=…gtm.js>».
+function describeNonError(reason: object): string {
+  if (typeof Event !== 'undefined' && reason instanceof Event) {
+    const target = reason.target as (Element & { src?: string; href?: string }) | null
+    let where = target?.constructor?.name || 'unknown target'
+    if (target && typeof Element !== 'undefined' && target instanceof Element) {
+      const url = target.src || target.href || target.getAttribute('src') || ''
+      const src = url ? ` src=${url}` : ''
+      where = `<${target.tagName}${src}>`
+    }
+    return `${reason.constructor?.name || 'Event'} "${reason.type}" on ${where}`.slice(0, 500)
+  }
+  const named = reason as { name?: unknown; message?: unknown }
+  const ctor = reason.constructor?.name || Object.prototype.toString.call(reason)
+  if (typeof named.name === 'string' || typeof named.message === 'string') {
+    return `${ctor}: ${String(named.name ?? '')} ${String(named.message ?? '')}`
+      .trim()
+      .slice(0, 500)
+  }
+  let json = ''
+  try {
+    json = JSON.stringify(reason)
+  } catch {
+    /* ignore */
+  }
+  const body = json && json !== '{}' ? json : `keys=[${Object.keys(reason).join(',')}]`
+  return `${ctor} ${body}`.slice(0, 500)
+}
+
 export default function ErrorReporter() {
   useEffect(() => {
     const handleError = (event: ErrorEvent) => {
@@ -32,11 +63,7 @@ export default function ErrorReporter() {
       } else if (typeof reason === 'string') {
         message = reason
       } else if (reason && typeof reason === 'object') {
-        try {
-          message = JSON.stringify(reason).slice(0, 500)
-        } catch {
-          /* ignore */
-        }
+        message = describeNonError(reason)
       }
       reportClientError({ message, stack, source: 'unhandled-rejection' })
     }
