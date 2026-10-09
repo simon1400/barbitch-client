@@ -1,3 +1,4 @@
+import type { AxiosError, InternalAxiosRequestConfig } from 'axios'
 import type { BookingAttribution } from 'lib/attribution'
 
 import axios from 'axios'
@@ -12,6 +13,30 @@ const apiUrl =
 // Отдельный axios-инстанс: движок отдаёт плоский body (не Strapi-обёртку {data}),
 // глобальный Axios из lib/api с интерсептором response.data.data сюда не подходит.
 const Engine = axios.create({ baseURL: apiUrl, timeout: 15000 })
+
+// Strapi при деплое перезапускается, и на секунду-другую nginx отвечает 502 —
+// 29.09 так у клиентки упала страница дополнений (журнал ошибок сайта, запись #4).
+// GET повторяем до двух раз (через 1 и 2 с) при 502/503/504 или обрыве соединения.
+// Таймаут не повторяем — страница висела бы 45 с; POST (холд, бронь) — тоже:
+// они не идемпотентны, повтор может создать вторую бронь.
+const RETRY_DELAYS_MS = [1000, 2000]
+const RETRY_STATUSES = new Set([502, 503, 504])
+
+type RetryConfig = InternalAxiosRequestConfig & { retryAttempt?: number }
+
+Engine.interceptors.response.use(undefined, async (error: AxiosError) => {
+  const config = error.config as RetryConfig | undefined
+  if (!config || (config.method ?? 'get').toLowerCase() !== 'get') throw error
+  const status = error.response?.status
+  const transient = status
+    ? RETRY_STATUSES.has(status)
+    : error.code !== 'ECONNABORTED' && error.code !== 'ERR_CANCELED'
+  const attempt = config.retryAttempt ?? 0
+  if (!transient || attempt >= RETRY_DELAYS_MS.length) throw error
+  config.retryAttempt = attempt + 1
+  await new Promise((resolve) => setTimeout(resolve, RETRY_DELAYS_MS[attempt]))
+  return Engine.request(config)
+})
 
 /** Код ошибки движка из axios-ошибки ('' если это не ответ движка). */
 export const engineErrorCode = (err: unknown): string => {

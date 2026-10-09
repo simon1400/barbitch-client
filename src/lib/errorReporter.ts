@@ -8,7 +8,23 @@ const NOISE_PATTERNS = [
   /Load failed/i,
   /AbortError/i,
   /cancel(l)?ed/i,
+  // Встроенные браузеры соцсетей подмешивают в страницу свои скрипты, и те падают
+  // сами по себе: Instagram/Seznam на iOS — window.webkit.messageHandlers,
+  // Facebook на Android — «Error invoking postMessage: Java object is gone».
+  /window\.webkit\.messageHandlers/i,
+  /Error invoking postMessage/i,
+  /iabjs:\/\//i,
 ]
+
+// Стек есть, но ни одного кадра из наших бандлов (/_next/) — упал чужой код:
+// скрипт, который встроенный браузер (Instagram, Facebook, Chrome на iOS)
+// подмешивает в страницу, или сторонний тег. Пример: «Maximum call stack size
+// exceeded» в «barbitch.cz/service/rasy:225» — у нас HTML в одну строку.
+// Кадр — строка, оканчивающаяся на «:строка:столбец» (V8, Safari, Firefox).
+const isForeignStack = (stack: string): boolean => {
+  const frames = stack.split('\n').filter((l) => /:\d+:\d+\)?\s*$/.test(l))
+  return frames.length > 0 && !frames.some((l) => l.includes('/_next/'))
+}
 
 const recentHashes = new Map<string, number>()
 const THROTTLE_MS = 10_000
@@ -21,8 +37,8 @@ function hashString(s: string): string {
   return (h >>> 0).toString(36)
 }
 
-function isNoise(msg: string): boolean {
-  return NOISE_PATTERNS.some((p) => p.test(msg))
+function isNoise(msg: string, stack: string, url: string): boolean {
+  return NOISE_PATTERNS.some((p) => p.test(msg) || p.test(url)) || isForeignStack(stack)
 }
 
 function getSessionId(): string {
@@ -61,9 +77,9 @@ export function reportClientError(input: ReportInput): void {
   if (typeof window === 'undefined') return
 
   const message = (input.message || '').slice(0, 1000)
-  if (!message || isNoise(message)) return
-
   const stack = (input.stack || '').slice(0, 8000)
+  if (!message || isNoise(message, stack, input.url || '')) return
+
   const hash = hashString(`${message}::${stack.split('\n').slice(0, 3).join('\n')}`)
 
   const now = Date.now()
