@@ -21,6 +21,8 @@ export const metadata: Metadata = {
   alternates: {
     canonical: 'https://barbitch.cz/kariera',
   },
+  // Po skončení náboru stránka zůstává dostupná přímým odkazem, ale z Googlu zmizí.
+  ...(HIRING.enabled ? {} : { robots: { index: false, follow: true } }),
   openGraph: {
     title: 'Kariéra — hledáme lashmakerku | Barbitch Brno',
     description:
@@ -94,13 +96,15 @@ const Kariera = async () => {
 
   return (
     <main>
-      <JobPostingSchema
-        title={HIRING.jobTitle}
-        description={buildJobDescription()}
-        datePosted={HIRING.datePosted}
-        validThrough={HIRING.validThrough}
-        employmentType={HIRING.employmentType}
-      />
+      {HIRING.enabled && (
+        <JobPostingSchema
+          title={HIRING.jobTitle}
+          description={buildJobDescription()}
+          datePosted={HIRING.datePosted}
+          validThrough={HIRING.validThrough}
+          employmentType={HIRING.employmentType}
+        />
+      )}
       <BreadcrumbSchema
         items={[
           { name: 'Hlavní strana', url: 'https://barbitch.cz' },

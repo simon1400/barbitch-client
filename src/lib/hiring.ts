@@ -6,8 +6,9 @@
 // ──────────────────────────────────────────────────────────────────────────
 
 export const HIRING = {
-  // Hlavní vypínač celé kampaně (horní lišta).
-  enabled: true,
+  // Hlavní vypínač celé kampaně (horní lišta, /kariera v mapě webu, JobPosting,
+  // indexace /kariera). Vypnuto 18.10.2026 — lashmakerka nalezena.
+  enabled: false,
 
   // Text běžící v horní liště (opakuje se v nekonečné smyčce).
   marquee: 'HLEDÁME LASHMAKERKU',
