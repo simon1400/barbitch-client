@@ -59,7 +59,7 @@ const PriceList = async () => {
   return (
     <main>
       <PricelistSchema groups={groups} />
-      <Top title={dataPage.title} small linkToReserve={dataLink.linkToReserve} />
+      <Top title={dataPage.title} small noMargin linkToReserve={dataLink.linkToReserve} />
       <Breadcrumbs
         items={[
           { name: 'Hlavní strana', url: 'https://barbitch.cz' },

@@ -12,6 +12,7 @@ export const Top = ({
   admin = false,
   children,
   titleClassName = 'text-md2 lg:text-top',
+  noMargin = false,
 }: {
   title: string
   small?: boolean
@@ -22,11 +23,13 @@ export const Top = ({
   children?: ReactNode
   // Přepis velikosti nadpisu (pro dlouhé tituly, které se nevejdou na mobil).
   titleClassName?: string
+  // Bez spodního okraje — pod herem hned navazují drobečky se svou linkou.
+  noMargin?: boolean
 }) => {
   return (
     <section
       aria-labelledby={'top-title'}
-      className={`${small ? 'h-[545px]' : 'h-screen md:min-h-[800px]'} flex items-end relative z-10 mb-13.5`}
+      className={`${small ? 'h-[545px]' : 'h-screen md:min-h-[800px]'} flex items-end relative z-10 ${noMargin ? '' : 'mb-13.5'}`}
     >
       <HeroBackground />
 

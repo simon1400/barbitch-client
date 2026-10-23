@@ -1,11 +1,11 @@
 import type { Metadata } from 'next'
 
+import { Breadcrumbs } from 'components/Breadcrumbs'
 import { DynamicContent } from 'components/DynamicContent'
 import { getLinkToReserve } from 'fetch/contact'
 import { getVoucherMeta } from 'fetch/getMeta'
 import { getVoucher } from 'fetch/voucher'
 import { cmsTitle, ogImages } from 'lib/seo'
-import { BreadcrumbSchema } from 'schemasOrg/breadcrumb'
 import { ProductSchema } from 'schemasOrg/product'
 import { Top } from 'sections/Top/Top'
 
@@ -47,12 +47,6 @@ const Voucher = async () => {
 
   return (
     <main>
-      <BreadcrumbSchema
-        items={[
-          { name: 'Hlavní strana', url: 'https://barbitch.cz' },
-          { name: 'Dárkový voucher', url: 'https://barbitch.cz/darkovy-voucher' },
-        ]}
-      />
       <ProductSchema
         name={'Dárkový voucher Barbitch'}
         description={
@@ -63,7 +57,13 @@ const Voucher = async () => {
         highPrice={2000}
         offerCount={4}
       />
-      <Top title={data.title} small linkToReserve={dataLink.linkToReserve} />
+      <Top title={data.title} small noMargin linkToReserve={dataLink.linkToReserve} />
+      <Breadcrumbs
+        items={[
+          { name: 'Hlavní strana', url: 'https://barbitch.cz' },
+          { name: 'Dárkový voucher', url: 'https://barbitch.cz/darkovy-voucher' },
+        ]}
+      />
       <VoucherForm />
       <DynamicContent data={data.dynamicContent} />
     </main>

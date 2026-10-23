@@ -50,7 +50,12 @@ const Contact = async () => {
     <main>
       <LocalBusinessSchema />
       {/* H1 je tu napevno — jako jediná stránka nepoužívá titulek z CMS. */}
-      <Top title={'Kontakt — Barbitch Brno'} small linkToReserve={dataLink.linkToReserve} />
+      <Top
+        title={'Kontakt'}
+        small
+        noMargin
+        linkToReserve={dataLink.linkToReserve}
+      />
       <Breadcrumbs
         items={[
           { name: 'Hlavní strana', url: 'https://barbitch.cz' },

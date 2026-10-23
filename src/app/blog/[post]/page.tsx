@@ -9,6 +9,7 @@ import { getAllPost, getPost } from 'fetch/blog'
 import { Axios } from 'lib/api'
 import { topicOf } from 'lib/blogTopic'
 import { getStrapiImageUrl } from 'lib/image-utils'
+import { relatedPostsOf } from 'lib/relatedPosts'
 import { cmsTitle, ogImages } from 'lib/seo'
 import { notFound } from 'next/navigation'
 import { ArticleSchema } from 'schemasOrg/article'
@@ -20,7 +21,9 @@ export const revalidate = 3600
 
 export async function generateStaticParams() {
   try {
-    const posts = (await Axios.get('/api/blogs?fields[0]=slug')) as { slug: string }[]
+    const posts = (await Axios.get('/api/blogs?fields[0]=slug')) as {
+      slug: string
+    }[]
 
     return posts.map((post) => ({
       post: post.slug,
@@ -85,6 +88,8 @@ const Post = async ({ params }: any) => {
   const cleanTitle = data.title.replaceAll(';sp;', ' ')
   const topic = topicOf(post, cleanTitle)
   const published = data.publishedAt
+  // Stejný výběr jako „Související články“ — první z nich.
+  const [nextPost] = relatedPostsOf(allPosts, post, topic, 1)
 
   return (
     <main>
@@ -97,13 +102,23 @@ const Post = async ({ params }: any) => {
         url={`https://barbitch.cz/blog/${post}`}
       />
       <article>
-        <TopImage title={data.title} image={data.image} />
+        <TopImage title={data.title} image={data.image} noMargin />
         <Breadcrumbs
           items={[
             { name: 'Hlavní strana', url: 'https://barbitch.cz' },
             { name: 'Blog', url: 'https://barbitch.cz/blog' },
             { name: cleanTitle, url: `https://barbitch.cz/blog/${post}` },
           ]}
+          back={{ label: 'Zpět na blog', url: 'https://barbitch.cz/blog' }}
+          next={
+            nextPost
+              ? {
+                  prefix: 'Další článek:',
+                  label: nextPost.title.replaceAll(';sp;', ' '),
+                  url: `https://barbitch.cz/blog/${nextPost.slug}`,
+                }
+              : undefined
+          }
         />
         {!!published && (
           <Container size={'xl'}>

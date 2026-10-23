@@ -1,7 +1,7 @@
 import type { IDataPostShort } from 'fetch/blog'
 import type { BlogTopic } from 'lib/blogTopic'
 
-import { topicOf } from 'lib/blogTopic'
+import { relatedPostsOf } from 'lib/relatedPosts'
 import Link from 'next/link'
 
 import { getStrapiImageUrl } from '../lib/image-utils'
@@ -24,10 +24,7 @@ export const RelatedPosts = ({
   currentSlug: string
   topic?: BlogTopic
 }) => {
-  const others = posts.filter((post) => post.slug !== currentSlug)
-  const sameTopic = topic ? others.filter((post) => topicOf(post.slug, post.title) === topic) : []
-  const rest = others.filter((post) => !sameTopic.includes(post))
-  const related = [...sameTopic, ...rest].slice(0, 3)
+  const related = relatedPostsOf(posts, currentSlug, topic)
 
   if (related.length === 0) return null
 

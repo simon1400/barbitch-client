@@ -2,11 +2,20 @@ import { Container } from 'components/Container'
 import Image from 'components/Image'
 import { getStrapiImageUrl } from 'lib/image-utils'
 
-export const TopImage = ({ title, image }: { title: string; image: IGalery }) => {
+export const TopImage = ({
+  title,
+  image,
+  noMargin = false,
+}: {
+  title: string
+  image: IGalery
+  // Bez spodního okraje — pod herem hned navazují drobečky se svou linkou.
+  noMargin?: boolean
+}) => {
   return (
     <div
       aria-labelledby={'top-title'}
-      className={`h-[80vh] md:min-h-[500px] flex items-end relative z-10 text-white mb-13.5 bg-gradient-to-t from-[rgba(231,30,110,1)] to-[rgba(255,0,101,0.5)]`}
+      className={`h-[80vh] md:min-h-[500px] flex items-end relative z-10 text-white ${noMargin ? '' : 'mb-13.5'} bg-gradient-to-t from-[rgba(231,30,110,1)] to-[rgba(255,0,101,0.5)]`}
     >
       <div className={'mix-blend-multiply bg-[#E71E6E] absolute h-full w-full -z-10'}>
         <Image

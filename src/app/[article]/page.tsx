@@ -17,7 +17,9 @@ export const revalidate = 3600
 
 export async function generateStaticParams() {
   try {
-    const articles = (await Axios.get('/api/articles?fields[0]=slug')) as { slug: string }[]
+    const articles = (await Axios.get('/api/articles?fields[0]=slug')) as {
+      slug: string
+    }[]
     return articles.map((article) => ({
       article: article.slug,
     }))
@@ -85,7 +87,7 @@ const Article = async ({ params }: any) => {
         url={`https://barbitch.cz/${article}`}
       />
       <article>
-        <Top title={data.title} small linkToReserve={dataLink.linkToReserve} />
+        <Top title={data.title} small noMargin linkToReserve={dataLink.linkToReserve} />
         <Breadcrumbs
           items={[
             { name: 'Hlavní strana', url: 'https://barbitch.cz' },
