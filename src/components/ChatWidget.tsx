@@ -1,9 +1,18 @@
 'use client'
 
+import type { ChatContact, ChatStatus } from './ChatNotices'
+
 import { usePathname } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 
+import { ContactCard, ContactSaved, OfflineNotice } from './ChatNotices'
+
 const API = process.env.NEXT_PUBLIC_APP_API || 'https://strapi.barbitch.cz'
+const STORE_KEY = 'barbitch_chat'
+/** s272: в часы салона поле контакта — если вопрос ждёт ответа столько секунд. */
+const CONTACT_PROMPT_AFTER_SEC = 120
+/** sessionId из ссылки письма «Máte odpověď v chatu» (`/?chat=<sessionId>`). */
+const SESSION_ID_RE = /^chat_\d+_[0-9a-f]{8}$/
 
 const TEASER_MESSAGE: ChatMessage = {
   id: -1,
@@ -113,6 +122,12 @@ export default function ChatWidget() {
   const [imagePreviews, setImagePreviews] = useState<string[]>([])
   const [hasUnread, setHasUnread] = useState(false)
   const [showTeaser, setShowTeaser] = useState(false)
+  /* s272: часы салона (null — ещё не знаем → как онлайн), оставленный контакт */
+  const [status, setStatus] = useState<ChatStatus | null>(null)
+  const [contact, setContact] = useState<ChatContact | null>(null)
+  const [editingContact, setEditingContact] = useState(false)
+  const [now, setNow] = useState(() => Date.now())
+  const openFromLink = useRef(false)
 
   const messagesEndRef = useRef<HTMLDivElement>(null)
   const fileInputRef = useRef<HTMLInputElement>(null)
@@ -135,20 +150,85 @@ export default function ChatWidget() {
     return () => window.removeEventListener('cookie-consent-changed', handler)
   }, [])
 
-  /* ─── Init: load session from localStorage ─── */
+  /* ─── Init: load session from localStorage (s272: или из ссылки письма ?chat=) ─── */
   useEffect(() => {
+    let data: { sessionId?: string; name?: string; contact?: ChatContact } | null = null
     try {
-      const stored = localStorage.getItem('barbitch_chat')
-      if (stored) {
-        const data = JSON.parse(stored)
-        setSessionId(data.sessionId)
-        setName(data.name || '')
-        setHasSession(true)
-      }
+      const stored = localStorage.getItem(STORE_KEY)
+      if (stored) data = JSON.parse(stored)
     } catch {
       /* empty */
     }
+    const url = new URL(window.location.href)
+    const fromLink = url.searchParams.get('chat')
+    if (fromLink) {
+      url.searchParams.delete('chat')
+      window.history.replaceState(window.history.state, '', url.pathname + url.search + url.hash)
+      if (SESSION_ID_RE.test(fromLink)) {
+        if (data?.sessionId !== fromLink) data = { sessionId: fromLink }
+        openFromLink.current = true
+      }
+    }
+    if (!data?.sessionId) return
+    const sid = data.sessionId
+    setSessionId(sid)
+    setName(data.name || '')
+    setContact(data.contact || null)
+    setHasSession(true)
+    // имя и контакт с сервера: ссылка на другом устройстве / контакт оставлен с другого
+    if (!data.name || !data.contact) {
+      fetch(`${API}/api/chat/session?sessionId=${sid}`)
+        .then((r) => (r.ok ? r.json() : null))
+        .then((info) => {
+          if (!info) return
+          const c: ChatContact | null = info.email
+            ? { type: 'email', value: info.email }
+            : info.phone
+              ? { type: 'phone', value: info.phone }
+              : null
+          const nm = data?.name || info.visitorName || ''
+          setName(nm)
+          setContact(c)
+          try {
+            localStorage.setItem(
+              STORE_KEY,
+              JSON.stringify({ sessionId: sid, name: nm, contact: c }),
+            )
+          } catch {
+            /* empty */
+          }
+        })
+        .catch(() => {})
+    }
   }, [])
+
+  /* ─── s272: ссылка из письма — открыть чат (после согласия с cookies) ─── */
+  useEffect(() => {
+    if (consented && openFromLink.current) {
+      openFromLink.current = false
+      setOpen(true)
+    }
+  }, [consented])
+
+  /* ─── s272: часы салона — при открытии и раз в минуту, пока открыт ─── */
+  useEffect(() => {
+    if (!open) return
+    const load = () =>
+      fetch(`${API}/api/chat/status`)
+        .then((r) => (r.ok ? r.json() : null))
+        .then((s) => s && setStatus(s))
+        .catch(() => {})
+    load()
+    const interval = setInterval(() => {
+      load()
+      setNow(Date.now())
+    }, 60000)
+    const clock = setInterval(() => setNow(Date.now()), 15000)
+    return () => {
+      clearInterval(interval)
+      clearInterval(clock)
+    }
+  }, [open])
 
   /* ─── Teaser: show after 60s if no session and not dismissed ─── */
   useEffect(() => {
@@ -170,7 +250,9 @@ export default function ChatWidget() {
     const fetchMessages = async () => {
       try {
         const afterParam = lastIdRef.current ? `&after=${lastIdRef.current}` : ''
-        const res = await fetch(`${API}/api/chat/messages?sessionId=${sessionId}${afterParam}`)
+        const res = await fetch(
+          `${API}/api/chat/messages?sessionId=${sessionId}${afterParam}&open=1`,
+        )
         if (!res.ok) return
         const data = await res.json()
         if (!Array.isArray(data) || data.length === 0) return
@@ -264,7 +346,17 @@ export default function ChatWidget() {
     const id = `chat_${Date.now()}_${crypto.randomUUID().slice(0, 8)}`
     setSessionId(id)
     setHasSession(true)
-    localStorage.setItem('barbitch_chat', JSON.stringify({ sessionId: id, name: name.trim() }))
+    localStorage.setItem(STORE_KEY, JSON.stringify({ sessionId: id, name: name.trim() }))
+  }
+
+  const saveContact = (c: ChatContact) => {
+    setContact(c)
+    setEditingContact(false)
+    try {
+      localStorage.setItem(STORE_KEY, JSON.stringify({ sessionId, name, contact: c }))
+    } catch {
+      /* empty */
+    }
   }
 
   const handleOpen = () => {
@@ -284,7 +376,7 @@ export default function ChatWidget() {
 
   const fetchNewMessages = async (sid: string) => {
     const afterParam = lastIdRef.current ? `&after=${lastIdRef.current}` : ''
-    const res = await fetch(`${API}/api/chat/messages?sessionId=${sid}${afterParam}`)
+    const res = await fetch(`${API}/api/chat/messages?sessionId=${sid}${afterParam}&open=1`)
     if (!res.ok) return
     const data = await res.json()
     if (!Array.isArray(data) || data.length === 0) return
@@ -351,6 +443,28 @@ export default function ChatWidget() {
     if (fileInputRef.current) fileInputRef.current.value = ''
   }
 
+  /* s272: поле контакта — вне часов салона сразу, в часы — если вопрос ждёт ответа ≥ 2 мин */
+  const offline = status ? !status.online : false
+  const waitingSince = (() => {
+    let since: number | null = null
+    for (const m of messages) {
+      if (m.id < 0) continue
+      if (m.sender === 'admin') since = null
+      else if (since === null) since = new Date(m.createdAt).getTime()
+    }
+    return since
+  })()
+  const askContact =
+    hasSession &&
+    !!sessionId &&
+    (!contact || editingContact) &&
+    (offline || (waitingSince !== null && now - waitingSince >= CONTACT_PROMPT_AFTER_SEC * 1000))
+
+  /* поле контакта появилось — показать его */
+  useEffect(() => {
+    if (askContact) messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
+  }, [askContact])
+
   const formatTime = (dateStr: string) => {
     const d = new Date(dateStr)
     return `${d.getHours().toString().padStart(2, '0')}:${d.getMinutes().toString().padStart(2, '0')}`
@@ -372,8 +486,15 @@ export default function ChatWidget() {
           {/* Header */}
           <div className={'flex items-center justify-between px-4 py-3 border-b border-white/10'}>
             <div className={'flex items-center gap-2'}>
-              <div className={'w-2 h-2 rounded-full bg-green-400 flex-shrink-0'} />
+              <div
+                className={`w-2 h-2 rounded-full flex-shrink-0 ${offline ? 'bg-white/30' : 'bg-green-400'}`}
+              />
               <span className={'text-white font-bold text-sm'}>{'Bar.bitch Chat'}</span>
+              {status && (
+                <span className={'text-white/40 text-[12px]'}>
+                  {status.online ? 'online' : 'offline'}
+                </span>
+              )}
             </div>
             <button
               type={'button'}
@@ -384,6 +505,10 @@ export default function ChatWidget() {
               <CloseIcon />
             </button>
           </div>
+
+          {offline && status && (
+            <OfflineNotice status={status} compact={hasSession} onBook={() => setOpen(false)} />
+          )}
 
           {!hasSession ? (
             /* ─── Name Input (first visit) ─── */
@@ -463,6 +588,18 @@ export default function ChatWidget() {
                     </div>
                   </div>
                 ))}
+
+                {askContact && sessionId && (
+                  <ContactCard
+                    sessionId={sessionId}
+                    visitorName={name}
+                    offline={offline}
+                    onSaved={saveContact}
+                  />
+                )}
+                {contact && !editingContact && (
+                  <ContactSaved contact={contact} onChange={() => setEditingContact(true)} />
+                )}
 
                 <div ref={messagesEndRef} />
               </div>
