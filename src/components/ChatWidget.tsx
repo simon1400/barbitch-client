@@ -2,6 +2,7 @@
 
 import type { ChatContact, ChatStatus } from './ChatNotices'
 
+import { X } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 
@@ -701,12 +702,15 @@ export default function ChatWidget() {
                     e.stopPropagation()
                     dismissTeaser()
                   }}
-                  className={'absolute top-1 right-2 text-white/40 hover:text-white text-xs'}
+                  className={
+                    'absolute top-0 right-0 w-8 h-8 flex items-center justify-center text-white/40 hover:text-white'
+                  }
                   aria-label={'Zavřít'}
                 >
-                  {'×'}
+                  {/* Dvakrát větší než dřívější „×“ v text-xs (~6 px → ~13 px). */}
+                  <X size={26} aria-hidden={'true'} />
                 </button>
-                <p className={'text-sm pr-3'}>{TEASER_MESSAGE.text}</p>
+                <p className={'text-sm pr-6'}>{TEASER_MESSAGE.text}</p>
               </div>
               {/* Arrow pointing to bubble */}
               <div className={'flex justify-end pr-5'}>

@@ -1,3 +1,4 @@
+import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { BreadcrumbSchema } from 'schemasOrg/breadcrumb'
 
 import { Container } from './Container'
@@ -11,7 +12,7 @@ interface BreadcrumbItem {
 
 interface BreadcrumbsProps {
   items: BreadcrumbItem[]
-  /** Odkaz „← Zpět na …“. Když chybí, odvodí se z předposlední položky `items`. */
+  /** Odkaz „‹ Zpět na …“. Když chybí, odvodí se z předposlední položky `items`. */
   back?: { label: string; url: string }
   /** Sousední položka v sekci. Když chybí, pravá část má jen „Zpět“. */
   next?: { prefix: string; label: string; url: string }
@@ -27,7 +28,7 @@ const backOf = (items: BreadcrumbItem[]): BreadcrumbsProps['back'] => {
 }
 
 const actionLink = 'group flex items-center gap-2 text-resXs uppercase tracking-[.06em]'
-const arrow = 'text-sm11 leading-none relative -top-px'
+const chevron = 'shrink-0 relative -top-px'
 
 /**
  * Drobečková navigace viditelná i pro člověka.
@@ -48,7 +49,7 @@ export const Breadcrumbs = ({ items, back, next }: BreadcrumbsProps) => {
         <nav
           aria-label={'Drobečková navigace'}
           className={
-            'flex justify-between items-center gap-6 py-3 md:py-4 border-y-[1.5px] border-[#1616154D]'
+            'flex justify-between items-center gap-6 py-3 md:py-4 border-b-[1.5px] border-[#1616154D]'
           }
         >
           <ol className={'flex flex-wrap items-center gap-x-3 gap-y-1 text-xs1 text-accent'}>
@@ -82,9 +83,7 @@ export const Breadcrumbs = ({ items, back, next }: BreadcrumbsProps) => {
                 className={`${actionLink} whitespace-nowrap text-accent hover:text-primary duration-200`}
                 href={backLink.url}
               >
-                <span aria-hidden={'true'} className={arrow}>
-                  {'←'}
-                </span>
+                <ChevronLeft size={14} strokeWidth={2.5} aria-hidden={'true'} className={chevron} />
                 {backLink.label}
               </a>
               {!!next && (
@@ -97,12 +96,12 @@ export const Breadcrumbs = ({ items, back, next }: BreadcrumbsProps) => {
                         {next.label}
                       </span>
                     </span>
-                    <span
+                    <ChevronRight
+                      size={14}
+                      strokeWidth={2.5}
                       aria-hidden={'true'}
-                      className={`${arrow} text-accent group-hover:text-primary duration-200`}
-                    >
-                      {'→'}
-                    </span>
+                      className={`${chevron} text-accent group-hover:text-primary duration-200`}
+                    />
                   </a>
                 </>
               )}
