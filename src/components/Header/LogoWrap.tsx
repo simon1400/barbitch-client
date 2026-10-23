@@ -3,10 +3,12 @@ import { useAppContext } from 'context/AppContext'
 import { LogoIcon } from 'icons/Logo'
 import { useParams, usePathname } from 'next/navigation'
 
+import { isDarkPage } from './darkPage'
+
 const LogoWrap = () => {
   const params = useParams()
   const pathname = usePathname()
-  const darkPage = pathname.includes('/book') || pathname.includes('/cabinet')
+  const darkPage = isDarkPage(pathname)
   const { menu } = useAppContext()
   const fill = menu ? 'fill-primary' : params?.post || darkPage ? 'fill-white' : 'fill-accent'
   return (

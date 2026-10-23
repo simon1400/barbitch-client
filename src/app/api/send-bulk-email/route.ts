@@ -37,6 +37,24 @@ const timingSafeEqual = (a: string, b: string): boolean => {
 interface EmailRecipient {
   email: string
   variables?: Record<string, string>
+  // s271: Strapi кладёт List-Unsubscribe с подписанной ссылкой отписки
+  headers?: Record<string, string>
+}
+
+// Отписка без ссылки из Strapi (адрес не из базы клиентов или нет секрета) — письмом.
+const MAILTO_UNSUBSCRIBE = 'mailto:info@barbitch.cz?subject=NEZASILAT'
+
+// Из Strapi принимаем только два заголовка отписки и только с https-адресом —
+// роут закрыт секретом, но произвольные заголовки в письмо всё равно не пускаем.
+const unsubscribeHeaders = (h: Record<string, string> | undefined): Record<string, string> => {
+  const list = h?.['List-Unsubscribe']
+  if (typeof list !== 'string' || !list.startsWith('<https://') || /[\r\n]/.test(list)) {
+    return { 'List-Unsubscribe': `<${MAILTO_UNSUBSCRIBE}>` }
+  }
+  return {
+    'List-Unsubscribe': list,
+    'List-Unsubscribe-Post': 'List-Unsubscribe=One-Click',
+  }
 }
 
 interface BulkEmailRequest {
@@ -91,23 +109,25 @@ export async function POST(req: NextRequest) {
     const batchEmails = recipients.map((recipient) => {
       // Replace variables in template
       let personalizedHtml = htmlTemplate
-      if (recipient.variables) {
-        Object.entries(recipient.variables).forEach(([key, value]) => {
-          const regex = new RegExp(`{{${key}}}`, 'g')
-          personalizedHtml = personalizedHtml.replace(regex, value)
-        })
+      // {{unsubscribeUrl}} есть в шаблонах всегда (s271): без ссылки из Strapi — mailto
+      const variables: Record<string, string> = {
+        unsubscribeUrl: MAILTO_UNSUBSCRIBE,
+        ...recipient.variables,
       }
+      Object.entries(variables).forEach(([key, value]) => {
+        const regex = new RegExp(`{{${key}}}`, 'g')
+        personalizedHtml = personalizedHtml.replace(regex, value)
+      })
 
       return {
         from: 'Bar.Bitch <info@barbitch.cz>',
         to: [recipient.email],
         subject,
         html: personalizedHtml,
-        // Сигнал отписки для спам-фильтров (Gmail/Seznam показывают «Unsubscribe»).
-        // mailto — без отдельного endpoint; ответ «NEZASÍLAT» обрабатывается вручную.
-        headers: {
-          'List-Unsubscribe': '<mailto:info@barbitch.cz?subject=NEZASILAT>',
-        },
+        // Сигнал отписки для спам-фильтров (Gmail/Seznam показывают «Odhlásit»).
+        // s271: https-адрес Strapi + One-Click (RFC 8058) — отписка без людей;
+        // без него — mailto, ответ «NEZASÍLAT» обрабатывается вручную.
+        headers: unsubscribeHeaders(recipient.headers),
       }
     })
 

@@ -8,7 +8,8 @@ import { getEngineManage } from '../../book/fetch/engine'
 import { ManageClient } from './ManageClient'
 
 export const metadata: Metadata = {
-  title: 'Moje rezervace | Barbitch Beauty Studio Brno',
+  // absolute: značka už v titulku je, šablona „%s | Barbitch“ by ji přidala podruhé
+  title: { absolute: 'Moje rezervace | Barbitch Beauty Studio Brno' },
   description: 'Správa rezervace v Barbitch Beauty Studiu v Brně — změna termínu nebo zrušení.',
   robots: { index: false, follow: false },
 }

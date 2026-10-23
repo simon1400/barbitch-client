@@ -5,6 +5,8 @@ import { useAppContext } from 'context/AppContext'
 import { useParams, usePathname } from 'next/navigation'
 import { useEffect } from 'react'
 
+import { isDarkPage } from './darkPage'
+
 // Иконка «Můj účet» — силуэт клиентки + фирменная розовая ✦ (стиль кабинета/bitchcard)
 const CabinetIcon = () => (
   <svg width={30} height={30} viewBox={'0 0 24 24'} fill={'none'} aria-hidden>
@@ -27,7 +29,7 @@ const Buttons = ({ linkToReserve }: { linkToReserve: string }) => {
   const params = useParams()
   // Тёмные страницы (резервация + кабинет) — светлый логотип/гамбургер, без CTA-кнопки.
   const onCabinet = pathname.includes('/cabinet')
-  const darkPage = pathname.includes('/book') || onCabinet
+  const darkPage = isDarkPage(pathname)
   const { menu, setMenu } = useAppContext()
   const lightIcons = menu || !!params?.post || darkPage
 
