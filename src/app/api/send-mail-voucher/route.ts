@@ -7,7 +7,6 @@ import { addMonths, format } from 'date-fns'
 import { NextResponse } from 'next/server'
 import { Resend } from 'resend'
 
-import { getVoucherCatalog } from 'fetch/voucherCatalog'
 import { FOR_NAME_MAX, formatKc, FROM_NAME_MAX, VOUCHER_VALID_MONTHS } from 'lib/vouchers'
 import { clientIp, makeRateLimiter, sameOrigin } from 'lib/route-guard'
 
@@ -40,24 +39,12 @@ interface ResolvedVoucher {
 }
 
 /**
- * Co se má poslat. Objednávka ze stránky posílá `voucherId` z katalogu
- * (lib/vouchers) — cena a šablona se dohledají tady, ne z prohlížeče.
- * Bonusový voucher z kabinetu posílá starý tvar `{ voucher, sum }`.
+ * Co se má poslat. Jen bonusový voucher z kabinetu (`{ voucher, sum }`, cabinetApi).
+ * s275: objednávka ze stránky sem už nechodí — voucher kartou posílá Strapi po
+ * zaplacení přes /api/send-confirmation-voucher (PDF v příloze); dřívější větev
+ * `voucherId` by dál posílala PDF bez platby, proto je pryč.
  */
-const resolveVoucher = async (body: Record<string, unknown>): Promise<ResolvedVoucher | null> => {
-  if (typeof body.voucherId === 'string') {
-    const catalog = await getVoucherCatalog()
-    const item = catalog.find((i) => i.id === body.voucherId)
-    if (!item) return null
-    return item.kind === 'sluzba'
-      ? {
-          serviceTitle: item.name,
-          label: `${item.name} (${formatKc(item.price)})`,
-          sum: item.price,
-        }
-      : { amount: item.amount, label: formatKc(item.price), sum: item.price }
-  }
-
+const resolveVoucher = (body: Record<string, unknown>): ResolvedVoucher | null => {
   // Whitelist voucher template name — strip any path component (no traversal).
   const amount = path.basename(String(body.voucher ?? '')).replaceAll(/[^\w.-]/g, '')
   if (!amount) return null
@@ -76,14 +63,12 @@ export async function POST(req: NextRequest) {
 
     const body = await req.json()
     const { email, idVoucher } = body
-    // Comgate (další fáze): `paymentStatus` zatím vždy 'pending' — po napojení brány
-    // poslat PDF až po potvrzení platby a z e-mailu vypustit platební údaje.
 
     if (!email) {
       return NextResponse.json({ error: 'Missing required field: email' }, { status: 400 })
     }
 
-    const voucher = await resolveVoucher(body)
+    const voucher = resolveVoucher(body)
     if (!voucher) {
       return NextResponse.json({ error: 'Invalid voucher' }, { status: 400 })
     }

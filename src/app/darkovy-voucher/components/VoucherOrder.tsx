@@ -2,13 +2,11 @@
 import type { VoucherItem } from 'lib/vouchers'
 import type { FormEvent } from 'react'
 
-import axios from 'axios'
+import { engineErrorCode, postVoucherCheckout } from 'app/book/fetch/engine'
 import { Container } from 'components/Container'
 import { ConsentCheckbox } from 'components/form/ConsentCheckbox'
 import { Input } from 'components/form/Input'
-import { sendGoogleAdsConversion } from 'fetch/googleAds'
-import { sendCAPIEvent } from 'fetch/pixel'
-import { createVoucher } from 'fetch/voucher'
+import { rememberCheckout } from 'lib/voucherCheckout'
 import { FOR_NAME_MAX, FROM_NAME_MAX, VOUCHER_VALID_MONTHS } from 'lib/vouchers'
 import { useEffect, useMemo, useState } from 'react'
 
@@ -60,7 +58,8 @@ export const VoucherOrder = ({ items }: { items: VoucherItem[] }) => {
   const [consent, setConsent] = useState(false)
   const [errors, setErrors] = useState<Partial<Record<ErrorKey, boolean>>>({})
   const [loading, setLoading] = useState(false)
-  const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle')
+  // Text chyby pod tlačítkem; null = bez chyby
+  const [error, setError] = useState<string | null>(null)
 
   const selected = useMemo(
     () => items.find((i) => i.id === selectedId) ?? items[0],
@@ -74,7 +73,7 @@ export const VoucherOrder = ({ items }: { items: VoucherItem[] }) => {
 
   const select = (id: string) => {
     setSelectedId(id)
-    if (status !== 'idle') setStatus('idle')
+    setError(null)
     const url = new URL(window.location.href)
     url.searchParams.set('voucher', id)
     window.history.replaceState(null, '', url)
@@ -105,45 +104,34 @@ export const VoucherOrder = ({ items }: { items: VoucherItem[] }) => {
     if (loading || !selected || !validate()) return
 
     setLoading(true)
-    setStatus('idle')
+    setError(null)
 
     const email = form.email.trim()
     const phone = form.phone.trim()
-    // eslint-disable-next-line sonarjs/pseudo-random
-    const idVoucher = `${Math.floor(10000000 + Math.random() * 90000000)}`
 
     try {
-      await createVoucher({
-        name: form.fromName.trim(),
-        for: form.forName.trim(),
-        sum: selected.price,
-        dateOrder: new Date(),
-        email,
-        phone,
-        serviceName: selected.kind === 'sluzba' ? selected.name : null,
-        deliveryMethod: 'email',
-        idVoucher,
-        publishedAt: null,
-      })
-
-      const conversion = { currency: 'CZK', value: selected.price }
-      sendCAPIEvent('Purchase', { email, phone }, conversion)
-      sendGoogleAdsConversion('Purchase', { email, phone }, conversion)
-
-      // Comgate (další fáze): místo e-mailu s platebními údaji založit platbu
-      // a přesměrovat na bránu; voucher (PDF) poslat až po potvrzení platby.
-      await axios.post('/api/send-mail-voucher', {
+      // Cenu, číslo voucheru i platbu v Comgate zakládá server; sem se vrátí jen
+      // adresa platební brány. PDF přijde e-mailem až po potvrzení platby.
+      const { redirect, token } = await postVoucherCheckout({
         voucherId: selected.id,
-        idVoucher,
         forName: form.forName.trim(),
         fromName: form.fromName.trim(),
         email,
-        paymentStatus: 'pending',
+        phone,
+        consent,
       })
-      setStatus('success')
-    } catch {
-      setStatus('error')
-    } finally {
+      // Kontakt pro událost Purchase na stránce „Děkujeme“ (v URL nikdy není).
+      rememberCheckout(token, { email, phone })
+      window.location.assign(redirect)
+    } catch (err) {
+      const code = engineErrorCode(err)
+      setError(
+        code === 'invalid_voucherId'
+          ? 'Vybraný voucher už není v nabídce. Obnovte prosím stránku.'
+          : code === 'too_many'
+            ? 'Příliš mnoho objednávek za krátkou dobu. Zkuste to prosím později.'
+            : 'Platební bránu se nepodařilo otevřít. Zkuste to prosím za chvíli nebo nám zavolejte.',
+      )
       setLoading(false)
     }
   }
@@ -275,7 +263,7 @@ export const VoucherOrder = ({ items }: { items: VoucherItem[] }) => {
               fromName={form.fromName}
               formId={FORM_ID}
               loading={loading}
-              status={status}
+              error={error}
             />
           </div>
         </Container>

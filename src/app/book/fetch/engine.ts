@@ -44,6 +44,39 @@ export const postFirmInquiry = async (body: FormData): Promise<void> => {
   await Engine.post('/api/engine/firm-inquiries', body, { timeout: 30000 })
 }
 
+/** s275: objednávka dárkového voucheru — cenu a číslo voucheru určí server, vrátí adresu brány Comgate. */
+export interface IVoucherCheckoutBody {
+  voucherId: string
+  forName: string
+  fromName: string
+  email: string
+  phone: string
+  consent: boolean
+}
+
+export const postVoucherCheckout = async (
+  body: IVoucherCheckoutBody,
+): Promise<{ redirect: string; token: string }> => {
+  const { data } = await Engine.post('/api/engine/vouchers/checkout', body, { timeout: 30000 })
+  return data
+}
+
+export type VoucherPaymentStatus = 'pending' | 'paid' | 'cancelled' | 'refunded'
+
+export interface IVoucherCheckoutStatus {
+  status: VoucherPaymentStatus
+  price: number
+  /** id karty z katalogu (`castka-1000`, `sluzba-…`) — „Zkusit znovu“ vrátí na stejný voucher. */
+  voucherId: string
+  /** Zamaskovaný e-mail („pe•••@seznam.cz“), jen po zaplacení. */
+  email: string | null
+}
+
+export const getVoucherCheckout = async (token: string): Promise<IVoucherCheckoutStatus> => {
+  const { data } = await Engine.get(`/api/engine/vouchers/checkout/${encodeURIComponent(token)}`)
+  return data
+}
+
 export const engineErrorCode = (err: unknown): string => {
   const anyErr = err as { response?: { data?: { error?: { code?: string } } } }
   return anyErr?.response?.data?.error?.code ?? ''

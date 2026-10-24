@@ -22,14 +22,15 @@ export const OrderSummary = ({
   fromName,
   formId,
   loading,
-  status,
+  error,
 }: {
   item: VoucherItem
   forName: string
   fromName: string
   formId: string
   loading: boolean
-  status: 'idle' | 'success' | 'error'
+  /** Chyba objednávky (server neotevřel platbu) — text pod tlačítkem. */
+  error: string | null
 }) => (
   <aside aria-label={'Souhrn objednávky'} className={'lg:sticky lg:top-6 self-start'}>
     <div className={'relative overflow-hidden bg-primary'}>
@@ -89,38 +90,31 @@ export const OrderSummary = ({
         </div>
       </div>
 
-      {status === 'success' ? (
-        <Alert
-          state={'success'}
-          title={'Děkujeme, ozveme se s platebními údaji.'}
-          text={'Voucher v PDF a podrobnosti objednávky najdete ve své e-mailové schránce.'}
-        />
-      ) : (
-        <>
-          {status === 'error' && <Alert state={'error'} />}
-          <button
-            type={'submit'}
-            form={formId}
-            disabled={loading}
-            className={`h-[57px] w-full bg-[#fe3a7c] hover:bg-primary text-white text-xs uppercase duration-200 ${
-              loading ? 'cursor-wait' : 'cursor-pointer'
-            }`}
-          >
-            {loading ? (
-              <LoaderCircle className={'animate-spin w-7 h-7 mx-auto'} aria-label={'Odesílám'} />
-            ) : (
-              'Zaplatit kartou →'
-            )}
-          </button>
-          <p
-            className={
-              'text-[11px] leading-[14px] font-bold uppercase tracking-[.06em] opacity-60 text-center'
-            }
-          >
-            {'Comgate · Visa · Mastercard · Apple Pay · Google Pay'}
-          </p>
-        </>
-      )}
+      {error && <Alert state={'error'} title={'Platbu se nepodařilo zahájit.'} text={error} />}
+      <button
+        type={'submit'}
+        form={formId}
+        disabled={loading}
+        className={`h-[57px] w-full bg-[#fe3a7c] hover:bg-primary text-white text-xs uppercase duration-200 ${
+          loading ? 'cursor-wait' : 'cursor-pointer'
+        }`}
+      >
+        {loading ? (
+          <LoaderCircle
+            className={'animate-spin w-7 h-7 mx-auto'}
+            aria-label={'Přesměrování na platební bránu'}
+          />
+        ) : (
+          'Zaplatit kartou →'
+        )}
+      </button>
+      <p
+        className={
+          'text-[11px] leading-[14px] font-bold uppercase tracking-[.06em] opacity-60 text-center'
+        }
+      >
+        {'Comgate · Visa · Mastercard · Apple Pay · Google Pay'}
+      </p>
     </div>
   </aside>
 )

@@ -8,12 +8,15 @@ export const confirmationHtml = ({
   safeVoucherId,
   safeValidUntil,
   service,
+  pdfAttached = false,
 }: {
   safeBuyer: string
   safeRecipient: string
   safeVoucherId: string
   safeValidUntil: string
   service: string | null
+  /** s275: platba kartou — voucher (PDF) je přímo v příloze tohoto e-mailu. */
+  pdfAttached?: boolean
 }) => `<!DOCTYPE html>
 <html lang="cs">
   <head>
@@ -51,7 +54,11 @@ export const confirmationHtml = ({
               <td class="px" style="padding:16px 24px 24px 24px;text-align:center;">
                 <div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:22px;color:#e6e6e6;margin:0;">
                   Potvrzujeme, že váš voucher byl úspěšně zaplacen a je nyní plně aktivní.
-                  Můžete ho začít používat v našem salonu Bar.Bitch Brno.
+                  Můžete ho začít používat v našem salonu Bar.Bitch Brno.${
+                    pdfAttached
+                      ? '<br><br>Voucher v PDF najdete v příloze — můžete ho vytisknout nebo rovnou poslat obdarované.'
+                      : ''
+                  }
                 </div>
               </td>
             </tr>

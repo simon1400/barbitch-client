@@ -6,7 +6,8 @@ export const isDarkPage = (pathname: string): boolean =>
   pathname.includes('/book') ||
   pathname.includes('/cabinet') ||
   pathname.startsWith('/rezervace') ||
-  pathname.startsWith('/odhlasit')
+  pathname.startsWith('/odhlasit') ||
+  pathname.startsWith('/darkovy-voucher/dekujeme')
 
 // Hlavní stránka během Halloween kampaně (lib/halloween.ts): tmavý hero, takže
 // bílé logo a ikony a růžové CTA. `halloween` počítá server (isHalloweenOn)
