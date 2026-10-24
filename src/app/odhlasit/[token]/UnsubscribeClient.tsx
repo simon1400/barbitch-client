@@ -2,6 +2,7 @@
 
 import type { IUnsubscribeInfo } from '../fetch'
 
+import { bookingTextareaCls } from 'components/form/fieldStyles'
 import { useEffect, useRef, useState } from 'react'
 
 import { COMMENT_MAX, postUnsubscribe, postUnsubscribeReason, UNSUBSCRIBE_REASONS } from '../fetch'
@@ -106,9 +107,7 @@ const Survey = ({ token }: { token: string }) => {
           maxLength={COMMENT_MAX}
           disabled={sending}
           aria-label={'Vzkaz'}
-          className={
-            'bg-[#161615] mb-4 border block w-full border-[#4A4A4A] rounded-special-small text-book text-white h-[90px] resize-none p-3.5 focus:border-[#929292] outline-none'
-          }
+          className={`${bookingTextareaCls()} mb-4`}
         />
         {error && <p className={'text-[#E71E6E] text-xss mb-4 text-center'}>{error}</p>}
         <button

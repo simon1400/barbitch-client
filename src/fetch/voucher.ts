@@ -52,6 +52,30 @@ export const getVoucher = async () => {
   }
 }
 
+/** Karta voucheru na službu, jak ji skládá Strapi (GET /api/vaucher-page/service-vouchers). */
+export interface IServiceVoucher {
+  id: string
+  serviceId: string
+  tag: string
+  name: string
+  title: string
+  desc: string
+  photo: string | null
+  price: number
+}
+
+// `null` = ručka nedostupná (starý server, výpadek) → web použije výchozí karty z kódu.
+// Prázdné pole je platná odpověď: majitelka všechny karty vypnula.
+export const getServiceVouchers = async (): Promise<IServiceVoucher[] | null> => {
+  try {
+    const data: IServiceVoucher[] = await Axios.get('/api/vaucher-page/service-vouchers')
+    return Array.isArray(data) ? data : null
+  } catch (error) {
+    console.error('Failed to fetch service vouchers:', error)
+    return null
+  }
+}
+
 export const createVoucher = async (body: any) => {
   try {
     const res: any = await Axios.post('/api/vouchers', { data: body })

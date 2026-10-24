@@ -1,5 +1,7 @@
 import type { IUserData } from '../BookForm'
 
+import { bookingFieldCls } from 'components/form/fieldStyles'
+
 export const Input = ({
   label,
   data,
@@ -21,7 +23,7 @@ export const Input = ({
         {label}
       </label>
       <input
-        className={`bg-[#161615] border block w-full ${error ? 'border-[#E71E1E]' : 'border-[#4A4A4A]'} outline-none focus:border-[#929292] rounded-special-small text-book text-white h-10 px-3.5`}
+        className={`${bookingFieldCls(error)} h-10 px-3.5`}
         type={'text'}
         name={name}
         value={data[name]}

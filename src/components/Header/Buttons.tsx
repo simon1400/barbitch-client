@@ -5,7 +5,7 @@ import { useAppContext } from 'context/AppContext'
 import { useParams, usePathname } from 'next/navigation'
 import { useEffect } from 'react'
 
-import { isDarkPage, isHalloweenHome } from './darkPage'
+import { isDarkPage, isHalloweenHome, isPinkHeroPage } from './darkPage'
 
 // Иконка «Můj účet» — силуэт клиентки + фирменная розовая ✦ (стиль кабинета/bitchcard)
 const CabinetIcon = () => (
@@ -33,7 +33,8 @@ const Buttons = ({ linkToReserve, halloween }: { linkToReserve: string; hallowee
   // Halloween hero je tmavý, ale CTA zůstává — růžové (jako v otevřeném menu).
   const halloweenHome = isHalloweenHome(pathname, halloween)
   const { menu, setMenu } = useAppContext()
-  const lightIcons = menu || !!params?.post || darkPage || halloweenHome
+  const pinkHero = !!params?.post || isPinkHeroPage(pathname)
+  const lightIcons = menu || pinkHero || darkPage || halloweenHome
 
   useEffect(() => {
     setMenu(false)
@@ -58,7 +59,7 @@ const Buttons = ({ linkToReserve, halloween }: { linkToReserve: string; hallowee
           className={'hidden lg:block'}
           text={'Rezervovat termín'}
           id={'book-button'}
-          white={!!params?.post}
+          white={pinkHero}
           small
           href={linkToReserve}
         />

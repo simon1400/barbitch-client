@@ -18,3 +18,8 @@ export const isHalloweenHome = (pathname: string, halloween: boolean): boolean =
 // a menší logo na mobilu (168 px), jak je v návrhu.
 export const isRedesignHome = (pathname: string, halloween: boolean): boolean =>
   !halloween && pathname === '/'
+
+// Stránky s plnou růžovou plochou pod hlavičkou (vouchery): bílé logo, ikony
+// a bílé tlačítko „Rezervovat termín“ — stejně jako na článku blogu.
+export const isPinkHeroPage = (pathname: string): boolean =>
+  pathname === '/darkovy-voucher' || pathname === '/firemni-vouchery'

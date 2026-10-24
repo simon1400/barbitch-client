@@ -126,8 +126,12 @@ export default async function RootLayout({
             <Header />
           </Suspense>
           {children}
-          {/* Hlavní stránka má voucher mezi „O salonu“ a blogem (s286) — vykreslí si ho sama. */}
-          <HideOnRoutes routes={['/book', '/kontakt', '/cabinet']} exact={['/']}>
+          {/* Banner „Dárkový voucher“ — ne na stránkách, které vouchery samy prodávají.
+              Hlavní stránka má voucher mezi „O salonu“ a blogem (s286) — vykreslí si ho sama. */}
+          <HideOnRoutes
+            routes={['/book', '/kontakt', '/cabinet', '/darkovy-voucher', '/firemni-vouchery']}
+            exact={['/']}
+          >
             <Suspense>
               <Banner />
             </Suspense>

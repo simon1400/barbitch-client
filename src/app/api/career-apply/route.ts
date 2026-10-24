@@ -1,7 +1,8 @@
 import type { NextRequest } from 'next/server'
 
-import { Buffer } from 'node:buffer'
+import { parseFormAttachment } from 'lib/formAttachment'
 import { clientIp, makeRateLimiter, sameOrigin } from 'lib/route-guard'
+import { resolveSalonEmail } from 'lib/salonEmail'
 import { NextResponse } from 'next/server'
 import { Resend } from 'resend'
 
@@ -16,24 +17,6 @@ const escapeHtml = (value: string) =>
     .replaceAll('>', '&gt;')
     .replaceAll('"', '&quot;')
 
-// Cílový e-mail: env má přednost, jinak se vezme e-mail salonu ze Strapi.
-const resolveRecipient = async (): Promise<string | null> => {
-  const fromEnv = process.env.CAREER_NOTIFY_EMAIL || process.env.RESEND_BCC_EMAIL
-  if (fromEnv) return fromEnv
-
-  try {
-    const apiUrl =
-      process.env.NEXT_PUBLIC_APP_API || process.env.APP_API || 'https://strapi.barbitch.cz'
-    const res = await fetch(`${apiUrl}/api/contact?fields[0]=email`, {
-      next: { revalidate: 3600 },
-    })
-    const json = await res.json()
-    return json?.data?.email || null
-  } catch {
-    return null
-  }
-}
-
 // Povolené typy souborů pro životopis + limit velikosti (5 MB).
 const MAX_RESUME_BYTES = 5 * 1024 * 1024
 const ALLOWED_RESUME_TYPES = new Set([
@@ -45,23 +28,6 @@ const ALLOWED_RESUME_TYPES = new Set([
   'image/webp',
   'image/heic',
 ])
-
-type ParsedResume =
-  | { ok: true; attachment: { filename: string; content: Buffer } | null }
-  | { ok: false; status: number; error: string }
-
-const parseResume = async (resume: FormDataEntryValue | null): Promise<ParsedResume> => {
-  if (!(resume instanceof File) || resume.size === 0) return { ok: true, attachment: null }
-  if (resume.size > MAX_RESUME_BYTES) return { ok: false, status: 413, error: 'Resume too large' }
-  if (resume.type && !ALLOWED_RESUME_TYPES.has(resume.type)) {
-    return { ok: false, status: 415, error: 'Unsupported resume type' }
-  }
-  const safeFilename = (resume.name || 'zivotopis').replaceAll(/[^\w.\-() ]/g, '_').slice(0, 150)
-  return {
-    ok: true,
-    attachment: { filename: safeFilename, content: Buffer.from(await resume.arrayBuffer()) },
-  }
-}
 
 export async function POST(req: NextRequest) {
   try {
@@ -82,7 +48,7 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Missing required fields' }, { status: 400 })
     }
 
-    const recipient = await resolveRecipient()
+    const recipient = await resolveSalonEmail('CAREER_NOTIFY_EMAIL')
     if (!recipient) {
       console.error('career-apply: no recipient e-mail configured')
       return NextResponse.json({ error: 'No recipient configured' }, { status: 500 })
@@ -93,7 +59,12 @@ export async function POST(req: NextRequest) {
     const safeMessage = message ? escapeHtml(String(message)).slice(0, 4000) : ''
 
     // Příloha — životopis (nepovinné).
-    const parsed = await parseResume(resume)
+    const parsed = await parseFormAttachment(resume, {
+      maxBytes: MAX_RESUME_BYTES,
+      allowedTypes: ALLOWED_RESUME_TYPES,
+      fallbackName: 'zivotopis',
+      label: 'Resume',
+    })
     if (!parsed.ok) {
       return NextResponse.json({ error: parsed.error }, { status: parsed.status })
     }

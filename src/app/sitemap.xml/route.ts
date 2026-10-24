@@ -38,6 +38,7 @@ export async function GET() {
       priority: '0.8',
       changefreq: 'monthly',
     },
+    { update: fallbackDate, slug: '/firemni-vouchery', priority: '0.7', changefreq: 'monthly' },
     { update: at(singletons.contact), slug: '/kontakt', priority: '0.8', changefreq: 'monthly' },
     { update: at(singletons.pricelist), slug: '/cenik', priority: '0.8', changefreq: 'monthly' },
     { update: fallbackDate, slug: '/book', priority: '0.8', changefreq: 'monthly' },

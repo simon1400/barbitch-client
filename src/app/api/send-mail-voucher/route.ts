@@ -3,15 +3,22 @@
 import type { NextRequest } from 'next/server'
 
 import path from 'node:path'
-import fontkit from '@pdf-lib/fontkit'
 import { addMonths, format } from 'date-fns'
 import { NextResponse } from 'next/server'
-import fs from 'node:fs'
-import { PDFDocument, rgb, StandardFonts } from 'pdf-lib'
 import { Resend } from 'resend'
 
-import { htmlTemplate } from './htmlTemplate'
+import { getVoucherCatalog } from 'fetch/voucherCatalog'
+import {
+  DEDICATION_MAX,
+  FOR_NAME_MAX,
+  formatKc,
+  FROM_NAME_MAX,
+  VOUCHER_VALID_MONTHS,
+} from 'lib/vouchers'
 import { clientIp, makeRateLimiter, sameOrigin } from 'lib/route-guard'
+
+import { htmlTemplate } from './htmlTemplate'
+import { buildVoucherPdf } from './voucherPdf'
 
 const resend = new Resend(process.env.RESEND_API_KEY!)
 
@@ -23,6 +30,46 @@ const escapeHtml = (value: unknown) =>
     .replaceAll('>', '&gt;')
     .replaceAll('"', '&quot;')
 
+const clip = (value: unknown, max: number) =>
+  String(value ?? '')
+    .trim()
+    .slice(0, max)
+
+interface ResolvedVoucher {
+  /** Název šablony PDF (voucher na částku) — u služby se nepoužije. */
+  amount?: string
+  serviceTitle?: string
+  /** Řádek „Voucher:“ v e-mailu. */
+  label: string
+  sum: number
+}
+
+/**
+ * Co se má poslat. Objednávka ze stránky posílá `voucherId` z katalogu
+ * (lib/vouchers) — cena a šablona se dohledají tady, ne z prohlížeče.
+ * Bonusový voucher z kabinetu posílá starý tvar `{ voucher, sum }`.
+ */
+const resolveVoucher = async (body: Record<string, unknown>): Promise<ResolvedVoucher | null> => {
+  if (typeof body.voucherId === 'string') {
+    const catalog = await getVoucherCatalog()
+    const item = catalog.find((i) => i.id === body.voucherId)
+    if (!item) return null
+    return item.kind === 'sluzba'
+      ? {
+          serviceTitle: item.name,
+          label: `${item.name} (${formatKc(item.price)})`,
+          sum: item.price,
+        }
+      : { amount: item.amount, label: formatKc(item.price), sum: item.price }
+  }
+
+  // Whitelist voucher template name — strip any path component (no traversal).
+  const amount = path.basename(String(body.voucher ?? '')).replaceAll(/[^\w.-]/g, '')
+  if (!amount) return null
+  const sum = Number(body.sum)
+  return { amount, label: formatKc(sum), sum }
+}
+
 export async function POST(req: NextRequest) {
   try {
     if (!sameOrigin(req)) {
@@ -32,172 +79,60 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
     }
 
-    const {
-      email,
-      name,
-      sum,
-      idVoucher,
-      voucher,
-      recipientName,
-      deliveryMethod,
-      street,
-      city,
-      postalCode,
-      country,
-    } = await req.json()
+    const body = await req.json()
+    const { email, idVoucher } = body
+    // Comgate (další fáze): `paymentStatus` zatím vždy 'pending' — po napojení brány
+    // poslat PDF až po potvrzení platby a z e-mailu vypustit platební údaje.
 
     if (!email) {
       return NextResponse.json({ error: 'Missing required field: email' }, { status: 400 })
     }
 
-    // Whitelist voucher template name — strip any path component (no traversal).
-    const safeVoucher = path.basename(String(voucher ?? '')).replaceAll(/[^\w.-]/g, '')
-    if (!safeVoucher) {
+    const voucher = await resolveVoucher(body)
+    if (!voucher) {
       return NextResponse.json({ error: 'Invalid voucher' }, { status: 400 })
     }
-    const vouchersDir = path.join(process.cwd(), 'public', 'vouchers')
-    const templatePath = path.join(vouchersDir, `${safeVoucher}.pdf`)
-    if (!templatePath.startsWith(vouchersDir + path.sep)) {
-      return NextResponse.json({ error: 'Invalid voucher' }, { status: 400 })
-    }
-    const templateBytes = fs.readFileSync(templatePath)
 
-    const pdfDoc = await PDFDocument.load(templateBytes)
-    pdfDoc.registerFontkit(fontkit)
+    // Nový tvar: forName/fromName/dedication; kabinet: recipientName/name.
+    const forName = clip(body.forName ?? body.recipientName, FOR_NAME_MAX)
+    const fromName = clip(body.fromName, FROM_NAME_MAX)
+    const dedication = clip(body.dedication, DEDICATION_MAX)
+    const buyerName = clip(body.fromName ?? body.name, 200) || 'Zákazník'
 
-    const [firstPage] = pdfDoc.getPages()
-    const { width, height } = firstPage.getSize()
-
-    const standardFont = await pdfDoc.embedFont(StandardFonts.Helvetica)
-
-    // Load custom font (if available) or use standard font
-    let customFont
+    let pdfBytes: Uint8Array
     try {
-      const fontPath = path.join(process.cwd(), 'public', 'fonts', 'MeowScript-Regular.ttf')
-      const fontBytes = fs.readFileSync(fontPath)
-      customFont = await pdfDoc.embedFont(fontBytes)
-    } catch {
-      customFont = standardFont
-    }
-
-    // Helper function to center text
-    const getCenteredX = (text: string, fontSize: number) => {
-      const textWidth = customFont.widthOfTextAtSize(text, fontSize)
-      return (width - textWidth) / 2
-    }
-
-    // Add recipient name (pro: field) - centered
-    if (recipientName) {
-      const recipientNameSize = 24
-      const recipientNameX = getCenteredX(recipientName, recipientNameSize)
-      firstPage.drawText(recipientName, {
-        x: recipientNameX,
-        y: height - 430,
-        size: recipientNameSize,
-        font: customFont,
-        color: rgb(1, 1, 1),
+      pdfBytes = await buildVoucherPdf({
+        amount: voucher.amount,
+        serviceTitle: voucher.serviceTitle,
+        forName,
+        fromName,
+        dedication,
+        validUntil: format(addMonths(new Date(), VOUCHER_VALID_MONTHS), 'dd.MM.yyyy'),
+        idVoucher: String(idVoucher),
       })
+    } catch {
+      return NextResponse.json({ error: 'Invalid voucher' }, { status: 400 })
     }
-
-    // Expiration date
-    const sixMonthsFromNow = addMonths(new Date(), 6)
-    const formattedDate = format(sixMonthsFromNow, 'dd.MM.yyyy')
-
-    firstPage.drawText(formattedDate, {
-      x: 150,
-      y: height - 482,
-      size: 10,
-      font: standardFont,
-      color: rgb(1, 1, 1),
-    })
-
-    // Voucher ID
-    firstPage.drawText(String(idVoucher), {
-      x: 95,
-      y: height - 502,
-      size: 10,
-      font: standardFont,
-      color: rgb(1, 1, 1),
-    })
-
-    const modifiedPdf = await pdfDoc.save()
     // eslint-disable-next-line ts/no-require-imports
-    const pdfBase64 = require('node:buffer').Buffer.from(modifiedPdf).toString('base64')
+    const pdfBase64 = require('node:buffer').Buffer.from(pdfBytes).toString('base64')
 
-    // Рассчитываем итоговую сумму и формируем текст в зависимости от способа доставки
-    let totalSum = Number(sum)
-    if (deliveryMethod === 'mail') {
-      totalSum = Number(sum) + 100
-    } else if (deliveryMethod === 'pickup') {
-      totalSum = Number(sum) + 50
-    }
-
-    let deliveryInstructions = ''
-
-    if (deliveryMethod === 'email') {
-      deliveryInstructions = `
-        <tr>
-          <td class="px" style="padding:6px 24px;">
-            <div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:22px;color:#e6e6e6;margin:0;">
-              2) Proveďte platbu podle údajů níže, abychom váš voucher aktivovali. Voucher je již přiložen k tomuto e-mailu v PDF formátu.
-            </div>
-          </td>
-        </tr>
-      `
-    } else if (deliveryMethod === 'mail') {
-      const deliveryAddress = `${escapeHtml(street)}, ${escapeHtml(postalCode)} ${escapeHtml(city)}, ${escapeHtml(country)}`
-      deliveryInstructions = `
-        <tr>
-          <td class="px" style="padding:6px 24px;">
-            <div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:22px;color:#e6e6e6;margin:0;">
-              2) Proveďte platbu podle údajů níže (částka zahrnuje příplatek +100 Kč za poštovné). Po připsání platby vám vytištěný voucher odešleme poštou na uvedenou adresu:
-            </div>
-          </td>
-        </tr>
-        <tr>
-          <td class="px" style="padding:8px 24px 4px 24px;">
-            <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="background:#0f0f0f;border:1px solid #2a2a2a;border-radius:8px;">
-              <tr>
-                <td style="padding:14px 16px;">
-                  <div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;color:#bdbdbd;">
-                    <strong style="color:#ffffff;">Adresa doručení:</strong><br/>
-                    ${deliveryAddress}
-                  </div>
-                </td>
-              </tr>
-            </table>
-          </td>
-        </tr>
-      `
-    } else if (deliveryMethod === 'pickup') {
-      deliveryInstructions = `
-        <tr>
-          <td class="px" style="padding:6px 24px;">
-            <div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:22px;color:#e6e6e6;margin:0;">
-              2) Proveďte platbu podle údajů níže (částka zahrnuje příplatek +50 Kč za přípravu). Po připsání platby vám zašleme potvrzení s instrukcemi, kdy a kde si můžete vyzvednout vytištěný voucher v našem salonu.
-            </div>
-          </td>
-        </tr>
-      `
-    }
-
-    // Заменяем персонализацию в HTML шаблоне (пользовательские поля экранируются)
-    const plainName = String(name || 'Zákazník').slice(0, 200)
+    // Zaplatit převodem — voucher je v příloze, aktivuje se po připsání platby.
     const personalizedHtml = htmlTemplate
-      .replace(/\{\{ name \}\}/g, escapeHtml(plainName))
-      .replace(/\{\{ sum \}\}/g, String(totalSum))
+      .replace(/\{\{ name \}\}/g, escapeHtml(buyerName))
+      .replace(/\{\{ voucherLabel \}\}/g, escapeHtml(voucher.label))
+      .replace(/\{\{ sum \}\}/g, String(voucher.sum))
       .replace(/\{\{ idVoucher \}\}/g, escapeHtml(idVoucher))
-      .replace(/\{\{ deliveryInstructions \}\}/g, deliveryInstructions)
 
+    const fileStem = (voucher.amount ?? 'sluzba').replaceAll(/[^\w.-]/g, '')
     const { data, error } = await resend.emails.send({
       from: `Bar.Bitch Brno <${process.env.RESEND_FROM_EMAIL!}>`,
       to: [email],
       bcc: process.env.RESEND_BCC_EMAIL ? [process.env.RESEND_BCC_EMAIL] : undefined,
-      subject: `Děkujeme za objednávku, ${plainName}!`,
+      subject: `Děkujeme za objednávku, ${buyerName}!`,
       html: personalizedHtml,
       attachments: [
         {
-          filename: `v_${safeVoucher}_${String(idVoucher).replaceAll(/[^\w.-]/g, '')}.pdf`,
+          filename: `v_${fileStem}_${String(idVoucher).replaceAll(/[^\w.-]/g, '')}.pdf`,
           content: pdfBase64,
         },
       ],

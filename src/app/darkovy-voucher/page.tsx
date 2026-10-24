@@ -2,14 +2,15 @@ import type { Metadata } from 'next'
 
 import { Breadcrumbs } from 'components/Breadcrumbs'
 import { DynamicContent } from 'components/DynamicContent'
-import { getLinkToReserve } from 'fetch/contact'
+import { VoucherHero } from 'components/vouchers/VoucherHero'
 import { getVoucherMeta } from 'fetch/getMeta'
 import { getVoucher } from 'fetch/voucher'
+import { getVoucherCatalog } from 'fetch/voucherCatalog'
 import { cmsTitle, ogImages } from 'lib/seo'
 import { ProductSchema } from 'schemasOrg/product'
-import { Top } from 'sections/Top/Top'
 
-import VoucherForm from './VoucherForm'
+import { FirmBanner } from './components/FirmBanner'
+import { VoucherOrder } from './components/VoucherOrder'
 
 export const revalidate = 3600
 
@@ -43,28 +44,39 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 const Voucher = async () => {
-  const [data, dataLink] = await Promise.all([getVoucher(), getLinkToReserve()])
+  const [data, items] = await Promise.all([getVoucher(), getVoucherCatalog()])
+  const prices = items.map((i) => i.price)
 
   return (
     <main>
       <ProductSchema
         name={'Dárkový voucher Barbitch'}
         description={
-          'Dárkový voucher do Barbitch Beauty Studia v Brně. Ideální dárek pro vaše blízké.'
+          'Dárkový voucher do Barbitch Beauty Studia v Brně — na konkrétní službu nebo na částku. Ideální dárek pro vaše blízké.'
         }
         url={'https://barbitch.cz/darkovy-voucher'}
-        lowPrice={500}
-        highPrice={2000}
-        offerCount={4}
+        lowPrice={Math.min(...prices)}
+        highPrice={Math.max(...prices)}
+        offerCount={items.length}
       />
-      <Top title={data.title} small noMargin linkToReserve={dataLink.linkToReserve} />
+      <VoucherHero
+        variant={'pair'}
+        kicker={'You rock baby!'}
+        title={data.title || 'Dárkový voucher'}
+        perex={
+          'Na konkrétní službu nebo na částku. Zaplatíte kartou, PDF přijde e-mailem během minuty.'
+        }
+        cta={{ text: 'Vybrat voucher', href: '#objednavka' }}
+      />
       <Breadcrumbs
         items={[
           { name: 'Hlavní strana', url: 'https://barbitch.cz' },
-          { name: 'Dárkový voucher', url: 'https://barbitch.cz/darkovy-voucher' },
+          { name: 'Dárkové vouchery', url: 'https://barbitch.cz/darkovy-voucher' },
         ]}
+        next={{ prefix: 'Pro firmy:', label: 'Firemní vouchery', url: '/firemni-vouchery' }}
       />
-      <VoucherForm />
+      <VoucherOrder items={items} />
+      <FirmBanner />
       <DynamicContent data={data.dynamicContent} />
     </main>
   )

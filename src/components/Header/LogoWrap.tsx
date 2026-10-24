@@ -3,14 +3,18 @@ import { useAppContext } from 'context/AppContext'
 import { LogoIcon } from 'icons/Logo'
 import { useParams, usePathname } from 'next/navigation'
 
-import { isDarkPage, isHalloweenHome, isRedesignHome } from './darkPage'
+import { isDarkPage, isHalloweenHome, isPinkHeroPage, isRedesignHome } from './darkPage'
 
 const LogoWrap = ({ halloween }: { halloween: boolean }) => {
   const params = useParams()
   const pathname = usePathname()
   const darkPage = isDarkPage(pathname) || isHalloweenHome(pathname, halloween)
   const { menu } = useAppContext()
-  const fill = menu ? 'fill-primary' : params?.post || darkPage ? 'fill-white' : 'fill-accent'
+  const fill = menu
+    ? 'fill-primary'
+    : params?.post || darkPage || isPinkHeroPage(pathname)
+      ? 'fill-white'
+      : 'fill-accent'
   return (
     <div>
       <a

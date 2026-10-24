@@ -59,7 +59,13 @@ export const htmlTemplate = `<!DOCTYPE html>
                 </div>
               </td>
             </tr>
-            {{ deliveryInstructions }}
+            <tr>
+              <td class="px" style="padding:6px 24px;">
+                <div style="font-family:Arial,Helvetica,sans-serif;font-size:15px;line-height:22px;color:#e6e6e6;margin:0;">
+                  2) Proveďte platbu podle údajů níže, abychom váš voucher aktivovali. Voucher je již přiložen k tomuto e-mailu v PDF formátu.
+                </div>
+              </td>
+            </tr>
 
             <!-- платёжные реквизиты -->
             <tr>
@@ -68,6 +74,11 @@ export const htmlTemplate = `<!DOCTYPE html>
                   <tr>
                     <td style="padding:14px 16px;">
                       <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%">
+                        <tr>
+                          <td style="font-family:Arial,Helvetica,sans-serif;font-size:15px;color:#bdbdbd;padding:4px 0;">
+                            <strong style="color:#ffffff;">Voucher:</strong> {{ voucherLabel }}
+                          </td>
+                        </tr>
                         <tr>
                           <td style="font-family:Arial,Helvetica,sans-serif;font-size:15px;color:#bdbdbd;padding:4px 0;">
                             <strong style="color:#ffffff;">Číslo účtu:</strong> 117407613 / 5500
