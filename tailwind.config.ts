@@ -296,6 +296,9 @@ const config: Config = {
       },
       backgroundImage: {
         base: "url('/assets/background.jpg')",
+        // Výstražná páska (Halloween hero a menu): desktop 22/44, mobil 16/32.
+        hazard: 'repeating-linear-gradient(135deg, #161615 0 22px, #e71e6e 22px 44px)',
+        'hazard-sm': 'repeating-linear-gradient(135deg, #161615 0 16px, #e71e6e 16px 32px)',
       },
       borderRadius: {
         default: '2px',
@@ -331,11 +334,44 @@ const config: Config = {
             transform: 'translateX(-50%)',
           },
         },
+        // Halloween hero (lib/halloween.ts) — blikající neon, lampa,
+        // kontrolka ve štítku a houpající se visačka.
+        neon: {
+          '0%, 18%, 22%, 25%, 53%, 57%, 100%': {
+            opacity: '1',
+            textShadow: '0 0 18px rgba(255,255,255,.55)',
+          },
+          '20%, 24%, 55%': { opacity: '.25', textShadow: 'none' },
+        },
+        lamp: {
+          '0%, 9%, 11%, 14%, 40%, 42%, 100%': { opacity: '.42' },
+          '10%, 41%': { opacity: '.8' },
+          '13%': { opacity: '.6' },
+          '70%': { opacity: '.5' },
+        },
+        bulb: {
+          '0%, 100%': { opacity: '.9' },
+          '8%': { opacity: '.3' },
+          '9%': { opacity: '.9' },
+          '31%': { opacity: '.5' },
+          '32%': { opacity: '.95' },
+          '60%': { opacity: '.7' },
+        },
+        swing: {
+          '0%, 100%': { transform: 'rotate(7deg)' },
+          '50%': { transform: 'rotate(4deg)' },
+        },
       },
       animation: {
         'accordion-down': 'accordion-down 0.2s ease-out',
         'accordion-up': 'accordion-up 0.2s ease-out',
         marquee: 'marquee 22s linear infinite',
+        'marquee-halloween': 'marquee 24s linear infinite',
+        'marquee-halloween-sm': 'marquee 18s linear infinite',
+        neon: 'neon 6s linear 1.5s infinite',
+        lamp: 'lamp 9s steps(1, end) infinite',
+        bulb: 'bulb 4s steps(1, end) infinite',
+        swing: 'swing 6s ease-in-out infinite',
       },
     },
   },

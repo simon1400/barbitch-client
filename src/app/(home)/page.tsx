@@ -6,6 +6,7 @@ import { getHomeMeta } from 'fetch/getMeta'
 import { getHomepage } from 'fetch/homepage'
 import { getReviews } from 'fetch/reviews'
 import { getServiceHomepage } from 'fetch/service'
+import { isHalloweenOn } from 'lib/halloween'
 import { getStrapiImageUrl } from 'lib/image-utils'
 import { cmsTitle } from 'lib/seo'
 import { LocalBusinessSchema } from 'schemasOrg/localBusiness'
@@ -14,6 +15,7 @@ import Galery from 'sections/Galery'
 import HandSec from 'sections/HandSec'
 import Posts from 'sections/Posts'
 import Reviews from 'sections/Reviews'
+import { HalloweenHero } from 'sections/Top/HalloweenHero'
 import { Top } from 'sections/Top/Top'
 
 export const revalidate = 3600
@@ -59,7 +61,11 @@ const Home = async () => {
   return (
     <main>
       <LocalBusinessSchema />
-      <Top title={data.title} linkToReserve={dataLink.linkToReserve} />
+      {isHalloweenOn() ? (
+        <HalloweenHero title={data.title} linkToReserve={dataLink.linkToReserve || '/book'} />
+      ) : (
+        <Top title={data.title} linkToReserve={dataLink.linkToReserve} />
+      )}
       <HandSec service={dataService} />
       <Galery data={data.galery} />
       <Posts data={posts} />

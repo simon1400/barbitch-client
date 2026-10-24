@@ -7,3 +7,9 @@ export const isDarkPage = (pathname: string): boolean =>
   pathname.includes('/cabinet') ||
   pathname.startsWith('/rezervace') ||
   pathname.startsWith('/odhlasit')
+
+// Hlavní stránka během Halloween kampaně (lib/halloween.ts): tmavý hero, takže
+// bílé logo a ikony a růžové CTA. `halloween` počítá server (isHalloweenOn)
+// a posílá ho sem propem, aby se server a prohlížeč shodly.
+export const isHalloweenHome = (pathname: string, halloween: boolean): boolean =>
+  halloween && pathname === '/'

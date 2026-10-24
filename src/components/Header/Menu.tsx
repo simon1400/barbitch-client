@@ -1,16 +1,24 @@
 'use client'
 import type { IDataNav, INavItem } from 'fetch/nav'
 
+import Image from 'components/Image'
 import { useAppContext } from 'context/AppContext'
 import dynamic from 'next/dynamic'
+import { usePathname } from 'next/navigation'
 
 import { Container } from '../Container'
+
+import { isHalloweenHome } from './darkPage'
 
 const MenuLink = dynamic(() => import('./MenuLink'))
 const Button = dynamic(() => import('../Button'))
 
-const Menu = ({ nav }: { nav: IDataNav }) => {
+const HAZARD = 'absolute left-0 w-full h-2.5 lg:h-[14px] bg-hazard-sm lg:bg-hazard'
+
+const Menu = ({ nav, halloween }: { nav: IDataNav; halloween: boolean }) => {
   const { menu: open } = useAppContext()
+  const pathname = usePathname()
+  const halloweenHome = isHalloweenHome(pathname, halloween)
   return (
     <div
       className={`fixed top-0 left-0 w-full bg-accent z-20 overflow-hidden flex items-end transition-opacity duration-300 ${
@@ -21,7 +29,25 @@ const Menu = ({ nav }: { nav: IDataNav }) => {
       aria-label={'Hlavní menu'}
       inert={!open ? true : undefined}
     >
-      <Container size={'xl'}>
+      {halloweenHome && (
+        <>
+          <div className={`${HAZARD} top-0`} aria-hidden />
+          {/* Nálepky jen na desktopu a na dost vysoké obrazovce — jinak by
+              zasahovaly do pravého menu. */}
+          <Image
+            src={'/assets/halloween/sticker-labels.jpg'}
+            alt={''}
+            width={1280}
+            height={807}
+            sizes={'420px'}
+            className={
+              'hidden lg:[@media(min-height:880px)]:block absolute right-[120px] top-[140px] w-[420px] h-auto rotate-6 shadow-[0_30px_50px_rgba(0,0,0,.6)]'
+            }
+          />
+          <div className={`${HAZARD} bottom-0`} aria-hidden />
+        </>
+      )}
+      <Container size={'xl'} className={'relative'}>
         <div className={'text-right lg:text-left'}>
           <nav className={'lg:flex items-center justify-between w-full pb-20'}>
             <div>

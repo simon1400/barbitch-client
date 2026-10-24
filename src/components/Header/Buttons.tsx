@@ -5,7 +5,7 @@ import { useAppContext } from 'context/AppContext'
 import { useParams, usePathname } from 'next/navigation'
 import { useEffect } from 'react'
 
-import { isDarkPage } from './darkPage'
+import { isDarkPage, isHalloweenHome } from './darkPage'
 
 // Иконка «Můj účet» — силуэт клиентки + фирменная розовая ✦ (стиль кабинета/bitchcard)
 const CabinetIcon = () => (
@@ -24,14 +24,16 @@ const CabinetIcon = () => (
   </svg>
 )
 
-const Buttons = ({ linkToReserve }: { linkToReserve: string }) => {
+const Buttons = ({ linkToReserve, halloween }: { linkToReserve: string; halloween: boolean }) => {
   const pathname = usePathname()
   const params = useParams()
   // Тёмные страницы (резервация + кабинет) — светлый логотип/гамбургер, без CTA-кнопки.
   const onCabinet = pathname.includes('/cabinet')
   const darkPage = isDarkPage(pathname)
+  // Halloween hero je tmavý, ale CTA zůstává — růžové (jako v otevřeném menu).
+  const halloweenHome = isHalloweenHome(pathname, halloween)
   const { menu, setMenu } = useAppContext()
-  const lightIcons = menu || !!params?.post || darkPage
+  const lightIcons = menu || !!params?.post || darkPage || halloweenHome
 
   useEffect(() => {
     setMenu(false)
@@ -52,7 +54,7 @@ const Buttons = ({ linkToReserve }: { linkToReserve: string }) => {
     <div className={'flex gap-4 lg:gap-13 items-center'}>
       {!darkPage && (
         <Button
-          inverse={menu}
+          inverse={menu || halloweenHome}
           className={'hidden lg:block'}
           text={'Rezervovat termín'}
           id={'book-button'}
