@@ -21,16 +21,17 @@ const WHITE = rgb(1, 1, 1)
 // Souřadnice v bodech (šablona 238 × 522 pt, počátek vlevo dole).
 const AMOUNT_BAND = { y: 168, height: 41 }
 const TEXT_WIDTH = 204
-const BOX = { top: 126, bottom: 67 }
+// Jméno obdarované v rámečku „pro:“ (stejně jako před s274).
+const NAME_Y = 91.5
+const NAME_SIZE = 24
 
 export interface VoucherPdfInput {
   /** Částka (název šablony 500/1000/1500/2000) — pro voucher na částku. */
   amount?: string
   /** Název služby — pro voucher na službu (pak se `amount` ignoruje). */
   serviceTitle?: string
+  /** Jméno obdarované — jediný text v rámečku „pro:“. */
   forName: string
-  fromName?: string
-  dedication?: string
   validUntil: string
   idVoucher: string
 }
@@ -39,23 +40,6 @@ const readFont = (file: string) => fs.readFileSync(path.join(FONTS_DIR, file))
 
 const centeredX = (pageWidth: number, text: string, font: PDFFont, size: number) =>
   (pageWidth - font.widthOfTextAtSize(text, size)) / 2
-
-/** Rozdělí text na řádky, aby každý vešel do `maxWidth`. */
-const wrap = (text: string, font: PDFFont, size: number, maxWidth: number): string[] => {
-  const lines: string[] = []
-  let line = ''
-  for (const word of text.split(/\s+/).filter(Boolean)) {
-    const next = line ? `${line} ${word}` : word
-    if (line && font.widthOfTextAtSize(next, size) > maxWidth) {
-      lines.push(line)
-      line = word
-    } else {
-      line = next
-    }
-  }
-  if (line) lines.push(line)
-  return lines
-}
 
 /** Rozdělí název na dva řádky co nejpodobnější délky. */
 const splitInTwo = (text: string): [string, string] => {
@@ -101,57 +85,18 @@ const drawServiceTitle = (page: PDFPage, title: string, font: PDFFont) => {
   }
 }
 
-/** Jméno obdarované, věnování a „od koho“ do rámečku „pro:“. */
-const drawBox = (page: PDFPage, input: VoucherPdfInput, font: PDFFont) => {
+/** Jméno obdarované do rámečku „pro:“ — jiný text se na voucher netiskne. */
+const drawName = (page: PDFPage, forName: string, font: PDFFont) => {
+  const name = forName.trim()
+  if (!name) return
   const { width } = page.getSize()
-  const forName = input.forName.trim()
-  const dedication = input.dedication?.trim() ?? ''
-  const fromName = input.fromName?.trim() ?? ''
-
-  // Bez věnování a bez „od“ — jméno uprostřed jako dřív.
-  if (!dedication && !fromName) {
-    if (forName) {
-      page.drawText(forName, {
-        x: centeredX(width, forName, font, 24),
-        y: 91.5,
-        size: 24,
-        font,
-        color: WHITE,
-      })
-    }
-    return
-  }
-
-  const smallSize = 10
-  const smallLines = [
-    ...(dedication ? wrap(dedication, font, smallSize, TEXT_WIDTH - 10).slice(0, 2) : []),
-    ...(fromName ? [dedication ? `— ${fromName}` : `od: ${fromName}`] : []),
-  ]
-  const nameSize = smallLines.length > 2 ? 18 : 20
-  const smallGap = smallSize * 1.15
-  const blockHeight = nameSize * 0.75 + 6 + smallGap * smallLines.length
-  let y = BOX.top - (BOX.top - BOX.bottom - blockHeight) / 2 - nameSize * 0.75
-
-  if (forName) {
-    page.drawText(forName, {
-      x: centeredX(width, forName, font, nameSize),
-      y,
-      size: nameSize,
-      font,
-      color: WHITE,
-    })
-  }
-  y -= 6 + smallSize
-  for (const line of smallLines) {
-    page.drawText(line, {
-      x: centeredX(width, line, font, smallSize),
-      y,
-      size: smallSize,
-      font,
-      color: WHITE,
-    })
-    y -= smallGap
-  }
+  page.drawText(name, {
+    x: centeredX(width, name, font, NAME_SIZE),
+    y: NAME_Y,
+    size: NAME_SIZE,
+    font,
+    color: WHITE,
+  })
 }
 
 /** Vyplněný voucher jako PDF (bajty). */
@@ -180,7 +125,7 @@ export const buildVoucherPdf = async (input: VoucherPdfInput): Promise<Uint8Arra
     drawServiceTitle(page, input.serviceTitle, titleFont)
   }
 
-  drawBox(page, input, scriptFont)
+  drawName(page, input.forName, scriptFont)
 
   page.drawText(input.validUntil, {
     x: 150,

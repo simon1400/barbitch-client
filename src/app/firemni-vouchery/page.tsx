@@ -42,7 +42,7 @@ export const metadata: Metadata = {
 const STEPS = [
   {
     title: 'Pošlete poptávku',
-    text: 'Počet kusů, hodnota nebo služba, případně logo a věnování.',
+    text: 'Počet kusů, hodnota nebo služba, případně logo.',
   },
   {
     title: 'Potvrdíme cenu a návrh',
@@ -176,7 +176,7 @@ const FirmVouchers = async () => {
               <p
                 className={'text-[16px] leading-[26px] font-medium text-[#444] max-w-[620px] mb-8'}
               >
-                {`Na částku nebo na konkrétní službu. Do pravého horního rohu doplníme logo vaší firmy, dolů věnování. Každý voucher má unikátní kód a platí ${VOUCHER_VALID_MONTHS} měsíců.`}
+                {`Na částku nebo na konkrétní službu. Do pravého horního rohu doplníme logo vaší firmy. Každý voucher má unikátní kód a platí ${VOUCHER_VALID_MONTHS} měsíců.`}
               </p>
               <div className={'flex flex-wrap gap-6 sm:gap-8'}>
                 <Preview src={'/assets/vouchers/v1000.png'} label={'Voucher na částku'} />

@@ -39,6 +39,11 @@ Engine.interceptors.response.use(undefined, async (error: AxiosError) => {
 })
 
 /** Код ошибки движка из axios-ошибки ('' если это не ответ движка). */
+/** s274: poptávka firemních voucherů (multipart s nepovinným logem) — /firemni-vouchery. */
+export const postFirmInquiry = async (body: FormData): Promise<void> => {
+  await Engine.post('/api/engine/firm-inquiries', body, { timeout: 30000 })
+}
+
 export const engineErrorCode = (err: unknown): string => {
   const anyErr = err as { response?: { data?: { error?: { code?: string } } } }
   return anyErr?.response?.data?.error?.code ?? ''

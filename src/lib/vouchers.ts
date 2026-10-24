@@ -35,21 +35,12 @@ export interface VoucherItem {
 export const VOUCHER_VALID_MONTHS = 6
 export const FOR_NAME_MAX = 18
 export const FROM_NAME_MAX = 24
-export const DEDICATION_MAX = 90
 /** Firemní vouchery — nejmenší objednávka. */
 export const FIRM_MIN_COUNT = 10
-/** Logo k firemní poptávce: příloha e-mailu salonu. */
+/** Logo k firemní poptávce. Server pozná typ podle obsahu: PNG, JPG, WEBP, PDF
+ * (soubor .ai z Illustratoru obvykle obsahuje PDF, projde také). */
 export const FIRM_LOGO_MAX_BYTES = 5 * 1024 * 1024
-export const FIRM_LOGO_ACCEPT_TYPES = [
-  'image/png',
-  'image/jpeg',
-  'image/webp',
-  'image/svg+xml',
-  'application/pdf',
-  'application/postscript',
-  'application/illustrator',
-] as const
-export const FIRM_LOGO_ACCEPT = '.png,.jpg,.jpeg,.webp,.svg,.pdf,.ai,.eps'
+export const FIRM_LOGO_ACCEPT = '.png,.jpg,.jpeg,.webp,.pdf,.ai'
 
 // ZÁLOHA (server bez ručky): služba a cena se berou z katalogu rezervací
 // (GET /api/engine/services, `serviceId` = documentId služby). Když služba

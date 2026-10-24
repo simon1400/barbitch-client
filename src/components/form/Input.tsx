@@ -11,6 +11,8 @@ import {
   softLabelCls,
 } from './fieldStyles'
 
+export { BOOKING_CARD } from './fieldStyles'
+
 // `booking` — styl polí z rezervace (tmavá karta), `soft` — světlá pole na bílé
 // stránce; oba viz fieldStyles.ts. Bez `variant` vypadá jako dřív (kariéra).
 export type FieldVariant = 'default' | 'booking' | 'soft'

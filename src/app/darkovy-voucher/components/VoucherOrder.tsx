@@ -6,11 +6,10 @@ import axios from 'axios'
 import { Container } from 'components/Container'
 import { ConsentCheckbox } from 'components/form/ConsentCheckbox'
 import { Input } from 'components/form/Input'
-import { Textarea } from 'components/form/Textarea'
 import { sendGoogleAdsConversion } from 'fetch/googleAds'
 import { sendCAPIEvent } from 'fetch/pixel'
 import { createVoucher } from 'fetch/voucher'
-import { DEDICATION_MAX, FOR_NAME_MAX, FROM_NAME_MAX, VOUCHER_VALID_MONTHS } from 'lib/vouchers'
+import { FOR_NAME_MAX, FROM_NAME_MAX, VOUCHER_VALID_MONTHS } from 'lib/vouchers'
 import { useEffect, useMemo, useState } from 'react'
 
 import { OrderSummary } from './OrderSummary'
@@ -22,14 +21,13 @@ const EMAIL_RE = /^[^\s@]+@[^\s@][^\s.@]*\.[^\s@]+$/
 interface FormState {
   forName: string
   fromName: string
-  dedication: string
   email: string
   phone: string
 }
 
 type ErrorKey = 'forName' | 'fromName' | 'email' | 'consent'
 
-const EMPTY_FORM: FormState = { forName: '', fromName: '', dedication: '', email: '', phone: '' }
+const EMPTY_FORM: FormState = { forName: '', fromName: '', email: '', phone: '' }
 
 const STEPS = ['Voucher', 'Komu', 'Platba']
 
@@ -111,7 +109,6 @@ export const VoucherOrder = ({ items }: { items: VoucherItem[] }) => {
 
     const email = form.email.trim()
     const phone = form.phone.trim()
-    const dedication = form.dedication.trim()
     // eslint-disable-next-line sonarjs/pseudo-random
     const idVoucher = `${Math.floor(10000000 + Math.random() * 90000000)}`
 
@@ -124,7 +121,6 @@ export const VoucherOrder = ({ items }: { items: VoucherItem[] }) => {
         email,
         phone,
         serviceName: selected.kind === 'sluzba' ? selected.name : null,
-        dedication: dedication || null,
         deliveryMethod: 'email',
         idVoucher,
         publishedAt: null,
@@ -141,7 +137,6 @@ export const VoucherOrder = ({ items }: { items: VoucherItem[] }) => {
         idVoucher,
         forName: form.forName.trim(),
         fromName: form.fromName.trim(),
-        dedication,
         email,
         paymentStatus: 'pending',
       })
@@ -217,16 +212,6 @@ export const VoucherOrder = ({ items }: { items: VoucherItem[] }) => {
                     error={errors.fromName}
                     errorText={'Vyplňte, od koho voucher je'}
                     hint={`${form.fromName.length} / ${FROM_NAME_MAX} znaků`}
-                  />
-                  <Textarea
-                    variant={'soft'}
-                    className={'sm:col-span-2'}
-                    name={'dedication'}
-                    label={'Věnování na voucher'}
-                    placeholder={'Krátký vzkaz, který vytiskneme na voucher (nepovinné)'}
-                    value={form.dedication}
-                    handleChange={handleChange}
-                    maxLength={DEDICATION_MAX}
                   />
                 </div>
               </div>

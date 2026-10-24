@@ -1,12 +1,11 @@
 'use client'
 import type { FormEvent } from 'react'
 
-import axios from 'axios'
+import { engineErrorCode, postFirmInquiry } from 'app/book/fetch/engine'
 import Alert from 'components/Alert'
 import { ConsentCheckbox } from 'components/form/ConsentCheckbox'
-import { BOOKING_CARD } from 'components/form/fieldStyles'
 import { FileField } from 'components/form/FileField'
-import { Input } from 'components/form/Input'
+import { BOOKING_CARD, Input } from 'components/form/Input'
 import { Textarea } from 'components/form/Textarea'
 import { FIRM_LOGO_ACCEPT, FIRM_LOGO_MAX_BYTES, FIRM_MIN_COUNT } from 'lib/vouchers'
 import { LoaderCircle } from 'lucide-react'
@@ -26,6 +25,14 @@ const EMPTY = {
 }
 
 type Field = keyof typeof EMPTY
+
+// Kódy chyb ze serveru (booking-engine/services/firm-inquiries.ts) → text pro firmu.
+const ERROR_TEXT: Record<string, string> = {
+  bad_file_type: 'Logo nahrajte jako PNG, JPG, WEBP nebo PDF.',
+  file_too_big: 'Logo je větší než 5 MB.',
+  too_many:
+    'Příliš mnoho poptávek za krátkou dobu. Zkuste to prosím později nebo nám napište e-mail.',
+}
 type ErrorKey = 'company' | 'count' | 'person' | 'email' | 'consent'
 
 /** Poptávkový formulář vpravo na /firemni-vouchery — karta a pole ve stylu rezervace. */
@@ -36,6 +43,7 @@ export const FirmInquiryForm = ({ email, phone }: { email: string; phone: string
   const [errors, setErrors] = useState<Partial<Record<ErrorKey, boolean>>>({})
   const [loading, setLoading] = useState(false)
   const [status, setStatus] = useState<'idle' | 'success' | 'error'>('idle')
+  const [errorCode, setErrorCode] = useState('')
 
   const handleChange = (name: string, value: string) => {
     setForm((prev) => ({ ...prev, [name as Field]: value }))
@@ -69,9 +77,10 @@ export const FirmInquiryForm = ({ email, phone }: { email: string; phone: string
       for (const [key, value] of Object.entries(form)) body.append(key, value)
       body.append('consent', String(consent))
       if (logo) body.append('logo', logo)
-      await axios.post('/api/send-mail-firm-voucher', body)
+      await postFirmInquiry(body)
       setStatus('success')
-    } catch {
+    } catch (error) {
+      setErrorCode(engineErrorCode(error))
       setStatus('error')
     } finally {
       setLoading(false)
@@ -162,7 +171,7 @@ export const FirmInquiryForm = ({ email, phone }: { email: string; phone: string
           variant={'booking'}
           name={'note'}
           label={'Poznámka'}
-          placeholder={'Věnování, termín dodání, tisk…'}
+          placeholder={'Termín dodání, tisk, hodnoty pro jednotlivé kolegy…'}
           value={form.note}
           handleChange={handleChange}
           maxLength={4000}
@@ -172,7 +181,7 @@ export const FirmInquiryForm = ({ email, phone }: { email: string; phone: string
           variant={'booking'}
           name={'logo'}
           label={'Logo firmy (nepovinné)'}
-          emptyText={'Nahrát logo (PNG, SVG, PDF…)'}
+          emptyText={'Nahrát logo (PNG, JPG, PDF…)'}
           accept={FIRM_LOGO_ACCEPT}
           maxBytes={FIRM_LOGO_MAX_BYTES}
           file={logo}
@@ -204,7 +213,7 @@ export const FirmInquiryForm = ({ email, phone }: { email: string; phone: string
               <Alert
                 state={'error'}
                 title={'Poptávku se nepodařilo odeslat.'}
-                text={'Zkuste to prosím znovu nebo nám napište e-mail.'}
+                text={ERROR_TEXT[errorCode] || 'Zkuste to prosím znovu nebo nám napište e-mail.'}
               />
             )}
             <button

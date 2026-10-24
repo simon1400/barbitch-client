@@ -8,17 +8,12 @@ import { NextResponse } from 'next/server'
 import { Resend } from 'resend'
 
 import { getVoucherCatalog } from 'fetch/voucherCatalog'
-import {
-  DEDICATION_MAX,
-  FOR_NAME_MAX,
-  formatKc,
-  FROM_NAME_MAX,
-  VOUCHER_VALID_MONTHS,
-} from 'lib/vouchers'
+import { FOR_NAME_MAX, formatKc, FROM_NAME_MAX, VOUCHER_VALID_MONTHS } from 'lib/vouchers'
 import { clientIp, makeRateLimiter, sameOrigin } from 'lib/route-guard'
 
 import { htmlTemplate } from './htmlTemplate'
 import { buildVoucherPdf } from './voucherPdf'
+import { voucherRulesHtml } from './voucherRules'
 
 const resend = new Resend(process.env.RESEND_API_KEY!)
 
@@ -93,11 +88,10 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: 'Invalid voucher' }, { status: 400 })
     }
 
-    // Nový tvar: forName/fromName/dedication; kabinet: recipientName/name.
+    // Nový tvar: forName/fromName; kabinet: recipientName/name. Na voucher se tiskne
+    // jen jméno obdarované, „od koho“ je oslovení v e-mailu.
     const forName = clip(body.forName ?? body.recipientName, FOR_NAME_MAX)
-    const fromName = clip(body.fromName, FROM_NAME_MAX)
-    const dedication = clip(body.dedication, DEDICATION_MAX)
-    const buyerName = clip(body.fromName ?? body.name, 200) || 'Zákazník'
+    const buyerName = clip(body.fromName ?? body.name, FROM_NAME_MAX) || 'Zákazník'
 
     let pdfBytes: Uint8Array
     try {
@@ -105,8 +99,6 @@ export async function POST(req: NextRequest) {
         amount: voucher.amount,
         serviceTitle: voucher.serviceTitle,
         forName,
-        fromName,
-        dedication,
         validUntil: format(addMonths(new Date(), VOUCHER_VALID_MONTHS), 'dd.MM.yyyy'),
         idVoucher: String(idVoucher),
       })
@@ -122,6 +114,10 @@ export async function POST(req: NextRequest) {
       .replace(/\{\{ voucherLabel \}\}/g, escapeHtml(voucher.label))
       .replace(/\{\{ sum \}\}/g, String(voucher.sum))
       .replace(/\{\{ idVoucher \}\}/g, escapeHtml(idVoucher))
+      .replace(
+        /\{\{ rules \}\}/g,
+        voucherRulesHtml(voucher.serviceTitle, 'Voucher je aktivní až po zaplacení.'),
+      )
 
     const fileStem = (voucher.amount ?? 'sluzba').replaceAll(/[^\w.-]/g, '')
     const { data, error } = await resend.emails.send({

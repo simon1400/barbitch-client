@@ -128,10 +128,7 @@ export const htmlTemplate = `<!DOCTYPE html>
             <tr>
               <td class="px" style="padding:0 24px 20px 24px;">
                 <ul style="margin:8px 0 0 18px;padding:0;font-family:Arial,Helvetica,sans-serif;color:#e6e6e6;font-size:15px;line-height:22px;">
-                  <li>Voucher lze uplatnit jednorázově na libovolnou službu z naší nabídky.</li>
-                  <li>Je-li cena služby nižší, rozdíl se nevrací.</li>
-                  <li>Je-li cena vyšší, rozdíl doplatíte na místě.</li>
-                  <li>Voucher je aktivní až po zaplacení.</li>
+                  {{ rules }}
                 </ul>
               </td>
             </tr>
