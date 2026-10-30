@@ -1,7 +1,6 @@
 import Button from 'components/Button'
 import { Container } from 'components/Container'
-import Image from 'components/Image'
-import { HALLOWEEN, halloweenDates } from 'lib/halloween'
+import { HALLOWEEN, halloweenDates, halloweenDayWord, halloweenText } from 'lib/halloween'
 import { Anton } from 'next/font/google'
 import Link from 'next/link'
 
@@ -25,10 +24,10 @@ const splitTitle = (title: string) => {
 
 // Jeden pruh = fráze z konfigurace (na desktopu dvakrát, aby byl pruh širší
 // než obrazovka). Dva stejné pruhy + posun o -50 % = nekonečná smyčka.
-const Strip = () => (
+const Strip = ({ phrases }: { phrases: string[] }) => (
   <div className={'flex shrink-0'} aria-hidden>
     {[0, 1].map((round) =>
-      HALLOWEEN.marquee.map((phrase) => (
+      phrases.map((phrase) => (
         <span
           key={`${round}-${phrase}`}
           className={`shrink-0 px-5 lg:px-7 ${round ? 'hidden lg:block' : ''}`}
@@ -51,6 +50,10 @@ export const HalloweenHero = ({
 }) => {
   const { first, middle, neon } = splitTitle(title || HALLOWEEN.title)
   const dates = halloweenDates()
+  const dayWord = halloweenDayWord()
+  const t = (text: string) => halloweenText(text, dayWord)
+  const marquee = HALLOWEEN.marquee.map(t)
+  const secondaryHref = HALLOWEEN.secondary.href
 
   return (
     <section
@@ -67,28 +70,80 @@ export const HalloweenHero = ({
         aria-hidden
       />
 
-      <Image
-        src={'/assets/halloween/sticker-dekorace.jpg'}
-        alt={'Dekorace — neotvírat, nereanimovat'}
-        width={1280}
-        height={511}
-        sizes={'(min-width: 1024px) 360px, 190px'}
+      {/* Visačka + status: jeden odkaz na rezervaci. Tvar z clip-path, proto
+          stín přes drop-shadow na obalu (box-shadow by se ořízl). */}
+      <Link
+        href={linkToReserve}
+        aria-label={`${t(HALLOWEEN.tag.big)} — ${t(HALLOWEEN.tag.line)}. Rezervovat termín`}
         className={
-          'absolute z-[6] right-[-14px] top-[112px] w-[190px] h-auto lg:right-[90px] lg:top-[120px] lg:w-[360px] origin-[12%_50%] rotate-[7deg] motion-safe:animate-swing shadow-[0_20px_40px_rgba(0,0,0,.6)] lg:shadow-[0_30px_50px_rgba(0,0,0,.6)]'
-        }
-      />
-
-      <div
-        className={
-          'hidden lg:block absolute z-10 right-[90px] top-[300px] text-right text-resXs leading-5 tracking-[.16em] uppercase text-white/75'
+          'group absolute z-[6] right-[-6px] top-[112px] w-[200px] lg:right-[90px] lg:top-[120px] lg:w-[360px] block'
         }
       >
-        <p>
-          {'Status: '}
-          <span className={'text-primary'}>{HALLOWEEN.status}</span>
-        </p>
-        <p>{HALLOWEEN.statusNote}</p>
-      </div>
+        <span
+          className={
+            'block origin-[12%_50%] rotate-[7deg] motion-safe:animate-swing [filter:drop-shadow(0_20px_30px_rgba(0,0,0,.6))] lg:[filter:drop-shadow(0_30px_40px_rgba(0,0,0,.6))] transition-transform duration-300 group-hover:scale-[1.04] group-focus-visible:scale-[1.04]'
+          }
+        >
+          <span
+            className={
+              'relative flex items-center bg-primary text-accent [clip-path:polygon(7%_0,93%_0,100%_22%,100%_78%,93%_100%,7%_100%,0_78%,0_22%)] py-3 lg:py-5'
+            }
+          >
+            {/* Výstražné pruhy na obou koncích a očko visačky vlevo. */}
+            <span
+              className={
+                'absolute inset-y-0 left-0 w-[9%] bg-[repeating-linear-gradient(135deg,#161615_0_6px,#f5c400_6px_12px)] lg:bg-[repeating-linear-gradient(135deg,#161615_0_10px,#f5c400_10px_20px)]'
+              }
+              aria-hidden
+            />
+            <span
+              className={
+                'absolute inset-y-0 right-0 w-[9%] bg-[repeating-linear-gradient(135deg,#161615_0_6px,#f5c400_6px_12px)] lg:bg-[repeating-linear-gradient(135deg,#161615_0_10px,#f5c400_10px_20px)]'
+              }
+              aria-hidden
+            />
+            <span
+              className={
+                'absolute left-[3.5%] top-1/2 -translate-y-1/2 w-[9px] h-[9px] lg:w-4 lg:h-4 rounded-full bg-accent shadow-[inset_0_0_0_2px_#3a3a3a]'
+              }
+              aria-hidden
+            />
+            <span className={'relative w-full text-center px-[13%] uppercase leading-none'}>
+              <span
+                className={`${anton.className} block text-[34px] lg:text-[60px] leading-[.95] tracking-[-.01em]`}
+              >
+                {t(HALLOWEEN.tag.big)}
+              </span>
+              <span
+                className={
+                  'block mt-1 lg:mt-2 text-[11px] lg:text-[21px] font-extrabold tracking-[.02em]'
+                }
+              >
+                {t(HALLOWEEN.tag.line)}
+              </span>
+              <span
+                className={
+                  'block mt-1 lg:mt-2 text-[7px] lg:text-[12px] font-bold tracking-[.28em] text-accent/80 group-hover:text-accent'
+                }
+              >
+                {t(HALLOWEEN.tag.small)}
+              </span>
+            </span>
+          </span>
+        </span>
+
+        <span
+          className={
+            'hidden lg:block absolute right-0 top-[180px] w-[420px] text-right text-resXs leading-5 tracking-[.16em] uppercase text-white/75 transition-colors group-hover:text-white'
+          }
+        >
+          <span className={'block'}>
+            {'Status: '}
+            <span className={'text-primary'}>{t(HALLOWEEN.status)}</span>
+          </span>
+          <span className={'block'}>{t(HALLOWEEN.statusNote)}</span>
+        </span>
+      </Link>
 
       <div className={'absolute inset-x-0 bottom-9 lg:bottom-10 z-10'}>
         <Container size={'xl'} className={'pb-10 lg:pb-15'}>
@@ -135,7 +190,7 @@ export const HalloweenHero = ({
             >
               {HALLOWEEN.subtitle}
               <br />
-              <span className={'text-primary'}>{HALLOWEEN.subtitleAccent}</span>
+              <span className={'text-primary'}>{t(HALLOWEEN.subtitleAccent)}</span>
             </p>
 
             <div className={'flex flex-wrap items-center gap-2.5 lg:gap-4'}>
@@ -143,14 +198,14 @@ export const HalloweenHero = ({
               <Button
                 outline
                 className={'lg:hidden'}
-                text={HALLOWEEN.secondary.labelMobile}
-                href={HALLOWEEN.secondary.href}
+                text={t(HALLOWEEN.secondary.labelMobile)}
+                href={secondaryHref}
               />
               <Button
                 outline
                 className={'hidden lg:inline-block'}
-                text={HALLOWEEN.secondary.label}
-                href={HALLOWEEN.secondary.href}
+                text={t(HALLOWEEN.secondary.label)}
+                href={secondaryHref}
               />
             </div>
           </div>
@@ -159,7 +214,7 @@ export const HalloweenHero = ({
 
       <Link
         href={linkToReserve}
-        aria-label={`${HALLOWEEN.marquee.join(' · ')} — Rezervovat termín`}
+        aria-label={`${marquee.join(' · ')} — Rezervovat termín`}
         className={
           'group absolute bottom-0 left-0 z-[12] w-full h-9 lg:h-10 flex items-center overflow-hidden bg-primary text-accent uppercase text-resXs lg:text-resSm tracking-[.05em]'
         }
@@ -169,8 +224,8 @@ export const HalloweenHero = ({
             'flex whitespace-nowrap will-change-transform motion-safe:animate-marquee-halloween-sm lg:motion-safe:animate-marquee-halloween group-hover:[animation-play-state:paused]'
           }
         >
-          <Strip />
-          <Strip />
+          <Strip phrases={marquee} />
+          <Strip phrases={marquee} />
         </div>
       </Link>
     </section>

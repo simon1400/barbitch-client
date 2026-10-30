@@ -25,25 +25,35 @@ export const HALLOWEEN = {
   // (na mobilu bez slova „Halloween“).
   badge: 'Exponát 001',
 
-  // Dva řádky pod nadpisem, druhý je růžový.
+  // Dva řádky pod nadpisem, druhý je růžový. `{day}` → „dnes“ / „zítra“ /
+  // „31.10“ podle data (viz `halloweenDayWord`).
   subtitle: 'Neotvírat. Nereanimovat.',
-  subtitleAccent: 'Objednávání pokračuje.',
+  subtitleAccent: 'Halloween {day}. Ještě je kam se vejít.',
 
-  // Vedlejší (obrysové) tlačítko vedle „Rezervovat termín“.
+  // Vedlejší (obrysové) tlačítko vedle „Rezervovat termín“ — vede rovnou na
+  // výběr služby; den Halloweenu je v kalendáři rezervace označen 🎃.
   secondary: {
-    label: 'Halloween nehty',
-    labelMobile: 'Ceník',
-    href: '/cenik',
+    label: 'Volné termíny {day}',
+    labelMobile: 'Termíny {day}',
+    href: '/book',
   },
 
-  // Vpravo pod visačkou (jen desktop): „Status: under investigation“.
-  status: 'under investigation',
-  statusNote: 'Spojitost s incidentem nepotvrzena',
+  // Visačka vpravo nahoře (HTML, ne obrázek) — celá je odkaz na rezervaci.
+  // `{day}` → dnes / zítra / 31.10.
+  tag: {
+    big: 'Halloween',
+    line: 'Volné termíny {day}',
+    small: 'Klikni a rezervuj →',
+  },
+
+  // Vpravo pod visačkou (jen desktop), součást téhož odkazu.
+  status: 'volno {day}',
+  statusNote: 'Halloween design k manikúře',
 
   // Fráze v běžící liště dole (vede na rezervaci).
   marquee: [
-    'Objednávání pokračuje →',
-    'Controlled beauty zone',
+    'Halloween {day} — poslední volné termíny →',
+    'Halloween design k manikúře',
     'Neotvírat. Nereanimovat.',
     'Podezřele růžový',
   ],
@@ -58,6 +68,32 @@ export const isHalloweenOn = (now: Date = new Date()): boolean => {
   if (!HALLOWEEN.enabled) return false
   const day = pragueDay(now)
   return day >= HALLOWEEN.from && day <= HALLOWEEN.to
+}
+
+// Jak se v textech říká dni Halloweenu (`to`): „dnes“ v den D, „zítra“ den
+// před ním, jinak „31.10“. Počítat jen na serveru (stránka se obnovuje
+// jednou za hodinu), výsledek dosadit do textů přes `halloweenText`.
+export const halloweenDayWord = (now: Date = new Date()): string => {
+  const day = pragueDay(now)
+  if (day === HALLOWEEN.to) return 'dnes'
+  const next = new Date(now)
+  next.setUTCDate(next.getUTCDate() + 1)
+  if (pragueDay(next) === HALLOWEEN.to) return 'zítra'
+  const [, m, d] = HALLOWEEN.to.split('-')
+  return `${Number(d)}.${Number(m)}`
+}
+
+// Dosadí `{day}` do textu z konfigurace.
+export const halloweenText = (text: string, dayWord: string): string =>
+  text.replace(/\{day\}/g, dayWord)
+
+// Je dané datum (lokální den prohlížeče) dnem Halloweenu? Pro odznak 🎃 v
+// kalendáři rezervace — porovnává se jen datum, ne „teď“, takže bez rizika
+// rozdílu server/prohlížeč.
+export const isHalloweenDay = (date: Date): boolean => {
+  if (!HALLOWEEN.enabled) return false
+  const ymd = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`
+  return ymd === HALLOWEEN.to
 }
 
 // „24.10 – 31.10“
