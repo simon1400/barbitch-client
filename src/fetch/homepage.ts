@@ -37,6 +37,8 @@ export interface IGalleryItem {
   image: IGalery
   service?: { title: string; shortTitle?: string; slug: string } | null
   caption?: string | null
+  /** Vlastní text v prohlížeči; prázdné = výchozí věta. */
+  description?: string | null
   active?: boolean | null
 }
 

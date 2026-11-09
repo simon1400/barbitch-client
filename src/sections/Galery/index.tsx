@@ -2,6 +2,8 @@ import type { IGalleryItem } from 'fetch/homepage'
 import type { IDataHomepageService } from 'fetch/service'
 import type { GalleryChip, GalleryPhoto } from 'sections/Galery/types'
 
+import { DEFAULT_PHOTO_TEXT } from 'sections/Galery/types'
+
 import GalleryStrip from './GalleryStrip'
 
 interface GaleryProps {
@@ -31,6 +33,7 @@ const toPhotos = (items: IGalleryItem[], fallback: IGalery[]): GalleryPhoto[] =>
           (service ? `${service.title} — práce salonu Barbitch` : '') ||
           `Fotka ${i + 1} z galerie Barbitch`,
         caption,
+        text: item.description?.trim() || DEFAULT_PHOTO_TEXT,
         service,
       }
     })
@@ -42,6 +45,7 @@ const toPhotos = (items: IGalleryItem[], fallback: IGalery[]): GalleryPhoto[] =>
       url: img.url,
       alt: img.alternativeText || `Fotka ${i + 1} z galerie Barbitch`,
       caption: 'Naše práce',
+      text: DEFAULT_PHOTO_TEXT,
       service: null,
     }))
 }

@@ -160,7 +160,7 @@ const GalleryViewer = ({ photos, index, onIndex, onClose, linkToReserve }: Galle
 
           <div
             className={
-              'relative h-[min(133.333vw,calc(100dvh-300px))] w-full shrink-0 bg-[#2a2a28] lg:aspect-[3/4] lg:h-[min(560px,calc(100dvh-220px))] lg:w-auto xl:h-[min(640px,calc(100dvh-220px))]'
+              'relative h-[min(133.333vw,calc(100dvh-300px))] w-full shrink-0 lg:aspect-[3/4] lg:h-[min(560px,calc(100dvh-220px))] lg:w-auto xl:h-[min(640px,calc(100dvh-220px))]'
             }
           >
             <div
@@ -210,7 +210,8 @@ const GalleryViewer = ({ photos, index, onIndex, onClose, linkToReserve }: Galle
             }
           >
             <div className={'flex items-center justify-between'}>
-              {photo.service ? (
+              {/* Bez popisku je nadpis = název služby — štítek by ho jen opakoval. */}
+              {photo.service && photo.caption !== photo.service.title ? (
                 <span
                   className={
                     'inline-block h-7 leading-7 px-3 bg-white text-accent text-[11px] font-extrabold tracking-[.08em] uppercase'
@@ -239,12 +240,10 @@ const GalleryViewer = ({ photos, index, onIndex, onClose, linkToReserve }: Galle
             </h3>
             <p
               className={
-                'text-[14px] leading-[22px] font-medium text-white/[.72] lg:text-[16px] lg:leading-[26px]'
+                'whitespace-pre-line text-[14px] leading-[22px] font-medium text-white/[.72] lg:text-[16px] lg:leading-[26px]'
               }
             >
-              {
-                'Líbí se vám tenhle výsledek? Vyberte si termín a napište nám do poznámky, že chcete něco podobného.'
-              }
+              {photo.text}
             </p>
             <div className={'mt-auto flex gap-2.5 lg:mt-2 lg:flex-col lg:gap-3'}>
               <Link

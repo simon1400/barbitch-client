@@ -6,6 +6,8 @@ export interface GalleryPhoto {
   alt: string
   /** Nadpis v prohlížeči: popisek → název služby → „Naše práce“. */
   caption: string
+  /** Text pod nadpisem v prohlížeči (vlastní ze Strapi nebo výchozí). */
+  text: string
   service: { title: string; slug: string } | null
 }
 
@@ -33,6 +35,10 @@ export const pricelistLabel = (slug?: string) => {
   const c = slug ? SERVICE_CASES[slug] : undefined
   return c ? `Ceník ${c.gen}` : 'Ceník'
 }
+
+/** Výchozí text v prohlížeči, když fotka nemá vlastní popis. */
+export const DEFAULT_PHOTO_TEXT =
+  'Líbí se vám tenhle výsledek? Vyberte si termín a napište nám do poznámky, že chcete něco podobného.'
 
 /** „01“, „12“ — čísla karet a počítadlo. */
 export const pad2 = (n: number) => String(n).padStart(2, '0')

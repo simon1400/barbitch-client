@@ -1,7 +1,6 @@
 'use client'
 import type { GalleryChip, GalleryPhoto } from './types'
 
-import Button from 'components/Button'
 import Image from 'components/Image'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import dynamic from 'next/dynamic'
@@ -29,6 +28,12 @@ const WRAP = 'mx-auto w-full max-w-[1440px] px-5 lg:px-[72px]'
 
 const prefersReducedMotion = () =>
   typeof window !== 'undefined' && window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+// Automatické posouvání: krok každé 4 s; po zásahu uživatele (prst, myš,
+// kolečko, čip, šipka) pauza 8 s; stojí při najetí myší, fokusu uvnitř,
+// otevřeném prohlížeči, mimo obrazovku a při `prefers-reduced-motion`.
+const AUTOPLAY_MS = 4000
+const IDLE_AFTER_USER_MS = 8000
 
 interface StripView {
   first: number
@@ -66,6 +71,17 @@ const GalleryStrip = ({ photos, chips, instagram, linkToReserve }: GalleryStripP
   const scrollerRef = useRef<HTMLUListElement>(null)
   const cardRefs = useRef<(HTMLButtonElement | null)[]>([])
   const frame = useRef(0)
+  const openRef = useRef(open)
+  openRef.current = open
+  const pausedUntil = useRef(0)
+  const hovering = useRef(false)
+  const drag = useRef<{ x: number; left: number; moved: boolean; id: number } | null>(null)
+  const suppressClick = useRef(false)
+  const [dragging, setDragging] = useState(false)
+
+  const pauseAutoplay = () => {
+    pausedUntil.current = Date.now() + IDLE_AFTER_USER_MS
+  }
 
   const visible = useMemo(
     () => (filter ? photos.filter((p) => p.service?.slug === filter) : photos),
@@ -126,7 +142,7 @@ const GalleryStrip = ({ photos, chips, instagram, linkToReserve }: GalleryStripP
     }
   }, [measure])
 
-  const scrollByCard = (dir: 1 | -1) => {
+  const scrollByCard = useCallback((dir: 1 | -1) => {
     const el = scrollerRef.current
     const card = cardRefs.current[0]
     if (!el || !card) return
@@ -135,6 +151,83 @@ const GalleryStrip = ({ photos, chips, instagram, linkToReserve }: GalleryStripP
       left: dir * (card.offsetWidth + gap),
       behavior: prefersReducedMotion() ? 'auto' : 'smooth',
     })
+  }, [])
+
+  // Automatické posouvání lenty.
+  useEffect(() => {
+    const el = scrollerRef.current
+    if (!el || prefersReducedMotion()) return
+    let inView = false
+    const io = new IntersectionObserver(
+      ([entry]) => {
+        inView = entry.isIntersecting
+      },
+      { threshold: 0.5 },
+    )
+    io.observe(el)
+    const timer = setInterval(() => {
+      if (!inView || hovering.current || drag.current || document.hidden) return
+      if (openRef.current !== null || Date.now() < pausedUntil.current) return
+      if (el.contains(document.activeElement)) return
+      const max = el.scrollWidth - el.clientWidth
+      if (max <= 2) return
+      if (el.scrollLeft >= max - 2) el.scrollTo({ left: 0, behavior: 'smooth' })
+      else scrollByCard(1)
+    }, AUTOPLAY_MS)
+    return () => {
+      io.disconnect()
+      clearInterval(timer)
+    }
+  }, [scrollByCard])
+
+  // Táhnutí myší (desktop). Na dotyku se lenta posouvá nativně.
+  const onPointerDown = (e: React.PointerEvent<HTMLUListElement>) => {
+    pauseAutoplay()
+    const el = scrollerRef.current
+    if (!el || e.pointerType !== 'mouse' || e.button !== 0) return
+    drag.current = { x: e.clientX, left: el.scrollLeft, moved: false, id: e.pointerId }
+  }
+
+  const onPointerMove = (e: React.PointerEvent<HTMLUListElement>) => {
+    const d = drag.current
+    const el = scrollerRef.current
+    if (!d || !el) return
+    const dx = e.clientX - d.x
+    if (!d.moved) {
+      if (Math.abs(dx) < 6) return
+      d.moved = true
+      setDragging(true)
+      el.setPointerCapture(d.id)
+    }
+    el.scrollLeft = d.left - dx
+  }
+
+  const endDrag = () => {
+    const d = drag.current
+    drag.current = null
+    const el = scrollerRef.current
+    if (!d?.moved || !el) return
+    // Klik, který následuje hned po puštění, nesmí otevřít fotku.
+    suppressClick.current = true
+    setTimeout(() => {
+      suppressClick.current = false
+    }, 0)
+    if (el.hasPointerCapture(d.id)) el.releasePointerCapture(d.id)
+    // Dorovnat na nejbližší kartu, pak teprve vrátit scroll-snap (jinak by skočil).
+    const padLeft = Number.parseFloat(getComputedStyle(el).paddingLeft) || 0
+    const edge = el.getBoundingClientRect().left + padLeft
+    let delta = 0
+    let best = Number.POSITIVE_INFINITY
+    cardRefs.current.slice(0, total).forEach((card) => {
+      if (!card) return
+      const diff = card.getBoundingClientRect().left - edge
+      if (Math.abs(diff) < best) {
+        best = Math.abs(diff)
+        delta = diff
+      }
+    })
+    el.scrollBy({ left: delta, behavior: prefersReducedMotion() ? 'auto' : 'smooth' })
+    setTimeout(() => setDragging(false), 450)
   }
 
   const closeViewer = (index: number) => {
@@ -183,7 +276,10 @@ const GalleryStrip = ({ photos, chips, instagram, linkToReserve }: GalleryStripP
               type={'button'}
               aria-pressed={filter === null}
               className={chipCls(filter === null)}
-              onClick={() => setFilter(null)}
+              onClick={() => {
+                pauseAutoplay()
+                setFilter(null)
+              }}
             >
               {'Vše'}
             </button>
@@ -193,7 +289,10 @@ const GalleryStrip = ({ photos, chips, instagram, linkToReserve }: GalleryStripP
                 type={'button'}
                 aria-pressed={filter === chip.slug}
                 className={chipCls(filter === chip.slug)}
-                onClick={() => setFilter(chip.slug)}
+                onClick={() => {
+                  pauseAutoplay()
+                  setFilter(chip.slug)
+                }}
               >
                 {chip.label}
               </button>
@@ -205,7 +304,29 @@ const GalleryStrip = ({ photos, chips, instagram, linkToReserve }: GalleryStripP
       <ul
         ref={scrollerRef}
         onScroll={onScroll}
-        className={`mt-6 lg:mt-12 flex items-start gap-3 lg:gap-4 overflow-x-auto snap-x snap-mandatory [scrollbar-width:none] [&::-webkit-scrollbar]:hidden after:shrink-0 after:w-2 after:content-[''] lg:after:w-14 ${STRIP_PAD}`}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={endDrag}
+        onPointerCancel={endDrag}
+        onWheel={pauseAutoplay}
+        onMouseEnter={() => {
+          hovering.current = true
+        }}
+        onMouseLeave={() => {
+          hovering.current = false
+        }}
+        onDragStart={(e) => e.preventDefault()}
+        onClickCapture={(e) => {
+          if (suppressClick.current) {
+            e.preventDefault()
+            e.stopPropagation()
+          }
+        }}
+        className={`mt-6 lg:mt-12 flex items-start gap-3 lg:gap-4 overflow-x-auto ${
+          dragging
+            ? 'snap-none cursor-grabbing select-none'
+            : 'snap-x snap-mandatory lg:cursor-grab'
+        } [scrollbar-width:none] [&::-webkit-scrollbar]:hidden after:shrink-0 after:w-2 after:content-[''] lg:after:w-14 ${STRIP_PAD}`}
       >
         {visible.map((photo, i) => (
           <li key={photo.key} className={`shrink-0 snap-start ${i % 2 === 1 ? 'lg:mt-10' : ''}`}>
@@ -228,6 +349,7 @@ const GalleryStrip = ({ photos, chips, instagram, linkToReserve }: GalleryStripP
                 fill
                 sizes={'(max-width: 1023px) 272px, 304px'}
                 loading={'lazy'}
+                draggable={false}
                 className={
                   'object-cover motion-safe:transition-transform motion-safe:duration-500 motion-safe:group-hover:scale-[1.03]'
                 }
@@ -313,7 +435,7 @@ const GalleryStrip = ({ photos, chips, instagram, linkToReserve }: GalleryStripP
               target={'_blank'}
               rel={'noopener noreferrer'}
               className={
-                'order-2 inline-flex items-center gap-2.5 self-center text-xss tracking-[.06em] uppercase text-accent hover:text-primary lg:order-1 lg:self-auto'
+                'inline-flex items-center gap-2.5 self-center text-xss tracking-[.06em] uppercase text-accent hover:text-primary lg:self-auto'
               }
             >
               <InstagramIcon />
@@ -323,12 +445,15 @@ const GalleryStrip = ({ photos, chips, instagram, linkToReserve }: GalleryStripP
             </a>
           )}
           {view.canScroll && (
-            <div className={'hidden gap-2 lg:order-2 lg:flex'}>
+            <div className={'hidden gap-2 lg:flex'}>
               <button
                 type={'button'}
                 aria-label={'Předchozí fotky'}
                 disabled={view.atStart}
-                onClick={() => scrollByCard(-1)}
+                onClick={() => {
+                  pauseAutoplay()
+                  scrollByCard(-1)
+                }}
                 className={
                   'inline-flex h-14 w-14 items-center justify-center border-2 border-accent text-accent transition-colors duration-200 enabled:hover:bg-accent enabled:hover:text-white disabled:opacity-30'
                 }
@@ -339,7 +464,10 @@ const GalleryStrip = ({ photos, chips, instagram, linkToReserve }: GalleryStripP
                 type={'button'}
                 aria-label={'Další fotky'}
                 disabled={view.atEnd}
-                onClick={() => scrollByCard(1)}
+                onClick={() => {
+                  pauseAutoplay()
+                  scrollByCard(1)
+                }}
                 className={
                   'inline-flex h-14 w-14 items-center justify-center border-2 border-accent bg-accent text-white transition-colors duration-200 enabled:hover:border-primary enabled:hover:bg-primary disabled:opacity-30'
                 }
@@ -348,12 +476,6 @@ const GalleryStrip = ({ photos, chips, instagram, linkToReserve }: GalleryStripP
               </button>
             </div>
           )}
-          <Button
-            text={'Rezervovat termín'}
-            href={linkToReserve}
-            inverse
-            className={'order-1 w-full lg:order-3 lg:w-auto'}
-          />
         </div>
       </div>
 
