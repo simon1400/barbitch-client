@@ -1,9 +1,9 @@
 import type { Metadata } from 'next'
 
 import { getRandomPost } from 'fetch/blog'
-import { getLinkToReserve } from 'fetch/contact'
+import { getContact } from 'fetch/contact'
 import { getHomeMeta } from 'fetch/getMeta'
-import { getHomepage } from 'fetch/homepage'
+import { getGalleryItems, getHomepage } from 'fetch/homepage'
 import { getReviews } from 'fetch/reviews'
 import { getServiceHomepage } from 'fetch/service'
 import { isHalloweenOn } from 'lib/halloween'
@@ -50,24 +50,34 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 const Home = async () => {
-  const [dataService, data, posts, dataLink, reviews] = await Promise.all([
+  const [dataService, data, galleryItems, posts, contact, reviews] = await Promise.all([
     getServiceHomepage(),
     getHomepage(),
+    getGalleryItems(),
     getRandomPost(),
-    getLinkToReserve(),
+    getContact(),
     getReviews(),
   ])
+  // Prázdný odkaz (výpadek CMS) by odstranil CTA — vlastní rezervace na /book jede vždy.
+  const linkToReserve = contact.linkToReserve || '/book'
+  const instagramUrl = contact.socItems?.find((item) => item.type === 'instagram')?.link
 
   return (
     <main>
       <LocalBusinessSchema />
       {isHalloweenOn() ? (
-        <HalloweenHero title={data.title} linkToReserve={dataLink.linkToReserve || '/book'} />
+        <HalloweenHero title={data.title} linkToReserve={linkToReserve} />
       ) : (
-        <Top title={data.title} linkToReserve={dataLink.linkToReserve} />
+        <Top title={data.title} linkToReserve={linkToReserve} />
       )}
       <HandSec service={dataService} />
-      <Galery data={data.galery} />
+      <Galery
+        items={galleryItems}
+        fallback={data.galery}
+        services={dataService}
+        instagramUrl={instagramUrl}
+        linkToReserve={linkToReserve}
+      />
       <Posts data={posts} />
       <About text={data.aboutUs} />
       <Reviews reviews={reviews} />

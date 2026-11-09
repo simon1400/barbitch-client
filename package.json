@@ -21,7 +21,6 @@
     "date-fns": "^4.1.0",
     "date-fns-tz": "^3.2.0",
     "html-react-parser": "^5.1.18",
-    "imagekitio-next": "^1.0.1",
     "lucide-react": "^0.481.0",
     "motion": "^11.13.1",
     "next": "^15.5.8",

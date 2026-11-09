@@ -1,63 +1,91 @@
-'use client'
-import { IKImage } from 'imagekitio-next'
-import dynamic from 'next/dynamic'
-import { useState } from 'react'
+import type { IGalleryItem } from 'fetch/homepage'
+import type { IDataHomepageService } from 'fetch/service'
+import type { GalleryChip, GalleryPhoto } from 'sections/Galery/types'
 
-import 'yet-another-react-lightbox/styles.css'
+import GalleryStrip from './GalleryStrip'
 
-const Lightbox = dynamic(() => import('yet-another-react-lightbox'), { ssr: false })
+interface GaleryProps {
+  /** Nové pole `homepage.galleryItems` (služba + popisek). */
+  items: IGalleryItem[]
+  /** Staré pole `homepage.galery` — záloha, dokud `galleryItems` není vyplněné. */
+  fallback: IGalery[]
+  /** Pořadí čipů = pořadí služeb ve Strapi (stejné jako v menu). */
+  services: IDataHomepageService[]
+  instagramUrl?: string
+  linkToReserve: string
+}
 
-const Galery = ({ data }: { data: IGalery[] }) => {
-  const [index, setIndex] = useState(-1)
-  const imagekitUrl = process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT || ''
-  const validData = data.filter((item) => item.url?.startsWith('http'))
+const toPhotos = (items: IGalleryItem[], fallback: IGalery[]): GalleryPhoto[] => {
+  if (items.length > 0) {
+    return items.map((item, i) => {
+      const service = item.service?.slug
+        ? { title: item.service.title, slug: item.service.slug }
+        : null
+      const caption = item.caption?.trim() || service?.title || 'Naše práce'
+      return {
+        key: `${i}:${item.image.url}`,
+        url: item.image.url,
+        alt:
+          item.image.alternativeText ||
+          item.caption?.trim() ||
+          (service ? `${service.title} — práce salonu Barbitch` : '') ||
+          `Fotka ${i + 1} z galerie Barbitch`,
+        caption,
+        service,
+      }
+    })
+  }
+  return fallback
+    .filter((img) => img.url?.startsWith('http'))
+    .map((img, i) => ({
+      key: `${i}:${img.url}`,
+      url: img.url,
+      alt: img.alternativeText || `Fotka ${i + 1} z galerie Barbitch`,
+      caption: 'Naše práce',
+      service: null,
+    }))
+}
+
+/** Čipy jen pro služby, které mají aspoň jednu fotku; pořadí podle Strapi. */
+const toChips = (photos: GalleryPhoto[], services: IDataHomepageService[]): GalleryChip[] => {
+  const used = new Map<string, string>()
+  photos.forEach((p) => {
+    if (p.service && !used.has(p.service.slug)) used.set(p.service.slug, p.service.title)
+  })
+  const order = services.map((s) => s.slug)
+  return [...used.entries()]
+    .sort(([a], [b]) => {
+      const ia = order.indexOf(a)
+      const ib = order.indexOf(b)
+      return (ia < 0 ? order.length : ia) - (ib < 0 ? order.length : ib)
+    })
+    .map(([slug, label]) => ({ slug, label }))
+}
+
+/** `https://www.instagram.com/barbitch.cz/` → `@barbitch.cz` */
+const instagramHandle = (url: string) => {
+  try {
+    const name = new URL(url).pathname.split('/').find(Boolean)
+    return name ? `@${name}` : 'Instagram'
+  } catch {
+    return 'Instagram'
+  }
+}
+
+const Galery = ({ items, fallback, services, instagramUrl, linkToReserve }: GaleryProps) => {
+  const photos = toPhotos(items, fallback)
+  if (photos.length === 0) return null
 
   return (
-    <section className={'pb-23 lg:pb-20'}>
-      <h2 className={'text-lg lg:text-big uppercase mt-10 lg:mt-20 text-center -mb-1'}>
-        {'Práce'}
-      </h2>
-
-      <div className={'grid grid-cols-3 lg:grid-cols-6 grid-rows-2 lg:grid-rows-1 gap-1'}>
-        {validData.map((item, i) => (
-          <div
-            key={item.alternativeText || `Obrázek ${i + 1} z galerie Barbitch`}
-            className={'relative w-full overflow-hidden cursor-pointer hover:scale-95 duration-200'}
-            onClick={() => setIndex(i)}
-          >
-            <div
-              className={'relative w-full'}
-              style={{ aspectRatio: '1 / 1' }}
-              role={'img'}
-              aria-label={item.alternativeText || `Obrázek ${i + 1} z galerie Barbitch`}
-            >
-              <IKImage
-                urlEndpoint={imagekitUrl}
-                src={item.url}
-                className={'object-cover absolute w-full h-full top-0 left-0'}
-                alt={item.alternativeText || `Obrázek ${i + 1} z galerie Barbitch`}
-                width={300}
-                height={300}
-                transformation={[{ width: '300', height: '300' }]}
-                loading={'lazy'}
-              />
-            </div>
-          </div>
-        ))}
-      </div>
-
-      {index >= 0 && (
-        <Lightbox
-          index={index}
-          open={index >= 0}
-          close={() => setIndex(-1)}
-          carousel={{ preload: 2 }}
-          slides={validData.map((item) => ({
-            src: item.url,
-            alt: item.alternativeText || '',
-          }))}
-        />
-      )}
+    <section className={'pt-14 pb-20 lg:pt-24 lg:pb-27'} aria-labelledby={'nase-prace'}>
+      <GalleryStrip
+        photos={photos}
+        chips={toChips(photos, services)}
+        instagram={
+          instagramUrl ? { url: instagramUrl, handle: instagramHandle(instagramUrl) } : undefined
+        }
+        linkToReserve={linkToReserve}
+      />
     </section>
   )
 }

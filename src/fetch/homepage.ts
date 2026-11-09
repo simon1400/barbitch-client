@@ -31,3 +31,47 @@ export const getHomepage = async (): Promise<IDataHomepage> => {
     return { title: '', aboutUs: '', galery: [] }
   }
 }
+
+/** Fotka galerie „Naše práce“ (komponenta `content.galery-item` na homepage). */
+export interface IGalleryItem {
+  image: IGalery
+  service?: { title: string; shortTitle?: string; slug: string } | null
+  caption?: string | null
+  active?: boolean | null
+}
+
+const galleryQuery = qs.stringify(
+  {
+    fields: ['title'],
+    populate: {
+      galleryItems: {
+        populate: {
+          image: { fields: ['url', 'alternativeText', 'width', 'height'] },
+          service: { fields: ['title', 'shortTitle', 'slug'] },
+        },
+      },
+    },
+  },
+  {
+    encodeValuesOnly: true,
+  },
+)
+
+/**
+ * Nová galerie s tagy služeb. Samostatný požadavek: dokud Strapi pole
+ * `galleryItems` nezná (400 „Invalid key“), nesmí to shodit titulek a „O nás“
+ * z `getHomepage()` — galerie pak spadne zpět na staré pole `galery`.
+ */
+export const getGalleryItems = async (): Promise<IGalleryItem[]> => {
+  try {
+    const data: { galleryItems?: IGalleryItem[] | null } = await Axios.get(
+      `/api/homepage?${galleryQuery}`,
+    )
+    return (data.galleryItems || []).filter(
+      (item) => item.active !== false && item.image?.url?.startsWith('http'),
+    )
+  } catch (error) {
+    console.error('Failed to fetch homepage gallery:', error)
+    return []
+  }
+}
