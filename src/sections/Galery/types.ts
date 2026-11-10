@@ -1,3 +1,5 @@
+import type { BookSection } from 'lib/bookSection'
+
 /** Fotka připravená pro lentu a prohlížeč (bez ohledu na to, z jakého pole Strapi přišla). */
 export interface GalleryPhoto {
   /** Stabilní klíč pro React (pořadí v celé galerii + URL). */
@@ -9,6 +11,8 @@ export interface GalleryPhoto {
   /** Text pod nadpisem v prohlížeči (vlastní ze Strapi nebo výchozí). */
   text: string
   service: { title: string; slug: string } | null
+  /** Sekce rezervace pro tlačítko „Rezervovat“ (vlastní nebo podle služby). */
+  bookSection: BookSection | null
 }
 
 export interface GalleryChip {
@@ -17,23 +21,18 @@ export interface GalleryChip {
 }
 
 /**
- * Tlačítka v prohlížeči: „Rezervovat manikúru“ (4. pád) a „Ceník manikúry“ (2. pád).
- * Neznámá služba → obecné „Rezervovat termín“ / „Ceník“.
+ * Tlačítko „Ceník manikúry“ (2. pád). Neznámá služba → „Ceník“.
+ * „Rezervovat …“ se skládá podle sekce rezervace — `bookSectionLabel`.
  */
-const SERVICE_CASES: Record<string, { acc: string; gen: string }> = {
-  manikura: { acc: 'manikúru', gen: 'manikúry' },
-  rasy: { acc: 'řasy', gen: 'řas' },
-  oboci: { acc: 'obočí', gen: 'obočí' },
-}
-
-export const reserveLabel = (slug?: string) => {
-  const c = slug ? SERVICE_CASES[slug] : undefined
-  return c ? `Rezervovat ${c.acc}` : 'Rezervovat termín'
+const SERVICE_GEN: Record<string, string> = {
+  manikura: 'manikúry',
+  rasy: 'řas',
+  oboci: 'obočí',
 }
 
 export const pricelistLabel = (slug?: string) => {
-  const c = slug ? SERVICE_CASES[slug] : undefined
-  return c ? `Ceník ${c.gen}` : 'Ceník'
+  const gen = slug ? SERVICE_GEN[slug] : undefined
+  return gen ? `Ceník ${gen}` : 'Ceník'
 }
 
 /** Výchozí text v prohlížeči, když fotka nemá vlastní popis. */

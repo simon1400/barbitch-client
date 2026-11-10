@@ -2,6 +2,7 @@ import type { IGalleryItem } from 'fetch/homepage'
 import type { IDataHomepageService } from 'fetch/service'
 import type { GalleryChip, GalleryPhoto } from 'sections/Galery/types'
 
+import { resolveBookSection } from 'lib/bookSection'
 import { DEFAULT_PHOTO_TEXT } from 'sections/Galery/types'
 
 import GalleryStrip from './GalleryStrip'
@@ -35,6 +36,7 @@ const toPhotos = (items: IGalleryItem[], fallback: IGalery[]): GalleryPhoto[] =>
         caption,
         text: item.description?.trim() || DEFAULT_PHOTO_TEXT,
         service,
+        bookSection: resolveBookSection(item.bookingSection, service?.slug),
       }
     })
   }
@@ -47,6 +49,7 @@ const toPhotos = (items: IGalleryItem[], fallback: IGalery[]): GalleryPhoto[] =>
       caption: 'Naše práce',
       text: DEFAULT_PHOTO_TEXT,
       service: null,
+      bookSection: null,
     }))
 }
 

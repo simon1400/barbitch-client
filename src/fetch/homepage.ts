@@ -37,6 +37,8 @@ export interface IGalleryItem {
   image: IGalery
   service?: { title: string; shortTitle?: string; slug: string } | null
   caption?: string | null
+  /** Sekce /book, kterou otevře „Rezervovat“ (viz `lib/bookSection`); prázdné = podle služby. */
+  bookingSection?: string | null
   /** Vlastní text v prohlížeči; prázdné = výchozí věta. */
   description?: string | null
   active?: boolean | null

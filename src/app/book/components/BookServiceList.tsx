@@ -3,6 +3,7 @@
 import type { IEngineServiceGroup } from '../fetch/engine'
 
 import Button from 'components/Button'
+import { BOOK_SECTION_PARAM, findBookGroup, isBookSection } from 'lib/bookSection'
 import { useCallback, useEffect, useState } from 'react'
 
 import {
@@ -48,6 +49,26 @@ export const BookServiceList = ({
       setIsLoading(false)
     }
   }, [])
+
+  // Příchod z galerie „Naše práce“ (`/book?sekce=…`): rozbalíme sekci a ukážeme ji.
+  // Čte se z `location` až v efektu — `useSearchParams` by vyřadil stránku ze statického renderu.
+  // Návrat zpět z dalšího kroku (`lastBookingState`) má přednost — obnoví i zvýraznění služby.
+  useEffect(() => {
+    if (sessionStorage.getItem('lastBookingState')) return
+    const section = new URLSearchParams(window.location.search).get(BOOK_SECTION_PARAM)
+    if (!isBookSection(section)) return
+    const title = findBookGroup(
+      initialGroups.map((g) => g.title),
+      section,
+    )
+    if (!title) return
+    setAccordionValue(title)
+    requestAnimationFrame(() => {
+      document
+        .querySelector(`[data-book-group="${CSS.escape(title)}"]`)
+        ?.scrollIntoView({ block: 'start', behavior: 'smooth' })
+    })
+  }, [initialGroups])
 
   // Návrat z dalšího kroku rezervace: rozbalíme kategorii a zvýrazníme službu.
   useEffect(() => {
@@ -99,7 +120,8 @@ export const BookServiceList = ({
       {data.map((group) => (
         <AccordionItem
           key={group.title}
-          className={'rounded-special-small bg-[#252523] mb-2.5'}
+          data-book-group={group.title}
+          className={'rounded-special-small bg-[#252523] mb-2.5 scroll-mt-24'}
           value={group.title}
         >
           <AccordionTrigger className={'p-5 text-resMd1'}>{group.title}</AccordionTrigger>

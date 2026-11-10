@@ -2,11 +2,12 @@
 import type { GalleryPhoto } from './types'
 
 import Image from 'components/Image'
+import { bookSectionHref, bookSectionLabel } from 'lib/bookSection'
 import { ChevronLeft, ChevronRight, X } from 'lucide-react'
 import Link from 'next/link'
 import { useEffect, useLayoutEffect, useRef } from 'react'
 
-import { pad2, pricelistLabel, reserveLabel } from './types'
+import { pad2, pricelistLabel } from './types'
 
 interface GalleryViewerProps {
   photos: GalleryPhoto[]
@@ -160,7 +161,9 @@ const GalleryViewer = ({ photos, index, onIndex, onClose, linkToReserve }: Galle
 
           <div
             className={
-              'relative h-[min(133.333vw,calc(100dvh-300px))] w-full shrink-0 lg:aspect-[3/4] lg:h-[min(560px,calc(100dvh-220px))] lg:w-auto xl:h-[min(640px,calc(100dvh-220px))]'
+              // Výška = volné místo mezi horní lištou a miniaturami (−220 px), ale tak,
+              // aby se fotka 3:4 + šipky + textový sloupec vešly i na šířku (−600/−760 px).
+              'relative h-[min(133.333vw,calc(100dvh-300px))] w-full shrink-0 lg:aspect-[3/4] lg:h-[min(720px,calc(100dvh_-_220px),calc((100vw_-_600px)*4/3))] lg:w-auto xl:h-[min(960px,calc(100dvh_-_220px),calc((100vw_-_760px)*4/3))]'
             }
           >
             <div
@@ -182,7 +185,7 @@ const GalleryViewer = ({ photos, index, onIndex, onClose, linkToReserve }: Galle
                       src={p.url}
                       alt={p.alt}
                       fill
-                      sizes={'(max-width: 1023px) 100vw, 480px'}
+                      sizes={'(max-width: 1023px) 100vw, 720px'}
                       className={'object-contain'}
                     />
                   )}
@@ -247,13 +250,13 @@ const GalleryViewer = ({ photos, index, onIndex, onClose, linkToReserve }: Galle
             </p>
             <div className={'mt-auto flex gap-2.5 lg:mt-2 lg:flex-col lg:gap-3'}>
               <Link
-                href={linkToReserve}
+                href={bookSectionHref(linkToReserve, photo.bookSection)}
                 className={
                   'inline-flex h-[52px] flex-1 items-center justify-center bg-primary px-3 text-[14px] leading-5 font-extrabold uppercase tracking-[.04em] text-white transition-colors duration-200 hover:text-accent lg:h-[57px] lg:flex-none lg:text-xs lg:tracking-[.04em]'
                 }
               >
                 <span className={'lg:hidden'}>{'Rezervovat'}</span>
-                <span className={'hidden lg:inline'}>{reserveLabel(slug)}</span>
+                <span className={'hidden lg:inline'}>{bookSectionLabel(photo.bookSection)}</span>
               </Link>
               <Link
                 href={'/cenik'}

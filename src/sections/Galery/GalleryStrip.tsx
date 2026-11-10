@@ -36,14 +36,12 @@ const AUTOPLAY_MS = 4000
 const IDLE_AFTER_USER_MS = 8000
 
 interface StripView {
-  first: number
-  last: number
   atStart: boolean
   atEnd: boolean
   canScroll: boolean
 }
 
-const INITIAL_VIEW: StripView = { first: 0, last: 0, atStart: true, atEnd: false, canScroll: true }
+const INITIAL_VIEW: StripView = { atStart: true, atEnd: false, canScroll: true }
 
 const InstagramIcon = () => (
   <svg
@@ -92,33 +90,13 @@ const GalleryStrip = ({ photos, chips, instagram, linkToReserve }: GalleryStripP
   const measure = useCallback(() => {
     const el = scrollerRef.current
     if (!el) return
-    const box = el.getBoundingClientRect()
-    let first = -1
-    let last = -1
-    for (let i = 0; i < total; i++) {
-      const card = cardRefs.current[i]
-      if (!card) continue
-      const r = card.getBoundingClientRect()
-      if (r.left >= box.left - 2 && r.right <= box.right + 2) {
-        if (first < 0) first = i
-        last = i
-      }
-    }
     const max = el.scrollWidth - el.clientWidth
-    if (first < 0) {
-      // Úzké okno, žádná karta celá — vezmi tu nejblíž začátku.
-      const step = max > 0 ? el.scrollLeft / max : 0
-      first = Math.round(step * (total - 1))
-      last = first
-    }
     setView({
-      first,
-      last,
       atStart: el.scrollLeft <= 2,
       atEnd: el.scrollLeft >= max - 2,
       canScroll: max > 2,
     })
-  }, [total])
+  }, [])
 
   const onScroll = () => {
     cancelAnimationFrame(frame.current)
@@ -239,7 +217,6 @@ const GalleryStrip = ({ photos, chips, instagram, linkToReserve }: GalleryStripP
     }
   }
 
-  const progress = total > 0 ? ((view.last + 1) / total) * 100 : 0
   const chipCls = (active: boolean) =>
     `shrink-0 h-11 px-[18px] lg:px-[22px] border-2 border-accent text-resXs lg:text-xss tracking-[.06em] uppercase transition-colors duration-200 ${
       active ? 'bg-accent text-white' : 'bg-transparent text-accent hover:bg-accent/10'
@@ -392,58 +369,26 @@ const GalleryStrip = ({ photos, chips, instagram, linkToReserve }: GalleryStripP
         ))}
       </ul>
 
-      <div
-        className={`${WRAP} mt-6 flex flex-col gap-5 lg:mt-12 lg:flex-row lg:items-center lg:justify-between`}
-      >
-        <div className={'flex items-center gap-4 lg:gap-5'}>
-          <span
+      <div className={`${WRAP} mt-6 flex items-center justify-between gap-5 lg:mt-12`}>
+        {instagram ? (
+          <a
+            href={instagram.url}
+            target={'_blank'}
+            rel={'noopener noreferrer'}
             className={
-              'whitespace-nowrap text-xss lg:text-[14px] lg:leading-5 font-extrabold tracking-[.08em] tabular-nums'
+              'inline-flex items-center gap-2.5 whitespace-nowrap text-xss tracking-[.06em] uppercase text-accent hover:text-primary'
             }
           >
-            {`${pad2(view.first + 1)} — ${pad2(total)}`}
-          </span>
-          <span
-            aria-hidden={'true'}
-            className={
-              'relative h-[3px] flex-1 bg-accent/[.18] lg:w-[200px] lg:flex-none xl:w-[320px]'
-            }
-          >
+            <InstagramIcon />
             <span
-              className={
-                'absolute inset-y-0 left-0 bg-primary motion-safe:transition-[width] motion-safe:duration-300'
-              }
-              style={{ width: `${progress}%` }}
-            />
-          </span>
-          {view.canScroll && (
-            <span
-              aria-hidden={'true'}
-              className={
-                'lg:hidden whitespace-nowrap text-[12px] leading-4 font-medium text-[#5d5d5a]'
-              }
-            >
-              {'Posuňte prstem →'}
-            </span>
-          )}
-        </div>
+              className={'border-b-2 border-current pb-0.5'}
+            >{`Více na ${instagram.handle}`}</span>
+          </a>
+        ) : (
+          <span />
+        )}
 
-        <div className={'flex flex-col gap-5 lg:flex-row lg:items-center lg:gap-6 xl:gap-8'}>
-          {instagram && (
-            <a
-              href={instagram.url}
-              target={'_blank'}
-              rel={'noopener noreferrer'}
-              className={
-                'inline-flex items-center gap-2.5 self-center text-xss tracking-[.06em] uppercase text-accent hover:text-primary lg:self-auto'
-              }
-            >
-              <InstagramIcon />
-              <span
-                className={'border-b-2 border-current pb-0.5'}
-              >{`Více na ${instagram.handle}`}</span>
-            </a>
-          )}
+        <div className={'flex items-center'}>
           {view.canScroll && (
             <div className={'hidden gap-2 lg:flex'}>
               <button
