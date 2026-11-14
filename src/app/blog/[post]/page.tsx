@@ -7,10 +7,11 @@ import { PostCta } from 'components/PostCta'
 import { RelatedPosts } from 'components/RelatedPosts'
 import { getAllPost, getPost } from 'fetch/blog'
 import { Axios } from 'lib/api'
-import { topicOf } from 'lib/blogTopic'
+import { TOPIC_LABEL, topicOf } from 'lib/blogTopic'
 import { getStrapiImageUrl } from 'lib/image-utils'
 import { relatedPostsOf } from 'lib/relatedPosts'
 import { cmsTitle, ogImages } from 'lib/seo'
+import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { ArticleSchema } from 'schemasOrg/article'
 import { TopImage } from 'sections/Top/TopImage'
@@ -77,6 +78,9 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
   }
 }
 
+// 1 × 12 px uprostřed mezery před položkou: 14 px + čára + 14 px jako v návrhu (gap-x-[29px]).
+const SEPARATOR = 'absolute -left-[15px] top-1/2 h-3 w-px -translate-y-1/2 bg-[#1616154D]'
+
 const Post = async ({ params }: any) => {
   const { post } = await params
   const [data, allPosts] = await Promise.all([getPost(post), getAllPost()])
@@ -121,18 +125,43 @@ const Post = async ({ params }: any) => {
           }
         />
         {!!published && (
-          <Container size={'xl'}>
-            {/* Datum a autor byly jen ve strukturovaných datech — čtenář je neviděl. */}
-            <p className={'text-baseSm text-[#767676] pb-6'}>
-              {'Publikováno '}
-              <time dateTime={published}>
-                {new Date(published).toLocaleDateString('cs-CZ', {
-                  day: 'numeric',
-                  month: 'long',
-                  year: 'numeric',
-                })}
-              </time>
-              {' · Barbitch Beauty Studio'}
+          // Stejná šířka jako blok Text (Container lg) — řádek začíná na svislici textu článku.
+          <Container size={'lg'}>
+            <p className={'mb-8 border-b border-[#16161524] pb-4'}>
+              {/* Oddělovač patří k položce za ním a stojí v mezeře vlevo od ní. Když se položka
+                  zalomí na začátek řádku, oddělovač vyjede za levý okraj a overflow-hidden ho
+                  ořízne — na telefonu tak „|“ nevisí na konci prvního řádku. px-1/-mx-1 nechává
+                  místo pro focus ring odkazu. */}
+              <span
+                className={
+                  '-mx-1 flex flex-wrap items-center gap-x-[29px] gap-y-1.5 overflow-hidden px-1 text-[13px] font-medium text-[#5f5f5e] md:text-[14px]'
+                }
+              >
+                <time dateTime={published} className={'text-accent'}>
+                  {new Date(published).toLocaleDateString('cs-CZ', {
+                    day: 'numeric',
+                    month: 'long',
+                    year: 'numeric',
+                  })}
+                </time>
+                {topic && (
+                  <span className={'relative'}>
+                    <span aria-hidden={'true'} className={SEPARATOR} />
+                    <Link
+                      href={`/service/${topic}`}
+                      className={
+                        'text-[#5f5f5e] underline decoration-[#1616154D] underline-offset-4 hover:text-primary'
+                      }
+                    >
+                      {TOPIC_LABEL[topic]}
+                    </Link>
+                  </span>
+                )}
+                <span className={'relative'}>
+                  <span aria-hidden={'true'} className={SEPARATOR} />
+                  {'Barbitch Beauty Studio'}
+                </span>
+              </span>
             </p>
           </Container>
         )}
