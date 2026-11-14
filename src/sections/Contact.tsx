@@ -69,6 +69,57 @@ const SocRibbon = ({ items }: { items: ISocItem[] }) => {
 }
 
 /**
+ * Platební brána (podmínka Comgate): loga VISA a Mastercard jsou povinná, logo
+ * Comgate s odkazem na comgate.eu doporučené. Soubory z oficiálního balíčku
+ * Comgate (help.comgate.eu → Logos in the Website Footer), varianty pro tmavé pozadí.
+ */
+const PaymentLogos = () => (
+  <div className={'flex flex-wrap items-center gap-x-6 gap-y-3 pt-4'}>
+    <p className={'m-0 text-[13px] text-white'}>
+      {'Platby kartou online zajišťuje '}
+      <a
+        href={'https://www.comgate.eu/cs/platebni-brana'}
+        target={'_blank'}
+        rel={'noopener noreferrer'}
+        className={'text-white underline hover:text-[#ff9dbb]'}
+      >
+        {'Comgate, a.s.'}
+      </a>
+    </p>
+    <div className={'flex items-center gap-5'}>
+      <a
+        href={'https://www.comgate.eu'}
+        target={'_blank'}
+        rel={'noopener noreferrer'}
+        aria-label={'Comgate — platební brána'}
+      >
+        <img
+          src={'/assets/payments/comgate.svg'}
+          alt={'Comgate'}
+          width={104}
+          height={24}
+          className={'block h-6 w-auto'}
+        />
+      </a>
+      <img
+        src={'/assets/payments/visa.svg'}
+        alt={'VISA'}
+        width={53}
+        height={18}
+        className={'block h-[18px] w-auto'}
+      />
+      <img
+        src={'/assets/payments/mastercard.svg'}
+        alt={'Mastercard'}
+        width={40}
+        height={25}
+        className={'block h-[25px] w-auto'}
+      />
+    </div>
+  </div>
+)
+
+/**
  * Patička „Kontakt“ pro všechny stránky (s286, varianta C): černá, H2 + tlačítko,
  * čtyři sloupce (adresa, otevírací doba, spojení, cesta) a mapa, růžová páska
  * sociálních sítí, právní řádek a bílé logo přes celou šířku.
@@ -193,12 +244,29 @@ const Contact = async () => {
               className={
                 'py-3 text-[13px] text-white underline lg:no-underline hover:text-[#ff9dbb]'
               }
+              href={'/doprava-a-platba'}
+            >
+              {'Doprava a platba'}
+            </a>
+            <a
+              className={
+                'py-3 text-[13px] text-white underline lg:no-underline hover:text-[#ff9dbb]'
+              }
+              href={'/reklamacni-rad'}
+            >
+              {'Reklamační řád'}
+            </a>
+            <a
+              className={
+                'py-3 text-[13px] text-white underline lg:no-underline hover:text-[#ff9dbb]'
+              }
               href={'/cookies-policy'}
             >
               {'Zásady používání cookies'}
             </a>
           </nav>
         </div>
+        <PaymentLogos />
       </div>
 
       <div className={`${WRAP} pb-10 lg:pb-16`}>
