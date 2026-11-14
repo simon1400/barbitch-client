@@ -12,8 +12,59 @@ import { useState } from 'react'
 const ADDRESS = 'Bar.Bitch, Křenová 294/16, 602 00 Brno'
 const EMBED_SRC = `https://www.google.com/maps?q=${encodeURIComponent(ADDRESS)}&output=embed&hl=cs`
 
-export const MapEmbed = ({ mapLink }: { mapLink?: string }) => {
+export const MapEmbed = ({
+  mapLink,
+  variant = 'section',
+}: {
+  mapLink?: string
+  /** `footer` — jen plocha mapy do patičky (s286), bez nadpisu a odkazu. */
+  variant?: 'section' | 'footer'
+}) => {
   const [loaded, setLoaded] = useState(false)
+
+  if (variant === 'footer') {
+    return (
+      <div
+        className={'relative flex-[1_1_400px] min-w-0 min-h-[260px] lg:min-h-[320px] bg-[#2c2c2a]'}
+      >
+        {loaded ? (
+          <iframe
+            src={EMBED_SRC}
+            title={'Mapa — Barbitch Beauty Studio, Křenová 294/16, Brno'}
+            className={'absolute inset-0 w-full h-full border-0'}
+            loading={'lazy'}
+            referrerPolicy={'no-referrer-when-downgrade'}
+            allowFullScreen
+          />
+        ) : (
+          <button
+            type={'button'}
+            onClick={() => setLoaded(true)}
+            className={
+              'absolute inset-0 w-full h-full flex flex-col items-center justify-center gap-3 px-6 text-center text-white text-[15px] font-bold [transition-property:background-color] [transition-duration:200ms] hover:bg-[#353533] focus-visible:outline focus-visible:outline-2 focus-visible:outline-white'
+            }
+          >
+            <svg
+              aria-hidden={'true'}
+              width={34}
+              height={34}
+              viewBox={'0 0 24 24'}
+              fill={'none'}
+              stroke={'#ffffff'}
+              strokeWidth={2}
+            >
+              <path d={'M12 22s7-6.2 7-12a7 7 0 1 0-14 0c0 5.8 7 12 7 12z'} />
+              <circle cx={12} cy={10} r={2.5} />
+            </svg>
+            {'Zobrazit mapu — Křenová 294/16'}
+            <span className={'text-[12px] font-medium text-[#A0A0A0] max-w-[320px]'}>
+              {'Mapa se načte z Google až po kliknutí.'}
+            </span>
+          </button>
+        )}
+      </div>
+    )
+  }
 
   return (
     <section className={'mb-16'} aria-labelledby={'jak-k-nam'}>

@@ -1,6 +1,7 @@
 /* eslint-disable react-dom/no-missing-button-type */
 'use client'
 
+import { CONSENT_REQUEST_EVENT } from 'lib/chatEvents'
 import { useEffect, useState } from 'react'
 
 declare global {
@@ -55,6 +56,12 @@ export default function CookieConsent() {
     } else if (!consent) {
       setVisible(true)
     }
+    // „Napiš nám do chatu“ bez souhlasu (s286) — lištu ukázat znovu
+    const onRequest = () => {
+      if (getConsentCookie() !== 'accepted') setVisible(true)
+    }
+    window.addEventListener(CONSENT_REQUEST_EVENT, onRequest)
+    return () => window.removeEventListener(CONSENT_REQUEST_EVENT, onRequest)
   }, [])
 
   const handleAccept = () => {
@@ -72,38 +79,47 @@ export default function CookieConsent() {
 
   if (!visible) return null
 
+  // Varianta A (s286, rozhodnutí majitele 13.11): úzký černý pruh u spodního okraje.
+  // Na telefonu nezakryje H1, slogan ani tlačítko rezervace — jen spodní řádek
+  // pruhu faktů. Obě tlačítka stejně velká a stejně výrazná, zóna dotyku ≥ 44 px.
+  const btn =
+    'h-11 min-w-[96px] px-3 lg:px-5 text-[13px] lg:text-[14px] font-extrabold uppercase whitespace-nowrap [transition-property:color,background-color] [transition-duration:200ms] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white'
+
   return (
     <div
-      className={'fixed bottom-0 left-0 z-[9999] p-4 animate-in slide-in-from-bottom duration-300'}
+      role={'region'}
+      aria-label={'Souhlas s cookies'}
+      className={
+        'fixed inset-x-0 bottom-0 z-[9999] bg-accent text-white border-t border-white/15 animate-in slide-in-from-bottom duration-300'
+      }
     >
       <div
-        className={'max-w-lg mx-auto bg-accent text-white p-6 shadow-2xl border border-white/10'}
+        className={
+          'mx-auto max-w-[1440px] flex items-center gap-3 px-4 py-3 lg:px-[72px] lg:py-4 lg:gap-8'
+        }
       >
-        <h3 className={'text-sm11 font-bold mb-2'}>{'Záleží nám na vašem soukromí'}</h3>
-        <p className={'text-sm text-gray-300 mb-5 font-normal leading-relaxed'}>
-          {'Tento web používá soubory cookie pro analýzu návštěvnosti a zlepšení'}
-          {'našich služeb.'}{' '}
+        <p className={'m-0 flex-1 min-w-0 text-[12px] leading-[1.4] lg:text-[14px] font-medium'}>
+          <span className={'lg:hidden'}>{'Cookies pro měření návštěvnosti.'}</span>
+          <span className={'hidden lg:inline'}>
+            {'Tento web používá soubory cookie pro analýzu návštěvnosti a zlepšení našich služeb.'}
+          </span>{' '}
           <a
             href={'/cookies-policy'}
-            className={'text-primary underline hover:text-primary/80 transition-colors'}
+            className={'text-white underline underline-offset-2 hover:text-[#ff9dbb]'}
           >
-            {'Více informací'}
+            {'Více'}
           </a>
         </p>
-        <div className={'flex gap-3'}>
+        <div className={'flex shrink-0 gap-2 lg:gap-3'}>
           <button
             onClick={handleReject}
-            className={
-              'flex-1 py-3 px-4 border border-white/30 text-sm font-medium hover:bg-white/10 transition-colors'
-            }
+            className={`${btn} border-2 border-solid border-white bg-transparent text-white hover:bg-white hover:text-accent`}
           >
             {'Odmítnout'}
           </button>
           <button
             onClick={handleAccept}
-            className={
-              'flex-1 py-3 px-4 bg-primary text-sm font-bold hover:bg-primary/90 transition-colors'
-            }
+            className={`${btn} border-2 border-solid border-white bg-white text-accent hover:bg-transparent hover:text-white`}
           >
             {'Souhlasím'}
           </button>

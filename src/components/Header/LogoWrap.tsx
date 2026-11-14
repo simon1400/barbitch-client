@@ -3,7 +3,7 @@ import { useAppContext } from 'context/AppContext'
 import { LogoIcon } from 'icons/Logo'
 import { useParams, usePathname } from 'next/navigation'
 
-import { isDarkPage, isHalloweenHome } from './darkPage'
+import { isDarkPage, isHalloweenHome, isRedesignHome } from './darkPage'
 
 const LogoWrap = ({ halloween }: { halloween: boolean }) => {
   const params = useParams()
@@ -15,7 +15,7 @@ const LogoWrap = ({ halloween }: { halloween: boolean }) => {
     <div>
       <a
         href={'/'}
-        className={'block max-w-[205px] lg:max-w-[290px]'}
+        className={`block ${isRedesignHome(pathname, halloween) ? 'w-[168px] lg:w-[290px]' : 'max-w-[205px] lg:max-w-[290px]'}`}
         aria-label={'Přejít na domovskou stránku'}
       >
         <LogoIcon className={`w-full ${fill}`} />

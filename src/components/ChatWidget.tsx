@@ -2,6 +2,7 @@
 
 import type { ChatContact, ChatStatus } from './ChatNotices'
 
+import { CONSENT_REQUEST_EVENT, OPEN_CHAT_EVENT } from 'lib/chatEvents'
 import { X } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
@@ -369,6 +370,24 @@ export default function ChatWidget() {
       setMessages([TEASER_MESSAGE])
     }
   }
+
+  /* ─── s286: tlačítko „Napiš nám do chatu“ na hlavní stránce (událost OPEN_CHAT_EVENT).
+     Chat běží až po souhlasu s cookies — bez něj se znovu ukáže lišta souhlasu
+     a po „Souhlasím“ se chat otevře sám (stejná cesta jako odkaz z e-mailu). ─── */
+  const handleOpenRef = useRef(handleOpen)
+  handleOpenRef.current = handleOpen
+  useEffect(() => {
+    const onOpen = () => {
+      if (consented) {
+        handleOpenRef.current()
+      } else {
+        openFromLink.current = true
+        window.dispatchEvent(new Event(CONSENT_REQUEST_EVENT))
+      }
+    }
+    window.addEventListener(OPEN_CHAT_EVENT, onOpen)
+    return () => window.removeEventListener(OPEN_CHAT_EVENT, onOpen)
+  }, [consented])
 
   const dismissTeaser = () => {
     setShowTeaser(false)

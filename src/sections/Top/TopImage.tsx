@@ -35,7 +35,13 @@ export const TopImage = ({
 
       <Container size={'xl'}>
         <div className={'pb-15'}>
-          <h1 id={'top-title'} className={'text-md2 leading-[45px] lg:text-big pb-4 uppercase'}>
+          <h1
+            id={'top-title'}
+            className={
+              // Na telefonu 44px nevejde dlouhé slovo („MINIMALISTICKÉ“) — stránka byla širší než displej.
+              'text-[clamp(28px,10vw,44px)] font-extrabold leading-[1.1] md:text-md2 md:leading-[45px] lg:text-big pb-4 uppercase break-words'
+            }
+          >
             {title}
           </h1>
         </div>

@@ -11,6 +11,8 @@ const config: Config = {
     './src/components/**/*.{js,ts,jsx,tsx,mdx}',
     './src/sections/**/*.{js,ts,jsx,tsx,mdx}',
     './src/app/**/*.{js,ts,jsx,tsx,mdx}',
+    // lib/homeContent.ts skládá třídy velikosti citace recenzí (s286)
+    './src/lib/**/*.{js,ts,jsx,tsx}',
     './src/src/**/*.{js,ts,jsx,tsx,mdx}',
   ],
   typography: {
@@ -299,6 +301,8 @@ const config: Config = {
         // Výstražná páska (Halloween hero a menu): desktop 22/44, mobil 16/32.
         hazard: 'repeating-linear-gradient(135deg, #161615 0 22px, #e71e6e 22px 44px)',
         'hazard-sm': 'repeating-linear-gradient(135deg, #161615 0 16px, #e71e6e 16px 32px)',
+        // Růžový přechod sekcí hlavní stránky (s286).
+        'bb-pink': 'linear-gradient(180deg, #ff8fb4 0%, #f4558f 55%, #ee3f83 100%)',
       },
       borderRadius: {
         default: '2px',
@@ -332,6 +336,15 @@ const config: Config = {
           },
           to: {
             transform: 'translateX(-50%)',
+          },
+        },
+        // Opačný směr pásky (sousední pásky „Proč Barbitch“ jedou proti sobě).
+        'marquee-rev': {
+          from: {
+            transform: 'translateX(-50%)',
+          },
+          to: {
+            transform: 'translateX(0)',
           },
         },
         // Halloween hero (lib/halloween.ts) — blikající neon, lampa,

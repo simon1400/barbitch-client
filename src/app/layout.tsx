@@ -53,7 +53,9 @@ const montserat = Montserrat({
   // `latin-ext` nese českou diakritiku (ě š č ř ž ý á í é ů ú). Bez něj
   // spadnou tato písmena uprostřed slov na Arial a H1 se po načtení přelije.
   subsets: ['latin', 'latin-ext'],
-  weight: ['400', '700'],
+  // 500 a 800 — texty a nadpisy hlavní stránky (s286); bez nich prohlížeč
+  // vezme 700 a nadpisy jsou slabší než v návrhu.
+  weight: ['400', '500', '700', '800'],
   display: 'swap',
   fallback: ['Arial', 'sans-serif'],
 })
@@ -124,7 +126,8 @@ export default async function RootLayout({
             <Header />
           </Suspense>
           {children}
-          <HideOnRoutes routes={['/book', '/kontakt', '/cabinet']}>
+          {/* Hlavní stránka má voucher mezi „O salonu“ a blogem (s286) — vykreslí si ho sama. */}
+          <HideOnRoutes routes={['/book', '/kontakt', '/cabinet']} exact={['/']}>
             <Suspense>
               <Banner />
             </Suspense>

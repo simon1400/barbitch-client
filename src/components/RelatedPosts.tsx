@@ -31,7 +31,13 @@ export const RelatedPosts = ({
   return (
     <Container size={'xl'}>
       <section className={'mb-16'} aria-labelledby={'souvisejici-clanky'}>
-        <h2 id={'souvisejici-clanky'} className={'text-lg lg:text-big uppercase mb-8'}>
+        {/* Na telefonu 62px nevejde „SOUVISEJÍCÍ“ do šířky — stránka byla širší než displej. */}
+        <h2
+          id={'souvisejici-clanky'}
+          className={
+            'text-[clamp(30px,9vw,62px)] leading-[1.1] font-extrabold md:text-lg lg:text-big uppercase mb-8'
+          }
+        >
           {'Související články'}
         </h2>
         <ul className={'grid gap-6 sm:grid-cols-2 lg:grid-cols-3'}>

@@ -66,3 +66,23 @@ export const getLinkToReserve = async (): Promise<IDataLinkToReserve> => {
   // stránek — vlastní rezervace na /book funguje nezávisle na obsahu v CMS.
   return { linkToReserve: data.linkToReserve || '/book' }
 }
+
+/** Nová pole kontaktu (s286). Zvlášť: starý Strapi je nezná a vrátil by 400. */
+interface IContactExtras {
+  howToGetThere?: string | null
+  openHoursShort?: string | null
+}
+
+const extrasQuery = qs.stringify(
+  { fields: ['howToGetThere', 'openHoursShort'] },
+  { encodeValuesOnly: true },
+)
+
+export const getContactExtras = async (): Promise<IContactExtras> => {
+  try {
+    const data: IContactExtras = await Axios.get(`/api/contact?${extrasQuery}`)
+    return data || {}
+  } catch {
+    return {}
+  }
+}

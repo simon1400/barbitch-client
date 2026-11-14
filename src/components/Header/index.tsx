@@ -5,9 +5,8 @@ import { getLinkToReserve } from 'fetch/contact'
 import { getNav } from 'fetch/nav'
 import { isHalloweenOn } from 'lib/halloween'
 
-import { Container } from '../Container'
-
 import Buttons from './Buttons'
+import HeaderContainer from './HeaderContainer'
 import HeaderFrame from './HeaderFrame'
 import LogoWrap from './LogoWrap'
 import Menu from './Menu'
@@ -22,12 +21,10 @@ export const Header = async () => {
   return (
     <>
       <HeaderFrame halloween={halloween}>
-        <Container size={'xl'}>
-          <div className={'flex justify-between py-3 lg:py-8 items-center'}>
-            <LogoWrap halloween={halloween} />
-            <Buttons linkToReserve={dataLinkReserve.linkToReserve} halloween={halloween} />
-          </div>
-        </Container>
+        <HeaderContainer halloween={halloween}>
+          <LogoWrap halloween={halloween} />
+          <Buttons linkToReserve={dataLinkReserve.linkToReserve} halloween={halloween} />
+        </HeaderContainer>
       </HeaderFrame>
 
       <Menu nav={dataNav} halloween={halloween} />

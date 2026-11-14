@@ -13,3 +13,8 @@ export const isDarkPage = (pathname: string): boolean =>
 // a posílá ho sem propem, aby se server a prohlížeč shodly.
 export const isHalloweenHome = (pathname: string, halloween: boolean): boolean =>
   halloween && pathname === '/'
+
+// Nová hlavní stránka (s286) mimo Halloween: hlavička v mřížce sekcí (72 px)
+// a menší logo na mobilu (168 px), jak je v návrhu.
+export const isRedesignHome = (pathname: string, halloween: boolean): boolean =>
+  !halloween && pathname === '/'

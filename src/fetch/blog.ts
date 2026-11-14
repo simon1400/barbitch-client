@@ -20,6 +20,8 @@ export interface IDataPostShort {
   slug: string
   image: IGalery
   contentText?: string
+  /** Téma (nálepka) — volitelné pole `blog.topic` (s286). */
+  topic?: string | null
 }
 
 interface IDataBlogPage {
@@ -116,32 +118,30 @@ export const getAllPost = async (): Promise<IDataPostShort[]> => {
   }
 }
 
-export const getRandomPost = async (): Promise<IDataPostShort[]> => {
-  const query = qs.stringify(
-    {
-      fields: ['title', 'slug'],
-      populate: {
-        image: {
-          fields: ['url', 'alternativeText'],
-        },
+/**
+ * Tři nejnovější články pro hlavní stránku (s286) i s tématem. Pole `topic`
+ * starý Strapi nezná (400) → druhý pokus bez něj, téma pak dopočítá `lib/blogTopic`.
+ */
+export const getHomePosts = async (): Promise<IDataPostShort[]> => {
+  const query = (withTopic: boolean) =>
+    qs.stringify(
+      {
+        fields: withTopic ? ['title', 'slug', 'topic'] : ['title', 'slug'],
+        populate: { image: { fields: ['url', 'alternativeText', 'width', 'height'] } },
+        sort: ['createdAt:desc'],
+        pagination: { start: 0, limit: 3 },
       },
-      sort: ['createdAt:desc'],
-      pagination: {
-        start: 0,
-        limit: 3,
-      },
-    },
-    {
-      encodeValuesOnly: true,
-    },
-  )
-
+      { encodeValuesOnly: true },
+    )
   try {
-    const data: IDataPostShort[] = await Axios.get(`/api/blogs?${query}`)
-    return data
-  } catch (error) {
-    console.error('Failed to fetch random posts:', error)
-    return []
+    return (await Axios.get(`/api/blogs?${query(true)}`)) || []
+  } catch {
+    try {
+      return (await Axios.get(`/api/blogs?${query(false)}`)) || []
+    } catch (error) {
+      console.error('Failed to fetch home posts:', error)
+      return []
+    }
   }
 }
 

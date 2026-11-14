@@ -1,22 +1,22 @@
 'use client'
 
-import { Container } from 'components/Container'
+import type { ReactNode } from 'react'
+
+import { MapEmbed } from 'components/MapEmbed'
 import { usePathname } from 'next/navigation'
 
-export function ContactHeading() {
+/**
+ * Části patičky, které na /kontakt nepatří: stránka má vlastní H1 „Kontakt“
+ * a vlastní mapu — v patičce by byly podruhé.
+ */
+export function NotOnKontakt({ children }: { children: ReactNode }) {
   const pathname = usePathname()
   if (pathname === '/kontakt') return null
-  return <h2 className={'text-md lg:text-big text-center mb-5 lg:mb-11.5'}>{'KONTAKT'}</h2>
+  return <>{children}</>
 }
 
-export function ContactHandIcon() {
+export function FooterMap({ mapLink }: { mapLink?: string }) {
   const pathname = usePathname()
-  if (pathname !== '/kontakt') return null
-  return (
-    <section className={'hidden lg:block py-11.5'}>
-      <Container size={'sm'} className={'px-11'}>
-        <img src={'/assets/icons/smallHand.svg'} alt={'Small hand Barbitch logo icon'} />
-      </Container>
-    </section>
-  )
+  if (pathname === '/kontakt') return null
+  return <MapEmbed mapLink={mapLink} variant={'footer'} />
 }

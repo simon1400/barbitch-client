@@ -15,7 +15,12 @@ export const Text = ({
           <div>{parseHtml(data.contentText)}</div>
           {data.cta && (
             <div className={'mb-17 mt-10'}>
-              <Button text={data.cta.title} href={data.cta.link} />
+              {/* Dlouhý text tlačítka se na telefonu zalomí místo přetečení přes okraj. */}
+              <Button
+                text={data.cta.title}
+                href={data.cta.link}
+                className={'max-w-full !text-wrap !h-auto min-h-[48px] md:min-h-[57px]'}
+              />
             </div>
           )}
         </div>

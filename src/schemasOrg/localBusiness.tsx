@@ -1,4 +1,5 @@
 import { getContact } from 'fetch/contact'
+import { getCatalogPrices, priceRangeOf } from 'fetch/home'
 import { jsonLd } from 'lib/jsonLd'
 import { SITE_URL } from 'lib/seo'
 
@@ -19,7 +20,10 @@ export const LOCAL_BUSINESS_ID = `${SITE_URL}/#localbusiness`
 const FALLBACK_PHONE = '+420 776 527 194'
 const FALLBACK_EMAIL = 'info@barbitch.cz'
 
-const buildSchema = (telephone: string, email: string) => ({
+// Záloha rozpětí cen, když katalog enginu neodpoví (ceník 11/2026: 300–2090 Kč).
+const FALLBACK_PRICE_RANGE = '300 CZK - 2090 CZK'
+
+const buildSchema = (telephone: string, email: string, priceRange: string) => ({
   '@context': 'https://schema.org',
   '@type': 'BeautySalon',
   '@id': LOCAL_BUSINESS_ID,
@@ -28,7 +32,8 @@ const buildSchema = (telephone: string, email: string) => ({
   url: SITE_URL,
   telephone,
   email,
-  priceRange: '200 CZK - 2000 CZK',
+  // Skutečné rozpětí z katalogu (dřív napevno 200–2000, audit 09.11).
+  priceRange,
   paymentAccepted: 'Cash, Card',
   currenciesAccepted: 'CZK',
   hasMap: 'https://maps.google.com/?q=Křenová+294/16,+Brno',
@@ -63,8 +68,12 @@ const buildSchema = (telephone: string, email: string) => ({
 })
 
 export const LocalBusinessSchema = async () => {
-  const contact = await getContact()
-  const schema = buildSchema(contact.phone || FALLBACK_PHONE, contact.email || FALLBACK_EMAIL)
+  const [contact, catalog] = await Promise.all([getContact(), getCatalogPrices()])
+  const schema = buildSchema(
+    contact.phone || FALLBACK_PHONE,
+    contact.email || FALLBACK_EMAIL,
+    priceRangeOf(catalog) || FALLBACK_PRICE_RANGE,
+  )
 
   return (
     <script

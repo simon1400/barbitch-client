@@ -2,7 +2,7 @@ import type { IDataBanner } from 'fetch/banner'
 
 import { Container } from 'components/Container'
 import Image from 'components/Image'
-import { getBanner } from 'fetch/banner'
+import { getBanner, getBannerSubtitle } from 'fetch/banner'
 import dynamic from 'next/dynamic'
 
 import Button from '../components/Button'
@@ -10,7 +10,10 @@ import Button from '../components/Button'
 const BannerLines = dynamic(() => import('./BannerLines'))
 
 const Banner = async () => {
-  const data: IDataBanner = await getBanner()
+  const [data, subtitle]: [IDataBanner, string] = await Promise.all([
+    getBanner(),
+    getBannerSubtitle(),
+  ])
 
   return (
     <section
@@ -41,11 +44,25 @@ const Banner = async () => {
       </div>
       <BannerLines data={data} />
 
-      <Container size={'md'} className={'z-50'}>
+      {/* min-w-0: jinak flex nedovolí nadpisu zalomit se a na 375 px přetekl (s286) */}
+      <Container size={'md'} className={'z-50 min-w-0'}>
         {!!data.title?.length && (
-          <h2 className={'text-md1 lg:text-big pb-4 text-center uppercase text-white'}>
+          <h2
+            className={
+              'text-[clamp(26px,8.2vw,34px)] font-extrabold leading-[1.03] md:text-md1 lg:text-big pb-4 text-center uppercase text-white'
+            }
+          >
             {data.title}
           </h2>
+        )}
+        {!!subtitle && (
+          <p
+            className={
+              'mx-auto mb-6 max-w-[560px] text-center text-[17px] lg:text-[22px] leading-[1.35] font-extrabold text-white'
+            }
+          >
+            {subtitle}
+          </p>
         )}
         {data?.cta && (
           <div className={'flex justify-center'}>

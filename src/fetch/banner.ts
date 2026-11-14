@@ -42,3 +42,15 @@ export const getBanner = async (): Promise<IDataBanner> => {
     return {} as IDataBanner
   }
 }
+
+/** Řádek pod nadpisem voucheru (s286). Zvlášť: starý Strapi pole nezná (400). */
+export const getBannerSubtitle = async (): Promise<string> => {
+  try {
+    const data: { subtitle?: string | null } = await Axios.get(
+      `/api/banner?${qs.stringify({ fields: ['subtitle'] }, { encodeValuesOnly: true })}`,
+    )
+    return data?.subtitle?.trim() || ''
+  } catch {
+    return ''
+  }
+}
