@@ -68,6 +68,9 @@ export const getFullService = async (slug: string): Promise<IDataFullService | u
             },
             'content.galery': {
               populate: {
+                cta: {
+                  fields: ['title', 'link'],
+                },
                 image: {
                   fields: ['url', 'alternativeText'],
                 },

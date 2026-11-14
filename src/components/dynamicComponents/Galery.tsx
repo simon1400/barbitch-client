@@ -1,117 +1,66 @@
-'use client'
+import Button from 'components/Button'
 import { Container } from 'components/Container'
-import Image from 'components/Image'
-import { getStrapiImageUrl } from 'lib/image-utils'
-import dynamic from 'next/dynamic'
-import { useState } from 'react'
-import { MasonryGrid } from 'sections/Masonry/MasonryGrid'
-import 'yet-another-react-lightbox/styles.css'
+import { parseHtml } from 'lib/parseHtml'
 
-// Lightbox zůstává klientský (otevírá se až po kliknutí), mřížka ale musí být
-// v HTML — jinak z galerie služby zbyl jen prázdný nadpis.
-const Lightbox = dynamic(() => import('yet-another-react-lightbox'), { ssr: false })
+import { GaleryImages } from './GaleryImages'
 
+interface GaleryData {
+  title?: string | null
+  contentBefore?: string | null
+  contentAfter?: string | null
+  cta?: { title: string; link: string } | null
+  image: IGalery[]
+}
+
+// Serverová obálka: nadpis, text před/po a tlačítko se vykreslí na serveru
+// (parseHtml v prohlížeči skládá HTML jinak → hydratační chyba), klientská
+// zůstává jen mřížka fotek s prohlížečem.
 export const Galery = ({
   data,
   contain = true,
   variant = 'simple',
 }: {
-  data: { image: IGalery[] }
+  data: GaleryData
   contain?: boolean
   variant?: 'simple' | 'masonry'
 }) => {
-  const [index, setIndex] = useState(-1)
-
-  if (!data || !data.image || !Array.isArray(data.image) || data.image.length === 0) {
+  if (!data || !Array.isArray(data.image) || data.image.length === 0) {
     return null
   }
 
-  const length = data.image.length
+  const hasIntro = !!(data.title || data.contentBefore)
+  const hasOutro = !!(data.contentAfter || data.cta)
 
-  // Staticky zapsané třídy — `grid-cols-${length}` JIT nevygeneruje a mřížka
-  // pak tiše spadne do jednoho sloupce.
-  const gridColumns =
-    length === 1
-      ? 'grid-cols-1 md:grid-cols-1'
-      : length === 2
-        ? 'grid-cols-2 md:grid-cols-2'
-        : 'grid-cols-2 md:grid-cols-3'
-
-  // Masonry variant - полноэкранная галерея с lightbox
-  if (variant === 'masonry') {
-    return (
-      <section
-        className={'overflow-x-hidden mb-15 px-2 md:px-5'}
-        aria-labelledby={'masonry-gallery'}
-      >
-        <h2 id={'masonry-gallery'} className={'sr-only'}>
-          {'Galerie našich prací'}
-        </h2>
-        <MasonryGrid>
-          {data.image.map((image, idx) => (
-            <div
-              key={`${image.hash}-${idx}`}
-              className={
-                'cursor-pointer transition-opacity hover:opacity-90 duration-200 w-full relative'
-              }
-              onClick={() => setIndex(idx)}
-            >
-              <Image
-                src={getStrapiImageUrl(image.url)}
-                alt={image.alternativeText || `Obrázek ${idx + 1} z galerie`}
-                width={image?.width || 800}
-                height={image?.height || 600}
-                className={'w-full h-auto block'}
-                loading={idx < 6 ? 'eager' : 'lazy'}
-                quality={70}
-                sizes={'(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw'}
-                placeholder={'blur'}
-                blurDataURL={
-                  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mN8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=='
-                }
-              />
-            </div>
-          ))}
-        </MasonryGrid>
-        {index >= 0 && (
-          <Lightbox
-            index={index}
-            open={index >= 0}
-            close={() => setIndex(-1)}
-            carousel={{ preload: 2 }}
-            slides={data.image.map((item) => ({ src: getStrapiImageUrl(item.url) }))}
-          />
-        )}
-      </section>
-    )
-  }
-
-  // Simple variant - обычная галерея в контейнере
   return (
-    <section className={'pt-0 pb-12 mb:pb-17'}>
-      <Container size={'xl'}>
-        <div className={`grid ${gridColumns} gap-4 md:gap-8`}>
-          {data.image.map((item, index) => (
-            <div key={item.documentId} className={`${!contain && 'pt-[100%]'} relative`}>
-              <Image
-                className={`${contain ? 'object-contain' : 'object-cover'} object-center`}
-                src={getStrapiImageUrl(item.url)}
-                width={length > 1 ? 700 : 1400}
-                height={1000}
-                fill={!contain}
-                alt={item.alternativeText || `Obrázek ${index + 1} z galerie Barbitch`}
-                loading={index < 3 ? 'eager' : 'lazy'}
-                quality={70}
-                sizes={'(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw'}
-                placeholder={'blur'}
-                blurDataURL={
-                  'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mN8/5+hHgAHggJ/PchI7wAAAABJRU5ErkJggg=='
-                }
-              />
-            </div>
-          ))}
-        </div>
-      </Container>
-    </section>
+    <>
+      {hasIntro && (
+        <section>
+          <Container size={'lg'}>
+            {data.title && <h2>{data.title}</h2>}
+            {data.contentBefore && <div>{parseHtml(data.contentBefore)}</div>}
+          </Container>
+        </section>
+      )}
+
+      <GaleryImages data={data} contain={contain} variant={variant} title={data.title} />
+
+      {hasOutro && (
+        <section className={'mb-12 md:mb-17'}>
+          <Container size={'lg'}>
+            {data.contentAfter && <div>{parseHtml(data.contentAfter)}</div>}
+            {data.cta && (
+              <div className={data.contentAfter ? 'mt-10' : ''}>
+                {/* Dlouhý text tlačítka se na telefonu zalomí místo přetečení přes okraj. */}
+                <Button
+                  text={data.cta.title}
+                  href={data.cta.link}
+                  className={'max-w-full !text-wrap !h-auto min-h-[48px] md:min-h-[57px]'}
+                />
+              </div>
+            )}
+          </Container>
+        </section>
+      )}
+    </>
   )
 }

@@ -45,6 +45,9 @@ export const getArticle = async (slug: string): Promise<IDataArticle | undefined
             },
             'content.galery': {
               populate: {
+                cta: {
+                  fields: ['title', 'link'],
+                },
                 image: {
                   fields: ['url', 'alternativeText'],
                 },

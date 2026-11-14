@@ -30,6 +30,9 @@ export const getPricelistPage = async (): Promise<IDataPricelistPage> => {
             },
             'content.galery': {
               populate: {
+                cta: {
+                  fields: ['title', 'link'],
+                },
                 image: {
                   fields: ['url', 'alternativeText'],
                 },

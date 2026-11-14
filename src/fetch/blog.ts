@@ -61,6 +61,9 @@ export const getPost = async (slug: string): Promise<IDataPost | undefined> => {
             },
             'content.galery': {
               populate: {
+                cta: {
+                  fields: ['title', 'link'],
+                },
                 image: {
                   fields: ['url', 'alternativeText'],
                 },

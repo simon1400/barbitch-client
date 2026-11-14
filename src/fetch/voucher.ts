@@ -22,6 +22,9 @@ export const getVoucher = async () => {
             },
             'content.galery': {
               populate: {
+                cta: {
+                  fields: ['title', 'link'],
+                },
                 image: {
                   fields: ['url', 'hash', 'alternativeText'],
                 },
