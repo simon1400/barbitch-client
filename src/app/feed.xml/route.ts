@@ -1,8 +1,6 @@
-import { getAllPost } from 'fetch/blog'
-import { Axios } from 'lib/api'
+import { getAllPost, postDate } from 'fetch/blog'
 import { SITE_URL } from 'lib/seo'
 import { NextResponse } from 'next/server'
-import qs from 'qs'
 
 export const revalidate = 3600
 
@@ -15,34 +13,16 @@ const esc = (value: string): string =>
     .replaceAll('"', '&quot;')
     .replaceAll("'", '&apos;')
 
-interface IPostDate {
-  slug: string
-  publishedAt?: string
-}
-
-/** Data vydání pro `pubDate` — `getAllPost` je nevrací. */
-const publishDates = async (): Promise<Map<string, string>> => {
-  const query = qs.stringify(
-    { fields: ['slug', 'publishedAt'], sort: ['publishedAt:desc'], pagination: { limit: 100 } },
-    { encodeValuesOnly: true },
-  )
-  try {
-    const data = (await Axios.get(`/api/blogs?${query}`)) as IPostDate[]
-    return new Map(data.filter((p) => p.publishedAt).map((p) => [p.slug, p.publishedAt as string]))
-  } catch (error) {
-    console.error('Failed to fetch post dates for feed:', error)
-    return new Map()
-  }
-}
-
 export async function GET() {
-  const [posts, dates] = await Promise.all([getAllPost(), publishDates()])
+  // Nejnovější první podle data první publikace (`blog.date`, s291); přesměrované
+  // články `getAllPost` vynechává.
+  const posts = await getAllPost()
 
   const items = posts
     .slice(0, 20)
     .map((post) => {
       const url = `${SITE_URL}/blog/${post.slug}`
-      const published = dates.get(post.slug)
+      const published = postDate(post)
       const title = post.title.replaceAll(';sp;', ' ')
 
       return `

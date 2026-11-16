@@ -1,6 +1,6 @@
-import type { BlogTopic } from 'lib/blogTopic'
+import type { BlogTopicKey } from 'lib/blogTopic'
 
-import { TOPIC_CTA, TOPIC_LABEL } from 'lib/blogTopic'
+import { isServiceTopic, TOPIC_CTA, TOPIC_LABEL } from 'lib/blogTopic'
 
 import Button from './Button'
 import { Container } from './Container'
@@ -9,7 +9,9 @@ import { Container } from './Container'
  * Uzavření trychtýře „článek → služba → rezervace“. Příspěvky byly slepá
  * ulička: žádný odkaz na službu ani na rezervaci.
  */
-export const PostCta = ({ topic }: { topic?: BlogTopic }) => {
+export const PostCta = ({ topic: key }: { topic?: BlogTopicKey }) => {
+  // „Sezóna“ nemá vlastní stránku služby — obecná výzva bez odkazu na službu.
+  const topic = isServiceTopic(key) ? key : undefined
   const text = topic ? TOPIC_CTA[topic] : 'Rezervujte si termín v Barbitch Beauty Studiu v Brně.'
 
   return (

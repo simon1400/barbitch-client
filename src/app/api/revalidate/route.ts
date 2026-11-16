@@ -1,4 +1,4 @@
-import { revalidatePath } from 'next/cache'
+import { revalidatePath, revalidateTag } from 'next/cache'
 import { NextResponse } from 'next/server'
 
 /**
@@ -19,7 +19,8 @@ const SITE = 'https://barbitch.cz'
 const PATH_FOR: Record<string, (slug?: string) => string[]> = {
   article: (slug) => (slug ? [`/${slug}`] : []),
   banner: () => ['/'],
-  blog: (slug) => ['/blog', ...(slug ? [`/blog/${slug}`] : [])],
+  // Hlavní ukazuje tři články, feed jejich seznam.
+  blog: (slug) => ['/blog', '/', '/feed.xml', ...(slug ? [`/blog/${slug}`] : [])],
   'blog-page': () => ['/blog'],
   contact: () => ['/kontakt', '/'],
   homepage: () => ['/'],
@@ -74,8 +75,11 @@ export async function POST(request: Request) {
   // Sitemapa se mění při každé publikaci — `lastmod` musí jít ven zároveň.
   const allPaths = [...paths, '/sitemap.xml']
   for (const path of allPaths) revalidatePath(path)
+  // Seznam článků (`getAllPost`) žije v datové cache s tagem `blog` — bez toho by /blog,
+  // „Související“ a hlavní ukazovaly hodinu starý seznam.
+  if (model === 'blog') revalidateTag('blog')
 
-  await pingIndexNow(paths)
+  await pingIndexNow(paths.filter((path) => !path.endsWith('.xml')))
 
   return NextResponse.json({ revalidated: allPaths })
 }

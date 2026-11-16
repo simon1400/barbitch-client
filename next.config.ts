@@ -1,5 +1,7 @@
 import type { NextConfig } from 'next'
 
+import { blogRedirectRules, finalBlogTarget } from './src/lib/blogRedirects'
+
 /** @type {import('next').NextConfig} */
 
 const nextConfig: NextConfig = {
@@ -20,7 +22,8 @@ const nextConfig: NextConfig = {
         // Dřív mířil na /blog — pro Google soft-404. Míří na článek, který
         // tím slugem byl původně myšlen.
         source: '/blog/halloween-beauty-2025',
-        destination: '/blog/halloween-beauty-brno-2025',
+        // Halloween článek se od s291 sám přesměrovává — rovnou na konec řetězce.
+        destination: finalBlogTarget('/blog/halloween-beauty-brno-2025'),
         permanent: true,
       },
       {
@@ -36,6 +39,8 @@ const nextConfig: NextConfig = {
         destination: '/cenik',
         statusCode: 301,
       },
+      // Staré adresy článků blogu (s291) — seznam a zapínání v `src/lib/blogRedirects.ts`.
+      ...blogRedirectRules(),
     ]
   },
   env: {

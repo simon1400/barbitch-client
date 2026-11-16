@@ -1,27 +1,17 @@
 import type { IDataPostShort } from 'fetch/blog'
 
 import Image from 'components/Image'
-import { TOPIC_LABEL, topicOf } from 'lib/blogTopic'
+import { TopicSticker as Sticker } from 'components/TopicSticker'
+import { postTopic, TOPIC_LABEL } from 'lib/blogTopic'
 import Link from 'next/link'
 
 import { SECTION_Y, SectionTitle, TextLink, WRAP } from './ui'
 
-/** Nálepka tématu: ruční `blog.topic`, jinak odvozené ze slugu (lib/blogTopic). */
+/** Nálepka tématu: `blog.topic` ze Strapi, jinak odvozené ze slugu (lib/blogTopic). */
 const topicLabel = (post: IDataPostShort) => {
-  const own = post.topic?.trim()
-  if (own) return own
-  const auto = topicOf(post.slug, post.title)
-  return auto ? TOPIC_LABEL[auto] : ''
+  const topic = postTopic(post)
+  return topic ? TOPIC_LABEL[topic] : ''
 }
-
-const Sticker = ({ text, className = '' }: { text: string; className?: string }) =>
-  text ? (
-    <span
-      className={`inline-block bg-[#ff6aa0] text-accent font-extrabold uppercase tracking-[1px] ${className}`}
-    >
-      {text}
-    </span>
-  ) : null
 
 /**
  * B.B.Blog na hlavní stránce (s286): vlevo velký článek (č/b fotka 16:10, černá

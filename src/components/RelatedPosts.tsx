@@ -1,5 +1,5 @@
 import type { IDataPostShort } from 'fetch/blog'
-import type { BlogTopic } from 'lib/blogTopic'
+import type { BlogTopicKey } from 'lib/blogTopic'
 
 import { relatedPostsOf } from 'lib/relatedPosts'
 import Link from 'next/link'
@@ -13,7 +13,7 @@ import Image from './Image'
  * Tři související články pod příspěvkem.
  *
  * Přednost mají texty ze stejného tématu, zbytek doplní nejnovější — díky tomu
- * blok nezmizí ani u článku, kterému téma přiřadit nejde.
+ * blok nezmizí ani u článku, kterému téma přiřadit nejde. Výběr: `lib/relatedPosts`.
  */
 export const RelatedPosts = ({
   posts,
@@ -22,7 +22,7 @@ export const RelatedPosts = ({
 }: {
   posts: IDataPostShort[]
   currentSlug: string
-  topic?: BlogTopic
+  topic?: BlogTopicKey
 }) => {
   const related = relatedPostsOf(posts, currentSlug, topic)
 

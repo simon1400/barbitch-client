@@ -7,7 +7,8 @@ interface ArticleSchemaProps {
   image?: string
   datePublished?: string
   dateModified?: string
-  author?: string
+  /** Autor článku (s291) → `Person`; bez něj autorem je salon (`Organization`). */
+  author?: { name: string; role?: string | null; image?: string }
   url: string
 }
 
@@ -17,7 +18,7 @@ export const ArticleSchema = ({
   image,
   datePublished,
   dateModified,
-  author = 'Barbitch Team',
+  author,
   url,
 }: ArticleSchemaProps) => {
   const schema = {
@@ -30,11 +31,19 @@ export const ArticleSchema = ({
     // Strapi ukládá `updatedAt` o zlomek sekundy dřív než `publishedAt` —
     // bez tohoto by každý článek tvrdil, že byl upraven před vydáním.
     dateModified: latestDate(datePublished, dateModified),
-    author: {
-      '@type': 'Organization',
-      name: author,
-      url: SITE_URL,
-    },
+    author: author
+      ? {
+          '@type': 'Person',
+          name: author.name,
+          ...(author.role ? { jobTitle: author.role } : {}),
+          ...(author.image ? { image: absUrl(author.image) } : {}),
+          worksFor: { '@type': 'Organization', name: 'Barbitch', url: SITE_URL },
+        }
+      : {
+          '@type': 'Organization',
+          name: 'Barbitch Team',
+          url: SITE_URL,
+        },
     publisher: {
       '@type': 'Organization',
       name: 'Barbitch',

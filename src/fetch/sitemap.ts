@@ -1,4 +1,5 @@
 import { Axios } from 'lib/api'
+import { REDIRECTED_POST_SLUGS } from 'lib/blogRedirects'
 import qs from 'qs'
 
 interface IDataSlugs {
@@ -61,12 +62,15 @@ export const getSitemapSlugs = async (): Promise<ISitemapRoute[]> => {
         priority: '0.5',
         changefreq: 'yearly',
       })),
-    ...slugPosts.map((item) => ({
-      update: item.updatedAt,
-      slug: `/blog/${item.slug}`,
-      priority: '0.8',
-      changefreq: 'monthly',
-    })),
+    // Přesměrované články (lib/blogRedirects, s291) do mapy nepatří. `lastmod` = `updatedAt`.
+    ...slugPosts
+      .filter((item) => !REDIRECTED_POST_SLUGS.has(item.slug))
+      .map((item) => ({
+        update: item.updatedAt,
+        slug: `/blog/${item.slug}`,
+        priority: '0.8',
+        changefreq: 'monthly',
+      })),
   ]
 }
 

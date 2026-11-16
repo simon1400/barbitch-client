@@ -5,9 +5,10 @@ import { Container } from 'components/Container'
 import { DynamicContent } from 'components/DynamicContent'
 import { PostCta } from 'components/PostCta'
 import { RelatedPosts } from 'components/RelatedPosts'
-import { getAllPost, getPost } from 'fetch/blog'
+import { getAllPost, getPost, postDate } from 'fetch/blog'
 import { Axios } from 'lib/api'
-import { TOPIC_LABEL, topicOf } from 'lib/blogTopic'
+import { REDIRECTED_POST_SLUGS } from 'lib/blogRedirects'
+import { isServiceTopic, postTopic, TOPIC_LABEL } from 'lib/blogTopic'
 import { getStrapiImageUrl } from 'lib/image-utils'
 import { relatedPostsOf } from 'lib/relatedPosts'
 import { cmsTitle, ogImages } from 'lib/seo'
@@ -26,9 +27,11 @@ export async function generateStaticParams() {
       slug: string
     }[]
 
-    return posts.map((post) => ({
-      post: post.slug,
-    }))
+    return posts
+      .filter((post) => !REDIRECTED_POST_SLUGS.has(post.slug))
+      .map((post) => ({
+        post: post.slug,
+      }))
   } catch (error) {
     // Výpadek CMS nesmí shodit celý build — chybějící cesty se dogenerují na vyžádání.
     console.error('Failed to fetch blog slugs for static params:', error)
@@ -81,6 +84,23 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
 // 1 × 12 px uprostřed mezery před položkou: 14 px + čára + 14 px jako v návrhu (gap-x-[29px]).
 const SEPARATOR = 'absolute -left-[15px] top-1/2 h-3 w-px -translate-y-1/2 bg-[#1616154D]'
 
+const formatDate = (value: string) =>
+  new Date(value).toLocaleDateString('cs-CZ', {
+    day: 'numeric',
+    month: 'long',
+    year: 'numeric',
+    timeZone: 'Europe/Prague',
+  })
+
+/** „Aktualizováno“ jen u článků upravených víc než týden po vydání (s291). */
+const UPDATED_AFTER_MS = 7 * 24 * 60 * 60 * 1000
+
+const modifiedAfterPublish = (published?: string, updated?: string): string | undefined => {
+  if (!published || !updated) return undefined
+  const diff = new Date(updated).getTime() - new Date(published).getTime()
+  return diff > UPDATED_AFTER_MS ? updated : undefined
+}
+
 const Post = async ({ params }: any) => {
   const { post } = await params
   const [data, allPosts] = await Promise.all([getPost(post), getAllPost()])
@@ -90,8 +110,14 @@ const Post = async ({ params }: any) => {
   }
 
   const cleanTitle = data.title.replaceAll(';sp;', ' ')
-  const topic = topicOf(post, cleanTitle)
-  const published = data.publishedAt
+  const topic = postTopic({ slug: post, title: cleanTitle, topic: data.topic })
+  // Datum první publikace (`blog.date`); `publishedAt` se mění s každým Publish.
+  const published = postDate(data)
+  const updated = modifiedAfterPublish(published, data.updatedAt)
+  const author = data.author?.name?.trim() ? data.author : undefined
+  const authorText = author
+    ? [author.name.trim(), author.role?.trim()].filter(Boolean).join(', ')
+    : 'Barbitch Beauty Studio'
   // Stejný výběr jako „Související články“ — první z nich.
   const [nextPost] = relatedPostsOf(allPosts, post, topic, 1)
 
@@ -103,6 +129,16 @@ const Post = async ({ params }: any) => {
         image={getStrapiImageUrl(data.image?.url)}
         datePublished={published}
         dateModified={data.updatedAt}
+        author={
+          author
+            ? {
+                name: author.name.trim(),
+                role: author.role?.trim(),
+                // Bez fotky nic — getStrapiImageUrl by vrátil výchozí banner.
+                image: author.photo?.url ? getStrapiImageUrl(author.photo.url) : undefined,
+              }
+            : undefined
+        }
         url={`https://barbitch.cz/blog/${post}`}
       />
       <article>
@@ -138,28 +174,36 @@ const Post = async ({ params }: any) => {
                 }
               >
                 <time dateTime={published} className={'text-accent'}>
-                  {new Date(published).toLocaleDateString('cs-CZ', {
-                    day: 'numeric',
-                    month: 'long',
-                    year: 'numeric',
-                  })}
+                  {formatDate(published)}
                 </time>
+                {!!updated && (
+                  <span className={'relative'}>
+                    <span aria-hidden={'true'} className={SEPARATOR} />
+                    {'Aktualizováno '}
+                    <time dateTime={updated}>{formatDate(updated)}</time>
+                  </span>
+                )}
                 {topic && (
                   <span className={'relative'}>
                     <span aria-hidden={'true'} className={SEPARATOR} />
-                    <Link
-                      href={`/service/${topic}`}
-                      className={
-                        'text-[#5f5f5e] underline decoration-[#1616154D] underline-offset-4 hover:text-primary'
-                      }
-                    >
-                      {TOPIC_LABEL[topic]}
-                    </Link>
+                    {isServiceTopic(topic) ? (
+                      <Link
+                        href={`/service/${topic}`}
+                        className={
+                          'text-[#5f5f5e] underline decoration-[#1616154D] underline-offset-4 hover:text-primary'
+                        }
+                      >
+                        {TOPIC_LABEL[topic]}
+                      </Link>
+                    ) : (
+                      TOPIC_LABEL[topic]
+                    )}
                   </span>
                 )}
                 <span className={'relative'}>
                   <span aria-hidden={'true'} className={SEPARATOR} />
-                  {'Barbitch Beauty Studio'}
+                  {/* Bez „Autor/Autorka“ — rod ze jména nehádáme; místo autora tu dřív stálo jméno studia. */}
+                  {authorText}
                 </span>
               </span>
             </p>
