@@ -24,9 +24,19 @@ jobs:
           script: |
             cd /opt/barbitch-client
             git pull origin main
+            # Keep static files of previous builds for 30 days: pages cached in browsers,
+            # Googlebot renders and Clarity replays still reference the old hashed CSS/JS.
+            # `next build` wipes .next, so the archive lives outside the project.
+            STATIC_ARCHIVE=/opt/barbitch-client-static-archive
+            mkdir -p "$STATIC_ARCHIVE"
+            if [ -d .next/static ]; then cp -r --update=none .next/static/. "$STATIC_ARCHIVE"/; fi
+            find "$STATIC_ARCHIVE" -type f -mtime +30 -delete
+            find "$STATIC_ARCHIVE" -mindepth 1 -type d -empty -delete
             npm ci
             npm run build
             cp -r public .next/standalone/
+            mkdir -p .next/standalone/.next/static
+            cp -r --update=none "$STATIC_ARCHIVE"/. .next/standalone/.next/static/
             cp -r .next/static .next/standalone/.next/
             pm2 restart barbitch-client || pm2 start ecosystem.config.js
             pm2 save
