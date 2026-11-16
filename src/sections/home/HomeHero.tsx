@@ -9,7 +9,7 @@ import { BbLink, Sparkle, WRAP } from './ui'
 /**
  * Hero hlavní stránky (s286): růžový přechod, fotka stěny salonu přes `screen`
  * (nikdy `multiply` — zčervená), H1 se SEO titulkem, slogan jako <p>, lead, tlačítka
- * a černý pruh faktů. Výška podle obsahu. Fotka je LCP → `fetchPriority=high`.
+ * a černý pruh faktů. Výška = celé okno (min-h 100svh), obsah uprostřed. Fotka je LCP → `fetchPriority=high`.
  *
  * Fotku vymění majitel ve Strapi (`homepage.heroImage` / `heroImageMobile`);
  * prázdné pole = soubory z `public/assets/home/`.
@@ -84,8 +84,12 @@ export const HomeHero = ({
   const [first, ...rest] = slogan.trim().split(/\s+/)
 
   return (
-    <section aria-labelledby={'home-h1'} className={'relative overflow-hidden'}>
-      <div className={'relative overflow-hidden bg-bb-pink'}>
+    <section
+      aria-labelledby={'home-h1'}
+      // Na celou výšku okna (svh — bez lišt mobilního prohlížeče); pruh faktů dole.
+      className={'relative overflow-hidden flex flex-col min-h-[100svh]'}
+    >
+      <div className={'relative flex flex-1 flex-col overflow-hidden bg-bb-pink'}>
         <picture>
           <source media={'(min-width: 1024px)'} srcSet={desktopSrcSet} sizes={'100vw'} />
           <img
@@ -100,7 +104,7 @@ export const HomeHero = ({
         <Sparkle size={14} opacity={0.8} className={'top-[44%] left-[90%]'} />
 
         <div
-          className={`${WRAP} relative flex flex-col gap-3.5 pt-[83px] pb-[190px] lg:gap-[22px] lg:min-h-[664px] lg:justify-end lg:pt-[144px] lg:pb-20`}
+          className={`${WRAP} relative flex flex-1 flex-col gap-3.5 pt-[83px] pb-[190px] lg:gap-[22px] lg:justify-center lg:pt-[128px] lg:pb-16`}
         >
           <h1
             id={'home-h1'}
@@ -112,7 +116,7 @@ export const HomeHero = ({
           </h1>
           <p
             className={
-              'm-0 text-[62px] tracking-[-1.5px] lg:text-[clamp(64px,9.6vw,138px)] lg:tracking-[-3px] leading-[0.9] font-extrabold uppercase text-accent'
+              'm-0 text-[62px] tracking-[-1.5px] lg:text-[clamp(64px,min(9.6vw,14svh),150px)] lg:tracking-[-3px] leading-[0.9] font-extrabold uppercase text-accent'
             }
           >
             {first}

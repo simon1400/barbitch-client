@@ -54,7 +54,8 @@ const HandSec = ({
   return (
     <section
       aria-labelledby={'co-u-nas'}
-      className={`relative overflow-hidden bg-bb-pink ${SECTION_Y}`}
+      // Desktop: na celou výšku okna, obsah svisle uprostřed; mobil podle obsahu.
+      className={`relative overflow-hidden bg-bb-pink ${SECTION_Y} lg:flex lg:min-h-[100svh] lg:flex-col lg:justify-center`}
     >
       <Sparkle size={22} className={'top-[60px] left-[88%]'} />
       <Sparkle
@@ -67,9 +68,11 @@ const HandSec = ({
 
         {/* Mobil: ruka, Manikúra, Řasy, Obočí, tlačítko. Desktop: 3 sloupce. */}
         <div
-          className={'mt-8 flex flex-col gap-8 lg:grid lg:grid-cols-3 lg:gap-10 lg:items-center'}
+          className={
+            'mt-8 flex flex-col gap-8 lg:mt-[clamp(32px,5svh,64px)] lg:grid lg:grid-cols-[minmax(0,1fr)_minmax(0,1.3fr)_minmax(0,1fr)] lg:gap-10 lg:items-center'
+          }
         >
-          <div className={'contents lg:flex lg:flex-col lg:gap-[72px]'}>
+          <div className={'contents lg:flex lg:flex-col lg:gap-[clamp(48px,9svh,112px)]'}>
             {block('manikura', 'order-2 lg:order-none')}
             {block('oboci', 'order-4 lg:order-none')}
           </div>
@@ -80,7 +83,7 @@ const HandSec = ({
             height={920}
             loading={'lazy'}
             className={
-              'order-1 lg:order-none block w-[240px] lg:w-full max-w-[440px] h-auto self-center lg:justify-self-center'
+              'order-1 lg:order-none block w-[240px] max-w-[440px] h-auto self-center lg:w-auto lg:max-w-full lg:max-h-[62svh] lg:justify-self-center'
             }
           />
           <div className={'contents lg:flex lg:flex-col lg:gap-10'}>
