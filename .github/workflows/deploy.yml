@@ -33,6 +33,10 @@ jobs:
             find "$STATIC_ARCHIVE" -type f -mtime +30 -delete
             find "$STATIC_ARCHIVE" -mindepth 1 -type d -empty -delete
             npm ci
+            # Data cache (unstable_cache / fetch) survives `next build`. Without wiping it the
+            # build prerenders feed.xml, the homepage and blog posts from the PREVIOUS build's
+            # Strapi data (served stale until revalidate, ~1 h). Webpack/SWC caches stay.
+            rm -rf .next/cache/fetch-cache
             npm run build
             cp -r public .next/standalone/
             mkdir -p .next/standalone/.next/static
