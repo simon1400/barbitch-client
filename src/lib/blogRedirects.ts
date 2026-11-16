@@ -41,16 +41,16 @@ export const BLOG_REDIRECTS: BlogRedirect[] = [
     to: '/blog/laminace-oboci-v-brne-co-to-je-jak-probiha-a-komu-se-hodi',
     enabled: true,
   },
-  // Nová adresa — zapnout až po publikaci článku s novým slugem.
+  // Nová adresa — zapnout až po publikaci článku s novým slugem (lash lifting a modeláž zapnuty 16.11.2026).
   {
     from: 'lash-lifting-2025-kompletni-pruvodce-krasnymi-rasami',
     to: '/blog/lash-lifting-brno',
-    enabled: false,
+    enabled: true,
   },
   {
     from: 'modelaz-nehtu-brno-top-salony-ceny-a-recenze',
     to: '/blog/modelaz-nehtu-brno',
-    enabled: false,
+    enabled: true,
   },
   {
     from: 'luxusni-manikura-v-brne-trendy-roku-2025',
