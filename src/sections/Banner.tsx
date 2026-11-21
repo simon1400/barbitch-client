@@ -27,7 +27,7 @@ const Banner = async () => {
         }
       >
         <Image
-          src={'/assets/banner.jpg'}
+          src={'/assets/banner-1350.webp'}
           className={'absolute object-cover object-center grayscale opacity-70 w-full h-full'}
           fill
           alt={

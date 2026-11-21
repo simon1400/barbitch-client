@@ -1,18 +1,18 @@
 import type { IDataPostShort } from 'fetch/blog'
-import type { BlogTopicKey } from 'lib/blogTopic'
 import type { Metadata } from 'next'
 
 import { getAllPost, getBlogPage } from 'fetch/blog'
 import { getLinkToReserve } from 'fetch/contact'
 import { getBlogPageMeta } from 'fetch/getMeta'
-import { isOffSeason, postTopic, TOPIC_KEYS, topicKey } from 'lib/blogTopic'
+import { postTopic, TOPIC_KEYS } from 'lib/blogTopic'
 import { jsonLd } from 'lib/jsonLd'
 import { cmsTitle, ogImages, SITE_URL } from 'lib/seo'
 import Posts from 'sections/Posts'
 import { Top } from 'sections/Top/Top'
 
-// Filtr `?tema=` čte searchParams → stránka se vykresluje na požadavek. Seznam článků
-// drží datová cache (`getAllPost`, 1 h + tag `blog`), takže Strapi to nezatíží.
+// Statická stránka (ISR 1 h + tag `blog`). Filtr `?tema=` běží v prohlížeči
+// (`sections/PostsFilter`) — kdyby stránka četla searchParams, byla by dynamická
+// a Next by <title> a canonical streamoval do <body> (audit s301, oprava s303).
 export const revalidate = 3600
 
 export async function generateMetadata(): Promise<Metadata> {
@@ -68,26 +68,17 @@ const collectionSchema = (title: string, description: string, posts: IDataPostSh
   },
 })
 
-const Blog = async ({ searchParams }: { searchParams: Promise<{ tema?: string | string[] }> }) => {
-  const [data, posts, dataLink, meta, sp] = await Promise.all([
+const Blog = async () => {
+  const [data, posts, dataLink, meta] = await Promise.all([
     getBlogPage(),
     getAllPost(),
     getLinkToReserve(),
     getBlogPageMeta(),
-    searchParams,
   ])
 
-  // Jen témata, ke kterým nějaký článek je; neznámé `?tema=` = celý výpis.
+  // Jen témata, ke kterým nějaký článek je. Pořadí drží `getAllPost`
+  // (nejnovější podle `blog.date`), velký článek nahoře vybírá `Posts`.
   const topics = TOPIC_KEYS.filter((key) => posts.some((post) => postTopic(post) === key))
-  const requested = topicKey(Array.isArray(sp?.tema) ? sp.tema[0] : sp?.tema)
-  const active: BlogTopicKey | undefined =
-    requested && topics.includes(requested) ? requested : undefined
-  const visible = active ? posts.filter((post) => postTopic(post) === active) : posts
-
-  // Pořadí drží `getAllPost` (nejnovější podle `blog.date`). Nahoru nejnovější
-  // článek, který není sezónní mimo sezónu — jarní manikúra nemá v listopadu svítit.
-  const featured = visible.find((post) => !isOffSeason(post))
-  const rest = visible.filter((post) => post !== featured)
 
   return (
     <main>
@@ -105,7 +96,7 @@ const Blog = async ({ searchParams }: { searchParams: Promise<{ tema?: string | 
       />
       <Top title={data.title} small linkToReserve={dataLink.linkToReserve} />
       <section className={'pb-16'}>
-        <Posts featured={featured} posts={rest} topics={topics} activeTopic={active} />
+        <Posts posts={posts} topics={topics} />
       </section>
     </main>
   )

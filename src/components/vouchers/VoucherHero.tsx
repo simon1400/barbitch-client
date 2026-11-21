@@ -41,13 +41,21 @@ export const VoucherHero = ({
     }
   >
     <div aria-hidden={'true'} className={'absolute inset-0'}>
-      <Image
-        src={'/assets/banner.jpg'}
-        alt={''}
-        fill
-        priority
+      {/* Obyčejný <img> se dvěma WebP: lokální soubory loader nezmenšuje, takže
+          next/image dával 8× tentýž JPG 1350×1800 (86 KB) i na mobil. React ho
+          sám přednačte (není lazy) — je to LCP (s303). */}
+      <img
+        src={'/assets/banner-1350.webp'}
+        srcSet={'/assets/banner-828.webp 828w, /assets/banner-1350.webp 1350w'}
         sizes={'100vw'}
-        className={'object-cover object-center grayscale mix-blend-multiply'}
+        alt={''}
+        width={1350}
+        height={1800}
+        fetchPriority={'high'}
+        decoding={'async'}
+        className={
+          'absolute inset-0 h-full w-full object-cover object-center grayscale mix-blend-multiply'
+        }
       />
       <div
         className={
@@ -66,14 +74,29 @@ export const VoucherHero = ({
           <div
             className={`hidden md:block absolute top-[34px] right-[150px] lg:right-[190px] w-[210px] lg:w-[230px] aspect-[238/522] -rotate-[8deg] brightness-[.94] ${voucherShadow}`}
           >
-            <Image src={'/assets/vouchers/v1000.png'} alt={''} fill sizes={'230px'} />
+            {/* Jen od 768 px: na mobilu je blok skrytý, <source> zajistí, že se
+                soubor ani nestáhne (img dostane prázdný 1×1 GIF). */}
+            <picture>
+              <source media={'(min-width: 768px)'} srcSet={'/assets/vouchers/v1000.webp'} />
+              <img
+                src={
+                  'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'
+                }
+                alt={''}
+                width={680}
+                height={1490}
+                loading={'lazy'}
+                decoding={'async'}
+                className={'absolute inset-0 h-full w-full'}
+              />
+            </picture>
           </div>
         )}
         <div
           className={`relative w-[112px] md:w-[210px] lg:w-[230px] aspect-[238/522] rotate-[6deg] ${voucherShadow}`}
         >
           <Image
-            src={`/assets/vouchers/${variant === 'logo' ? 'sluzba' : 'v1000'}.png`}
+            src={`/assets/vouchers/${variant === 'logo' ? 'sluzba' : 'v1000'}.webp`}
             alt={''}
             fill
             sizes={'(max-width: 768px) 112px, 230px'}

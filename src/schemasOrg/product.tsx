@@ -45,7 +45,15 @@ export const ProductSchema = ({
       hasMerchantReturnPolicy: {
         '@type': 'MerchantReturnPolicy',
         applicableCountry: 'CZ',
-        returnPolicyCategory: 'https://schema.org/MerchantReturnNotPermitted',
+        // Jako v obchodních podmínkách §9.6 a na stránce: nevyužitý voucher lze
+        // do 14 dnů vrátit, peníze zpět na kartu, zdarma. Dřív „NotPermitted“ —
+        // rozpor s viditelným textem (audit s301, oprava s303).
+        returnPolicyCategory: 'https://schema.org/MerchantReturnFiniteReturnWindow',
+        merchantReturnDays: 14,
+        returnMethod: 'https://schema.org/ReturnByMail',
+        returnFees: 'https://schema.org/FreeReturn',
+        refundType: 'https://schema.org/FullRefund',
+        merchantReturnLink: `${SITE_URL}/obchodni-podminky`,
       },
       shippingDetails: {
         '@type': 'OfferShippingDetails',

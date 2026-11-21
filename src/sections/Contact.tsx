@@ -98,6 +98,7 @@ const PaymentLogos = () => (
           alt={'Comgate'}
           width={104}
           height={24}
+          loading={'lazy'}
           className={'block h-6 w-auto'}
         />
       </a>
@@ -106,6 +107,7 @@ const PaymentLogos = () => (
         alt={'VISA'}
         width={53}
         height={18}
+        loading={'lazy'}
         className={'block h-[18px] w-auto'}
       />
       <img
@@ -113,6 +115,7 @@ const PaymentLogos = () => (
         alt={'Mastercard'}
         width={40}
         height={25}
+        loading={'lazy'}
         className={'block h-[25px] w-auto'}
       />
     </div>

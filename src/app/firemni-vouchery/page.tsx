@@ -179,8 +179,8 @@ const FirmVouchers = async () => {
                 {`Na částku nebo na konkrétní službu. Do pravého horního rohu doplníme logo vaší firmy. Každý voucher má unikátní kód a platí ${VOUCHER_VALID_MONTHS} měsíců.`}
               </p>
               <div className={'flex flex-wrap gap-6 sm:gap-8'}>
-                <Preview src={'/assets/vouchers/v1000.png'} label={'Voucher na částku'} />
-                <Preview src={'/assets/vouchers/sluzba.png'} label={'Voucher na službu'} />
+                <Preview src={'/assets/vouchers/v1000.webp'} label={'Voucher na částku'} />
+                <Preview src={'/assets/vouchers/sluzba.webp'} label={'Voucher na službu'} />
               </div>
             </section>
           </div>

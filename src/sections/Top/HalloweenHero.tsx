@@ -11,6 +11,9 @@ const anton = Anton({
   subsets: ['latin', 'latin-ext'],
   weight: '400',
   display: 'swap',
+  // Bez preloadu: hero běží jen pár dní v roce, jinak by se Anton přednačítal
+  // na každé stránce a bral šířku pásma fotce hlavní stránky (LCP, s303).
+  preload: false,
   fallback: ['Montserrat', 'Arial', 'sans-serif'],
 })
 

@@ -4,7 +4,7 @@ import Image from 'components/Image'
 import { getStrapiImageUrl } from 'lib/image-utils'
 
 // Fotka pod vouchery na částku — stejná jako v heru.
-const AMOUNT_BACKGROUND = '/assets/banner.jpg'
+const AMOUNT_BACKGROUND = '/assets/banner-828.webp'
 
 /**
  * Náhled voucheru ve stylu heru: fotka černobíle v režimu multiply na růžové,

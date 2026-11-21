@@ -67,7 +67,9 @@ export const GaleryImages = ({
                 width={image?.width || 800}
                 height={image?.height || 600}
                 className={'w-full h-auto block'}
-                loading={idx < 6 ? 'eager' : 'lazy'}
+                // Galerie nikdy není na prvním obrazovce (služby, voucher) — `eager`
+                // tu jen spouštěl React preload 3–6 fotek a zdržoval LCP (s303).
+                loading={'lazy'}
                 quality={70}
                 sizes={'(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw'}
                 placeholder={'blur'}
@@ -105,7 +107,9 @@ export const GaleryImages = ({
                 height={1000}
                 fill={!contain}
                 alt={item.alternativeText || `Obrázek ${index + 1} z galerie Barbitch`}
-                loading={index < 3 ? 'eager' : 'lazy'}
+                // Galerie nikdy není na prvním obrazovce (služby, voucher) — `eager`
+                // tu jen spouštěl React preload 3–6 fotek a zdržoval LCP (s303).
+                loading={'lazy'}
                 quality={70}
                 sizes={'(max-width: 640px) 100vw, (max-width: 768px) 50vw, 33vw'}
                 placeholder={'blur'}

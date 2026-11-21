@@ -91,7 +91,8 @@ const AMOUNT_VOUCHERS = ['500', '1000', '1500', '2000']
 
 export const formatKc = (value: number) => `${value.toLocaleString('cs-CZ')} Kč`
 
-const SERVICE_IMAGE = '/assets/vouchers/sluzba.png'
+// WebP 680 px (2× největší dlaždice); PNG 639×1400 po 115 KB brzdily LCP (s303).
+const SERVICE_IMAGE = '/assets/vouchers/sluzba.webp'
 
 const fallbackServiceItems = (groups: IEngineServiceGroup[]): VoucherItem[] => {
   const services = new Map(groups.flatMap((g) => g.services ?? []).map((s) => [s.id, s]))
@@ -144,7 +145,7 @@ export const buildVoucherCatalog = (
     name: formatKc(Number(amount)),
     title: `Dárkový voucher ${formatKc(Number(amount))}`,
     price: Number(amount),
-    image: `/assets/vouchers/v${amount}.png`,
+    image: `/assets/vouchers/v${amount}.webp`,
     amount,
   }))
 

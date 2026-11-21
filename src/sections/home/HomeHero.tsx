@@ -3,6 +3,7 @@ import type { IHomeImage } from 'fetch/home'
 import imageLoader from 'lib/image-loader'
 import { getImageProps } from 'next/image'
 import Link from 'next/link'
+import { preload } from 'react-dom'
 
 import { BbLink, Sparkle, WRAP } from './ui'
 
@@ -63,9 +64,17 @@ export const HomeHero = ({
       : pick(null, FALLBACK_MOBILE)
   const alt = desktop.alt || 'Růžová stěna salonu Barbitch s logem'
 
-  const common = { alt, loader: imageLoader, quality: 75, priority: true }
+  // `priority` v getImageProps (Next 15) nenastaví ani fetchpriority, ani preload,
+  // a React fotku uvnitř <picture> sám nepřednačte → obojí ručně (s303).
+  const common = {
+    alt,
+    loader: imageLoader,
+    quality: 75,
+    priority: true,
+    fetchPriority: 'high' as const,
+  }
   const {
-    props: { srcSet: desktopSrcSet },
+    props: { srcSet: desktopSrcSet, src: desktopSrc },
   } = getImageProps({
     ...common,
     src: desktop.url,
@@ -79,6 +88,22 @@ export const HomeHero = ({
     width: mobile.width,
     height: mobile.height,
     sizes: '100vw',
+  })
+
+  // Preload jen té fotky, kterou dané okno opravdu ukáže (media = jako <source>).
+  preload(mobileProps.src, {
+    as: 'image',
+    fetchPriority: 'high',
+    imageSrcSet: mobileProps.srcSet,
+    imageSizes: '100vw',
+    media: '(max-width: 1023.98px)',
+  })
+  preload(desktopSrc, {
+    as: 'image',
+    fetchPriority: 'high',
+    imageSrcSet: desktopSrcSet,
+    imageSizes: '100vw',
+    media: '(min-width: 1024px)',
   })
 
   const [first, ...rest] = slogan.trim().split(/\s+/)
