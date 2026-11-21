@@ -52,7 +52,7 @@ const Team = ({ team, linkToReserve }: { team: ITeamMember[]; linkToReserve: str
                   {m.photo?.url ? (
                     <Image
                       src={m.photo.url}
-                      alt={`${m.name}, mistryně salonu Barbitch`}
+                      alt={`${m.name}, mistryně salonu Bar.Bitch`}
                       fill
                       sizes={'(min-width: 1024px) 25vw, 50vw'}
                       loading={'lazy'}

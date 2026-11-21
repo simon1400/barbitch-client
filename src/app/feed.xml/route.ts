@@ -39,7 +39,7 @@ export async function GET() {
   const feed = `<?xml version="1.0" encoding="UTF-8"?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>B.B.Blog — Barbitch Brno</title>
+    <title>B.B.Blog — Bar.Bitch Brno</title>
     <link>${SITE_URL}/blog</link>
     <description>Manikúra, řasy a obočí — tipy a trendy z beauty studia Barbitch v Brně.</description>
     <language>cs</language>

@@ -17,7 +17,7 @@ import BookCalendarClient from './BookCalendarClient'
 import CalendarSkeleton from './components/CalendarSkeleton'
 
 export const metadata: Metadata = {
-  title: 'Výběr termínu | Rezervace – Barbitch Beauty Studio Brno',
+  title: 'Výběr termínu | Rezervace',
   description: 'Vyberte si datum a čas pro vaši rezervaci v Barbitch Beauty Studiu v Brně.',
   robots: { index: false, follow: false },
   // Kroky rezervace jsou noindex — zděděný canonical na /book nemá co potvrzovat.

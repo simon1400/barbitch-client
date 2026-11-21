@@ -6,7 +6,7 @@ import { getBookingPricelist } from 'fetch/bookingPricelist'
 import { getLinkToReserve } from 'fetch/contact'
 import { getFullService, getServiceHomepage } from 'fetch/service'
 import { Axios } from 'lib/api'
-import { cmsTitle, ogImages } from 'lib/seo'
+import { BRAND, brandTitle, cmsTitle, ogImages } from 'lib/seo'
 import { notFound } from 'next/navigation'
 import { ServiceSchema } from 'schemasOrg/service'
 import {
@@ -41,7 +41,7 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
 
   if (!data || !data.metaData) {
     return {
-      title: { absolute: 'Služba nenalezena (404) | Barbitch' },
+      title: { absolute: 'Služba nenalezena (404) | Bar.Bitch' },
       description: '',
       robots: { index: false, follow: false },
     }
@@ -51,20 +51,20 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
     title: cmsTitle(data.metaData.title || data.title),
     description: data.metaData.description || '',
     openGraph: {
-      title: data.metaData.title || data.title,
+      title: brandTitle(data.metaData.title || data.title),
       description: data.metaData.description || '',
-      siteName: 'Barbitch',
+      siteName: BRAND,
       locale: 'cs_CZ',
-      images: ogImages(data.metaData.image?.url, `${data.title} — Barbitch Brno`),
+      images: ogImages(data.metaData.image?.url, `${data.title} — Bar.Bitch Brno`),
       url: `https://barbitch.cz/service/${slug}`,
       // Stránka služby není článek.
       type: 'website',
     },
     twitter: {
       card: 'summary_large_image',
-      title: data.metaData.title || data.title,
+      title: brandTitle(data.metaData.title || data.title),
       description: data.metaData.description || '',
-      images: ogImages(data.metaData.image?.url, `${data.title} — Barbitch Brno`),
+      images: ogImages(data.metaData.image?.url, `${data.title} — Bar.Bitch Brno`),
     },
     alternates: {
       canonical: `https://barbitch.cz/service/${slug}`,

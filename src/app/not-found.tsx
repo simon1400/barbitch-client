@@ -6,7 +6,7 @@ import Button from 'components/Button'
 // z dynamické trasy si titulek drží root layout a `noindex` doplní Next sám —
 // proto v rootu žádné globální `robots: index` není.
 export const metadata: Metadata = {
-  title: { absolute: 'Stránka nenalezena (404) | Barbitch' },
+  title: { absolute: 'Stránka nenalezena (404) | Bar.Bitch' },
   description: 'Tato stránka neexistuje. Přejděte na úvod nebo si rovnou rezervujte termín.',
   robots: { index: false, follow: false },
 }

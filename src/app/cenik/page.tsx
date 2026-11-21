@@ -10,7 +10,7 @@ import { getPricelistMeta } from 'fetch/getMeta'
 import { getPricelistPage } from 'fetch/pricelist'
 import { getReviews } from 'fetch/reviews'
 import { parseHtml } from 'lib/parseHtml'
-import { cmsTitle, ogImages } from 'lib/seo'
+import { BRAND, brandTitle, cmsTitle, ogImages } from 'lib/seo'
 import { PricelistSchema } from 'schemasOrg/pricelist'
 import Reviews from 'sections/Reviews'
 import { Top } from 'sections/Top/Top'
@@ -27,9 +27,9 @@ export async function generateMetadata(): Promise<Metadata> {
       metaData.description ||
       'Aktuální ceník salonu Barbitch v Brně: manikúra, gel lak, prodlužování řas a úprava obočí. Rezervujte si termín online.',
     openGraph: {
-      title: metaData.title || 'Ceník služeb – manikúra, řasy a obočí Brno',
+      title: brandTitle(metaData.title || 'Ceník služeb – manikúra, řasy a obočí Brno'),
       description: metaData.description || '',
-      siteName: 'Barbitch',
+      siteName: BRAND,
       locale: 'cs_CZ',
       images: ogImages(metaData.image?.url, 'Ceník služeb Barbitch Brno'),
       url: `https://barbitch.cz/cenik`,
@@ -38,7 +38,7 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     twitter: {
       card: 'summary_large_image',
-      title: metaData.title || 'Ceník',
+      title: brandTitle(metaData.title || 'Ceník'),
       description: metaData.description || '',
       images: ogImages(metaData.image?.url, 'Ceník služeb Barbitch Brno'),
     },

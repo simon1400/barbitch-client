@@ -1,5 +1,7 @@
 import { jsonLd } from 'lib/jsonLd'
-import { absUrl, clampHeadline, latestDate, SITE_URL } from 'lib/seo'
+import { absUrl, clampHeadline, latestDate } from 'lib/seo'
+
+import { publisherRef, salonRef, WEBSITE_ID } from './salon'
 
 interface ArticleSchemaProps {
   title: string
@@ -37,24 +39,16 @@ export const ArticleSchema = ({
           name: author.name,
           ...(author.role ? { jobTitle: author.role } : {}),
           ...(author.image ? { image: absUrl(author.image) } : {}),
-          worksFor: { '@type': 'Organization', name: 'Barbitch', url: SITE_URL },
+          worksFor: salonRef,
         }
-      : {
-          '@type': 'Organization',
-          name: 'Barbitch Team',
-          url: SITE_URL,
-        },
-    publisher: {
-      '@type': 'Organization',
-      name: 'Barbitch',
-      logo: {
-        '@type': 'ImageObject',
-        url: `${SITE_URL}/logo.jpg`,
-      },
-    },
+      : // Bez autora píše salon (dřív „Barbitch Team“ bez vazby na podnik).
+        salonRef,
+    publisher: publisherRef,
+    inLanguage: 'cs-CZ',
     mainEntityOfPage: {
       '@type': 'WebPage',
       '@id': url,
+      isPartOf: { '@id': WEBSITE_ID },
     },
   }
 

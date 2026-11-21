@@ -3,7 +3,7 @@ import type { IPricelistGroup } from 'fetch/bookingPricelist'
 import { jsonLd } from 'lib/jsonLd'
 import { SITE_URL } from 'lib/seo'
 
-import { LOCAL_BUSINESS_ID } from './localBusiness'
+import { LOCAL_BUSINESS_ID } from './salon'
 
 /**
  * Ceník jako `OfferCatalog` se živými cenami z enginu.
@@ -38,7 +38,7 @@ export const PricelistSchema = ({ groups }: { groups: IPricelistGroup[] }) => {
     '@context': 'https://schema.org',
     '@type': 'OfferCatalog',
     '@id': `${SITE_URL}/cenik#catalog`,
-    name: 'Ceník služeb Barbitch Brno',
+    name: 'Ceník služeb Bar.Bitch Brno',
     url: `${SITE_URL}/cenik`,
     provider: { '@id': LOCAL_BUSINESS_ID },
     itemListElement: catalogs,

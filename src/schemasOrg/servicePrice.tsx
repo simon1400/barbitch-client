@@ -3,6 +3,8 @@ import type { IPricelistGroup } from 'fetch/bookingPricelist'
 import { jsonLd } from 'lib/jsonLd'
 import { SITE_URL } from 'lib/seo'
 
+import { salonRef } from './salon'
+
 interface ServiceSeo {
   serviceType: string
   name: string
@@ -32,7 +34,7 @@ const SERVICE_SEO: Record<string, ServiceSeo> = {
     serviceType: 'Obočí',
     name: 'Úprava obočí Brno',
     description:
-      'Upravené obočí bez starostí! Nabízíme laminaci, barvení i modelaci obočí v Brně. Svěř se profesionálkám z Barbitch studia a objednej se online.',
+      'Upravené obočí bez starostí! Nabízíme laminaci, barvení i modelaci obočí v Brně. Svěř se profesionálkám z Bar.Bitch a objednej se online.',
     catalogName: 'Ceník obočí',
     matchesGroup: (t) => t.includes('obočí'),
   },
@@ -89,26 +91,11 @@ export const ServicePriceSchema = ({
     '@type': 'Service',
     serviceType: seo.serviceType,
     name: seo.name,
-    provider: {
-      '@type': 'BeautySalon',
-      name: 'Barbitch',
-      url: SITE_URL,
-      address: {
-        '@type': 'PostalAddress',
-        streetAddress: 'Křenová 294/16',
-        addressLocality: 'Brno',
-        postalCode: '602 00',
-        addressCountry: 'CZ',
-      },
-    },
-    areaServed: {
-      '@type': 'Place',
-      address: {
-        '@type': 'PostalAddress',
-        addressLocality: 'Brno',
-        addressCountry: 'CZ',
-      },
-    },
+    '@id': `${url}#service`,
+    url,
+    // Odkaz na jedinou entitu salonu (s305), dřív kopie adresy bez `@id`.
+    provider: salonRef,
+    areaServed: { '@type': 'City', name: 'Brno' },
     description: seo.description,
     // Ceny vkládáme jen když je živý ceník dostupný — nikdy 0 / zastaralý hardcode.
     ...(hasPrices && {

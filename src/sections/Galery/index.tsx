@@ -31,8 +31,8 @@ const toPhotos = (items: IGalleryItem[], fallback: IGalery[]): GalleryPhoto[] =>
         alt:
           item.image.alternativeText ||
           item.caption?.trim() ||
-          (service ? `${service.title} — práce salonu Barbitch` : '') ||
-          `Fotka ${i + 1} z galerie Barbitch`,
+          (service ? `${service.title} — práce salonu Bar.Bitch` : '') ||
+          `Fotka ${i + 1} z galerie Bar.Bitch`,
         caption,
         text: item.description?.trim() || DEFAULT_PHOTO_TEXT,
         service,
@@ -45,7 +45,7 @@ const toPhotos = (items: IGalleryItem[], fallback: IGalery[]): GalleryPhoto[] =>
     .map((img, i) => ({
       key: `${i}:${img.url}`,
       url: img.url,
-      alt: img.alternativeText || `Fotka ${i + 1} z galerie Barbitch`,
+      alt: img.alternativeText || `Fotka ${i + 1} z galerie Bar.Bitch`,
       caption: 'Naše práce',
       text: DEFAULT_PHOTO_TEXT,
       service: null,

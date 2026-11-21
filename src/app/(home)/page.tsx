@@ -30,7 +30,7 @@ import {
 } from 'lib/homeContent'
 import { getStrapiImageUrl } from 'lib/image-utils'
 import { jsonLd } from 'lib/jsonLd'
-import { cmsTitle } from 'lib/seo'
+import { BRAND, brandTitle, cmsTitle } from 'lib/seo'
 import { LocalBusinessSchema } from 'schemasOrg/localBusiness'
 import About from 'sections/About'
 import Banner from 'sections/Banner'
@@ -50,13 +50,13 @@ export async function generateMetadata(): Promise<Metadata> {
   const homepageMeta = await getHomeMeta()
 
   return {
-    title: cmsTitle(homepageMeta.metaData.title || 'Barbitch – Manikúra, řasy a obočí v Brně'),
+    title: cmsTitle(homepageMeta.metaData.title || 'Bar.Bitch – Manikúra, řasy a obočí v Brně'),
     description:
       homepageMeta.metaData.description ||
-      'Objevte moderní beauty studio Bar.bitch v Brně. Profesionální manikúra, trendy obočí a dokonalé řasy. Individuální přístup a relaxace s kvalitními materiály. Rezervujte si termín ještě dnes!',
+      'Objevte moderní beauty studio Bar.Bitch v Brně. Profesionální manikúra, trendy obočí a dokonalé řasy. Individuální přístup a relaxace s kvalitními materiály. Rezervujte si termín ještě dnes!',
     openGraph: {
-      title: homepageMeta.metaData.title,
-      siteName: 'Barbitch',
+      title: brandTitle(homepageMeta.metaData.title),
+      siteName: BRAND,
       locale: 'cs_CZ',
       description: homepageMeta.metaData.description,
       images: [getStrapiImageUrl(homepageMeta.metaData.image?.url)],
@@ -65,7 +65,7 @@ export async function generateMetadata(): Promise<Metadata> {
     },
     twitter: {
       card: 'summary_large_image',
-      title: homepageMeta.metaData.title,
+      title: brandTitle(homepageMeta.metaData.title),
       description: homepageMeta.metaData.description,
       images: [getStrapiImageUrl(homepageMeta.metaData.image?.url)],
     },

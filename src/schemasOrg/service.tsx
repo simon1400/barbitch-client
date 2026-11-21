@@ -1,4 +1,7 @@
 import { jsonLd } from 'lib/jsonLd'
+import { BRAND } from 'lib/seo'
+
+import { salonRef, WEBSITE_ID } from './salon'
 
 interface ServiceSchemaProps {
   name: string
@@ -12,19 +15,10 @@ export const ServiceSchema = ({ name, url, description }: ServiceSchemaProps) =>
     '@type': 'Service',
     name,
     url,
-    description: description || `${name} v Barbitch Beauty Studiu v Brně`,
-    provider: {
-      '@type': 'BeautySalon',
-      name: 'Barbitch',
-      url: 'https://barbitch.cz',
-      address: {
-        '@type': 'PostalAddress',
-        streetAddress: 'Křenová 294/16',
-        addressLocality: 'Brno',
-        postalCode: '602 00',
-        addressCountry: 'CZ',
-      },
-    },
+    description: description || `${name} v salonu ${BRAND} v Brně`,
+    '@id': `${url}#service`,
+    provider: salonRef,
+    isPartOf: { '@id': WEBSITE_ID },
     areaServed: {
       '@type': 'City',
       name: 'Brno',

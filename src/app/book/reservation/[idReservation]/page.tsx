@@ -10,7 +10,7 @@ import BookForm from './BookForm'
 import { ReservationExpired } from './components/ReservationExpired'
 
 export const metadata: Metadata = {
-  title: 'Dokončení rezervace | Barbitch Beauty Studio Brno',
+  title: 'Dokončení rezervace',
   description: 'Zadejte své kontaktní údaje a dokončete rezervaci v Barbitch Beauty Studiu v Brně.',
   robots: { index: false, follow: false },
   // Kroky rezervace jsou noindex — zděděný canonical na /book nemá co potvrzovat.

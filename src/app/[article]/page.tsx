@@ -6,9 +6,9 @@ import { getArticle } from 'fetch/article'
 import { getLinkToReserve } from 'fetch/contact'
 import { Axios } from 'lib/api'
 import { getStrapiImageUrl } from 'lib/image-utils'
-import { cmsTitle, ogImages } from 'lib/seo'
+import { BRAND, brandTitle, cmsTitle, ogImages } from 'lib/seo'
 import { notFound } from 'next/navigation'
-import { ArticleSchema } from 'schemasOrg/article'
+import { WebPageSchema } from 'schemasOrg/webPage'
 import { Top } from 'sections/Top/Top'
 
 // Bez toho se stránka vygeneruje jednou při buildu a v Strapi upravený text
@@ -36,7 +36,7 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
     // Neexistující slug končí `notFound()` — metadata to musí potvrdit,
     // jinak 404 zdědí `index: true` z rootu.
     return {
-      title: { absolute: 'Stránka nenalezena (404) | Barbitch' },
+      title: { absolute: 'Stránka nenalezena (404) | Bar.Bitch' },
       description: '',
       robots: { index: false, follow: false },
     }
@@ -48,19 +48,19 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
     title: cmsTitle(metaData?.title || title),
     description: metaData?.description,
     openGraph: {
-      title: metaData?.title || title,
+      title: brandTitle(metaData?.title || title),
       description: metaData?.description || '',
-      siteName: 'Barbitch',
+      siteName: BRAND,
       locale: 'cs_CZ',
-      images: ogImages(metaData?.image?.url, `${title} — Barbitch Brno`),
+      images: ogImages(metaData?.image?.url, `${title} — Bar.Bitch Brno`),
       url: `https://barbitch.cz/${article}`,
       type: 'article',
     },
     twitter: {
       card: 'summary_large_image',
-      title: metaData?.title || title,
+      title: brandTitle(metaData?.title || title),
       description: metaData?.description || '',
-      images: ogImages(metaData?.image?.url, `${title} — Barbitch Brno`),
+      images: ogImages(metaData?.image?.url, `${title} — Bar.Bitch Brno`),
     },
     alternates: {
       canonical: `https://barbitch.cz/${article}`,
@@ -78,11 +78,11 @@ const Article = async ({ params }: any) => {
 
   return (
     <main>
-      <ArticleSchema
-        title={data.title}
-        description={data.metaData?.description || data.title}
+      <WebPageSchema
+        slug={article}
+        name={data.title}
+        description={data.metaData?.description || ''}
         image={getStrapiImageUrl(data.metaData?.image?.url)}
-        datePublished={data.publishedAt}
         dateModified={data.updatedAt}
         url={`https://barbitch.cz/${article}`}
       />

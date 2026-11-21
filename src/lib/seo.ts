@@ -8,7 +8,7 @@ export const DEFAULT_OG_IMAGE = {
   url: '/assets/bigBaner.jpg',
   width: 1200,
   height: 630,
-  alt: 'Barbitch Beauty Studio Brno',
+  alt: 'Bar.Bitch Brno – manikúra, řasy a obočí',
 } as const
 
 /**
@@ -44,19 +44,42 @@ export const clampHeadline = (title: string): string =>
   title.length > 110 ? `${title.slice(0, 109).trimEnd()}…` : title
 
 /**
- * Titulek z CMS, který už obsahuje značku, nesmí projít šablonou `%s | Barbitch`
- * — jinak vznikne „Manikúra Brno … | Barbitch | Barbitch“ (na produkci na 18 z 24
- * stránek). Titulky bez značky naopak šablonu potřebují, proto se rozhoduje
- * podle obsahu, ne paušálně přes `absolute`.
+ * Jediné psaní značky ve titulcích, og:title, siteName a JSON-LD (s305).
+ * Dřív bylo v <title> pět variant (Barbitch, Bar.bitch, BarBitch, „Barbitch Brno“,
+ * „Barbitch Beauty Studio“) — z kódu i z titulků v Strapi.
  */
-const hasBrand = (title: string): boolean =>
-  title
-    .toLowerCase()
-    .replaceAll(/[^a-z]/g, '')
-    .includes('barbitch')
+export const BRAND = 'Bar.Bitch'
 
-export const cmsTitle = (title: string): string | { absolute: string } =>
-  hasBrand(title) ? { absolute: title } : title
+const VARIANT = String.raw`bar\.?\s?bitch(?:\s+beauty\s+stud(?:io|ia|iu))?`
+/** Značka na konci titulku: „… | Barbitch“, „… – Barbitch Beauty Studio“, „… – Bar.bitch, Brno“, „… | Salon krásy Brno Bar.bitch“. */
+const TRAILING_BRAND = new RegExp(
+  String.raw`\s*[|–—-]\s*(?:(?:salon krásy|kosmetický salon)\s+brno\s+)?${VARIANT}(?:,?\s+brno)?\s*$`,
+  'i',
+)
+const ANY_BRAND = new RegExp(String.raw`\b${VARIANT}\b`, 'gi')
+
+/**
+ * Celý titulek se značkou na konci: „<titulek> | Bar.Bitch“. Koncovou značku
+ * z CMS v jakékoli podobě nahradí jednotnou; značku uprostřed („B.B.Blog Barbitch | …“)
+ * jen přepíše na `BRAND`. Používá se pro <title> i og:title / twitter:title.
+ */
+export const brandTitle = (title: string): string => {
+  const trimmed = title.trim()
+  const base = trimmed.replace(TRAILING_BRAND, '').trim()
+  if (base !== trimmed || !ANY_BRAND.test(base)) {
+    ANY_BRAND.lastIndex = 0
+    return `${base.replace(ANY_BRAND, BRAND)} | ${BRAND}`
+  }
+  ANY_BRAND.lastIndex = 0
+  return base.replace(ANY_BRAND, BRAND)
+}
+
+/**
+ * Titulek z CMS pro `metadata.title`. Vždy `absolute` — značku doplní/sjednotí
+ * `brandTitle`, šablona layoutu by ji jinak přidala podruhé
+ * („Manikúra Brno … | Barbitch | Barbitch“, dřív na 18 z 24 stránek).
+ */
+export const cmsTitle = (title: string): { absolute: string } => ({ absolute: brandTitle(title) })
 
 /**
  * Obrázek pro Open Graph s vyplněnými rozměry a popiskem.

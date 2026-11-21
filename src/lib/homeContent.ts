@@ -10,7 +10,7 @@ import type { IFaqItem, IServicePrices, IWhyItem } from 'fetch/home'
 export const DEFAULT_SEO_TITLE = 'Manikúra, řasy a obočí v centru Brna'
 export const DEFAULT_SLOGAN = 'Become an icon'
 export const DEFAULT_LEAD =
-  'Beauty salon Barbitch na Křenové 294/16. Otevřeno každý den 10:00–19:00, termín si vybereš online.'
+  'Beauty salon Bar.Bitch na Křenové 294/16. Otevřeno každý den 10:00–19:00, termín si vybereš online.'
 export const DEFAULT_SERVICES_TITLE = 'Co u nás uděláme'
 export const DEFAULT_ABOUT_TITLE = 'Beauty salon v centru Brna'
 export const DEFAULT_OPEN_HOURS_SHORT = 'Každý den 10:00–19:00'
@@ -52,7 +52,7 @@ export const DEFAULT_WHY_ITEMS: IWhyItem[] = [
  */
 export const DEFAULT_FAQ: IFaqItem[] = [
   {
-    title: 'Kde salon Barbitch najdu?',
+    title: 'Kde salon Bar.Bitch najdu?',
     content: '<p>Na adrese Křenová 294/16, 602 00 Brno. {cesta}</p>',
   },
   {

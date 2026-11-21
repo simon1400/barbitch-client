@@ -1,5 +1,6 @@
 import type { IDataContact, ISocItem } from 'fetch/contact'
 
+import { Marquee } from 'components/Marquee'
 import { getContact, getContactExtras, getLinkToReserve } from 'fetch/contact'
 import { LogoIcon } from 'icons/Logo'
 import { parseHtml } from 'lib/parseHtml'
@@ -29,15 +30,14 @@ const SocRibbon = ({ items }: { items: ISocItem[] }) => {
   ].filter((l) => l.href)
   if (!links.length) return null
 
-  const unit = (k: number) => (
-    <span key={k} aria-hidden={k > 0 ? 'true' : undefined} className={'flex items-center'}>
+  const unit = (
+    <span className={'flex shrink-0 items-center'}>
       {links.map((l) => (
         <span key={l.label} className={'flex items-center gap-[22px] lg:gap-7 pr-[22px] lg:pr-7'}>
           <a
             href={l.href}
             target={'_blank'}
             rel={'noopener noreferrer'}
-            tabIndex={k > 0 ? -1 : undefined}
             className={
               'text-[19px] lg:text-[24px] leading-none font-extrabold uppercase tracking-[0.5px] whitespace-nowrap text-accent hover:text-white no-underline focus-visible:text-white focus-visible:underline focus-visible:underline-offset-4 focus-visible:outline-none'
             }
@@ -57,13 +57,17 @@ const SocRibbon = ({ items }: { items: ISocItem[] }) => {
         'group/rib w-[120%] -ml-[10%] h-[50px] lg:h-[66px] bg-primary overflow-hidden -rotate-[1.5deg]'
       }
     >
-      <div
+      {/* Odkazy v HTML jednou; kopie doplní prohlížeč jako `inert` (s305). */}
+      <Marquee
+        as={'div'}
+        first={unit}
+        copy={unit}
+        total={10}
         className={
-          'flex w-max h-full items-center animate-[marquee_80s_linear_infinite] group-hover/rib:[animation-play-state:paused] group-focus-within/rib:[animation-play-state:paused] motion-reduce:animate-none'
+          'flex w-max h-full items-center group-hover/rib:[animation-play-state:paused] group-focus-within/rib:[animation-play-state:paused] motion-reduce:animate-none'
         }
-      >
-        {Array.from({ length: 10 }, (_, k) => unit(k))}
-      </div>
+        animClass={'animate-[marquee_80s_linear_infinite]'}
+      />
     </nav>
   )
 }

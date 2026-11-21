@@ -1,5 +1,6 @@
 import type { IWhyItem } from 'fetch/home'
 
+import { Marquee } from 'components/Marquee'
 import Link from 'next/link'
 
 import { Heart, SectionTitle, WRAP } from './ui'
@@ -87,21 +88,26 @@ const WhyRibbons = ({ items }: { items: IWhyItem[] }) => {
       className={'bg-white pt-14 pb-20 lg:pt-24 lg:pb-[130px] overflow-hidden'}
     >
       <div className={WRAP}>
-        <SectionTitle id={'proc-barbitch'}>{'Proč Barbitch'}</SectionTitle>
+        <SectionTitle id={'proc-barbitch'}>{'Proč Bar.Bitch'}</SectionTitle>
       </div>
       <div className={'mt-10 lg:mt-16 flex flex-col gap-[30px] lg:gap-[46px]'}>
         {list.map((item, i) => {
           const r = RIBBONS[i]
+          // Server pošle jen první kus (H3 + <p>), kopie doplní prohlížeč (s305).
           const track = (
-            <span
-              className={`flex w-max h-full items-center ${r.anim} group-hover/rib:[animation-play-state:paused] group-focus-within/rib:[animation-play-state:paused] motion-reduce:animate-none`}
-            >
-              {Array.from({ length: REPEAT * 2 }, (_, k) => (
-                <span key={k} aria-hidden={k > 0 ? 'true' : undefined} className={'flex'}>
-                  <Unit item={item} semantic={k === 0} />
+            <Marquee
+              first={
+                <span className={'flex shrink-0'}>
+                  <Unit item={item} semantic />
                 </span>
-              ))}
-            </span>
+              }
+              copy={<Unit item={item} semantic={false} />}
+              total={REPEAT * 2}
+              className={
+                'flex w-max h-full items-center group-hover/rib:[animation-play-state:paused] group-focus-within/rib:[animation-play-state:paused] motion-reduce:animate-none'
+              }
+              animClass={r.anim}
+            />
           )
           const cls = `group/rib block w-[120%] -ml-[10%] h-[50px] lg:h-[66px] bg-primary text-accent overflow-hidden no-underline ${r.tilt} [transition-property:background-color] [transition-duration:200ms]`
           return item.linkUrl && item.linkLabel ? (

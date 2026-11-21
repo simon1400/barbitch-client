@@ -6,7 +6,7 @@ import { getLinkToReserve } from 'fetch/contact'
 import { getBlogPageMeta } from 'fetch/getMeta'
 import { postTopic, TOPIC_KEYS } from 'lib/blogTopic'
 import { jsonLd } from 'lib/jsonLd'
-import { cmsTitle, ogImages, SITE_URL } from 'lib/seo'
+import { BRAND, brandTitle, cmsTitle, ogImages, SITE_URL } from 'lib/seo'
 import Posts from 'sections/Posts'
 import { Top } from 'sections/Top/Top'
 
@@ -22,26 +22,26 @@ export async function generateMetadata(): Promise<Metadata> {
     title: cmsTitle(metaData?.title || 'B.B.Blog'),
     description: metaData?.description,
     openGraph: {
-      title: metaData.title || 'B.B.Blog',
+      title: brandTitle(metaData.title || 'B.B.Blog'),
       description: metaData.description || '',
-      siteName: 'Barbitch',
+      siteName: BRAND,
       locale: 'cs_CZ',
-      images: ogImages(metaData.image?.url, 'B.B.Blog — Barbitch Brno'),
+      images: ogImages(metaData.image?.url, 'B.B.Blog — Bar.Bitch Brno'),
       url: `https://barbitch.cz/blog`,
       // Výpis článků není článek.
       type: 'website',
     },
     twitter: {
       card: 'summary_large_image',
-      title: metaData.title || 'B.B.Blog',
+      title: brandTitle(metaData.title || 'B.B.Blog'),
       description: metaData.description || '',
-      images: ogImages(metaData.image?.url, 'B.B.Blog — Barbitch Brno'),
+      images: ogImages(metaData.image?.url, 'B.B.Blog — Bar.Bitch Brno'),
     },
     alternates: {
       canonical: `https://barbitch.cz/blog`,
       // Aby čtečky a agregátory feed našly samy.
       types: {
-        'application/rss+xml': [{ url: '/feed.xml', title: 'B.B.Blog — Barbitch Brno' }],
+        'application/rss+xml': [{ url: '/feed.xml', title: 'B.B.Blog — Bar.Bitch Brno' }],
       },
     },
   }
@@ -56,7 +56,7 @@ const collectionSchema = (title: string, description: string, posts: IDataPostSh
   name: title,
   ...(description ? { description } : {}),
   inLanguage: 'cs',
-  isPartOf: { '@type': 'WebSite', name: 'Barbitch', url: SITE_URL },
+  isPartOf: { '@id': `${SITE_URL}/#website` },
   mainEntity: {
     '@type': 'ItemList',
     itemListElement: posts.map((post, index) => ({

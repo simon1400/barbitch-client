@@ -22,7 +22,7 @@ export const TopImage = ({
           className={'object-cover object-center opacity-70 grayscale'}
           src={getStrapiImageUrl(image?.url)}
           fill
-          alt={image?.alternativeText || 'Barbitch Beauty Studio'}
+          alt={image?.alternativeText || 'Bar.Bitch Brno'}
           priority
           quality={75}
           sizes={'(max-width: 640px) 100vw, (max-width: 1200px) 100vw, 1920px'}

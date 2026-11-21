@@ -9,7 +9,7 @@ import { ManageClient } from './ManageClient'
 
 export const metadata: Metadata = {
   // absolute: značka už v titulku je, šablona „%s | Barbitch“ by ji přidala podruhé
-  title: { absolute: 'Moje rezervace | Barbitch Beauty Studio Brno' },
+  title: { absolute: 'Moje rezervace | Bar.Bitch' },
   description: 'Správa rezervace v Barbitch Beauty Studiu v Brně — změna termínu nebo zrušení.',
   robots: { index: false, follow: false },
 }

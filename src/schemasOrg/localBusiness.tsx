@@ -1,7 +1,9 @@
 import { getContact } from 'fetch/contact'
 import { getCatalogPrices, priceRangeOf } from 'fetch/home'
 import { jsonLd } from 'lib/jsonLd'
-import { SITE_URL } from 'lib/seo'
+import { BRAND, SITE_URL } from 'lib/seo'
+
+import { LOCAL_BUSINESS_ID, LOGO, websiteNode } from './salon'
 
 /**
  * Jediná identita salonu ve strukturovaných datech.
@@ -15,7 +17,7 @@ import { SITE_URL } from 'lib/seo'
  * doba zůstávají konstantami — v CMS jsou uložené jako HTML pro lidi
  * (`<p>Křenová 294/16,<br>Brno 602 00</p>`), ne jako strukturovaná pole.
  */
-export const LOCAL_BUSINESS_ID = `${SITE_URL}/#localbusiness`
+export { LOCAL_BUSINESS_ID }
 
 const FALLBACK_PHONE = '+420 776 527 194'
 const FALLBACK_EMAIL = 'info@barbitch.cz'
@@ -23,13 +25,17 @@ const FALLBACK_EMAIL = 'info@barbitch.cz'
 // Záloha rozpětí cen, když katalog enginu neodpoví (ceník 11/2026: 300–2090 Kč).
 const FALLBACK_PRICE_RANGE = '300 CZK - 2090 CZK'
 
-const buildSchema = (telephone: string, email: string, priceRange: string) => ({
-  '@context': 'https://schema.org',
+const buildSalon = (telephone: string, email: string, priceRange: string) => ({
   '@type': 'BeautySalon',
   '@id': LOCAL_BUSINESS_ID,
-  name: 'Barbitch',
+  // Jednotné psaní značky (s305); ostatní podoby jako alternateName.
+  name: BRAND,
+  alternateName: ['Barbitch', 'Bar Bitch'],
+  description:
+    'Salon krásy v centru Brna: manikúra, prodlužování řas, lash lifting a úprava obočí.',
+  logo: LOGO,
   image: `${SITE_URL}/logo.jpg`,
-  url: SITE_URL,
+  url: `${SITE_URL}/`,
   telephone,
   email,
   // Skutečné rozpětí z katalogu (dřív napevno 200–2000, audit 09.11).
@@ -46,9 +52,10 @@ const buildSchema = (telephone: string, email: string, priceRange: string) => ({
   },
   geo: {
     '@type': 'GeoCoordinates',
-    latitude: '49.1928',
-    longitude: '16.6163',
+    latitude: 49.1928,
+    longitude: 16.6163,
   },
+  areaServed: { '@type': 'City', name: 'Brno' },
   openingHoursSpecification: [
     {
       '@type': 'OpeningHoursSpecification',
@@ -57,7 +64,11 @@ const buildSchema = (telephone: string, email: string, priceRange: string) => ({
       closes: '19:00',
     },
   ],
-  sameAs: ['https://www.instagram.com/barbitch.cz', 'https://www.facebook.com/barbtchcz'],
+  sameAs: [
+    'https://www.instagram.com/barbitch.cz',
+    'https://www.facebook.com/barbtchcz',
+    'https://www.tiktok.com/@bar.bitch',
+  ],
   contactPoint: {
     '@type': 'ContactPoint',
     telephone,
@@ -69,11 +80,18 @@ const buildSchema = (telephone: string, email: string, priceRange: string) => ({
 
 export const LocalBusinessSchema = async () => {
   const [contact, catalog] = await Promise.all([getContact(), getCatalogPrices()])
-  const schema = buildSchema(
-    contact.phone || FALLBACK_PHONE,
-    contact.email || FALLBACK_EMAIL,
-    priceRangeOf(catalog) || FALLBACK_PRICE_RANGE,
-  )
+  // Graf: WebSite + BeautySalon. Ostatní stránky odkazují na oba přes `@id`.
+  const schema = {
+    '@context': 'https://schema.org',
+    '@graph': [
+      websiteNode,
+      buildSalon(
+        contact.phone || FALLBACK_PHONE,
+        contact.email || FALLBACK_EMAIL,
+        priceRangeOf(catalog) || FALLBACK_PRICE_RANGE,
+      ),
+    ],
+  }
 
   return (
     <script

@@ -23,9 +23,9 @@ export const TOPIC_LABEL: Record<BlogTopicKey, string> = {
 }
 
 export const TOPIC_CTA: Record<BlogTopic, string> = {
-  manikura: 'Chcete manikúru jako z článku? Rezervujte si termín v Barbitch v Brně.',
-  oboci: 'Chcete obočí jako z článku? Rezervujte si termín v Barbitch v Brně.',
-  rasy: 'Chcete řasy jako z článku? Rezervujte si termín v Barbitch v Brně.',
+  manikura: 'Chcete manikúru jako z článku? Rezervujte si termín v Bar.Bitch v Brně.',
+  oboci: 'Chcete obočí jako z článku? Rezervujte si termín v Bar.Bitch v Brně.',
+  rasy: 'Chcete řasy jako z článku? Rezervujte si termín v Bar.Bitch v Brně.',
 }
 
 export const isServiceTopic = (topic: BlogTopicKey | undefined): topic is BlogTopic =>

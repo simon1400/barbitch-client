@@ -8,7 +8,7 @@ import { UnsubscribeClient } from './UnsubscribeClient'
 
 export const metadata: Metadata = {
   // absolute: značka už v titulku je, šablona „%s | Barbitch“ by ji přidala podruhé
-  title: { absolute: 'Odhlášení z e-mailů | Barbitch Beauty Studio Brno' },
+  title: { absolute: 'Odhlášení z e-mailů | Bar.Bitch' },
   description: 'Odhlášení z připomenutí a nabídek e-mailem.',
   robots: { index: false, follow: false },
 }

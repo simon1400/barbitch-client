@@ -4,7 +4,7 @@ import Button from 'components/Button'
 import { Container } from 'components/Container'
 import { getContact } from 'fetch/contact'
 import { HIRING } from 'lib/hiring'
-import { DEFAULT_OG_IMAGE } from 'lib/seo'
+import { BRAND, DEFAULT_OG_IMAGE } from 'lib/seo'
 import { BreadcrumbSchema } from 'schemasOrg/breadcrumb'
 import { JobPostingSchema } from 'schemasOrg/jobPosting'
 import { Top } from 'sections/Top/Top'
@@ -24,11 +24,11 @@ export const metadata: Metadata = {
   // Po skončení náboru stránka zůstává dostupná přímým odkazem, ale z Googlu zmizí.
   ...(HIRING.enabled ? {} : { robots: { index: false, follow: true } }),
   openGraph: {
-    title: 'Kariéra — hledáme lashmakerku | Barbitch Brno',
+    title: 'Kariéra — hledáme lashmakerku | Bar.Bitch',
     description:
       'Připoj se k mladému týmu salonu v centru Brna. Prodlužování řas, kvalitní materiály, férové ohodnocení s provizí.',
     url: 'https://barbitch.cz/kariera',
-    siteName: 'Barbitch',
+    siteName: BRAND,
     locale: 'cs_CZ',
     type: 'website',
     // Dřív `banner.jpg` — telefonní portrét 3024×4032, který sociální sítě
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Kariéra — hledáme lashmakerku | Barbitch Brno',
+    title: 'Kariéra — hledáme lashmakerku | Bar.Bitch',
     description:
       'Připoj se k mladému týmu salonu v centru Brna. Prodlužování řas, kvalitní materiály, férové ohodnocení s provizí.',
     images: [DEFAULT_OG_IMAGE.url],

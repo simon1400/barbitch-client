@@ -6,7 +6,7 @@ import { VerifyClient } from './VerifyClient'
 
 export const metadata: Metadata = {
   // absolute: značka už v titulku je, šablona „%s | Barbitch“ by ji přidala podruhé
-  title: { absolute: 'Přihlášení | Barbitch Beauty Studio Brno' },
+  title: { absolute: 'Přihlášení | Bar.Bitch' },
   description: 'Přihlášení do osobního kabinetu Barbitch Beauty Studia.',
   robots: { index: false, follow: false },
 }

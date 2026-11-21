@@ -5,7 +5,7 @@ import { Container } from 'components/Container'
 import Image from 'components/Image'
 import { LogoTag, VoucherHero } from 'components/vouchers/VoucherHero'
 import { getContact } from 'fetch/contact'
-import { ogImages } from 'lib/seo'
+import { BRAND, ogImages } from 'lib/seo'
 import { VOUCHER_VALID_MONTHS } from 'lib/vouchers'
 
 import { FirmInquiryForm } from './FirmInquiryForm'
@@ -13,7 +13,8 @@ import { FirmInquiryForm } from './FirmInquiryForm'
 export const revalidate = 3600
 
 const PAGE_URL = 'https://barbitch.cz/firemni-vouchery'
-const TITLE = 'Firemní dárkové vouchery | Barbitch'
+// „Brno“ jen tam, kde v titulku chybí a lidé hledají s městem (s305, souhlas majitele).
+const TITLE = 'Firemní dárkové vouchery Brno | Bar.Bitch'
 const DESCRIPTION =
   'Dárkové vouchery do beauty salonu Barbitch Brno pro tým, klienty a partnery. Od 10 kusů, na fakturu, s vaším logem, hromadně v PDF nebo tištěné.'
 
@@ -24,7 +25,7 @@ export const metadata: Metadata = {
   openGraph: {
     title: TITLE,
     description: DESCRIPTION,
-    siteName: 'Barbitch',
+    siteName: BRAND,
     locale: 'cs_CZ',
     images: ogImages(undefined, 'Firemní dárkové vouchery Barbitch Brno'),
     url: PAGE_URL,

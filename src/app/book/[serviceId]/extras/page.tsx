@@ -7,7 +7,7 @@ import { getEngineServiceCached } from '../../fetch/serviceCache'
 import { ExtrasSelector } from './ExtrasSelector'
 
 export const metadata: Metadata = {
-  title: 'Doplňkové služby | Rezervace – Barbitch Beauty Studio Brno',
+  title: 'Doplňkové služby | Rezervace',
   description: 'Přidejte doplňkové služby ke své rezervaci v Barbitch Beauty Studiu v Brně.',
   robots: { index: false, follow: false },
   // Kroky rezervace jsou noindex — zděděný canonical na /book nemá co potvrzovat.

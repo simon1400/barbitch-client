@@ -3,6 +3,7 @@ import type { Metadata } from 'next'
 import Button from 'components/Button'
 import { Container } from 'components/Container'
 import { getContact } from 'fetch/contact'
+import { BRAND } from 'lib/seo'
 
 // Sem vede web rezervace, když server odpoví 403 `blacklisted` (BookForm).
 // Stránka o klientovi nic neví a vědět nemá: žádné jméno, číslo ani důvod
@@ -20,7 +21,7 @@ const FALLBACK_PHONE = '+420 776 527 194'
 const FALLBACK_EMAIL = 'info@barbitch.cz'
 
 export async function generateMetadata(): Promise<Metadata> {
-  const title = 'Online rezervace pozastavena | Barbitch'
+  const title = 'Online rezervace pozastavena | Bar.Bitch'
   const description =
     'Online rezervace pro zadané telefonní číslo je pozastavena. Kontaktujte nás a domluvíme se.'
 
@@ -31,7 +32,7 @@ export async function generateMetadata(): Promise<Metadata> {
     robots: { index: false, follow: false },
     openGraph: {
       title,
-      siteName: 'Barbitch',
+      siteName: BRAND,
       locale: 'cs_CZ',
       description,
       images: ['https://barbitch.cz/assets/bigBaner.jpg'],

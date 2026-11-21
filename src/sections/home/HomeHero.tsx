@@ -62,7 +62,7 @@ export const HomeHero = ({
     : heroImage?.url
       ? desktop
       : pick(null, FALLBACK_MOBILE)
-  const alt = desktop.alt || 'Růžová stěna salonu Barbitch s logem'
+  const alt = desktop.alt || 'Růžová stěna salonu Bar.Bitch s logem'
 
   // `priority` v getImageProps (Next 15) nenastaví ani fetchpriority, ani preload,
   // a React fotku uvnitř <picture> sám nepřednačte → obojí ručně (s303).

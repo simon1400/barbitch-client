@@ -11,7 +11,7 @@ import { REDIRECTED_POST_SLUGS } from 'lib/blogRedirects'
 import { isServiceTopic, postTopic, TOPIC_LABEL } from 'lib/blogTopic'
 import { getStrapiImageUrl } from 'lib/image-utils'
 import { relatedPostsOf } from 'lib/relatedPosts'
-import { cmsTitle, ogImages } from 'lib/seo'
+import { BRAND, brandTitle, cmsTitle, ogImages } from 'lib/seo'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { ArticleSchema } from 'schemasOrg/article'
@@ -47,7 +47,7 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
     // Neexistující slug končí `notFound()` — metadata to musí potvrdit,
     // jinak 404 zdědí `index: true` z rootu.
     return {
-      title: { absolute: 'Příspěvek nenalezen (404) | Barbitch' },
+      title: { absolute: 'Příspěvek nenalezen (404) | Bar.Bitch' },
       description: '',
       robots: { index: false, follow: false },
     }
@@ -59,21 +59,21 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
     title: cmsTitle(metaData?.title || title),
     description: metaData?.description,
     openGraph: {
-      title: metaData?.title || title,
+      title: brandTitle(metaData?.title || title),
       description: metaData?.description || '',
-      siteName: 'Barbitch',
+      siteName: BRAND,
       // `openGraph` z layoutu se do stránky nedědí po polích — `locale` je nutné
       // zopakovat, jinak z 24 stránek zmizí na 21.
       locale: 'cs_CZ',
-      images: ogImages(metaData?.image?.url, `${title} — Barbitch Brno`),
+      images: ogImages(metaData?.image?.url, `${title} — Bar.Bitch Brno`),
       url: `https://barbitch.cz/blog/${post}`,
       type: 'article',
     },
     twitter: {
       card: 'summary_large_image',
-      title: metaData?.title || title,
+      title: brandTitle(metaData?.title || title),
       description: metaData?.description || '',
-      images: ogImages(metaData?.image?.url, `${title} — Barbitch Brno`),
+      images: ogImages(metaData?.image?.url, `${title} — Bar.Bitch Brno`),
     },
     alternates: {
       canonical: `https://barbitch.cz/blog/${post}`,
@@ -117,7 +117,7 @@ const Post = async ({ params }: any) => {
   const author = data.author?.name?.trim() ? data.author : undefined
   const authorText = author
     ? [author.name.trim(), author.role?.trim()].filter(Boolean).join(', ')
-    : 'Barbitch Beauty Studio'
+    : 'Bar.Bitch Brno'
   // Stejný výběr jako „Související články“ — první z nich.
   const [nextPost] = relatedPostsOf(allPosts, post, topic, 1)
 

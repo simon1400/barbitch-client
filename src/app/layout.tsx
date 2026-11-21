@@ -12,7 +12,7 @@ import { Header } from 'components/Header'
 import HiringBar from 'components/HiringBar'
 import { AppProvider } from 'context/AppContext'
 import { HideOnRoutes } from 'helpers/HideOnRoutes'
-import { DEFAULT_OG_IMAGE } from 'lib/seo'
+import { BRAND, DEFAULT_OG_IMAGE } from 'lib/seo'
 import { Montserrat } from 'next/font/google'
 import Script from 'next/script'
 import { Suspense } from 'react'
@@ -22,26 +22,26 @@ import './globals.scss'
 export const metadata: Metadata = {
   metadataBase: new URL('https://barbitch.cz'),
   title: {
-    default: 'Barbitch – Manikúra, řasy a obočí v Brně',
-    template: '%s | Barbitch',
+    default: 'Bar.Bitch – Manikúra, řasy a obočí v Brně',
+    template: '%s | Bar.Bitch',
   },
   description:
-    'Objevte moderní beauty studio Bar.bitch v Brně. Profesionální manikúra, trendy obočí a dokonalé řasy. Individuální přístup a relaxace s kvalitními materiály. Rezervujte si termín ještě dnes!',
+    'Objevte moderní beauty studio Bar.Bitch v Brně. Profesionální manikúra, trendy obočí a dokonalé řasy. Individuální přístup a relaxace s kvalitními materiály. Rezervujte si termín ještě dnes!',
   openGraph: {
-    title: 'Barbitch – Manikúra, řasy a obočí v Brně',
+    title: 'Bar.Bitch – Manikúra, řasy a obočí v Brně',
     description:
-      'Objevte moderní beauty studio Bar.bitch v Brně. Profesionální manikúra, trendy obočí a dokonalé řasy. Individuální přístup a relaxace s kvalitními materiály. Rezervujte si termín ještě dnes!',
+      'Objevte moderní beauty studio Bar.Bitch v Brně. Profesionální manikúra, trendy obočí a dokonalé řasy. Individuální přístup a relaxace s kvalitními materiály. Rezervujte si termín ještě dnes!',
     url: 'https://barbitch.cz',
-    siteName: 'Barbitch',
+    siteName: BRAND,
     locale: 'cs_CZ',
     type: 'website',
     images: [DEFAULT_OG_IMAGE],
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Barbitch – Manikúra, řasy a obočí v Brně',
+    title: 'Bar.Bitch – Manikúra, řasy a obočí v Brně',
     description:
-      'Objevte moderní beauty studio Bar.bitch v Brně. Profesionální manikúra, trendy obočí a dokonalé řasy.',
+      'Objevte moderní beauty studio Bar.Bitch v Brně. Profesionální manikúra, trendy obočí a dokonalé řasy.',
     images: [DEFAULT_OG_IMAGE.url],
   },
   // Žádné globální `robots: index, follow` — je to výchozí chování a na 404

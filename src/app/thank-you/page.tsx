@@ -1,13 +1,15 @@
 import type { Metadata } from 'next'
 
+import { BRAND } from 'lib/seo'
+
 import ThankYouClient from './ThankYouClient'
 
 export const dynamic = 'force-static'
 
 export async function generateMetadata(): Promise<Metadata> {
-  const title = 'Děkujeme | Barbitch – Manikúra, řasy a obočí v Brně'
+  const title = 'Děkujeme | Bar.Bitch – Manikúra, řasy a obočí v Brně'
   const description =
-    'Objevte moderní beauty studio Bar.bitch v Brně. Profesionální manikúra, trendy obočí a dokonalé řasy. Individuální přístup a relaxace s kvalitními materiály. Rezervujte si termín ještě dnes!'
+    'Objevte moderní beauty studio Bar.Bitch v Brně. Profesionální manikúra, trendy obočí a dokonalé řasy. Individuální přístup a relaxace s kvalitními materiály. Rezervujte si termín ještě dnes!'
 
   return {
     // `absolute` — titulek už značku obsahuje, šablona by ji přidala podruhé.
@@ -16,7 +18,7 @@ export async function generateMetadata(): Promise<Metadata> {
     robots: { index: false, follow: false },
     openGraph: {
       title,
-      siteName: 'Barbitch',
+      siteName: BRAND,
       locale: 'cs_CZ',
       description,
       images: ['https://barbitch.cz/assets/bigBaner.jpg'],

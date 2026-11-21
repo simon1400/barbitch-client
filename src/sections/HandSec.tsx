@@ -78,7 +78,7 @@ const HandSec = ({
           </div>
           <img
             src={'/assets/home/hand-crop.svg'}
-            alt={'Ruka s dlouhými nehty, symbol salonu Barbitch'}
+            alt={'Ruka s dlouhými nehty, symbol salonu Bar.Bitch'}
             width={800}
             height={920}
             loading={'lazy'}

@@ -1,5 +1,6 @@
 import type { IFaqItem } from 'fetch/home'
 
+import { Marquee } from 'components/Marquee'
 import { LogoIcon } from 'icons/Logo'
 import { parseHtml } from 'lib/parseHtml'
 
@@ -41,15 +42,15 @@ const About = ({
   return (
     <section aria-labelledby={'o-salonu'} className={`bg-white overflow-hidden ${SECTION_Y}`}>
       <div aria-hidden={'true'} className={'overflow-hidden'}>
-        <div
-          className={
-            'flex w-max items-center animate-[marquee_90s_linear_infinite] motion-reduce:animate-none'
-          }
-        >
-          {Array.from({ length: 8 }, (_, i) => (
-            <LogoHand key={i} />
-          ))}
-        </div>
+        {/* Logo v HTML jednou, dalších 7 kopií doplní prohlížeč (s305). */}
+        <Marquee
+          as={'div'}
+          first={<LogoHand />}
+          copy={<LogoHand />}
+          total={8}
+          className={'flex w-max items-center motion-reduce:animate-none'}
+          animClass={'animate-[marquee_90s_linear_infinite]'}
+        />
       </div>
 
       <div className={`${WRAP} mt-12 lg:mt-[72px] flex flex-wrap gap-14 lg:gap-[88px]`}>

@@ -1,13 +1,14 @@
 import type { Metadata } from 'next'
 
 import { Container } from 'components/Container'
+import { BRAND } from 'lib/seo'
 
 import { BookHeader } from './components/BookHeader'
 import { BookReservationProvider } from './components/BookReservationContext'
 import HideSmartsupp from './components/HiddenChatbox'
 import './styles.scss'
 
-const metaTitle = 'Online rezervace | Barbitch Beauty Studio Brno'
+const metaTitle = 'Online rezervace | Bar.Bitch'
 const metaDescription =
   'Objednej se online na manikúru, prodloužení řas nebo úpravu obočí v Barbitch Beauty Studiu v Brně. Rychlá a jednoduchá rezervace, profesionální péče a trendy výsledky.'
 const metaImage = 'https://barbitch.cz/assets/bigBaner.jpg'
@@ -25,14 +26,14 @@ export async function generateMetadata(): Promise<Metadata> {
     openGraph: {
       title: metaTitle,
       description: metaDescription,
-      siteName: 'Barbitch',
+      siteName: BRAND,
       locale: 'cs_CZ',
       images: [
         {
           url: metaImage,
           width: 1200,
           height: 630,
-          alt: 'Barbitch Beauty Studio Brno – online rezervace',
+          alt: 'Bar.Bitch Brno – online rezervace',
         },
       ],
       url: metaUrl,

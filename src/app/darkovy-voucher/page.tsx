@@ -6,7 +6,7 @@ import { VoucherHero } from 'components/vouchers/VoucherHero'
 import { getVoucherMeta } from 'fetch/getMeta'
 import { getVoucher } from 'fetch/voucher'
 import { getVoucherCatalog } from 'fetch/voucherCatalog'
-import { cmsTitle, ogImages } from 'lib/seo'
+import { BRAND, brandTitle, cmsTitle, ogImages } from 'lib/seo'
 import { ProductSchema } from 'schemasOrg/product'
 
 import { FirmBanner } from './components/FirmBanner'
@@ -23,19 +23,19 @@ export async function generateMetadata(): Promise<Metadata> {
     title: cmsTitle(metaData?.title || title || 'Dárkový voucher do beauty salonu Brno'),
     description: metaData?.description,
     openGraph: {
-      title: metaData.title || title,
+      title: brandTitle(metaData.title || title),
       description: metaData.description || '',
-      siteName: 'Barbitch',
+      siteName: BRAND,
       locale: 'cs_CZ',
-      images: ogImages(metaData.image?.url, 'Dárkový voucher Barbitch Brno'),
+      images: ogImages(metaData.image?.url, 'Dárkový voucher Bar.Bitch Brno'),
       url: `https://barbitch.cz/darkovy-voucher`,
       type: 'website',
     },
     twitter: {
       card: 'summary_large_image',
-      title: metaData.title || title,
+      title: brandTitle(metaData.title || title),
       description: metaData.description || '',
-      images: ogImages(metaData.image?.url, 'Dárkový voucher Barbitch Brno'),
+      images: ogImages(metaData.image?.url, 'Dárkový voucher Bar.Bitch Brno'),
     },
     alternates: {
       canonical: `https://barbitch.cz/darkovy-voucher`,
@@ -50,9 +50,9 @@ const Voucher = async () => {
   return (
     <main>
       <ProductSchema
-        name={'Dárkový voucher Barbitch'}
+        name={'Dárkový voucher Bar.Bitch'}
         description={
-          'Dárkový voucher do Barbitch Beauty Studia v Brně — na konkrétní službu nebo na částku. Ideální dárek pro vaše blízké.'
+          'Dárkový voucher do salonu Bar.Bitch v Brně — na konkrétní službu nebo na částku. Ideální dárek pro vaše blízké.'
         }
         url={'https://barbitch.cz/darkovy-voucher'}
         lowPrice={Math.min(...prices)}

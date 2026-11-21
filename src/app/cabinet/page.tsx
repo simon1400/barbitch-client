@@ -9,7 +9,7 @@ export const revalidate = 3600
 
 export const metadata: Metadata = {
   // absolute: značka už v titulku je, šablona „%s | Barbitch“ by ji přidala podruhé
-  title: { absolute: 'Můj účet | Barbitch Beauty Studio Brno' },
+  title: { absolute: 'Můj účet | Bar.Bitch' },
   description: 'Osobní kabinet klienta Barbitch Beauty Studia v Brně.',
   robots: { index: false, follow: false },
 }

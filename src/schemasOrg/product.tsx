@@ -1,5 +1,7 @@
 import { jsonLd } from 'lib/jsonLd'
-import { absUrl, SITE_URL } from 'lib/seo'
+import { absUrl, BRAND, SITE_URL } from 'lib/seo'
+
+import { salonRef } from './salon'
 
 interface ProductSchemaProps {
   name: string
@@ -25,13 +27,14 @@ export const ProductSchema = ({
   const schema = {
     '@context': 'https://schema.org',
     '@type': 'Product',
+    '@id': `${url}#product`,
     name,
     description,
     url,
     image: absUrl(image) || `${SITE_URL}/assets/bigBaner.jpg`,
     brand: {
       '@type': 'Brand',
-      name: 'Barbitch',
+      name: BRAND,
     },
     offers: {
       '@type': 'AggregateOffer',
@@ -82,11 +85,7 @@ export const ProductSchema = ({
           },
         },
       },
-      seller: {
-        '@type': 'BeautySalon',
-        name: 'Barbitch',
-        url: 'https://barbitch.cz',
-      },
+      seller: salonRef,
     },
   }
 

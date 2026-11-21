@@ -67,6 +67,11 @@ const nextConfig: NextConfig = {
   images: {
     loader: 'custom',
     dangerouslyAllowSVG: true,
+    // Kratší srcset (s305): výchozích 16 šířek (16–3840 px) dávalo u každé fotky
+    // ~2,7 KB atributu — na hlavní stránce desítky KB HTML. Telefon 2× = 828,
+    // dlaždice 272–340 px 2× = 640, desktop 1920, velké retina 2560.
+    imageSizes: [96, 128, 256, 384],
+    deviceSizes: [640, 828, 1080, 1200, 1920, 2560],
   },
 }
 

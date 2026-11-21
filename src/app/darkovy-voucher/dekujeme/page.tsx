@@ -6,7 +6,7 @@ import { ThankYouClient } from './ThankYouClient'
 
 export const metadata: Metadata = {
   // absolute: značka už v titulku je, šablona „%s | Barbitch“ by ji přidala podruhé
-  title: { absolute: 'Platba voucheru | Barbitch Beauty Studio Brno' },
+  title: { absolute: 'Platba voucheru | Bar.Bitch' },
   description: 'Výsledek platby dárkového voucheru.',
   robots: { index: false, follow: false },
 }
