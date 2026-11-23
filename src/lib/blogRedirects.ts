@@ -30,7 +30,11 @@ export const BLOG_REDIRECTS: BlogRedirect[] = [
     to: '/blog/podzimni-manikura-2025-tipy-na-peci-a-trendy-barvy',
     enabled: true,
   },
-  { from: 'tipy-na-darky-k-narozeninam', to: '/darkovy-voucher', enabled: true },
+  {
+    from: 'tipy-na-darky-k-narozeninam',
+    to: '/blog/darkovy-voucher-beauty-salon-brno',
+    enabled: true,
+  },
   {
     from: 'beauty-priprava-na-jaro-v-brne-jak-sladit-oboci-rasy-a-manikuru-do-jednoho-fresh-looku',
     to: '/blog/jarni-manikura-2026-nejhezci-barvy-minimalisticke-designy-a-pece-po-zime',
