@@ -1,6 +1,7 @@
 import type { NextRequest } from 'next/server'
 
 import { parseFormAttachment } from 'lib/formAttachment'
+import { HIRING } from 'lib/hiring'
 import { clientIp, makeRateLimiter, sameOrigin } from 'lib/route-guard'
 import { resolveSalonEmail } from 'lib/salonEmail'
 import { NextResponse } from 'next/server'
@@ -31,6 +32,10 @@ const ALLOWED_RESUME_TYPES = new Set([
 
 export async function POST(req: NextRequest) {
   try {
+    // Mimo nábor formulář nepřijímá nic (stránka /kariera je pak 404).
+    if (!HIRING.enabled) {
+      return NextResponse.json({ error: 'Hiring closed' }, { status: 410 })
+    }
     if (!sameOrigin(req)) {
       return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
     }

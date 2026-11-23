@@ -1,13 +1,13 @@
 // Náborová kampaň — lashmakerka (prodlužování řas).
 // ──────────────────────────────────────────────────────────────────────────
 // VYPNUTÍ PO OBSAZENÍ POZICE: stačí změnit `enabled` na `false` a nasadit.
-// Tím zmizí horní lišta na celém webu. Stránka /kariera zůstane dostupná
-// (jen na ni nic neodkazuje) — případně ji můžeš později smazat.
+// Tím zmizí horní lišta na celém webu, /kariera vrací 404 a formulář
+// /api/career-apply odpovídá 410. Kód stránky zůstává pro příští nábor.
 // ──────────────────────────────────────────────────────────────────────────
 
 export const HIRING = {
-  // Hlavní vypínač celé kampaně (horní lišta, /kariera v mapě webu, JobPosting,
-  // indexace /kariera). Vypnuto 18.10.2026 — lashmakerka nalezena.
+  // Hlavní vypínač celé kampaně (horní lišta, stránka /kariera, formulář,
+  // mapa webu). Vypnuto 18.10.2026 — lashmakerka nalezena.
   enabled: false,
 
   // Text běžící v horní liště (opakuje se v nekonečné smyčce).

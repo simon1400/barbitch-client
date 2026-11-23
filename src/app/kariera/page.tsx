@@ -5,6 +5,7 @@ import { Container } from 'components/Container'
 import { getContact } from 'fetch/contact'
 import { HIRING } from 'lib/hiring'
 import { BRAND, DEFAULT_OG_IMAGE } from 'lib/seo'
+import { notFound } from 'next/navigation'
 import { BreadcrumbSchema } from 'schemasOrg/breadcrumb'
 import { JobPostingSchema } from 'schemasOrg/jobPosting'
 import { Top } from 'sections/Top/Top'
@@ -21,8 +22,6 @@ export const metadata: Metadata = {
   alternates: {
     canonical: 'https://barbitch.cz/kariera',
   },
-  // Po skončení náboru stránka zůstává dostupná přímým odkazem, ale z Googlu zmizí.
-  ...(HIRING.enabled ? {} : { robots: { index: false, follow: true } }),
   openGraph: {
     title: 'Kariéra — hledáme lashmakerku | Bar.Bitch',
     description:
@@ -91,20 +90,23 @@ const buildJobDescription = () => {
 }
 
 const Kariera = async () => {
+  // Mimo nábor stránka neexistuje (404). Samotné noindex nestačilo: 23.11.2026
+  // na ni poslala uchazečku reklama Google Ads (automatické rozšíření cílových
+  // URL bere každou dostupnou stránku webu) a formulář odpověď přijal.
+  if (!HIRING.enabled) notFound()
+
   const contact = await getContact()
   const instagram = contact.socItems?.find((item) => item.type === 'instagram')?.link
 
   return (
     <main>
-      {HIRING.enabled && (
-        <JobPostingSchema
-          title={HIRING.jobTitle}
-          description={buildJobDescription()}
-          datePosted={HIRING.datePosted}
-          validThrough={HIRING.validThrough}
-          employmentType={HIRING.employmentType}
-        />
-      )}
+      <JobPostingSchema
+        title={HIRING.jobTitle}
+        description={buildJobDescription()}
+        datePosted={HIRING.datePosted}
+        validThrough={HIRING.validThrough}
+        employmentType={HIRING.employmentType}
+      />
       <BreadcrumbSchema
         items={[
           { name: 'Hlavní strana', url: 'https://barbitch.cz' },
