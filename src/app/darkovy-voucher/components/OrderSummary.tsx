@@ -15,6 +15,19 @@ const Row = ({ label, children }: { label: string; children: ReactNode }) => (
   </div>
 )
 
+/** „Změnit“ — zpět do katalogu (skupinu na telefonu přepne VoucherOrder). */
+export const ChangeLink = ({ onClick }: { onClick: () => void }) => (
+  <button
+    type={'button'}
+    onClick={onClick}
+    className={
+      'shrink-0 text-[12px] leading-[15px] font-bold uppercase tracking-[.06em] underline underline-offset-4 hover:text-[#fe3a7c] duration-200'
+    }
+  >
+    {'Změnit'}
+  </button>
+)
+
 /** Sticky souhrn objednávky: náhled, voucher, cena a tlačítko platby. */
 export const OrderSummary = ({
   item,
@@ -23,6 +36,7 @@ export const OrderSummary = ({
   formId,
   loading,
   error,
+  onChangeVoucher,
 }: {
   item: VoucherItem
   forName: string
@@ -31,6 +45,7 @@ export const OrderSummary = ({
   loading: boolean
   /** Chyba objednávky (server neotevřel platbu) — text pod tlačítkem. */
   error: string | null
+  onChangeVoucher: () => void
 }) => (
   <aside aria-label={'Souhrn objednávky'} className={'lg:sticky lg:top-6 self-start'}>
     <div className={'relative overflow-hidden bg-primary'}>
@@ -64,14 +79,7 @@ export const OrderSummary = ({
               : 'Na libovolnou službu z ceníku'}
           </p>
         </div>
-        <a
-          href={item.kind === 'sluzba' ? '#voucher-na-sluzbu' : '#voucher-na-castku'}
-          className={
-            'shrink-0 text-[12px] leading-[15px] font-bold uppercase tracking-[.06em] underline underline-offset-4 hover:text-[#fe3a7c] duration-200'
-          }
-        >
-          {'Změnit'}
-        </a>
+        <ChangeLink onClick={onChangeVoucher} />
       </div>
 
       <div className={'flex flex-col gap-4 text-[14px] leading-[22px]'}>

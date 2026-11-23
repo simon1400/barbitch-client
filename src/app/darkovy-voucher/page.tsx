@@ -66,7 +66,7 @@ const Voucher = async () => {
         perex={
           'Na konkrétní službu nebo na částku. Zaplatíte kartou, PDF přijde e-mailem během minuty.'
         }
-        cta={{ text: 'Vybrat voucher', href: '#objednavka' }}
+        cta={{ text: 'Vybrat voucher', href: '#vouchery' }}
       />
       <Breadcrumbs
         items={[

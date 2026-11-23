@@ -1,5 +1,5 @@
 'use client'
-import type { VoucherItem } from 'lib/vouchers'
+import type { VoucherItem, VoucherKind } from 'lib/vouchers'
 
 import { Container } from 'components/Container'
 import Image from 'components/Image'
@@ -99,25 +99,65 @@ const AmountTile = ({
   </button>
 )
 
+/**
+ * Přepínač druhu voucheru — jen na telefonu (md:hidden). Heatmapy ukázaly, že na
+ * telefonu lidé dlouho scrollují přes vouchery na službu a k voucherům na částku
+ * se nedostanou; proto telefon ukazuje vždy jen jednu skupinu, výchozí „na částku“.
+ * Na počítači jsou vidět obě sekce pod sebou jako dřív.
+ */
+const KindSwitch = ({ tab, onTab }: { tab: VoucherKind; onTab: (kind: VoucherKind) => void }) => (
+  <div className={'md:hidden grid grid-cols-2 border-[1.5px] border-accent mb-8'}>
+    {(
+      [
+        ['castka', 'Na částku'],
+        ['sluzba', 'Na službu'],
+      ] as const
+    ).map(([kind, label]) => (
+      <button
+        key={kind}
+        type={'button'}
+        aria-pressed={tab === kind}
+        aria-controls={kind === 'castka' ? 'voucher-na-castku' : 'voucher-na-sluzbu'}
+        onClick={() => onTab(kind)}
+        className={`h-12 text-[12px] leading-[15px] font-bold uppercase duration-200 ${
+          tab === kind ? 'bg-accent text-white' : 'bg-white text-accent'
+        }`}
+      >
+        {label}
+      </button>
+    ))}
+  </div>
+)
+
 export const VoucherCatalog = ({
   items,
   selectedId,
   onSelect,
+  tab,
+  onTab,
 }: {
   items: VoucherItem[]
   selectedId: string
   onSelect: (id: string) => void
+  /** Skupina zobrazená na telefonu. */
+  tab: VoucherKind
+  onTab: (kind: VoucherKind) => void
 }) => {
   const services = items.filter((i) => i.kind === 'sluzba')
   const amounts = items.filter((i) => i.kind === 'castka')
+  const hiddenOnPhone = (kind: VoucherKind) =>
+    services.length > 0 && tab !== kind ? 'max-md:hidden' : ''
 
   return (
     <Container size={'xl'}>
+      <div id={'vouchery'} className={'scroll-mt-6'}>
+        {services.length > 0 && <KindSwitch tab={tab} onTab={onTab} />}
+      </div>
       {services.length > 0 && (
         <section
           id={'voucher-na-sluzbu'}
           aria-labelledby={'voucher-sluzba-title'}
-          className={'mb-[70px] scroll-mt-6'}
+          className={`mb-[70px] scroll-mt-6 ${hiddenOnPhone('sluzba')}`}
         >
           <SectionHead
             id={'voucher-sluzba-title'}
@@ -140,7 +180,7 @@ export const VoucherCatalog = ({
       <section
         id={'voucher-na-castku'}
         aria-labelledby={'voucher-castka-title'}
-        className={'mb-[90px] scroll-mt-6'}
+        className={`mb-[90px] scroll-mt-6 ${hiddenOnPhone('castka')}`}
       >
         <SectionHead
           id={'voucher-castka-title'}

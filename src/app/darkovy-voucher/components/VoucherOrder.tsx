@@ -1,5 +1,5 @@
 'use client'
-import type { VoucherItem } from 'lib/vouchers'
+import type { VoucherItem, VoucherKind } from 'lib/vouchers'
 import type { FormEvent } from 'react'
 
 import { engineErrorCode, postVoucherCheckout } from 'app/book/fetch/engine'
@@ -7,10 +7,11 @@ import { Container } from 'components/Container'
 import { ConsentCheckbox } from 'components/form/ConsentCheckbox'
 import { Input } from 'components/form/Input'
 import { rememberCheckout } from 'lib/voucherCheckout'
-import { FOR_NAME_MAX, FROM_NAME_MAX, VOUCHER_VALID_MONTHS } from 'lib/vouchers'
+import { FOR_NAME_MAX, formatKc, FROM_NAME_MAX, VOUCHER_VALID_MONTHS } from 'lib/vouchers'
 import { useEffect, useMemo, useState } from 'react'
+import { flushSync } from 'react-dom'
 
-import { OrderSummary } from './OrderSummary'
+import { ChangeLink, OrderSummary } from './OrderSummary'
 import { VoucherCatalog } from './VoucherCatalog'
 
 const FORM_ID = 'voucher-form'
@@ -44,6 +45,13 @@ const Steps = ({ current }: { current: number }) => (
   </ol>
 )
 
+const scrollToId = (id: string) => {
+  const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+  document
+    .getElementById(id)
+    ?.scrollIntoView({ block: 'start', behavior: reduce ? 'auto' : 'smooth' })
+}
+
 const GroupTitle = ({ children }: { children: string }) => (
   <h3 className={'text-[23px] leading-[28px] font-bold mb-6'}>{children}</h3>
 )
@@ -66,9 +74,23 @@ export const VoucherOrder = ({ items }: { items: VoucherItem[] }) => {
     [items, selectedId],
   )
 
+  // Skupina katalogu na telefonu: výchozí „na částku“ (viz KindSwitch)
+  const [tab, setTab] = useState<VoucherKind>('castka')
+
   useEffect(() => {
     const fromUrl = new URLSearchParams(window.location.search).get('voucher')
-    if (fromUrl && items.some((i) => i.id === fromUrl)) setSelectedId(fromUrl)
+    const item = fromUrl ? items.find((i) => i.id === fromUrl) : undefined
+    if (item) {
+      setSelectedId(item.id)
+      setTab(item.kind)
+    }
+    // Odkaz přímo na skupinu (např. z textu ve Strapi) musí na telefonu ukázat ji
+    else if (window.location.hash === '#voucher-na-sluzbu') {
+      setTab('sluzba')
+      // flushSync v efektu nejde — počkat, až se skupina vykreslí
+      const timer = window.setTimeout(() => scrollToId('voucher-na-sluzbu'), 50)
+      return () => window.clearTimeout(timer)
+    }
   }, [items])
 
   const select = (id: string) => {
@@ -77,6 +99,22 @@ export const VoucherOrder = ({ items }: { items: VoucherItem[] }) => {
     const url = new URL(window.location.href)
     url.searchParams.set('voucher', id)
     window.history.replaceState(null, '', url)
+    // Na telefonu a tabletu je objednávka daleko pod katalogem — lidé klikali na
+    // voucher, „nic se nestalo“ a odcházeli. Po krátké pauze (ať je vidět
+    // „Vybráno“) sjedeme rovnou k formuláři.
+    if (window.matchMedia('(max-width: 1023px)').matches) {
+      window.setTimeout(() => scrollToId('objednavka'), 200)
+    }
+  }
+
+  /** „Změnit“ v souhrnu: zpět ke skupině vybraného voucheru. */
+  const changeVoucher = () => {
+    if (!selected) return
+    flushSync(() => setTab(selected.kind))
+    const phone = window.matchMedia('(max-width: 767px)').matches
+    scrollToId(
+      phone ? 'vouchery' : selected.kind === 'sluzba' ? 'voucher-na-sluzbu' : 'voucher-na-castku',
+    )
   }
 
   const handleChange = (name: string, value: string) => {
@@ -142,7 +180,13 @@ export const VoucherOrder = ({ items }: { items: VoucherItem[] }) => {
 
   return (
     <>
-      <VoucherCatalog items={items} selectedId={selected.id} onSelect={select} />
+      <VoucherCatalog
+        items={items}
+        selectedId={selected.id}
+        onSelect={select}
+        tab={tab}
+        onTab={setTab}
+      />
 
       <section
         id={'objednavka'}
@@ -162,6 +206,31 @@ export const VoucherOrder = ({ items }: { items: VoucherItem[] }) => {
               {'Objednávka'}
             </h2>
             <Steps current={step} />
+          </div>
+
+          {/* Do lg je souhrn až pod formulářem — nahoře krátce, co je vybráno. */}
+          <div
+            className={
+              'lg:hidden flex items-center justify-between gap-4 bg-accent text-white p-[16px_20px] -mt-4 mb-10'
+            }
+          >
+            <div className={'min-w-0'}>
+              <p
+                className={
+                  'text-[12px] leading-[15px] font-bold uppercase tracking-[.06em] text-[#fe3a7c] mb-1'
+                }
+              >
+                {'Vybraný voucher'}
+              </p>
+              <p className={'text-[16px] leading-[22px] font-bold'}>{selected.title}</p>
+              <p className={'text-[14px] leading-[20px] font-medium opacity-70'}>
+                {/* Částka je už v názvu voucheru na částku — bez dublu */}
+                {selected.kind === 'sluzba'
+                  ? formatKc(selected.price)
+                  : 'Na libovolnou službu z ceníku'}
+              </p>
+            </div>
+            <ChangeLink onClick={changeVoucher} />
           </div>
 
           <div className={'grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_460px] gap-12 lg:gap-20'}>
@@ -264,6 +333,7 @@ export const VoucherOrder = ({ items }: { items: VoucherItem[] }) => {
               formId={FORM_ID}
               loading={loading}
               error={error}
+              onChangeVoucher={changeVoucher}
             />
           </div>
         </Container>
