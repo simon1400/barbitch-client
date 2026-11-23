@@ -22,10 +22,11 @@ export const TOPIC_LABEL: Record<BlogTopicKey, string> = {
   sezona: 'Sezóna',
 }
 
-export const TOPIC_CTA: Record<BlogTopic, string> = {
-  manikura: 'Chcete manikúru jako z článku? Rezervujte si termín v Bar.Bitch v Brně.',
-  oboci: 'Chcete obočí jako z článku? Rezervujte si termín v Bar.Bitch v Brně.',
-  rasy: 'Chcete řasy jako z článku? Rezervujte si termín v Bar.Bitch v Brně.',
+export const TOPIC_CTA: Record<BlogTopicKey, string> = {
+  manikura: 'Chceš manikúru jako z článku? Rezervuj si termín v Bar.Bitch v Brně.',
+  oboci: 'Chceš obočí jako z článku? Rezervuj si termín v Bar.Bitch v Brně.',
+  rasy: 'Chceš řasy jako z článku? Rezervuj si termín v Bar.Bitch v Brně.',
+  sezona: 'Rezervuj si termín v Bar.Bitch v Brně.',
 }
 
 export const isServiceTopic = (topic: BlogTopicKey | undefined): topic is BlogTopic =>

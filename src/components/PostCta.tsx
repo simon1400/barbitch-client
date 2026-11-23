@@ -12,7 +12,7 @@ import { Container } from './Container'
 export const PostCta = ({ topic: key }: { topic?: BlogTopicKey }) => {
   // „Sezóna“ nemá vlastní stránku služby — obecná výzva bez odkazu na službu.
   const topic = isServiceTopic(key) ? key : undefined
-  const text = topic ? TOPIC_CTA[topic] : 'Rezervujte si termín v Barbitch Beauty Studiu v Brně.'
+  const text = key ? TOPIC_CTA[key] : 'Rezervuj si termín v Bar.Bitch v Brně.'
 
   return (
     <Container size={'xl'}>
