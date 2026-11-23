@@ -9,9 +9,11 @@ import { Text } from './dynamicComponents/Text'
 interface DynamicContentProps {
   data: any[]
   variant?: 'service' | 'default'
+  /** Název služby / článku — z něj zástupný alt fotek galerie bez popisu ve Strapi. */
+  altSubject?: string
 }
 
-export const DynamicContent = ({ data, variant = 'default' }: DynamicContentProps) => {
+export const DynamicContent = ({ data, variant = 'default', altSubject }: DynamicContentProps) => {
   const COMPONENTS_MAP: Record<string, (item: any, idx: number) => React.ReactElement | null> = {
     'content.content-baner': (item, idx) => <Banner key={item.__component + idx} data={item} />,
     'content.galery': (item, idx) => (
@@ -19,6 +21,7 @@ export const DynamicContent = ({ data, variant = 'default' }: DynamicContentProp
         key={item.__component + idx}
         data={item}
         variant={variant === 'service' ? 'masonry' : 'simple'}
+        altSubject={altSubject}
       />
     ),
     'content.text': (item, idx) => <Text key={item.__component + idx} data={item} />,

@@ -1,4 +1,3 @@
-import Image from 'components/Image'
 import Link from 'next/link'
 
 export const BookLink = ({ href, service }: { href: string; service: string }) => (
@@ -11,15 +10,14 @@ export const BookLink = ({ href, service }: { href: string; service: string }) =
       className={'font-bold text-[11px] text-primary hover:underline whitespace-nowrap'}
     >
       <span className={'hidden md:inline'}>{'Rezervovat'}</span>
-      <span className={'md:hidden inline-block w-6 h-6'}>
-        <Image
-          src={'/assets/icons/calendar.svg'}
-          alt={''}
-          width={25}
-          height={25}
-          className={'w-full h-full'}
-        />
-      </span>
+      {/* Ikona jako CSS pozadí, ne <img alt=""> — Bing prázdný alt hlásí jako chybějící
+         (desítky na /cenik a stránkách služeb). Text odkazu nese `aria-label`. */}
+      <span
+        aria-hidden={'true'}
+        className={
+          "md:hidden inline-block w-6 h-6 bg-[url('/assets/icons/calendar.svg')] bg-contain bg-center bg-no-repeat"
+        }
+      />
     </Link>
   </span>
 )

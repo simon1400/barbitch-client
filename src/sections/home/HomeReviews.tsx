@@ -31,7 +31,8 @@ const HomeReviews = ({ reviews, gallery }: { reviews: IReview[]; gallery: IGalle
       {photo?.url && (
         <Image
           src={photo.url}
-          alt={''}
+          // Ne alt="": Bing prázdný alt hlásí jako chybějící; skutečná fotka práce salonu.
+          alt={photo.alternativeText || 'Ukázka práce salonu Bar.Bitch v Brně'}
           fill
           sizes={'100vw'}
           loading={'lazy'}

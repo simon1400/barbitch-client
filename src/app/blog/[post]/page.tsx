@@ -209,7 +209,7 @@ const Post = async ({ params }: any) => {
             </p>
           </Container>
         )}
-        <DynamicContent data={data.dynamicContent} />
+        <DynamicContent data={data.dynamicContent} altSubject={cleanTitle} />
       </article>
       <PostCta topic={topic} />
       <RelatedPosts posts={allPosts} currentSlug={post} topic={topic} />

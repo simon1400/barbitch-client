@@ -21,7 +21,7 @@ const CtaReview = () => {
         src={'/assets/google.png'}
         width={63}
         height={63}
-        alt={''}
+        alt={'Google'}
         loading={'lazy'}
         quality={80}
       />

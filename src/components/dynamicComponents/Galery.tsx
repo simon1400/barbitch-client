@@ -19,10 +19,12 @@ export const Galery = ({
   data,
   contain = true,
   variant = 'simple',
+  altSubject,
 }: {
   data: GaleryData
   contain?: boolean
   variant?: 'simple' | 'masonry'
+  altSubject?: string
 }) => {
   if (!data || !Array.isArray(data.image) || data.image.length === 0) {
     return null
@@ -42,7 +44,13 @@ export const Galery = ({
         </section>
       )}
 
-      <GaleryImages data={data} contain={contain} variant={variant} title={data.title} />
+      <GaleryImages
+        data={data}
+        contain={contain}
+        variant={variant}
+        title={data.title}
+        altSubject={altSubject}
+      />
 
       {hasOutro && (
         <section className={'mb-12 md:mb-17'}>

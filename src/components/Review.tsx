@@ -1,15 +1,12 @@
-import Image from 'components/Image'
-
+// Hvězda jako CSS pozadí, ne <img alt=""> — Bing prázdný alt hlásí jako chybějící
+// (50 hvězd na /cenik). Hodnocení čte čtečka z `aria-label` obalu `Stars`.
 const StarIcon = ({ solid }: { solid: boolean }) => (
-  <span className={'w-4'} aria-hidden={'true'}>
-    <Image
-      src={solid ? '/assets/icons/starSolid.svg' : '/assets/icons/starEmpty.svg'}
-      alt={''}
-      width={16}
-      height={14}
-      className={'w-full h-auto'}
-    />
-  </span>
+  <span
+    aria-hidden={'true'}
+    className={`block w-4 h-[14px] bg-contain bg-center bg-no-repeat ${
+      solid ? "bg-[url('/assets/icons/starSolid.svg')]" : "bg-[url('/assets/icons/starEmpty.svg')]"
+    }`}
+  />
 )
 
 export const Stars = ({ star, align }: { star: number; align?: 'right' | 'center' }) => {

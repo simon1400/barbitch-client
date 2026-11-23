@@ -72,7 +72,9 @@ const PopularServices = ({
                   {photo?.url && (
                     <Image
                       src={photo.url}
-                      alt={''}
+                      // Ne alt="": Bing prázdný alt hlásí jako chybějící. Odkaz má vlastní
+                      // `aria-label`, čtečka alt fotky v něm stejně nepřečte.
+                      alt={photo.alternativeText || title}
                       fill
                       sizes={'(min-width: 1024px) 25vw, 50vw'}
                       loading={'lazy'}

@@ -122,7 +122,7 @@ const Service = async ({ params }: any) => {
             : undefined
         }
       />
-      <DynamicContent data={data.dynamicContent} variant={'service'} />
+      <DynamicContent data={data.dynamicContent} variant={'service'} altSubject={data.title} />
     </main>
   )
 }

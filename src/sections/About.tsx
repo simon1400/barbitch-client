@@ -10,13 +10,12 @@ import { BbLink, SECTION_Y, SectionTitle, WRAP } from './home/ui'
 const LogoHand = () => (
   <span className={'flex shrink-0 items-center gap-8 lg:gap-12 pr-8 lg:pr-12'}>
     <LogoIcon className={'h-10 lg:h-[84px] w-auto fill-accent'} />
-    <img
-      src={'/assets/home/hand-crop.svg'}
-      alt={''}
-      width={800}
-      height={920}
-      loading={'lazy'}
-      className={'block h-[58px] lg:h-[120px] w-auto'}
+    {/* Ruka jako CSS pozadí, ne <img alt=""> — Bing prázdný alt hlásí jako chybějící;
+       páska je dekorace v `aria-hidden`. Poměr = viewBox souboru (800 × 920). */}
+    <span
+      className={
+        "block shrink-0 h-[58px] lg:h-[120px] aspect-[800/920] bg-[url('/assets/home/hand-crop.svg')] bg-contain bg-center bg-no-repeat"
+      }
     />
   </span>
 )

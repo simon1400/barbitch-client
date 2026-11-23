@@ -11,17 +11,29 @@ import 'yet-another-react-lightbox/styles.css'
 // v HTML — jinak z galerie služby zbyl jen prázdný nadpis.
 const Lightbox = dynamic(() => import('yet-another-react-lightbox'), { ssr: false })
 
+/**
+ * Zástupný alt fotky bez popisu ve Strapi (Media Library → Alternative text).
+ * Dřív „Obrázek 3 z galerie“ — nic neříkalo; teď aspoň služba / článek a salon.
+ */
+const fallbackAlt = (subject: string | undefined, n: number) =>
+  subject
+    ? `${subject} – ukázka práce Bar.Bitch Brno, foto ${n}`
+    : `Ukázka práce Bar.Bitch Brno, foto ${n}`
+
 export const GaleryImages = ({
   data,
   contain = true,
   variant = 'simple',
   title,
+  altSubject,
 }: {
   data: { image: IGalery[] }
   contain?: boolean
   variant?: 'simple' | 'masonry'
   /** Viditelný nadpis galerie (vykresluje `Galery` nad fotkami) — pak bez skrytého h2. */
   title?: string | null
+  /** Název služby / článku pro zástupný alt. */
+  altSubject?: string
 }) => {
   const [index, setIndex] = useState(-1)
 
@@ -63,7 +75,7 @@ export const GaleryImages = ({
             >
               <Image
                 src={getStrapiImageUrl(image.url)}
-                alt={image.alternativeText || `Obrázek ${idx + 1} z galerie`}
+                alt={image.alternativeText?.trim() || fallbackAlt(altSubject, idx + 1)}
                 width={image?.width || 800}
                 height={image?.height || 600}
                 className={'w-full h-auto block'}
@@ -106,7 +118,7 @@ export const GaleryImages = ({
                 width={length > 1 ? 700 : 1400}
                 height={1000}
                 fill={!contain}
-                alt={item.alternativeText || `Obrázek ${index + 1} z galerie Barbitch`}
+                alt={item.alternativeText?.trim() || fallbackAlt(altSubject, index + 1)}
                 // Galerie nikdy není na prvním obrazovce (služby, voucher) — `eager`
                 // tu jen spouštěl React preload 3–6 fotek a zdržoval LCP (s303).
                 loading={'lazy'}

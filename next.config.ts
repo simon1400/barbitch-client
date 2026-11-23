@@ -2,17 +2,29 @@ import type { NextConfig } from 'next'
 
 import { blogRedirectRules, finalBlogTarget } from './src/lib/blogRedirects'
 
+/** Staré adresy bez /service/ apod. → současná stránka (301). */
+const OLD_PATHS: [string, string][] = [
+  ['/manikura', '/service/manikura'],
+  ['/nehty', '/service/manikura'],
+  ['/rasy', '/service/rasy'],
+  ['/oboci', '/service/oboci'],
+  ['/kontakty', '/kontakt'],
+  ['/about', '/o-nas'],
+]
+
 /** @type {import('next').NextConfig} */
 
 const nextConfig: NextConfig = {
   output: 'standalone',
   async redirects() {
     return [
-      {
-        source: '/oboci',
-        destination: '/service/oboci',
-        permanent: true,
-      },
+      // Staré krátké adresy (Bing 23.11.2026: /manikura 404 s externím odkazem).
+      // Výslovně 301: `permanent: true` dává 308.
+      ...OLD_PATHS.map(([source, destination]) => ({
+        source,
+        destination,
+        statusCode: 301 as const,
+      })),
       {
         source: '/blog/co-je-laminace-oboci',
         destination: '/service/oboci',

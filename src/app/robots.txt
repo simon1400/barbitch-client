@@ -2,8 +2,9 @@ User-Agent: *
 # /book/… záměrně NEblokujeme: staré adresy z Noona tam dostávají 301 (middleware)
 # a Google ho musí vidět, jinak je z indexu nevyřadí. Kroky rezervace samy
 # nesou noindex, do výsledků se nedostanou.
+# /cabinet záměrně NEblokujeme: stránka nese noindex, nofollow a robot ho musí
+# přečíst — se zákazem ji Bing držel v indexu jen podle odkazu ze záhlaví.
 Disallow: /rezervace/
-Disallow: /cabinet
 Disallow: /api/
 
 Sitemap: https://barbitch.cz/sitemap.xml
